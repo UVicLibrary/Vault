@@ -19,6 +19,14 @@ RSpec.describe CreateAccount do
     end
   end
 
+  describe '#create_default_admin_set' do
+    it 'creates a default admin set' do
+      expect(CreateDefaultAdminSetJob).to receive(:perform_later).with(account)
+
+      subject.create_default_admin_set
+    end
+  end
+
   describe '#create_solr_collection' do
     it 'queues a background job to create a solr collection for the account' do
       expect(CreateSolrCollectionJob).to receive(:perform_later).with(account)
