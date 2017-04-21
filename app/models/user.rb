@@ -49,6 +49,14 @@ class User < ActiveRecord::Base
     []
   end
 
+  def admin?
+    site_roles.include? Role.where(name: "admin").first
+  end
+
+  def superadmin?
+    roles.include? Role.where(name: "superadmin").first
+  end
+
   private
 
     def add_default_roles
