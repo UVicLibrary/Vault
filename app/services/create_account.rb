@@ -8,16 +8,18 @@ class CreateAccount
     @account = account
   end
 
+  # @return [Boolean] true if save and jobs spawning were successful
   def save
-    account.save &&
-      create_external_resources
+    account.save && create_external_resources ? true : false
   end
 
   def create_external_resources
     create_tenant &&
-      create_solr_collection &&
-      create_fcrepo_endpoint &&
-      create_redis_namespace
+      create_account_inline
+    # Temporarily disabled to allow synchronous account creation
+    #   create_solr_collection &&
+    #   create_fcrepo_endpoint &&
+    #   create_redis_namespace
   end
 
   ##
@@ -27,6 +29,14 @@ class CreateAccount
       initialize_account_data
       Hyrax::Workflow::WorkflowImporter.load_workflows
     end
+  end
+
+  # Sacrifing idempotency of our account creation jobs here to reflect
+  # the dependency that exists between creating endpoints,
+  # specifically Solr and Fedora, and creation of the default Admin
+  # Set.
+  def create_account_inline
+    CreateAccountInlineJob.perform_later(account)
   end
 
   def create_solr_collection

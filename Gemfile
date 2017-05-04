@@ -38,13 +38,13 @@ group :development, :test do
 
   gem 'i18n-debug', require: false
   gem 'rspec'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '>= 3.6.0.beta2'
 
   gem 'coveralls', require: false
   gem 'simplecov', require: false
 
   gem 'fcrepo_wrapper', '~> 0.4'
-  gem 'solr_wrapper', '~> 0.10'
+  gem 'solr_wrapper', '~> 1.0'
 
   gem 'rubocop', '~> 0.47.0'
   gem 'rubocop-rspec', '~> 1.10.0'
@@ -72,7 +72,7 @@ end
 gem 'blacklight', '~> 6.7'
 
 gem 'hyrax', git: 'https://github.com/projecthydra-labs/hyrax.git'
-gem 'rsolr', '~> 1.1.2'
+gem 'rsolr', '~> 2.0'
 
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
@@ -93,17 +93,25 @@ gem 'peek-redis'
 gem 'flipflop', '~> 2.3'
 gem 'lograge'
 
+# Pinned up tight until these are resolved:
+# https://github.com/PerfectlyNormal/tinymce-rails-imageupload/issues/86
+# https://github.com/PerfectlyNormal/tinymce-rails-imageupload/issues/87
+gem 'tinymce-rails-imageupload', '4.0.17.beta'
+
 gem 'zk'
 
 gem 'mods', '~> 2.1'
 gem 'riiif', '~> 1.1'
 
-gem 'iiif_manifest', '~> 0.1.2'
+gem 'iiif_manifest', '~> 0.2.0'
+
+group :aws, :test do
+  gem 'carrierwave-aws'
+end
 
 group :aws do
   # TODO: Version 2.0 causes a failure in spec/lib/active_job/queue_adapters/better_active_elastic_job_adapter_spec.rb
   gem 'active_elastic_job', '~> 1.7'
-  gem 'fog-aws'
 end
 
 gem 'peek-sidekiq'

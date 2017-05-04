@@ -1,6 +1,4 @@
 RSpec.describe Account, type: :model do
-  let(:account) { FactoryGirl.create(:account) }
-
   describe '.from_request' do
     let(:request) { double(host: 'example.com') }
     let(:noncanonical_request) { double(host: 'example.com.') }
@@ -119,19 +117,58 @@ RSpec.describe Account, type: :model do
       expect(account1.errors).to be_empty
     end
 
-    it 'builds default cname from name' do
-      account1 = described_class.create(tenant: 'example', name: 'example')
-      expect(account1.errors).to be_empty
-      expect(account1.cname).to eq('example.dev')
+    context 'default_host' do
+      let(:account1) { described_class.create(tenant: 'example', name: 'example') }
+
+      context 'is set' do
+        it 'builds default cname from name and default_host' do
+          allow(Settings.multitenancy).to receive(:default_host).and_return "%{tenant}.dev"
+          expect(account1.errors).to be_empty
+          expect(account1.cname).to eq('example.dev')
+        end
+      end
+
+      context 'is unset' do
+        it 'builds default cname from name and admin_host' do
+          allow(Settings.multitenancy).to receive(:admin_host).and_return('admin-host')
+          expect(account1.errors).to be_empty
+          expect(account1.cname).to eq('example.admin-host')
+        end
+      end
     end
 
     it 'prevents duplicate cname and tenant values' do
-      account1 = described_class.create(name: 'example', tenant: 'example', cname: 'example.dev')
-      account2 = described_class.create(name: 'example', tenant: 'example', cname: 'example.dev')
+      account1 = described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev')
+      account2 = described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev')
       expect(account1.errors).to be_empty
       expect(account2.errors).not_to be_empty
       expect(account2.errors.messages).to match a_hash_including(:tenant, :cname)
       expect(account2.errors.messages).not_to include(:name)
+    end
+
+    it 'prevents duplicate cname from only name' do
+      account1 = described_class.create(name: 'example')
+      account2 = described_class.create(name: 'example')
+      expect(account1.errors).to be_empty
+      expect(account2.errors).not_to be_empty
+      expect(account2.errors.messages).to match a_hash_including(:cname)
+      expect(account2.errors.messages).not_to include(:name)
+    end
+
+    it 'prevents conflicting new object saves' do
+      described_class.create(name: 'example')
+      account2 = described_class.new(name: 'example')
+      expect(account2.save).to be false
+      expect(account2.errors).to match a_hash_including(:cname)
+    end
+
+    describe 'guarantees only one account can reference the same' do
+      let(:endpoint) { SolrEndpoint.new(url: 'solr') }
+      let!(:account1) { described_class.create(name: 'example', solr_endpoint: endpoint) }
+      it 'solr_endpoint' do
+        account2 = described_class.new(name: 'other', solr_endpoint: endpoint)
+        expect { account2.save }.to raise_error(ActiveRecord::RecordNotUnique)
+      end
     end
   end
 end

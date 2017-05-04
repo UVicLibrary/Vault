@@ -22,7 +22,6 @@ Rails.application.routes.draw do
     resources :roles, only: [:index, :update]
     resource :content_blocks, only: [:edit, :update]
     resource :labels, only: [:edit, :update]
-    resource :appearances, only: [:edit, :update]
   end
 
   root 'hyrax/homepage#index'
@@ -60,7 +59,6 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, only: :index
     resource :account, only: [:edit, :update]
     resources :groups do
       member do
