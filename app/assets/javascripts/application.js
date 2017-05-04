@@ -26,8 +26,8 @@
 //= require flot_graph
 //= require statistics_tab_manager
 //= require blacklight_gallery/default
-//= assignFastComplete
-//= assignFastGadget
-//= assignFastCustom
+//= require assignFastComplete
+//= require assignFastGadget
+//= require assignFastCustom
 //= require hyku/groups/per_page
 //= require hyku/groups/add_member

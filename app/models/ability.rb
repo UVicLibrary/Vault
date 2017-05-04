@@ -41,4 +41,9 @@ class Ability
   def superadmin?
     current_user.has_role? :superadmin
   end
+
+  def admin?
+    current_user.has_role?(:admin, Site.instance)
+  end
+
 end
