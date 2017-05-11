@@ -13,6 +13,28 @@ RSpec.describe Account, type: :model do
     end
   end
 
+  describe '.default_cname' do
+    it 'chokes on trailing dots' do
+      expect { described_class.default_cname('foobar.') }.to raise_error ArgumentError
+      # Important because we otherwise allow cname collision by treating "foobar." and "foobar-" equivalently
+    end
+
+    it 'returns canonicalized value' do
+      allow(Settings.multitenancy).to receive(:default_host).and_return("%{tenant}.DEMO.hydrainabox.org.")
+      expect(described_class.default_cname('foobar')).to eq 'foobar.demo.hydrainabox.org'
+      expect(described_class.default_cname('fooBAR')).to eq 'foobar.demo.hydrainabox.org'
+      expect(described_class.default_cname('ONE.two.3')).to eq 'one-two-3.demo.hydrainabox.org'
+    end
+  end
+
+  describe '.canonical_cname' do
+    it 'lowercases and strips trailing dots' do
+      expect(described_class.canonical_cname('foobar')).to eq 'foobar'
+      expect(described_class.canonical_cname('fooBAR...')).to eq 'foobar'
+      expect(described_class.canonical_cname('ONE.two.3')).to eq 'one.two.3'
+    end
+  end
+
   describe '.admin_host' do
     it 'uses the configured setting' do
       allow(Settings.multitenancy).to receive(:admin_host).and_return('admin-host')
@@ -76,6 +98,10 @@ RSpec.describe Account, type: :model do
       subject.switch!
     end
 
+    after do
+      subject.reset!
+    end
+
     it 'switches to the account-specific connection' do
       subject.switch do
         expect(ActiveFedora::SolrService.instance.conn.uri.to_s).to eq 'http://example.com/solr/'
@@ -89,10 +115,24 @@ RSpec.describe Account, type: :model do
       subject.switch do
         # no-op
       end
-
       expect(ActiveFedora::SolrService.instance.conn.uri.to_s).to eq 'http://127.0.0.1:8985/solr/hydra-test/'
       expect(ActiveFedora.fedora.host).to eq 'http://127.0.0.1:8986/rest'
       expect(Hyrax.config.redis_namespace).to eq previous_redis_namespace
+    end
+
+    context 'with missing endpoint' do
+      it 'Solr, throws exception on switch!' do
+        subject.solr_endpoint = nil
+        expect { subject.switch! }.to raise_error(MissingSolrException)
+      end
+      it 'Fcrepo, throws exception on switch!' do
+        subject.fcrepo_endpoint = nil
+        expect { subject.switch! }.to raise_error(MissingFcrepoException)
+      end
+      it 'Redis, throws exception on switch!' do
+        subject.redis_endpoint = nil
+        expect { subject.switch! }.to raise_error(MissingRedisException)
+      end
     end
   end
 
@@ -137,13 +177,21 @@ RSpec.describe Account, type: :model do
       end
     end
 
-    it 'prevents duplicate cname and tenant values' do
-      account1 = described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev')
-      account2 = described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev')
-      expect(account1.errors).to be_empty
-      expect(account2.errors).not_to be_empty
-      expect(account2.errors.messages).to match a_hash_including(:tenant, :cname)
-      expect(account2.errors.messages).not_to include(:name)
+    describe 'prevents duplicate cname and tenant values' do
+      let!(:account1) { described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev') }
+      it 'on create' do
+        account2 = described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev')
+        expect(account1.errors).to be_empty
+        expect(account2.errors).not_to be_empty
+        expect(account2.errors.messages).to match a_hash_including(:tenant, :cname)
+        expect(account2.errors.messages).not_to include(:name)
+      end
+      it 'on save' do
+        account2 = described_class.new(tenant: 'other_tenant', cname: account1.cname)
+        expect(account2.save).to be_falsey
+        expect(account2.errors).not_to be_empty
+        expect(account2.errors.messages).to match a_hash_including(:cname)
+      end
     end
 
     it 'prevents duplicate cname from only name' do
@@ -168,6 +216,7 @@ RSpec.describe Account, type: :model do
       it 'solr_endpoint' do
         account2 = described_class.new(name: 'other', solr_endpoint: endpoint)
         expect { account2.save }.to raise_error(ActiveRecord::RecordNotUnique)
+        # Note: this is different than just populating account2.errors, because it is a FK
       end
     end
   end

@@ -84,13 +84,13 @@ services:
       internal:
 
   fcrepo:
-    image: cbeer/fcrepo4
+    image: cbeer/fcrepo4:4.7
     expose:
-      - 8983
+      - 8080
     volumes:
       - fcrepo:/data
     environment:
-      - JAVA_OPTS=${JAVA_OPTS} -Dfcrepo.modeshape.configuration="classpath:/config/minimal-default/repository.json"
+      - JAVA_OPTS=${JAVA_OPTS} -Dfcrepo.modeshape.configuration="classpath:/config/file-simple/repository.json" -Dfcrepo.object.directory="/data/objects" -Dfcrepo.binary.directory="/data/binaries"
     networks:
       internal:
 
@@ -107,7 +107,7 @@ services:
       - REDIS_HOST=redis_cluster
       - REDIS_SENTINEL_HOST=redis_sentinel
       - DATABASE_URL=postgresql://postgres@db/postgres
-      - FEDORA_URL=http://fcrepo:8983/fedora/rest
+      - FEDORA_URL=http://fcrepo:8080/fcrepo/rest
       - SOLR_URL=http://solr:8983/solr/
       - SETTINGS__ACTIVE_JOB__QUEUE_ADAPTER=sidekiq
       - SETTINGS__SOLR__URL=http://solr:8983/solr/
