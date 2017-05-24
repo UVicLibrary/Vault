@@ -18,30 +18,9 @@ RSpec.describe CreateAccount do
     end
   end
 
-  describe '#create_solr_collection' do
-    it 'queues a background job to create a solr collection for the account' do
-      expect(CreateSolrCollectionJob).to receive(:perform_later).with(account)
-      subject.create_solr_collection
-    end
-  end
-
-  describe '#create_fcrepo_endpoint' do
-    it 'has a default fcrepo endpoint configuration' do
-      expect(CreateFcrepoEndpointJob).to receive(:perform_later).with(account)
-      subject.create_fcrepo_endpoint
-    end
-  end
-
-  describe '#create_redis_namespace' do
-    it 'has a default redis namespace' do
-      expect(CreateRedisNamespaceJob).to receive(:perform_later).with(account)
-      subject.create_redis_namespace
-    end
-  end
-
   describe '#create_account_inline' do
-    it 'queues a background job' do
-      expect(CreateAccountInlineJob).to receive(:perform_later).with(account)
+    it 'runs account creation jobs' do
+      expect(CreateAccountInlineJob).to receive(:perform_now).with(account)
       subject.create_account_inline
     end
   end

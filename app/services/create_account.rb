@@ -13,13 +13,12 @@ class CreateAccount
     account.save && create_external_resources ? true : false
   end
 
+  # `Apartment::Tenant.create` calls the DB adapter's `switch`, which we have a hook into
+  # via an initializer.  In our hook we do `account.switch!` and that requires a well-formed
+  # Account (i.e. creation steps complete, endpoints populated).  THEREFORE, `create_tenant`
+  # must be called *after* all external resources are provisioned.
   def create_external_resources
-    create_tenant &&
-      create_account_inline
-    # Temporarily disabled to allow synchronous account creation
-    #   create_solr_collection &&
-    #   create_fcrepo_endpoint &&
-    #   create_redis_namespace
+    create_account_inline && create_tenant
   end
 
   ##
@@ -28,27 +27,15 @@ class CreateAccount
     Apartment::Tenant.create(account.tenant) do
       initialize_account_data
       Hyrax::Workflow::WorkflowImporter.load_workflows
+      AdminSet.find_or_create_default_admin_set_id
     end
   end
 
   # Sacrifing idempotency of our account creation jobs here to reflect
   # the dependency that exists between creating endpoints,
-  # specifically Solr and Fedora, and creation of the default Admin
-  # Set.
+  # specifically Solr and Fedora, and creation of the default Admin Set.
   def create_account_inline
-    CreateAccountInlineJob.perform_later(account)
-  end
-
-  def create_solr_collection
-    CreateSolrCollectionJob.perform_later(account)
-  end
-
-  def create_fcrepo_endpoint
-    CreateFcrepoEndpointJob.perform_later(account)
-  end
-
-  def create_redis_namespace
-    CreateRedisNamespaceJob.perform_later(account)
+    CreateAccountInlineJob.perform_now(account)
   end
 
   private

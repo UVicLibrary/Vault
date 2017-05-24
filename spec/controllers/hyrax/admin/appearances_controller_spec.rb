@@ -1,7 +1,6 @@
-RSpec.describe Hyrax::Admin::AppearancesController, type: :controller do
+RSpec.describe Hyrax::Admin::AppearancesController, type: :controller, singletenant: true do
   before { sign_in user }
   routes { Hyrax::Engine.routes }
-  let(:hyrax) { routes.url_helpers }
 
   context 'with an unprivileged user' do
     let(:user) { create(:user) }
@@ -32,6 +31,8 @@ RSpec.describe Hyrax::Admin::AppearancesController, type: :controller do
     end
 
     describe "PUT #update" do
+      let(:hyrax) { routes.url_helpers }
+
       context "with valid params" do
         let(:valid_attributes) do
           { banner_image: "image.jpg" }
@@ -49,21 +50,6 @@ RSpec.describe Hyrax::Admin::AppearancesController, type: :controller do
         it "redirects to the site" do
           put :update, params: { admin_appearance: valid_attributes }
           expect(response).to redirect_to(hyrax.admin_appearance_path(locale: 'en'))
-        end
-      end
-
-      context "site with existing banner image" do
-        before do
-          f = fixture_file_upload('/images/nypl-hydra-of-lerna.jpg', 'image/jpg')
-          Site.instance.update(banner_image: f)
-        end
-
-        it "deletes a banner image" do
-          expect(Site.instance.banner_image?).to be true
-          post :update, params: { id: Site.instance.id, admin_appearance: { remove_banner_image: 'true' } }
-          expect(response).to redirect_to(hyrax.admin_appearance_path(locale: 'en'))
-          expect(flash[:notice]).to include("The appearance was successfully updated")
-          expect(Site.instance.banner_image?).to be false
         end
       end
 

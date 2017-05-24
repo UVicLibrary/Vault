@@ -6,17 +6,18 @@
 <%= presenter.attribute_to_html(:identifier, render_as: :linked, search_field: 'identifier_tesim') %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:date_created, render_as: :linked, search_field: 'date_created_tesim') %>
-<%= presenter.attribute_to_html(:based_near, render_as: :faceted) %>
+
+<%= presenter.attribute_to_html(:based_near_label) %>
 <%= presenter.attribute_to_html(:related_url, render_as: :external_link) %>
 <%= presenter.attribute_to_html(:resource_type, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:source) %>
-
+<%= presenter.attribute_to_html(:rights_statement) %>
+<%= presenter.attribute_to_html(:extent) %>
 <%= presenter.attribute_to_html(:alternative_title) %>
 <%= presenter.attribute_to_html(:edition) %>
 <%= presenter.attribute_to_html(:geographic_coverage, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:coordinates) %>
 <%= presenter.attribute_to_html(:chronological_coverage) %>
-<%= presenter.attribute_to_html(:extent) %>
 <%= presenter.attribute_to_html(:additional_physical_characteristics) %>
 <%= presenter.attribute_to_html(:has_format) %>
 <%= presenter.attribute_to_html(:physical_repository) %>

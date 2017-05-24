@@ -1,4 +1,6 @@
-class WorkIndexer < Hyrax::WorkIndexer
+# Generated via
+#  `rails generate hyrax:work Image`
+class ImageIndexer < Hyrax::WorkIndexer
   # This indexes the default metadata. You can remove it if you want to
   # provide your own metadata and indexing.
   include Hyrax::IndexesBasicMetadata

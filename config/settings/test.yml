@@ -1,7 +1,10 @@
 zookeeper:
   connection_str: 'localhost:9985/configs'
 
+solr:
+  url: "http://127.0.0.1:8985/solr/"
+
 multitenancy:
-  enabled: false
+  enabled: true
 # admin_host: 'localhost'
 # default_host: "%{tenant}.localhost"
