@@ -8,7 +8,7 @@ class WorkIndexer < Hyrax::WorkIndexer
   include Hyrax::IndexesLinkedMetadata
 
   # Use thumbnails served by RIIIF
-  self.thumbnail_path_service = IIIFWorkThumbnailPathService
+  self.thumbnail_path_service = IIIFThumbnailPathService
 
   # Uncomment this block if you want to add custom indexing behavior:
   # def generate_solr_document
