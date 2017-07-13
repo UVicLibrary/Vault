@@ -1,5 +1,5 @@
 # Generated via
-#  `rails generate hyrax:work Image`
+#  `rails generate curation_concerns:work Image`
 module Hyrax
   class ImageForm < Hyrax::Forms::WorkForm
     self.model_class = ::Image
