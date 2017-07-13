@@ -37,7 +37,6 @@ group :development, :test do
   gem 'byebug'
 
   gem 'i18n-debug', require: false
-  gem 'i18n-tasks'
   gem 'rspec'
   gem 'rspec-rails', '>= 3.6.0'
 
