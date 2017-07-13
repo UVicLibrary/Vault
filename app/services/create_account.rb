@@ -36,7 +36,10 @@ class CreateAccount
   # specifically Solr and Fedora, and creation of the default Admin
   # Set.
   def create_account_inline
-    CreateAccountInlineJob.perform_later(account)
+    CreateSolrCollectionJob.perform_now(account)
+    CreateFcrepoEndpointJob.perform_now(account)
+    CreateRedisNamespaceJob.perform_now(account)
+    CreateDefaultAdminSetJob.perform_now
   end
 
   def create_solr_collection
