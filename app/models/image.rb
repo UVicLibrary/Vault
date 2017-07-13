@@ -1,6 +1,7 @@
 class Image < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
   include ::Hyrax::BasicMetadata
+  include Hyrax::WorkBehavior
   validates :title, presence: { message: 'Your work must have a title.' }
 
   property :extent, predicate: ::RDF::Vocab::DC.extent, multiple: true do |index|
