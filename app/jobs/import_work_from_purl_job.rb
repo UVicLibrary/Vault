@@ -39,9 +39,6 @@ class ImportWorkFromPurlJob < ActiveJob::Base
       # rename :location to :based_near
       attributes[:based_near] = attributes.delete(:location)
 
-      # rename :rights to :license
-      attributes[:license] = attributes.delete(:rights)
-
       process_collection(attributes)
       filenames = attributes.delete(:files)
       attributes[:remote_files] = filenames.map do |name|
