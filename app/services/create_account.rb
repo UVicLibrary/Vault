@@ -27,9 +27,7 @@ class CreateAccount
     Apartment::Tenant.create(account.tenant) do
       initialize_account_data
       Hyrax::Workflow::WorkflowImporter.load_workflows
-      account.switch do
-        AdminSet.find_or_create_default_admin_set_id
-      end
+      AdminSet.find_or_create_default_admin_set_id
     end
   end
 
