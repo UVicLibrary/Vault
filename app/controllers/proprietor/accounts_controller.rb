@@ -14,11 +14,7 @@ module Proprietor
 
     # GET /accounts/1
     # GET /accounts/1.json
-    def show
-      add_breadcrumb t(:'hyrax.controls.home'), root_path
-      add_breadcrumb t(:'hyrax.admin.sidebar.accounts'), proprietor_accounts_path
-      add_breadcrumb @account.tenant, edit_proprietor_account_path(@account)
-    end
+    def show; end
 
     # GET /accounts/new
     def new
@@ -81,8 +77,7 @@ module Proprietor
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def account_params
-        params.require(:account).permit(:name, :cname, :title,
-                                        admin_emails: [],
+        params.require(:account).permit(:name, :cname, :title, :admin_emails,
                                         solr_endpoint_attributes: [:id, :url],
                                         fcrepo_endpoint_attributes: [:id, :url, :base_path])
       end
