@@ -1,4 +1,6 @@
 RSpec.describe Account, type: :model do
+  let(:account) { FactoryGirl.create(:account) }
+
   describe '.from_request' do
     let(:request) { double(host: 'example.com') }
     let(:noncanonical_request) { double(host: 'example.com.') }
@@ -160,15 +162,6 @@ RSpec.describe Account, type: :model do
       account2 = described_class.new(name: 'example', title: 'Fancy Example')
       expect(account2.save).to be false
       expect(account2.errors).to match a_hash_including(:cname)
-    end
-
-    describe 'guarantees only one account can reference the same' do
-      let(:endpoint) { SolrEndpoint.new(url: 'solr') }
-      let!(:account1) { described_class.create(name: 'example', solr_endpoint: endpoint) }
-      it 'solr_endpoint' do
-        account2 = described_class.new(name: 'other', solr_endpoint: endpoint)
-        expect { account2.save }.to raise_error(ActiveRecord::RecordNotUnique)
-      end
     end
   end
 end
