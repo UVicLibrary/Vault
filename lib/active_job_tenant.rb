@@ -15,14 +15,6 @@ module ActiveJobTenant
         job.current_account = nil
       end
     end
-
-    def non_tenant_job?
-      @non_tenant_job
-    end
-
-    def non_tenant_job
-      @non_tenant_job = true
-    end
   end
 
   def serialize
@@ -30,18 +22,12 @@ module ActiveJobTenant
   end
 
   def perform_now
-    if non_tenant_job?
+    switch do
       super
-    else
-      switch do
-        super
-      end
     end
   end
 
   private
-
-    delegate :non_tenant_job?, to: :class
 
     def current_account
       @current_account ||= Account.find_by(tenant: current_tenant)
