@@ -1,6 +1,7 @@
-RSpec.describe Hyrax::Admin::AppearancesController, type: :controller, singletenant: true do
+RSpec.describe Hyrax::Admin::AppearancesController, type: :controller do
   before { sign_in user }
   routes { Hyrax::Engine.routes }
+  let(:hyrax) { routes.url_helpers }
 
   context 'with an unprivileged user' do
     let(:user) { create(:user) }
@@ -31,8 +32,6 @@ RSpec.describe Hyrax::Admin::AppearancesController, type: :controller, singleten
     end
 
     describe "PUT #update" do
-      let(:hyrax) { routes.url_helpers }
-
       context "with valid params" do
         let(:valid_attributes) do
           { banner_image: "image.jpg" }
