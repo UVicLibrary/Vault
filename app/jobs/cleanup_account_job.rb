@@ -10,8 +10,7 @@ class CleanupAccountJob < ActiveJob::Base
 
     def cleanup_fedora(account)
       account.switch do
-        # Preceding slash must be removed from base_path when calling delete()
-        fcrepo_client.delete(account.fcrepo_endpoint.base_path.sub!(%r{^\/}, ''))
+        fcrepo_client.delete(account.fcrepo_endpoint.base_path)
       end
     end
 
