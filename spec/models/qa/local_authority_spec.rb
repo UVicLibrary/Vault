@@ -1,8 +1,5 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe Qa::LocalAuthority, type: :model do
-  it "can persist data" do
-    expect { described_class.create!(name: 'Language') }
-      .to change { described_class.count }.by(1)
-  end
+  pending "add some examples to (or delete) #{__FILE__}"
 end
