@@ -146,8 +146,8 @@ en:
         remove: 'Remove'
         current_admins:
           header: 'Current Account Administrators'
-          email: 'Email address'
-          actions: 'Action'
+          email: 'Email'
+          actions: 'Actions'
           no_admins: 'No administrators exist'
       new:
         header: 'Create a new repository'
