@@ -1,4 +1,4 @@
-RSpec.describe Admin::GroupsController, singletenant: true do
+RSpec.describe Admin::GroupsController do
   context 'as an anonymous user' do
     describe 'GET #index' do
       subject { get :index }
