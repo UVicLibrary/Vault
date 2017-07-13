@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       get :manifest
     end
   end
+  curation_concerns_embargo_management
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :searchable
