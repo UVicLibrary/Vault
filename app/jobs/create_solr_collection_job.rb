@@ -1,7 +1,5 @@
 # Create a new account-specific Solr collection using the base templates
 class CreateSolrCollectionJob < ActiveJob::Base
-  non_tenant_job
-
   ##
   # @param [Account]
   def perform(account)
