@@ -29,10 +29,7 @@ class Account < ActiveRecord::Base
 
   attr_readonly :tenant
   # name is unused after create, only used by sign_up/new forms
-  validates :name,
-            presence: true,
-            unless: :cname_is_blank?
-
+  validates :name, presence: true, unless: 'cname.present? && cname != default_cname("")'
   validates :tenant, presence: true, uniqueness: true
   validates :cname, presence: true, uniqueness: true, exclusion: { in: [default_cname('')] }
 
@@ -96,10 +93,6 @@ class Account < ActiveRecord::Base
 
     def default_cname(piece = name)
       self.class.default_cname(piece)
-    end
-
-    def cname_is_blank?
-      cname.present? && cname != default_cname("")
     end
 
     def canonicalize_cname
