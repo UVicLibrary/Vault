@@ -1,12 +1,12 @@
-class NilSolrEndpoint < NilEndpoint
+class NilSolrEndpoint
   def switch!
     ActiveFedora::SolrService.instance.conn = connection
     Blacklight.connection_config = connection_options
     Blacklight.default_index = nil
   end
 
-  def url
-    'Solr not initialized'
+  def ping
+    false
   end
 
   private
