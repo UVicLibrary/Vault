@@ -1,4 +1,4 @@
-class CreateTrophies < ActiveRecord::Migration[4.2]
+class CreateTrophies < ActiveRecord::Migration
   def change
     create_table :trophies do |t|
       t.integer :user_id

@@ -1,4 +1,4 @@
-class AddOrcidToUsers < ActiveRecord::Migration[4.2]
+class AddOrcidToUsers < ActiveRecord::Migration
   def change
     add_column :users, :orcid, :string
   end

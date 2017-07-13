@@ -1,4 +1,4 @@
-class AddGroupsToUsers < ActiveRecord::Migration[4.2]
+class AddGroupsToUsers < ActiveRecord::Migration
   def self.up
     add_column :users, :group_list, :text
     add_column :users, :groups_last_update, :datetime

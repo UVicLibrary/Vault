@@ -1,4 +1,4 @@
-class AddLdapAttrsToUser < ActiveRecord::Migration[4.2]
+class AddLdapAttrsToUser < ActiveRecord::Migration
   def self.up
     add_column :users, :display_name, :string
     add_column :users, :address, :string

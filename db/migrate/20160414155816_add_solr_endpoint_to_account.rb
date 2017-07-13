@@ -1,4 +1,4 @@
-class AddSolrEndpointToAccount < ActiveRecord::Migration[4.2]
+class AddSolrEndpointToAccount < ActiveRecord::Migration
   def change
     add_reference :accounts, :solr_endpoint, index: true
   end

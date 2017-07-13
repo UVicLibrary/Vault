@@ -1,4 +1,4 @@
-class CreateEndpoints < ActiveRecord::Migration[4.2]
+class CreateEndpoints < ActiveRecord::Migration
   def change
     create_table :endpoints do |t|
       t.string :type

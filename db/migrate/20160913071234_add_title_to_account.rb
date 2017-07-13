@@ -1,4 +1,4 @@
-class AddTitleToAccount < ActiveRecord::Migration[4.2]
+class AddTitleToAccount < ActiveRecord::Migration
   def change
     add_column :accounts, :title, :string
   end

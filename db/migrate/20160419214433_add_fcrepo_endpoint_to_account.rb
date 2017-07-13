@@ -1,4 +1,4 @@
-class AddFcrepoEndpointToAccount < ActiveRecord::Migration[4.2]
+class AddFcrepoEndpointToAccount < ActiveRecord::Migration
   def change
     add_reference :accounts, :fcrepo_endpoint, index: true
   end

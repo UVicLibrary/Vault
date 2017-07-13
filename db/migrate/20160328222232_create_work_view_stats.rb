@@ -1,4 +1,4 @@
-class CreateWorkViewStats < ActiveRecord::Migration[4.2]
+class CreateWorkViewStats < ActiveRecord::Migration
   def change
     create_table :work_view_stats do |t|
       t.datetime :date

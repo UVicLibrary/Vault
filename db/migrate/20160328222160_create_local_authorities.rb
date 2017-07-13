@@ -1,4 +1,4 @@
-class CreateLocalAuthorities < ActiveRecord::Migration[4.2]
+class CreateLocalAuthorities < ActiveRecord::Migration
   def self.up
     create_table :local_authority_entries, force: true do |t|
       t.integer :local_authority_id
