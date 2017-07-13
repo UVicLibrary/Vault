@@ -121,17 +121,9 @@ RSpec.describe Account, type: :model do
     end
 
     context 'with missing endpoint' do
-      it 'Solr, throws exception on switch!' do
+      it 'throws exception on switch!' do
         subject.solr_endpoint = nil
-        expect { subject.switch! }.to raise_error(MissingSolrException)
-      end
-      it 'Fcrepo, throws exception on switch!' do
-        subject.fcrepo_endpoint = nil
-        expect { subject.switch! }.to raise_error(MissingFcrepoException)
-      end
-      it 'Redis, throws exception on switch!' do
-        subject.redis_endpoint = nil
-        expect { subject.switch! }.to raise_error(MissingRedisException)
+        expect { subject.switch! }.to raise_error(RuntimeError)
       end
     end
   end
