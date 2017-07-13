@@ -1,8 +1,6 @@
-# Generated via
-#  `rails generate hyrax:work Image`
-
 RSpec.describe Image do
-  it "has tests" do
-    skip "Add your tests here"
+  describe 'indexer' do
+    subject { described_class.indexer }
+    it { is_expected.to eq WorkIndexer }
   end
 end
