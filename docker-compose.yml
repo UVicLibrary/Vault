@@ -79,7 +79,7 @@ services:
       - 8983
     volumes:
       - .:/app
-      - solr:/opt/solr/server/solr
+      - solr:/data
     networks:
       internal:
 
