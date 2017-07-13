@@ -27,7 +27,6 @@ class CreateAccount
     Apartment::Tenant.create(account.tenant) do
       initialize_account_data
       Hyrax::Workflow::WorkflowImporter.load_workflows
-      AdminSet.find_or_create_default_admin_set_id
     end
   end
 
@@ -41,6 +40,9 @@ class CreateAccount
       redis_endpoint_attributes: { namespace: name },
       fcrepo_endpoint_attributes: { base_path: "/#{name}" }
     )
+    account.switch do
+      AdminSet.find_or_create_default_admin_set_id
+    end
   end
 
   private
