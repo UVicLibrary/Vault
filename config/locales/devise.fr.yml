@@ -1,9 +1,0 @@
----
-fr:
-  devise:
-    registrations:
-      new:
-        sign_up: Créer un compte
-        sign_up_header: Créer un nouveau compte
-      shared:
-        sign_up: Créer un compte
