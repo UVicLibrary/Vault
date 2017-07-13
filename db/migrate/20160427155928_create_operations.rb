@@ -1,4 +1,4 @@
-class CreateOperations < ActiveRecord::Migration[4.2]
+class CreateOperations < ActiveRecord::Migration
   def change
     create_table :curation_concerns_operations do |t|
       t.string :status

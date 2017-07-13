@@ -1,4 +1,4 @@
-class CreateFileViewStats < ActiveRecord::Migration[4.2]
+class CreateFileViewStats < ActiveRecord::Migration
   def change
     create_table :file_view_stats do |t|
       t.datetime :date

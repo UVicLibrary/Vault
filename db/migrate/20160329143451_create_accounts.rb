@@ -1,4 +1,4 @@
-class CreateAccounts < ActiveRecord::Migration[4.2]
+class CreateAccounts < ActiveRecord::Migration
   def change
     create_table :accounts do |t|
       t.string :tenant, unique: true

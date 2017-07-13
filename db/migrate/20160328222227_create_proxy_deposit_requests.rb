@@ -1,4 +1,4 @@
-class CreateProxyDepositRequests < ActiveRecord::Migration[4.2]
+class CreateProxyDepositRequests < ActiveRecord::Migration
   def change
     create_table :proxy_deposit_requests do |t|
       t.string :pid, null: false
