@@ -1,5 +1,9 @@
 RSpec.describe 'Home page', type: :request do
-  context 'with multitenancy' do
+  context 'without a current tenant', multitenant: true do
+    before do
+      allow(Settings.multitenancy).to receive(:admin_host).and_return('localhost')
+    end
+
     describe 'GET /' do
       context "on the primary host" do
         before { host! 'localhost' }
