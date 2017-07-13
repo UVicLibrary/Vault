@@ -4,7 +4,7 @@ en:
     search:
       fields:
         facet:
-          based_near_label_sim: Location
+          based_near_sim: Location
           creator_sim: Creator
           file_format_sim: Format
           generic_type_sim: Type
@@ -13,14 +13,13 @@ en:
           publisher_sim: Publisher
           subject_sim: Subject
         index:
-          based_near_label_tesim: Location
+          based_near_tesim: Location
           contributor_tesim: Contributor
           creator_tesim: Creator
           date_created_tesim: Date Created
           date_modified_dtsi: Date Modified
           date_uploaded_dtsi: Date Uploaded
           description_tesim: Description
-          extent_tesim: Extent
           file_format_tesim: File Format
           identifier_tesim: Identifier
           keyword_tesim: Keyword
@@ -29,14 +28,13 @@ en:
           rights_tesim: Rights
           subject_tesim: Subject
         show:
-          based_near_label_tesim: Location
+          based_near_tesim: Location
           contributor_tesim: Contributor
           creator_tesim: Creator
           date_created_tesim: Date Created
           date_modified_dtsi: Date Modified
           date_uploaded_dtsi: Date Uploaded
           description_tesim: Description
-          extent_tesim: Extent
           file_format_tesim: File Format
           identifier_tesim: Identifier
           keyword_tesim: Keyword
