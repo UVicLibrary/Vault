@@ -77,9 +77,9 @@ class Account < ActiveRecord::Base
 
   # does not use confirm_endpoints! because we can still nil-ify settings
   def reset!
-    SolrEndpoint.reset!
-    FcrepoEndpoint.reset!
-    RedisEndpoint.reset!
+    solr_endpoint.reset!
+    fcrepo_endpoint.reset!
+    redis_endpoint.reset!
   end
 
   private

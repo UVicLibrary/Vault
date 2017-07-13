@@ -5,7 +5,7 @@ class FcrepoEndpoint < Endpoint
     ActiveFedora::Fedora.register(options.symbolize_keys)
   end
 
-  def self.reset!
+  def reset!
     ActiveFedora::Fedora.reset!
   end
 
