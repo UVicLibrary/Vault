@@ -15,11 +15,9 @@ class CreateAccount
 
   def create_external_resources
     create_tenant &&
-      create_account_inline
-    # Temporarily disabled to allow synchronous account creation
-    #   create_solr_collection &&
-    #   create_fcrepo_endpoint &&
-    #   create_redis_namespace
+      create_solr_collection &&
+      create_fcrepo_endpoint &&
+      create_redis_namespace
   end
 
   ##
@@ -29,17 +27,6 @@ class CreateAccount
       initialize_account_data
       Hyrax::Workflow::WorkflowImporter.load_workflows
     end
-  end
-
-  # Sacrifing idempotency of our account creation jobs here to reflect
-  # the dependency that exists between creating endpoints,
-  # specifically Solr and Fedora, and creation of the default Admin
-  # Set.
-  def create_account_inline
-    CreateSolrCollectionJob.perform_now(account)
-    CreateFcrepoEndpointJob.perform_now(account)
-    CreateRedisNamespaceJob.perform_now(account)
-    CreateDefaultAdminSetJob.perform_now
   end
 
   def create_solr_collection
