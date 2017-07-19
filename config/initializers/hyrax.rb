@@ -4,7 +4,7 @@ Hyrax.config do |config|
   config.register_curation_concern :image
 
   # Email recipient of messages sent via the contact form
-  # config.contact_email = "repo-admin@example.org"
+  config.contact_email = Settings.contact_email
 
   # Text prefacing the subject entered in the contact form
   # config.subject_prefix = "Contact form:"
@@ -37,7 +37,7 @@ Hyrax.config do |config|
   # config.persistent_hostpath = 'http://localhost/files/'
 
   # If you have ffmpeg installed and want to transcode audio and video uncomment this line
-  # config.enable_ffmpeg = true
+  config.enable_ffmpeg = false
 
   # Using the database noid minter was too slow when ingesting 1000s of objects (8s per transaction),
   # so switching to UUIDs for the MVP.
@@ -139,15 +139,17 @@ Hyrax.config do |config|
   # config.binaries_directory = "tmp/binaries"
 
   # If browse-everything has been configured, load the configs.  Otherwise, set to nil.
-  begin
-    if defined? BrowseEverything
-      config.browse_everything = BrowseEverything.config
-    else
-      Rails.logger.warn "BrowseEverything is not installed"
-    end
-  rescue Errno::ENOENT
-    config.browse_everything = nil
-  end
+  # TODO: Re-enable this when work on BE has been prioritized
+  # begin
+  #   if defined? BrowseEverything
+  #     config.browse_everything = BrowseEverything.config
+  #   else
+  #     Rails.logger.warn "BrowseEverything is not installed"
+  #   end
+  # rescue Errno::ENOENT
+  #   config.browse_everything = nil
+  # end
+  config.browse_everything = nil
 end
 
 Date::DATE_FORMATS[:standard] = "%m/%d/%Y"

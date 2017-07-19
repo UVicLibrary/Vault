@@ -79,7 +79,7 @@ services:
       - 8983
     volumes:
       - .:/app
-      - solr:/data
+      - solr:/opt/solr/server/solr
     networks:
       internal:
 
@@ -104,8 +104,7 @@ services:
   app:
     build: .
     environment:
-      - REDIS_HOST=redis_cluster
-      - REDIS_SENTINEL_HOST=redis_sentinel
+      - REDIS_HOST=redis
       - DATABASE_URL=postgresql://postgres@db/postgres
       - FEDORA_URL=http://fcrepo:8080/fcrepo/rest
       - SOLR_URL=http://solr:8983/solr/
@@ -118,18 +117,18 @@ services:
       - SECRET_KEY_BASE=asdf
       - RAILS_CACHE_STORE_URL=memcache
     volumes:
-      - app:/data/public/uploads
+      - app:/data/tmp/uploads
     networks:
       internal:
 
   web:
     extends: app
-    command: bundle exec rails server -p 3000 -b '0.0.0.0'
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -p 3000 -b '0.0.0.0'"
     depends_on:
       - db
       - solr
       - fcrepo
-      - redis_sentinel
+      - redis
       - zoo1
       - zoo2
       - zoo3
@@ -141,17 +140,19 @@ services:
   workers:
     extends: app
     command: bundle exec sidekiq
+    environment:
+      - SETTINGS__FITS_PATH=/opt/fits-1.0.5/fits.sh
     depends_on:
       - db
       - solr
       - fcrepo
-      - redis_sentinel
+      - redis
       - zoo1
       - zoo2
       - zoo3
       - initialize_app
       - db_migrate
-  
+
   initialize_app:
     extends: app
     restart: on-failure
@@ -176,45 +177,22 @@ services:
       - DOCKER_TLS_VERIFY
       - DOCKER_HOST
       - DOCKER_CERT_PATH
-    volumes:
-      - $DOCKER_CERT_PATH:$DOCKER_CERT_PATH
     ports:
       - 8080:80
       - 8443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      # You must uncomment this line if and only if you are running docker-machine
+      # - $DOCKER_CERT_PATH:$DOCKER_CERT_PATH
     networks:
       internal:
       external:
 
-  redis_primary:
+  redis:
     image: redis:3
     command: redis-server
     volumes:
       - redis:/data
-    networks:
-      internal:
-        aliases:
-          - redis_cluster
-
-  redis:
-    image: redis:3
-    command: redis-server --slaveof primary 6379
-    links:
-      - redis_primary:primary
-    networks:
-      internal:
-        aliases:
-          - redis_cluster
-
-  redis_sentinel:
-    image: s7anley/redis-sentinel-docker
-    environment:
-      - MASTER=redis_primary
-      - MASTER_NAME=redis_cluster
-    links:
-      - redis_primary
-      - redis
     networks:
       internal:
 

@@ -120,17 +120,28 @@ RSpec.describe Account, type: :model do
     end
 
     context 'with missing endpoint' do
-      it 'Solr, throws exception on switch!' do
+      it 'returns a NilSolrEndpoint' do
         subject.solr_endpoint = nil
-        expect { subject.switch! }.to raise_error(MissingSolrException)
+        expect(subject.solr_endpoint).to be_kind_of NilSolrEndpoint
+        subject.switch do
+          expect { ActiveFedora::SolrService.instance.conn.get 'foo' }.to raise_error RSolr::Error::ConnectionRefused
+        end
       end
-      it 'Fcrepo, throws exception on switch!' do
+
+      it 'returns a NilFcrepoEndpoint' do
         subject.fcrepo_endpoint = nil
-        expect { subject.switch! }.to raise_error(MissingFcrepoException)
+        expect(subject.fcrepo_endpoint).to be_kind_of NilFcrepoEndpoint
+        subject.switch do
+          expect { ActiveFedora::Fedora.instance.connection.get 'foo' }.to raise_error Faraday::ConnectionFailed
+        end
       end
-      it 'Redis, throws exception on switch!' do
+
+      it 'returns a NilRedisEndpoint' do
         subject.redis_endpoint = nil
-        expect { subject.switch! }.to raise_error(MissingRedisException)
+        expect(subject.redis_endpoint).to be_kind_of NilRedisEndpoint
+        subject.switch do
+          expect(Hyrax.config.redis_namespace).to eq 'nil_redis_endpoint'
+        end
       end
     end
   end
@@ -217,6 +228,32 @@ RSpec.describe Account, type: :model do
         expect { account2.save }.to raise_error(ActiveRecord::RecordNotUnique)
         # Note: this is different than just populating account2.errors, because it is a FK
       end
+    end
+  end
+
+  describe '#admin_emails' do
+    let!(:account) { FactoryGirl.create(:account, tenant: "mytenant") }
+    before do
+      Site.update(account: account)
+      Site.instance.admin_emails = ["test@test.com", "test@test.org"]
+    end
+    it 'switches to current tenant database and returns Site admin_emails' do
+      expect(Apartment::Tenant).to receive(:switch).with(account.tenant).and_yield
+      expect(account.admin_emails).to match_array(["test@test.com", "test@test.org"])
+    end
+  end
+
+  describe '#admin_emails=' do
+    let!(:account) { FactoryGirl.create(:account, tenant: "mytenant") }
+    before do
+      Site.update(account: account)
+      Site.instance.admin_emails = ["test@test.com", "test@test.org"]
+    end
+    it 'switches to current tenant database updates Site admin_emails' do
+      expect(Apartment::Tenant).to receive(:switch).with(account.tenant).exactly(3).times.and_yield
+      expect(account.admin_emails).to match_array(["test@test.com", "test@test.org"])
+      account.admin_emails = ["newadmin@here.org"]
+      expect(account.admin_emails).to match_array(["newadmin@here.org"])
     end
   end
 end

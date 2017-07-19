@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/projecthydra-labs/hyku.svg)](https://travis-ci.org/projecthydra-labs/hyku)
-[![Coverage Status](https://coveralls.io/repos/projecthydra-labs/hyku/badge.svg?branch=master&service=github)](https://coveralls.io/github/projecthydra-labs/hyku?branch=master)
-[![Stories in Ready](https://badge.waffle.io/projecthydra-labs/hyku.png?label=ready&title=Ready)](https://waffle.io/projecthydra-labs/hyku)
+[![Build Status](https://travis-ci.org/samvera-labs/hyku.svg)](https://travis-ci.org/samvera-labs/hyku)
+[![Coverage Status](https://coveralls.io/repos/samvera-labs/hyku/badge.svg?branch=master&service=github)](https://coveralls.io/github/samvera-labs/hyku?branch=master)
+[![Stories in Ready](https://badge.waffle.io/samvera-labs/hyku.png?label=ready&title=Ready)](https://waffle.io/samvera-labs/hyku)
 
-# Hydra-in-a-Box Repository App
-
-Codename: Hyku
+# Hyku, the Hydra-in-a-Box Repository Application
 
 ## Running the stack
 
@@ -21,7 +19,7 @@ DISABLE_REDIS_CLUSTER=true bundle exec rails server -b 0.0.0.0
 ```
 ### For testing
 
-See the [Hyku Development Guide](https://github.com/projecthydra-labs/hyku/wiki/Hyku-Development-Guide) for how to run tests.
+See the [Hyku Development Guide](https://github.com/samvera-labs/hyku/wiki/Hyku-Development-Guide) for how to run tests.
 
 ### Working with Translations
 
@@ -44,6 +42,10 @@ We distribute a `docker-compose.yml` configuration for running the Hyku stack an
 ```bash
 docker-compose up -d
 ```
+
+### With Vagrant
+
+The [samvera-vagrant project](https://github.com/samvera-labs/samvera-vagrant) provides another simple way to get started "kicking the tires" of Hyku (and [Hyrax](http://hyr.ax/)), making it easy and quick to spin up Hyku. (Note that this is not for production or production-like installations.) It requires [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/).
 
 ## Switching accounts
 

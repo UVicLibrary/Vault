@@ -21,13 +21,19 @@
 // Required by Blacklight
 //= require blacklight/blacklight
 
+// Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
+// a pattern found in ScholarSphere)
+//
+//= require hyku/groups/per_page
+//= require hyku/groups/add_member
+
 //= require hyrax
 //= require jquery.flot.pie
 //= require flot_graph
 //= require statistics_tab_manager
 //= require blacklight_gallery/default
+
 //= require assignFastComplete
 //= require assignFastGadget
 //= require assignFastCustom
-//= require hyku/groups/per_page
-//= require hyku/groups/add_member
+

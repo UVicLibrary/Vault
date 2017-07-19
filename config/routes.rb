@@ -20,13 +20,12 @@ Rails.application.routes.draw do
   mount BrowseEverything::Engine => '/browse'
   resource :site, only: [:update] do
     resources :roles, only: [:index, :update]
-    resource :content_blocks, only: [:edit, :update]
     resource :labels, only: [:edit, :update]
   end
 
   root 'hyrax/homepage#index'
 
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'hyku/registrations' }
   mount Qa::Engine => '/authorities'
 
   mount Blacklight::Engine => '/'
@@ -40,7 +39,6 @@ Rails.application.routes.draw do
       get :manifest
     end
   end
-  curation_concerns_embargo_management
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :searchable

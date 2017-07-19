@@ -17,11 +17,6 @@ module Hyku
     # configuring Nginx on Elastic Beanstalk is a pain.
     config.middleware.use Rack::Deflater
 
-    # The compile method (default in tinymce-rails 4.5.2) doesn't work when also
-    # using tinymce-rails-imageupload, so revert to the :copy method
-    # https://github.com/spohlenz/tinymce-rails/issues/183
-    config.tinymce.install = :copy
-
     # The locale is set by a query parameter, so if it's not found render 404
     config.action_dispatch.rescue_responses.merge!(
       "I18n::InvalidLocale" => :not_found
@@ -40,6 +35,7 @@ module Hyku
       # Before moving this here (from an initializer) Devise was raising invalid
       # authenticity token errors.
       Hyrax::Admin::AppearancesController.form_class = AppearanceForm
+      Hyrax::FileSetsController.show_presenter = Hyku::FileSetPresenter
     end
 
     config.before_initialize do
@@ -51,6 +47,5 @@ module Hyku
         end
       end
     end
-
   end
 end
