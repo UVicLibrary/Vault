@@ -5,4 +5,75 @@ class FileSet < ActiveFedora::Base
   # Hyku has its own FileSetIndexer: app/indexers/file_set_indexer.rb
   # It overrides Hyrax to inject IIIF behavior.
   self.indexer = FileSetIndexer
+  
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :coordinates, predicate: ::RDF::Vocab::SCHEMA.geo do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :chronological_coverage, predicate: ::RDF::Vocab::DC.temporal do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :additional_physical_characteristics, predicate: ::RDF::Vocab::SCHEMA.description do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :has_format, predicate: ::RDF::Vocab::DC.hasFormat do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :physical_repository, predicate: ::RDF::Vocab::PROV.atLocation do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :provenance, predicate: ::RDF::Vocab::DC.provenance do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :provider, predicate: ::RDF::Vocab::EDM.provider do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :sponsor, predicate: ::RDF::Vocab::SCHEMA.sponsor do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :genre, predicate: ::RDF::Vocab::SCHEMA.genre do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :format, predicate: ::RDF::Vocab::DC.format do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :is_referenced_by, predicate: ::RDF::Vocab::DC.isReferencedBy do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :date_digitized, predicate: ::RDF::Vocab::DC.date, multiple: false do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :transcript, predicate: ::RDF::Vocab::SCHEMA.transcript do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :technical_note, predicate: ::RDF::URI.new('http://uvic.ca/ns/uvic#technicalNote') do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
+  property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year')
+  
 end
