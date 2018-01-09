@@ -74,7 +74,7 @@ end
 
 gem 'blacklight', '~> 6.7'
 
-gem 'hyrax', git: 'https://github.com/projecthydra-labs/hyrax.git', ref: '5bd285ed56fba95f4f414724fc00d5dcd657b3fe'
+gem 'hyrax', '2.0.0'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -83,7 +83,7 @@ gem 'devise-i18n'
 gem 'devise_invitable', '~> 1.6'
 
 gem 'apartment'
-gem 'config', '~> 1.2', '>= 1.2.1'
+gem 'config', '~> 1.5', '>= 1.5.1'
 gem 'is_it_working'
 gem 'rolify'
 
@@ -102,7 +102,7 @@ gem 'zk'
 gem 'mods', '~> 2.1'
 gem 'riiif', '~> 1.1'
 
-gem 'iiif_manifest', '~> 0.2.0'
+gem 'iiif_manifest', '~> 0.3.0'
 
 group :aws, :test do
   gem 'carrierwave-aws'
