@@ -1,6 +1,9 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-
+  
+  config.web_console.development_only = false
+  config.web_console.automount = true
+  config.web_console.whitelisted_ips = '142.104.150.153'
   # Code is not reloaded between requests.
   config.cache_classes = true
 
@@ -11,7 +14,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local       = true
   config.action_controller.perform_caching = true
 
   # Disable serving static files from the `/public` folder by default since
@@ -26,7 +29,7 @@ Rails.application.configure do
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+  config.assets.compile = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
@@ -34,7 +37,7 @@ Rails.application.configure do
   config.action_controller.asset_host = Settings.action_controller.asset_host if Settings.action_controller.asset_host
 
   # Specifies the header that your server uses for sending files.
-  # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
+  config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
   # Mount Action Cable outside main process or domain

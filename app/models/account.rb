@@ -27,6 +27,11 @@ class Account < ActiveRecord::Base
     canonical_cname(host)
   end
 
+  def self.tenants(tenant_list)
+    return Account.all if tenant_list.blank?
+    where(cname: tenant_list)
+  end
+
   attr_readonly :tenant
   # name is unused after create, only used by sign_up/new forms
   validates :name,
@@ -61,6 +66,14 @@ class Account < ActiveRecord::Base
       a.build_fcrepo_endpoint
       a.build_redis_endpoint
     end
+  end
+
+  # @return [Boolean] whether this Account is the global tenant in a multitenant environment
+  def self.global_tenant?
+    # Global tenant only exists when multitenancy is enabled and NOT in test environment
+    # (In test environment tenant switching is currently not possible)
+    return false unless Settings.multitenancy.enabled && !Rails.env.test?
+    Apartment::Tenant.default_tenant == Apartment::Tenant.current
   end
 
   def solr_endpoint

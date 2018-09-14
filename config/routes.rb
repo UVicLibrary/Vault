@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount CdmMigrator::Engine => '/cdm_migrator'
 
   if Settings.multitenancy.enabled
     constraints host: Account.admin_host do
@@ -25,7 +26,7 @@ Rails.application.routes.draw do
 
   root 'hyrax/homepage#index'
 
-  devise_for :users, controllers: { registrations: 'hyku/registrations' }
+  devise_for :users, controllers: { invitations: 'hyku/invitations', registrations: 'hyku/registrations' }
   mount Qa::Engine => '/authorities'
 
   mount Blacklight::Engine => '/'
@@ -58,6 +59,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resource :account, only: [:edit, :update]
+    resources :users, only: [:destroy]
     resources :groups do
       member do
         get :remove
@@ -74,5 +76,7 @@ Rails.application.routes.draw do
 
   mount Peek::Railtie => '/peek'
   mount Riiif::Engine => '/images', as: 'riiif'
-
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+  mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 end

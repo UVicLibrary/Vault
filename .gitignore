@@ -13,6 +13,7 @@ pg_upgrade_*.log
 **.orig
 rerun.txt
 pickle-email-*.html
+/config/*.yml
 
 ## Environment normalization:
 /.bundle

@@ -60,9 +60,12 @@ group :test do
   gem 'webmock'
 end
 
+# Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '>= 3.3.0'
+  
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '>= 3.3.0'
+  #gem 'web-console', '>= 3.3.0'
 
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -74,7 +77,7 @@ end
 
 gem 'blacklight', '~> 6.7'
 
-gem 'hyrax', git: 'https://github.com/projecthydra-labs/hyrax.git', ref: '5bd285ed56fba95f4f414724fc00d5dcd657b3fe'
+gem 'hyrax', '~> 2.1.0.beta1'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -83,7 +86,7 @@ gem 'devise-i18n'
 gem 'devise_invitable', '~> 1.6'
 
 gem 'apartment'
-gem 'config', '~> 1.2', '>= 1.2.1'
+gem 'config', '~> 1.5', '>= 1.5.1'
 gem 'is_it_working'
 gem 'rolify'
 
@@ -102,7 +105,7 @@ gem 'zk'
 gem 'mods', '~> 2.1'
 gem 'riiif', '~> 1.1'
 
-gem 'iiif_manifest', '~> 0.2.0'
+gem 'iiif_manifest', '~> 0.3.0'
 
 group :aws, :test do
   gem 'carrierwave-aws'
@@ -115,6 +118,10 @@ end
 gem 'peek-sidekiq'
 gem 'sidekiq'
 
+gem 'cdm_migrator'
+
 gem 'secure_headers'
 
 gem 'honeybadger', '~> 3.0'
+
+gem 'pdfjs_viewer-rails'

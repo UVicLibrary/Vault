@@ -1,63 +1,10 @@
+---
 zh:
   simple_form:
-    "yes": '是'
-    "no": '没有'
-    cancel: '取消'
-    required:
-      text: '需要'
-      mark: '*'
-      # You can uncomment the line below if you need to overwrite the whole required html.
-      # When using html, text and mark won't be used.
-      # html: '<abbr title="required">*</abbr>'
     error_notification:
-      default_message: "请查看以下问题："
-    # Examples
-    labels:
-      account:
-        name: '简称'
-        tenant: '承租人 UUID'
-        cname: '承租人 CNAME'
-        solr_endpoint:
-          url: '网址'
-        fcrepo_endpoint:
-          url: '网址'
-          base_path: '基本路径'
-        admin_emails: '添加或邀请新的管理员（通过电子邮件）'
-      hyku_group:
-        description: '描述'
-      group_search:
-        q: '搜索'
-      user_search:
-        uq: '搜索用户'
-      add_user_to_group:
-        user_ids: '用户名'
-      page_size:
-        per: '显示'
-    #   defaults:
-    #     password: 'Password'
-    #   user:
-    #     new:
-    #       email: 'E-mail to sign in.'
-    #     edit:
-    #       email: 'E-mail.'
-    hints:
-      account:
-        name: '用于存储库技术方面的单个或连字符名称（例如“acme”或“acme-library”）。'
-        fcrepo_endpoint:
-          url: 'Fedora 网址不应以斜线结尾'
-          base_path: 'Fedora 基本路径应以斜线开始，而不是以斜杠结尾'
-        admin_emails: '一次输入一个电子邮件地址'
-      hyku_group:
-        description: '小组角色的简要总结'
-    #   defaults:
-    #     username: 'User name to sign in.'
-    #     password: 'No special characters, please.'
-    # include_blanks:
-    #   defaults:
-    #     age: 'Rather not say'
-    # prompts:
-    #   defaults:
-    #     age: 'Select your age'
-    placeholders:
-      user_search:
-        uq: '名称或用户名'
+      default_message: 请查看以下问题：
+    'no': 没有
+    required:
+      mark: "*"
+      text: 需要
+    'yes': 是

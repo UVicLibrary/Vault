@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170605152346) do
+ActiveRecord::Schema.define(version: 20170926184254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,20 @@ ActiveRecord::Schema.define(version: 20170605152346) do
     t.boolean "enabled", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "job_io_wrappers", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "uploaded_file_id"
+    t.string "file_set_id"
+    t.string "mime_type"
+    t.string "original_name"
+    t.string "path"
+    t.string "relation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uploaded_file_id"], name: "index_job_io_wrappers_on_uploaded_file_id"
+    t.index ["user_id"], name: "index_job_io_wrappers_on_user_id"
   end
 
   create_table "local_authorities", id: :serial, force: :cascade do |t|
@@ -565,6 +579,7 @@ ActiveRecord::Schema.define(version: 20170605152346) do
     t.integer "invitation_limit"
     t.integer "invited_by_id"
     t.string "invited_by_type"
+    t.string "preferred_locale"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

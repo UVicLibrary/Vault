@@ -21,7 +21,7 @@ module Hyku
     config.action_dispatch.rescue_responses.merge!(
       "I18n::InvalidLocale" => :not_found
     )
-
+config.middleware.use WebConsole::Middleware
     if defined? ActiveElasticJob
       Rails.application.configure do
         config.active_elastic_job.process_jobs = Settings.worker == 'true'

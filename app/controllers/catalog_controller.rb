@@ -51,7 +51,7 @@ class CatalogController < ApplicationController
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
-    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
+    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5, helper_method: :resource_type_links
     config.add_facet_field solr_name("creator", :facetable), limit: 5
     config.add_facet_field solr_name("tag", :facetable), limit: 5
     config.add_facet_field solr_name("subject", :facetable),  limit: 5
@@ -67,8 +67,9 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
-    config.add_index_field solr_name("title", :stored_searchable), label: "Title", itemprop: 'name'
-    config.add_index_field solr_name("description", :stored_searchable), itemprop: 'description'
+    #config.add_index_field solr_name("title", :stored_searchable), label: "Title", itemprop: 'name'
+    #config.add_index_field solr_name("description", :stored_searchable), itemprop: 'description'
+    config.add_index_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_index_field solr_name("tag", :stored_searchable), itemprop: 'keywords'
     config.add_index_field solr_name("subject", :stored_searchable), itemprop: 'about'
     config.add_index_field solr_name("creator", :stored_searchable), itemprop: 'creator'
@@ -79,12 +80,16 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("date_uploaded", :stored_searchable), itemprop: 'datePublished'
     config.add_index_field solr_name("date_modified", :stored_searchable), itemprop: 'dateModified'
     config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated'
-    config.add_index_field solr_name("rights", :stored_searchable)
-    config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type"
+    config.add_index_field solr_name("rights_statement", :stored_searchable), label: "Rights Statement", helper_method: :rights_statement_links
+    config.add_index_field solr_name("license", :stored_searchable)
+    config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", helper_method: :resource_type_index_links
     config.add_index_field solr_name("format", :stored_searchable)
     config.add_index_field solr_name("identifier", :stored_searchable)
     config.add_index_field solr_name('extent', :stored_searchable)
+    config.add_index_field solr_name("year", :stored_searchable), label: "Year"
 
+    
+    
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
     config.add_show_field solr_name("title", :stored_searchable)
@@ -99,8 +104,14 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("date_uploaded", :stored_searchable)
     config.add_show_field solr_name("date_modified", :stored_searchable)
     config.add_show_field solr_name("date_created", :stored_searchable)
-    config.add_show_field solr_name("rights", :stored_searchable)
+    config.add_show_field solr_name("rights_statement", :stored_searchable), label: "Rights Statement", helper_method: :rights_statement_links
+    config.add_show_field solr_name("license", :stored_searchable)
     config.add_show_field solr_name("resource_type", :stored_searchable), label: "Resource Type"
+    config.add_show_field solr_name("format", :stored_searchable)
+    config.add_show_field solr_name("identifier", :stored_searchable)
+    config.add_show_field solr_name('extent', :stored_searchable)
+    
+    #custom show fields
     config.add_show_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_show_field solr_name("edition", :stored_searchable), label: "Edition"
     config.add_show_field solr_name("geographic_coverage", :stored_searchable), label: "Geographic Coverage"
@@ -124,10 +135,7 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("transcript", :stored_searchable), label: "Transcript"
     config.add_show_field solr_name("technical_note", :stored_searchable), label: "Technical Note"
     config.add_show_field solr_name("year", :stored_searchable), label: "Year"
-    config.add_show_field solr_name("format", :stored_searchable)
-    config.add_show_field solr_name("identifier", :stored_searchable)
-    config.add_show_field solr_name('extent', :stored_searchable)
-
+    
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
     #
@@ -316,8 +324,16 @@ class CatalogController < ApplicationController
       }
     end
 
-    config.add_search_field('rights') do |field|
-      solr_name = solr_name("rights", :stored_searchable)
+    config.add_search_field('rights_statement') do |field|
+      solr_name = solr_name("rights_statement", :stored_searchable)
+      field.solr_local_parameters = {
+        qf: solr_name,
+        pf: solr_name
+      }
+    end
+
+    config.add_search_field('license') do |field|
+      solr_name = solr_name("license", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name

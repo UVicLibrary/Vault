@@ -1,9 +1,0 @@
----
-user_informer:
-  enabled: true
-  info: "Error ID: {{error_id}}"
-exceptions:
-  ignore:
-    - 'ActiveFedora::ObjectNotFoundError'
-    - 'I18n::InvalidLocale'
-    - 'Blacklight::Exceptions::RecordNotFound'

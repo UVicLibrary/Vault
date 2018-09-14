@@ -5,7 +5,7 @@ Riiif::Image.info_service = lambda do |id, _file|
   # but we just want the id for the FileSet it's attached to.
 
   # Capture everything before the first slash
-  fs_id = id.sub(/\A([^\/]*)\/.*/, '\1')
+  fs_id = id.gsub('%2F','/').sub(/\A([^\/]*)\/.*/, '\1')
   resp = ActiveFedora::SolrService.get("id:#{fs_id}")
   doc = resp['response']['docs'].first
   raise "Unable to find solr document with id:#{fs_id}" unless doc
@@ -18,7 +18,7 @@ Riiif::Image.file_resolver.id_to_uri = lambda do |id|
     Rails.logger.info "Riiif resolved #{id} to #{url}"
   end
 end
-# Riiif::Image.file_resolver.basic_auth_credentials = [ActiveFedora.fedora.user, ActiveFedora.fedora.password]
+Riiif::Image.file_resolver.basic_auth_credentials = [ActiveFedora.fedora.user, ActiveFedora.fedora.password]
 
 
 Riiif::Image.authorization_service = IIIFAuthorizationService

@@ -1,13 +1,7 @@
 class GenericWork < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
-  include ::Hyrax::BasicMetadata
-  validates :title, presence: { message: 'Your work must have a title.' }
-
-  # This indexer uses IIIF thumbnails:
-  self.indexer = WorkIndexer
-  self.human_readable_type = 'Work'
   
-   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
 	index.as :stored_searchable, :facetable
   end
   
@@ -104,5 +98,19 @@ class GenericWork < ActiveFedora::Base
   end
   
   property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year')
+  
+  include ::Hyrax::BasicMetadata
+  include HasRendering
+  validates :title, presence: { message: 'Your work must have a title.' }
+
+  
+  def rendering_ids
+    to_param
+  end
+  
+  
+  # This indexer uses IIIF thumbnails:
+  self.indexer = WorkIndexer
+  self.human_readable_type = 'Work'
   
 end

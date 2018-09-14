@@ -4,7 +4,7 @@ module Hyrax
     include HydraEditor::Form::Permissions
     self.terms += [:resource_type, :alternative_title, :geographic_coverage, :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics, :has_format, :physical_repository, :provenance, :provider, :sponsor, :genre, :format, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
     self.required_fields += [:date_created, :subject, :provider, :genre, :format, :resource_type] 
-    self.required_fields -= [:keyword] 
+    self.required_fields -= [:keyword, :license] 
     
     # Fields that are automatically drawn on the page above the fold
       def self.primary_terms

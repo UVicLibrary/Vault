@@ -48,17 +48,9 @@ class User < ActiveRecord::Base
     []
   end
 
-  def admin?
-    site_roles.include? Role.where(name: "admin").first
-  end
-
-  def superadmin?
-    roles.include? Role.where(name: "superadmin").first
-  end
-
   private
 
     def add_default_roles
-      add_role :admin, Site.instance unless self.class.any?
+      add_role :admin, Site.instance unless self.class.any? || Account.global_tenant?
     end
 end
