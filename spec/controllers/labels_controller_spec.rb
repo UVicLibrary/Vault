@@ -34,25 +34,25 @@ RSpec.describe LabelsController, type: :controller do
   end
 
   context 'with an unprivileged user' do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
 
     describe "GET #edit" do
       it "denies the request" do
         get :edit
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     describe "PUT #update" do
       it "denies the request" do
         put :update, params: { site: valid_attributes }
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
 
   context 'with an administrator' do
-    let(:user) { FactoryGirl.create(:admin) }
+    let(:user) { FactoryBot.create(:admin) }
 
     describe "GET #edit" do
       it "assigns the requested site as @site" do

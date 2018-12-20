@@ -1,5 +1,5 @@
 RSpec.describe CreateSolrCollectionJob do
-  let(:account) { FactoryGirl.create(:account) }
+  let(:account) { FactoryBot.create(:account) }
   let(:client) { double }
 
   before do
@@ -33,6 +33,7 @@ RSpec.describe CreateSolrCollectionJob do
   describe CreateSolrCollectionJob::CollectionOptions do
     describe '#to_h' do
       subject { described_class.new(data).to_h }
+
       let(:data) do
         {
           collection: { config_name: 'hyku', blank: '' },

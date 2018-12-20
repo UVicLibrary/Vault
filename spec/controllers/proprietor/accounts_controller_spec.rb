@@ -42,8 +42,8 @@ RSpec.describe Proprietor::AccountsController, type: :controller, multitenant: t
   end
 
   context 'as an admin of a site' do
-    let(:user) { FactoryGirl.create(:user).tap { |u| u.add_role(:admin, Site.instance) } }
-    let(:account) { FactoryGirl.create(:account) }
+    let(:user) { FactoryBot.create(:user).tap { |u| u.add_role(:admin, Site.instance) } }
+    let(:account) { FactoryBot.create(:account) }
 
     before do
       Site.update(account: account)
@@ -112,39 +112,39 @@ RSpec.describe Proprietor::AccountsController, type: :controller, multitenant: t
     describe "DELETE #destroy" do
       it "denies the request" do
         delete :destroy, params: { id: account.to_param }
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context 'editing another tenants account' do
-      let(:another_account) { FactoryGirl.create(:account) }
+      let(:another_account) { FactoryBot.create(:account) }
 
       describe "GET #show" do
         it "denies the request" do
           get :show, params: { id: another_account.to_param }
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
 
       describe "GET #edit" do
         it "denies the request" do
           get :edit, params: { id: another_account.to_param }
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
 
       describe "PUT #update" do
         it "denies the request" do
           put :update, params: { id: another_account.to_param, account: valid_attributes }
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
     end
   end
 
   context 'as a superadmin' do
-    let(:user) { FactoryGirl.create(:superadmin) }
-    let!(:account) { FactoryGirl.create(:account) }
+    let(:user) { FactoryBot.create(:superadmin) }
+    let!(:account) { FactoryBot.create(:account) }
 
     describe "GET #index" do
       it "assigns all accounts as @accounts" do
@@ -177,7 +177,7 @@ RSpec.describe Proprietor::AccountsController, type: :controller, multitenant: t
   end
 
   describe 'account dependency switching' do
-    let(:account) { FactoryGirl.create(:account) }
+    let(:account) { FactoryBot.create(:account) }
 
     before do
       Site.update(account: account)

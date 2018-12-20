@@ -4,7 +4,7 @@ Hyrax.config do |config|
   config.register_curation_concern :image
 
   config.iiif_image_server = true
-  
+
   # Email recipient of messages sent via the contact form
   config.contact_email = Settings.contact_email
 
@@ -162,7 +162,7 @@ Hyrax.config do |config|
   #   end
   # rescue Errno::ENOENT
   #   config.browse_everything = nil
-  # end  
+  # end
   config.browse_everything = nil
 end
 

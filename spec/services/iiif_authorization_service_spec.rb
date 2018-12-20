@@ -10,6 +10,7 @@ RSpec.describe IIIFAuthorizationService do
   describe "#can?" do
     context "when the user has read access to the FileSet" do
       before { allow(ability).to receive(:test_read).with(file_set_id).and_return(true) }
+
       context "info" do
         subject { service.can?(:info, image) }
 
@@ -18,12 +19,14 @@ RSpec.describe IIIFAuthorizationService do
 
       context "show" do
         subject { service.can?(:show, image) }
+
         it { is_expected.to be true }
       end
     end
 
     context "when the user doesn't have read access to the FileSet" do
       before { allow(ability).to receive(:test_read).with(file_set_id).and_return(false) }
+
       context "info" do
         subject { service.can?(:info, image) }
 
@@ -32,6 +35,7 @@ RSpec.describe IIIFAuthorizationService do
 
       context "show" do
         subject { service.can?(:show, image) }
+
         it { is_expected.to be false }
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170926184254) do
+ActiveRecord::Schema.define(version: 20180524010247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,28 @@ ActiveRecord::Schema.define(version: 20170926184254) do
     t.boolean "passed"
     t.index ["checked_uri"], name: "index_checksum_audit_logs_on_checked_uri"
     t.index ["file_set_id", "file_id"], name: "by_file_set_id_and_file_id"
+  end
+
+  create_table "collection_branding_infos", force: :cascade do |t|
+    t.string "collection_id"
+    t.string "role"
+    t.string "local_path"
+    t.string "alt_text"
+    t.string "target_url"
+    t.integer "height"
+    t.integer "width"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "collection_type_participants", force: :cascade do |t|
+    t.bigint "hyrax_collection_type_id"
+    t.string "agent_type"
+    t.string "agent_id"
+    t.string "access"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hyrax_collection_type_id"], name: "hyrax_collection_type_id"
   end
 
   create_table "content_blocks", id: :serial, force: :cascade do |t|
@@ -144,11 +166,42 @@ ActiveRecord::Schema.define(version: 20170926184254) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "hyrax_collection_types", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "machine_id"
+    t.boolean "nestable", default: true, null: false
+    t.boolean "discoverable", default: true, null: false
+    t.boolean "sharable", default: true, null: false
+    t.boolean "allow_multiple_membership", default: true, null: false
+    t.boolean "require_membership", default: false, null: false
+    t.boolean "assigns_workflow", default: false, null: false
+    t.boolean "assigns_visibility", default: false, null: false
+    t.boolean "share_applies_to_new_works", default: true, null: false
+    t.boolean "brandable", default: true, null: false
+    t.string "badge_color", default: "#663333"
+    t.index ["machine_id"], name: "index_hyrax_collection_types_on_machine_id", unique: true
+  end
+
   create_table "hyrax_features", id: :serial, force: :cascade do |t|
     t.string "key", null: false
     t.boolean "enabled", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "job_io_wrappers", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "uploaded_file_id"
+    t.string "file_set_id"
+    t.string "mime_type"
+    t.string "original_name"
+    t.string "path"
+    t.string "relation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uploaded_file_id"], name: "index_job_io_wrappers_on_uploaded_file_id"
+    t.index ["user_id"], name: "index_job_io_wrappers_on_user_id"
   end
 
   create_table "job_io_wrappers", id: :serial, force: :cascade do |t|
@@ -178,8 +231,8 @@ ActiveRecord::Schema.define(version: 20170926184254) do
   end
 
   create_table "mailboxer_conversation_opt_outs", id: :serial, force: :cascade do |t|
-    t.integer "unsubscriber_id"
     t.string "unsubscriber_type"
+    t.integer "unsubscriber_id"
     t.integer "conversation_id"
     t.index ["conversation_id"], name: "index_mailboxer_conversation_opt_outs_on_conversation_id"
     t.index ["unsubscriber_id", "unsubscriber_type"], name: "index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type"
@@ -195,13 +248,13 @@ ActiveRecord::Schema.define(version: 20170926184254) do
     t.string "type"
     t.text "body"
     t.string "subject", default: ""
-    t.integer "sender_id"
     t.string "sender_type"
+    t.integer "sender_id"
     t.integer "conversation_id"
     t.boolean "draft", default: false
     t.string "notification_code"
-    t.integer "notified_object_id"
     t.string "notified_object_type"
+    t.integer "notified_object_id"
     t.string "attachment"
     t.datetime "updated_at", null: false
     t.datetime "created_at", null: false
@@ -214,8 +267,8 @@ ActiveRecord::Schema.define(version: 20170926184254) do
   end
 
   create_table "mailboxer_receipts", id: :serial, force: :cascade do |t|
-    t.integer "receiver_id"
     t.string "receiver_type"
+    t.integer "receiver_id"
     t.integer "notification_id", null: false
     t.boolean "is_read", default: false
     t.boolean "trashed", default: false
@@ -245,16 +298,17 @@ ActiveRecord::Schema.define(version: 20170926184254) do
     t.string "access"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["permission_template_id", "agent_id", "agent_type", "access"], name: "uk_permission_template_accesses", unique: true
   end
 
   create_table "permission_templates", id: :serial, force: :cascade do |t|
-    t.string "admin_set_id"
+    t.string "source_id"
     t.string "visibility"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date "release_date"
     t.string "release_period"
-    t.index ["admin_set_id"], name: "index_permission_templates_on_admin_set_id", unique: true
+    t.index ["source_id"], name: "index_permission_templates_on_source_id", unique: true
   end
 
   create_table "proxy_deposit_requests", id: :serial, force: :cascade do |t|
@@ -299,8 +353,8 @@ ActiveRecord::Schema.define(version: 20170926184254) do
 
   create_table "roles", id: :serial, force: :cascade do |t|
     t.string "name"
-    t.integer "resource_id"
     t.string "resource_type"
+    t.integer "resource_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
@@ -614,12 +668,13 @@ ActiveRecord::Schema.define(version: 20170926184254) do
   add_foreign_key "accounts", "endpoints", column: "fcrepo_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "redis_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "solr_endpoint_id", on_delete: :nullify
+  add_foreign_key "collection_type_participants", "hyrax_collection_types"
   add_foreign_key "content_blocks", "sites"
   add_foreign_key "curation_concerns_operations", "users"
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"
   add_foreign_key "mailboxer_notifications", "mailboxer_conversations", column: "conversation_id", name: "notifications_on_conversation_id"
   add_foreign_key "mailboxer_receipts", "mailboxer_notifications", column: "notification_id", name: "receipts_on_notification_id"
   add_foreign_key "permission_template_accesses", "permission_templates"
-  add_foreign_key "qa_local_authority_entries", "local_authorities"
+  add_foreign_key "qa_local_authority_entries", "qa_local_authorities", column: "local_authority_id"
   add_foreign_key "uploaded_files", "users"
 end

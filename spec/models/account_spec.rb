@@ -6,12 +6,14 @@ RSpec.describe Account, type: :model do
         described_class.tenants(nil)
       end
     end
+
     context 'when tenant_list param is empty' do
       it 'calls Account.all' do
         expect(Account).to receive(:all)
         described_class.tenants([])
       end
     end
+
     context 'when tenant_list param is a string' do
       it 'calls Account.where' do
         expect(Account).to receive(:where).with(cname: 'foo bar baz')
@@ -168,7 +170,7 @@ RSpec.describe Account, type: :model do
   end
 
   describe '#save' do
-    subject { FactoryGirl.create(:sign_up_account) }
+    subject { FactoryBot.create(:sign_up_account) }
 
     it 'canonicalizes the account cname' do
       subject.update cname: 'example.com.'
@@ -210,6 +212,7 @@ RSpec.describe Account, type: :model do
 
     describe 'prevents duplicate cname and tenant values' do
       let!(:account1) { described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev') }
+
       it 'on create' do
         account2 = described_class.create(name: 'example', tenant: 'example_tenant', cname: 'example.dev')
         expect(account1.errors).to be_empty
@@ -244,6 +247,7 @@ RSpec.describe Account, type: :model do
     describe 'guarantees only one account can reference the same' do
       let(:endpoint) { SolrEndpoint.new(url: 'solr') }
       let!(:account1) { described_class.create(name: 'example', solr_endpoint: endpoint) }
+
       it 'solr_endpoint' do
         account2 = described_class.new(name: 'other', solr_endpoint: endpoint)
         expect { account2.save }.to raise_error(ActiveRecord::RecordNotUnique)
@@ -253,11 +257,13 @@ RSpec.describe Account, type: :model do
   end
 
   describe '#admin_emails' do
-    let!(:account) { FactoryGirl.create(:account, tenant: "mytenant") }
+    let!(:account) { FactoryBot.create(:account, tenant: "mytenant") }
+
     before do
       Site.update(account: account)
       Site.instance.admin_emails = ["test@test.com", "test@test.org"]
     end
+
     it 'switches to current tenant database and returns Site admin_emails' do
       expect(Apartment::Tenant).to receive(:switch).with(account.tenant).and_yield
       expect(account.admin_emails).to match_array(["test@test.com", "test@test.org"])
@@ -265,11 +271,13 @@ RSpec.describe Account, type: :model do
   end
 
   describe '#admin_emails=' do
-    let!(:account) { FactoryGirl.create(:account, tenant: "mytenant") }
+    let!(:account) { FactoryBot.create(:account, tenant: "mytenant") }
+
     before do
       Site.update(account: account)
       Site.instance.admin_emails = ["test@test.com", "test@test.org"]
     end
+
     it 'switches to current tenant database updates Site admin_emails' do
       expect(Apartment::Tenant).to receive(:switch).with(account.tenant).exactly(3).times.and_yield
       expect(account.admin_emails).to match_array(["test@test.com", "test@test.org"])
@@ -280,22 +288,27 @@ RSpec.describe Account, type: :model do
 
   describe '#global_tenant?' do
     subject { described_class.global_tenant? }
+
     context 'default setting for test environment' do
       it { is_expected.to be false }
     end
+
     context 'single tenant in production environment' do
       before do
         allow(Settings.multitenancy).to receive(:enabled).and_return false
         allow(Rails.env).to receive(:test?).and_return false
       end
+
       it { is_expected.to be false }
     end
+
     context 'default tenant in a multitenant production environment' do
       before do
         allow(Settings.multitenancy).to receive(:enabled).and_return true
         allow(Rails.env).to receive(:test?).and_return false
         allow(Apartment::Tenant).to receive(:current_tenant).and_return Apartment::Tenant.default_tenant
       end
+
       it { is_expected.to be true }
     end
   end

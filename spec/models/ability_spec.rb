@@ -2,20 +2,24 @@ require 'cancan/matchers'
 
 RSpec.describe Ability do
   subject { ability }
+
   let(:ability) { described_class.new(user) }
 
   describe 'an anonymous user' do
     let(:user) { nil }
+
     it { is_expected.not_to be_able_to(:manage, :all) }
   end
 
   describe 'an ordinary user' do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
+
     it { is_expected.not_to be_able_to(:manage, :all) }
   end
 
   describe 'an administrative user' do
-    let(:user) { FactoryGirl.create(:admin) }
+    let(:user) { FactoryBot.create(:admin) }
+
     it { is_expected.not_to be_able_to(:manage, :all) }
     it { is_expected.not_to be_able_to(:manage, Account) }
     it { is_expected.to be_able_to(:manage, Site) }
@@ -30,7 +34,8 @@ RSpec.describe Ability do
   end
 
   describe 'a superadmin user' do
-    let(:user) { FactoryGirl.create(:superadmin) }
+    let(:user) { FactoryBot.create(:superadmin) }
+
     it { is_expected.to be_able_to(:manage, :all) }
   end
 end

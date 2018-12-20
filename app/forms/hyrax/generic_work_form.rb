@@ -2,6 +2,7 @@
 #  `rails generate curation_concerns:work GenericWork`
 module Hyrax
   class GenericWorkForm < Hyrax::Forms::WorkForm
+    include Hyrax::FormTerms
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions
     self.terms += [:resource_type, :alternative_title, :license, :edition, :geographic_coverage, :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics, :has_format, :physical_repository, :collection, :provenance, :provider, :sponsor, :genre, :format, :archival_item_identifier, :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]

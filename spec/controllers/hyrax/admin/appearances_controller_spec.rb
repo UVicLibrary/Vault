@@ -1,5 +1,6 @@
 RSpec.describe Hyrax::Admin::AppearancesController, type: :controller, singletenant: true do
   before { sign_in user }
+
   routes { Hyrax::Engine.routes }
 
   context 'with an unprivileged user' do
@@ -8,14 +9,14 @@ RSpec.describe Hyrax::Admin::AppearancesController, type: :controller, singleten
     describe "GET #show" do
       it "denies the request" do
         get :show
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     describe "PUT #update" do
       it "denies the request" do
         put :update
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

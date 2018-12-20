@@ -42,6 +42,8 @@ class ImportWorkFromPurlJob < ActiveJob::Base
       # rename :rights to :license
       attributes[:license] = attributes.delete(:rights)
 
+      attributes[:collection][:collection_type] ||= Hyrax::CollectionType.find_or_create_default_collection_type
+
       process_collection(attributes)
       filenames = attributes.delete(:files)
       attributes[:remote_files] = filenames.map do |name|
@@ -53,17 +55,18 @@ class ImportWorkFromPurlJob < ActiveJob::Base
     end
 
     class_attribute :attributes_to_keep
-    self.attributes_to_keep = [:title,
-                               :description,
-                               :subject,
-                               :language,
-                               :resource_type,
-                               :location,
-                               :rights,
-                               :visibility,
-                               :id,
-                               :collection,
-                               :files]
+    self.attributes_to_keep = %i[title
+                                 description
+                                 subject
+                                 language
+                                 resource_type
+                                 location
+                                 rights
+                                 visibility
+                                 id
+                                 collection
+                                 files
+                                 collection_type]
 
     def process_collection(attributes)
       # rename :collection to :member_of_collection_ids
