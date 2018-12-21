@@ -204,20 +204,6 @@ ActiveRecord::Schema.define(version: 20180524010247) do
     t.index ["user_id"], name: "index_job_io_wrappers_on_user_id"
   end
 
-  create_table "job_io_wrappers", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "uploaded_file_id"
-    t.string "file_set_id"
-    t.string "mime_type"
-    t.string "original_name"
-    t.string "path"
-    t.string "relation"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["uploaded_file_id"], name: "index_job_io_wrappers_on_uploaded_file_id"
-    t.index ["user_id"], name: "index_job_io_wrappers_on_user_id"
-  end
-
   create_table "local_authorities", id: :serial, force: :cascade do |t|
     t.string "name"
   end

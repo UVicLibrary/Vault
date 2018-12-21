@@ -4,9 +4,10 @@
 # The mapping is described in `./config/initializers/config.rb`.
 #
 multitenancy:
-  enabled: false
-  default_host: # "%{tenant}.dev"
-  admin_host:
+  enabled: true
+  default_host: "%{tenant}.library.uvic.ca"
+  host: 'vault.library.uvic.ca'
+  admin_host: 'belinda.library.uvic.ca'
   admin_only_tenant_creation: true
 
 ssl_configured: false
@@ -18,7 +19,7 @@ redis:
   default_namespace: hyku
 
 solr:
-  url: "http://127.0.0.1:8983/solr/"
+  url: "http://perdita.library.uvic.ca:8983/solr/"
   configset: hyku
   configset_source_path: <%= File.join(Rails.root, 'solr', 'config') %>
   collection_options:
@@ -28,8 +29,8 @@ solr:
       config_name: hyku
     create_node_set:
     max_shards_per_node:
-    num_shards: 1
-    replication_factor:
+    num_shards: 2
+    replication_factor: 2
     router:
       name:
       field:
@@ -49,7 +50,7 @@ active_job_queue:
 s3:
   upload_bucket:
 
-fits_path: "fits.sh"
+fits_path: "/home/sufia/fits/fits-0.8.5/fits.sh"
 
 google_analytics_id:
 
@@ -62,4 +63,4 @@ contact_email: ""
 devise:
   account_signup: true
   # The address from which user invitations are sent
-  invitation_from_email: "change-me-in-hyku-settings@example.org"
+  invitation_from_email: "bjustice@uvic.ca"

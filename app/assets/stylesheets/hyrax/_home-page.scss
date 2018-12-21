@@ -1,0 +1,182 @@
+@mixin masthead-background-containers() {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.image-masthead {
+  border-bottom: 1px solid $navbar-default-border;
+  margin-bottom: $padding-large-vertical * 2.5;
+  position: relative;
+
+  #background-logo-container {
+    z-index: 1;
+    display: inline-block;
+    width:20%;
+  }
+
+  #background-logo-container img {
+    width: 100%;
+  }
+
+  #edge {
+    width: 50%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  @media only screen and (min-width: 991px ) {
+    .site-title-container {
+      margin-left: 8.333%;
+    }
+  }
+
+  @media only screen and (max-width: 768px ) {
+    #edge {
+      height: 50%;
+    }
+    .navbar {
+      background-image: linear-gradient(#002754,#005493);
+      .active > a {
+        &,
+        &:hover,
+        &:focus {
+        background-color: rgba(51, 122, 183,0.8) !important;
+      }
+    }
+    }
+  }
+
+  .form-group .control-label {
+    font-weight: normal;
+  }
+
+  .background-container {
+    @include masthead-background-containers();
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+
+    -webkit-filter: blur($masthead-image-blur);
+    filter: blur($masthead-image-blur);
+  }
+
+  .background-container-gradient {
+    @include masthead-background-containers();
+    background:
+      linear-gradient(
+        rgba(0, 0, 0, 0.0),
+        rgba(0, 0, 0, 0.4),
+        rgba(0, 0, 0, 0.5)
+      );
+  }
+
+  .site-title {
+    min-height: 60px;//$title-height;
+    padding-bottom: 6px;
+    position: relative;
+  }
+
+  .site-title.h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .navbar {
+    background-color: rgba(0, 0, 0, 0.4);//$navbar-transparent-bg;
+    margin-bottom: 0;
+
+    .navbar-nav {
+
+      margin: 0;
+      padding-right: 0;
+
+      a {
+        color: $navbar-transparent-link-color;
+        //text-transform: uppercase;
+
+        &:hover,
+        &:focus {
+          background-color: $navbar-transparent-link-hover-bg;
+          color: $navbar-transparent-link-hover-color;
+        }
+      }
+    }
+
+    .active > a {
+      &,
+      &:hover,
+      &:focus {
+        background-color: rgba(1,86,168,0.4);//$navbar-transparent-link-active-bg;
+        color: $navbar-transparent-link-active-color;
+      }
+    }
+  }
+}
+
+.home-content {
+  .nav {
+    margin-bottom: 20px;
+  }
+}
+
+.collection-highlights {
+  img {
+    border: 1px solid #bbb;
+    height: 60px;
+    margin-right: 15px;
+    margin-top: 3px;
+    object-fit: cover;
+    width: 100px;
+  }
+}
+
+.home_share_work {
+  margin-bottom: $padding-large-vertical * 2.5;
+
+  p {
+    margin: 0.25em auto;
+    width: 40%;
+  }
+}
+
+.home_marketing_text {
+  color: #fff !important/*$marketing-text-color*/;
+  text-shadow: $marketing-text-shadow;
+}
+
+// When we put a hidden label before the main search field, bootstrap stops
+// displaying rounded corners. This puts them back in.
+#search-field-header {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+div#announcement {
+  text-align: center;
+  color: white;
+  font-size: 1.5em;
+  background-color: $vermilion;
+  border: 10px solid white;
+  padding-top: 10px;
+  border-radius: 15px;
+}
+
+.highlights-list {
+  margin-top: 20px;
+}
+
+ol.list-group.list-group-striped {
+  li:nth-of-type(odd) {
+    background: $table-bg-accent;
+  }
+
+  li:nth-of-type(even) {
+    background: $body-bg;
+  }
+}
