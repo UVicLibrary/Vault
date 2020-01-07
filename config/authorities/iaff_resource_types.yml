@@ -1,0 +1,9 @@
+terms:
+  - id: http://purl.org/dc/dcmitype/Image
+    term: Image
+  - id: http://purl.org/dc/dcmitype/MovingImage
+    term: Video
+  - id: http://purl.org/dc/dcmitype/Text
+    term: Text
+  - id: http://purl.org/dc/dcmitype/Sound
+    term: Sound

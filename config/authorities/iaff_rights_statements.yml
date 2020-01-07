@@ -1,0 +1,10 @@
+terms:
+  - id: https://creativecommons.org/licenses/by-nc/4.0/
+    term: "Creative Commons Attribution-NonCommercial"
+    active: true
+  - id: http://rightsstatements.org/page/UND/1.0/?language=en
+    term: "Copyright Undetermined"
+    active: true
+  - id: http://rightsstatements.org/page/NKC/1.0/?language=en
+    term: "No Known Copyright"
+    active: true

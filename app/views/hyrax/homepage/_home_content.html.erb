@@ -1,0 +1,195 @@
+<% if request.base_url.include? 'vault' %>
+<%#= console %>
+  <h1>Featured <span id="featured-header"></span></h1><!-- See application.js -->
+  <!-- Navigation for Featured works and researcher -->
+  <ul class="nav nav-pills" id="featured-nav" role="tablist">
+    <li class="nav-item active">
+      <a class="nav-link" aria-expanded="false" href="#featured-collections" data-toggle="tab" role="tab">Collections</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-expanded="true" href="#featured-works" data-toggle="tab" role="tab">Works</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-expanded="false" href="#featured-researcher" data-toggle="tab" role="tab">Researcher</a>
+    </li>
+
+  </ul>
+
+<!------------------- Cards -------------------->
+<div class="tab-content">
+
+<!---------------------------- Featured Collections ----------------------------->
+  <% @featured_collection_list.add_solr_document_to_collections %>
+  <div class="tab-pane active" id="featured-collections">
+    <div class="container-fluid">
+      <div class="card-row row">
+          <% @featured_collection_list.collection_presenters.each do |presenter| %>
+            <% if presenter.solr_document.thumbnail_path %>
+              <% if presenter.solr_document.thumbnail_path.include? "uploaded_collection_thumbnails" %>
+                <%# use the higher resolution derivative %>
+                <% new_path = presenter.solr_document.thumbnail_path.gsub('_thumbnail.jpg','_card.jpg') %>
+              <% else %>
+          <!-- If string contains thumbnail dimensions, change them -->
+                <% new_path = presenter.solr_document.thumbnail_path.gsub '!150,300', '!500,900' %>
+              <% end %>
+            <% else %><!-- use placeholder -->
+              <% new_path = asset_path 'collection.png', skip_pipeline: true %>
+            <% end %>
+        <%= link_to [hyrax, presenter], class: "plain-link" do %><!-- path copied from _featured_fields.html.erb -->
+          <%= render 'card', presenter: presenter, new_path: new_path %>
+          <% end %><!-- link_to -->
+        <% end %><!-- @featured_collection_list.collection_presenters.each -->
+      </div><!-- .row -->
+    </div><!-- .container -->
+  </div><!-- .tab-pane active, #featured-collections -->
+
+<!------------------- Featured Works -------------------->
+  <div class="tab-pane fade" id="featured-works">
+  <div class="container-fluid">
+      <div class="card-row row">
+        <% @featured_work_list.featured_works.each do |featured_work| %>
+          <% presenter = featured_work.presenter %>
+          <% if presenter.solr_document.thumbnail_path && request.base_url.include?('vault') %>
+            <% if presenter.solr_document.thumbnail_path.include?('uploaded') %>
+              <% new_path = presenter.solr_document.thumbnail_path.sub! 'thumbnail.jpg', 'card.jpg' %>
+            <% else %>
+              <!-- If string contains thumbnail dimensions, change them -->
+              <% new_path = presenter.solr_document.thumbnail_path.sub! '!150,300', '!500,900' %>
+            <% end %>
+          <% else %><!-- use placeholder -->
+            <% new_path = asset_path 'work.png' %>
+          <% end %>
+        <%= link_to [main_app, presenter], class: "plain-link" do %><!-- path copied from _featured_fields.html.erb -->
+          <%= render 'card', presenter: presenter, new_path: new_path %>
+        <% end %><!-- link_to -->
+      <% end %><!-- @featured_work_list.each -->
+  </div><!-- .row -->
+</div><!-- .container -->
+</div><!-- tab-pane -->
+
+
+  <!---------------------- Featured Researcher ------------------------->
+  <div class="tab-pane fade" id="featured-researcher">
+    <div class="container-fluid">
+      <div class="row" >
+        <div class="col-lg-1"><!-- Offset and justify-content-center doesn't work for some reason? -->
+        </div>
+        <div class="col-lg-3">
+          <h2 class="researcher-name"><%= @featured_researcher.researcher_name %></h2>
+          <%= image_tag("/uploads/researchers/#{@featured_researcher.researcher_thumbnail}", class: "researcher-thumbnail") %>
+          <h4 class="researcher-title"><%= @featured_researcher.researcher_title %></h4>
+        </div><!-- .col-lg-4 -->
+        <div class="col-lg-7">
+          <%= render 'featured_researcher' %>
+        </div>
+      </div><!-- .row -->
+    </div><!-- .container-fluid -->
+  </div><!-- .tab-pane.fade -->
+
+
+</div><!-- .tab-content -->
+
+  <!---------------------- Update Featured ----------------------->
+<div class="container">
+  <div class="row">
+
+    <% if can? :update, FeaturedCollection %>
+        <div class="col-sm-6">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab">Featured Collections</a></li>
+            <li class=""><a aria-expanded="false" href="#tab-col2-second" role="tab" data-toggle="tab"><%= t('hyrax.homepage.featured_researcher.tab_label') %></a></li>
+          </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab-col2-first">
+            <h2 class="sr-only">Featured Collections</h2>
+            <%= render 'featured_collections' %>
+            <%#= render 'explore_collections', collections: @presenter.collections %>
+          </div>
+          <div class="tab-pane" id="tab-col2-second">
+            <h2 class="sr-only"><%= t('hyrax.homepage.featured_researcher.title') %></h2>
+            <%= render 'featured_researcher' %>
+            <%= link_to "Edit Featured Researcher", edit_content_blocks_path(anchor: "researcher"), class: "btn btn-default" %>
+          </div>
+        </div>
+      </div><!-- .col-sm-6 -->
+    <% end %>
+
+  <% if can? :update, FeaturedWork %>
+      <div class="col-sm-6">
+        <ul id="homeTabs" class="nav nav-tabs">
+          <li class="active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
+          <!-- <li><a href="#recently_uploaded" data-toggle="tab" role="tab" id="recentTab"><%#= t('hyrax.homepage.recently_uploaded.tab_label') %></a></li> -->
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
+            <%= render 'featured_works' %>
+          </div>
+          <!-- <div class="tab-pane fade" id="recently_uploaded" role="tabpanel" aria-labelledby="recentTab">
+            <%#= render 'recently_uploaded', recent_documents: @recent_documents %>
+          </div> -->
+        </div>
+      </div><!-- /.col-sm-6 -->
+      <% end %><!-- if can update FeaturedWork -->
+
+
+  </div><!-- row -->
+</div><!-- .container -->
+
+  <!---------------------- List All Works and Collections ------------------------->
+<div id="homepage-works-and-collections">
+  <div class="container-fluid" >
+    <div class="row">   <!-- Refreshes list with ajax (see application.js) -->
+      <div class="col-lg-6">
+        <h2>All Collections</h2>
+        <div id="collections-partial">
+          <%= render 'collections_table', docs: @collections %>
+        </div>
+      </div>
+        <div class="col-lg-6">
+          <h2>Recent Works</h2>
+          <div id="works-partial">
+            <%= render 'works_table', docs: @works.paginate(:page => params[:works_page], :per_page => 10) %>
+          </div>
+        </div>
+      </div><!-- .row -->
+  </div>
+</div>
+
+<% else %>
+
+	<div class="col-xs-12 col-sm-6">
+	  <ul id="homeTabs" class="nav nav-pills">
+		<li class="active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
+		<li><a href="#recently_uploaded" data-toggle="tab" role="tab" id="recentTab"><%= t('hyrax.homepage.recently_uploaded.tab_label') %></a></li>
+	  </ul>
+	  <div class="tab-content">
+		<div class="tab-pane fade in active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
+		  <%= render 'featured_works' %>
+		</div>
+		<div class="tab-pane fade" id="recently_uploaded" role="tabpanel" aria-labelledby="recentTab">
+		  <%= render 'recently_uploaded', recent_documents: @recent_documents %>
+		</div>
+	  </div>
+	</div><!-- /.col-xs-6 -->
+
+	<div class="col-xs-12 col-sm-6">
+
+	  <ul class="nav nav-pills" role="tablist">
+		<li class="active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab"><%= t('hyrax.homepage.admin_sets.title') %></a></li>
+		<li class=""><a aria-expanded="false" href="#tab-col2-second" role="tab" data-toggle="tab"><%= t('hyrax.homepage.featured_researcher.tab_label') %></a></li>
+	  </ul>
+
+	  <div class="tab-content">
+		<div class="tab-pane active" id="tab-col2-first">
+		  <h2 class="sr-only"><%= t('hyrax.homepage.admin_sets.title') %></h2>
+		  <%= render 'explore_collections', collections: @presenter.collections %>
+		</div>
+		<div class="tab-pane" id="tab-col2-second">
+		  <h2 class="sr-only"><%= t('hyrax.homepage.featured_researcher.title') %></h2>
+		  <%= render 'featured_researcher' %>
+		</div>
+	  </div>
+	</div>
+
+<% end %>

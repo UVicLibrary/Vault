@@ -1,0 +1,10 @@
+<% @file_set = FileSet.find(document["member_ids_ssim"][0]) %>
+<div class="col-md-2">
+  <div class="list-thumbnail">
+    <% if (@file_set.mime_type.include?("pdf") if @file_set.mime_type) && request.base_url.include?('vault') %>
+      <%= link_to(image_tag("#{@file_set.pdf_thumbnail_path}"), "/concern/generic_works/#{document.id}") %>
+    <% else %>
+      <%= render_thumbnail_tag document %>
+    <% end %>
+  </div>
+</div>

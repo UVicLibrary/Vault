@@ -1,4 +1,5 @@
 class FileSetIndexer < Hyrax::FileSetIndexer
+	include Hyrax::IndexesLinkedMetadata
   self.thumbnail_path_service = IIIFWorkThumbnailPathService
   def generate_solr_document
     super.tap do |solr_doc|

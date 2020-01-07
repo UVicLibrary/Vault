@@ -1,0 +1,137 @@
+.public-collection-thumbnail {
+  float: left;
+  padding: 0 0.5em !important;
+  margin-right: 0.5em;
+}
+
+.pu
+
+/*-------------Collection upload thumbnail -------------- */
+
+.collection-title-row-content.flex-container .button-wrapper:not(:last-child) {
+  margin-bottom: 2%;
+}
+
+.thumbnail-upload {
+  margin-bottom: 1em;
+  display: inline !important;
+  width: 25%;
+}
+
+.clear-file-link {
+  margin-bottom: 2em;
+  display: block;
+}
+
+.form-group.collection_thumbnail_id {
+  margin-bottom: 1em;
+}
+
+.current-thumbnail {
+  display: block;
+  margin-bottom:1em;
+}
+
+#uploaded-thumbnail {
+  display: block;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.collections-wrapper .thumbnail-title-wrapper .thumbnail-wrapper>img {
+  margin-right: 1em;
+}
+
+
+/* homepage */
+
+.row.gallery {
+  width: 100%;
+}
+
+.content-block-heading {
+  margin-bottom: 1.5em;
+}
+
+form label {
+  margin-bottom: 0.8em;
+  margin-right: 0.5em;
+}
+
+form #content_block_researcher_title {
+  width: 40%;
+}
+
+.researcher-thumbnail {
+  display: block;
+  max-width: 260px;
+}
+
+.table > tbody .document-title {
+  word-break: break-word !important;
+}
+
+.center-content {
+  text-align: center !important;
+}
+
+.plain-link, .plain-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+#footer-logo { /* image is in view file */
+  height: 125px;
+  width: 125px;
+  background-size: contain !important;
+  margin-top: 2%;
+}
+
+.site-footer {
+  left: 0;
+}
+
+body {
+  margin-bottom: 25%;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+}
+
+@media only screen and (max-width: 840px ) {
+  body {
+    margin-bottom: 50%
+  }
+}
+
+@media only screen and (max-width: 600px ) {
+  body {
+    margin-bottom: 70%
+  }
+}
+
+@media only screen and (max-width: 500px ) {
+  body {
+    margin-bottom: 90%
+  }
+}
+
+/* views/hyrax/collections/_show_title.html.erb */
+
+.collection-title-row-content.flex-container {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.collection-title-row-content.flex-container .button-wrapper:not(:last-child) {
+  margin-bottom: 2%;
+}
+.collection-title-row-content.flex-container .button-wrapper:last-child {
+  text-align: right;
+}
+
+span.feature-collection-error {
+  display: inline-block;
+  max-width: 31%;
+  vertical-align: bottom;
+  text-align: right;
+}

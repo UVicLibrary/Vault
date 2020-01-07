@@ -10,7 +10,7 @@ multitenancy:
   admin_host: 'belinda.library.uvic.ca'
   admin_only_tenant_creation: true
 
-ssl_configured: false
+ssl_configured: true
 
 action_controller:
   asset_host:
@@ -28,9 +28,9 @@ solr:
     collection:
       config_name: hyku
     create_node_set:
-    max_shards_per_node:
+    max_shards_per_node: 6
     num_shards: 2
-    replication_factor: 2
+    replication_factor: 3
     router:
       name:
       field:
@@ -58,7 +58,7 @@ google_analytics_id:
 geonames_username: 'jcoyne'
 
 # The address to which the contact form is submitted
-contact_email: ""
+contact_email: "lgoddard@uvic.ca"
 
 devise:
   account_signup: true

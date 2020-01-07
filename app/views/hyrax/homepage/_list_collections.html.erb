@@ -1,0 +1,46 @@
+<% # used by All and Managed Collections tabs %>
+<% id = collection_presenter.id %>
+<tr id="document_<%= id %>"
+  data-id="<%= id %>"
+  data-colls-hash="<%= collection_presenter.available_parent_collections(scope: controller) %>"
+  data-post-url="<%= hyrax.dashboard_create_nest_collection_within_path(id) %>"
+  data-post-delete-url="<%= is_admin_set ? hyrax.admin_admin_set_path(id) : hyrax.dashboard_collection_path(id) %>">
+
+    <td>
+      <div class='media'>
+        <%= link_to collection_path(id), class: 'media-left', 'aria-hidden' => true do %>
+          <% if collection_presenter.thumbnail_path %>
+              <%= render_thumbnail_tag(collection, { class: 'hidden-xs file_listing_thumbnail' },
+                                       { suppress_link: true }) %>
+          <% end %>
+        <% end %>
+        <div class='media-body'>
+          <div class='media-heading'>
+            <%= link_to collection_path(id) do %>
+                <span class="sr-only"><%= t("hyrax.dashboard.my.sr.show_label") %> </span>
+                <%= collection_presenter.title_or_label %>
+            <% end %>
+          </div>
+          <span class="works-list-description">
+          <% if collection_presenter.description.present? %>
+            <%= collection_presenter.description&.first.truncate(100, separator: /\s/) %>
+          <% else %>
+            No description available.
+          <% end %>
+          </span>
+        </div>
+      </div>
+    </td>
+
+  <td><%= collection_presenter.total_viewable_items %></td>
+  <td class="date"><%= collection_presenter.modified_date.try(:to_formatted_s, :standard) %> </td>
+  <td>
+    <% if can? :manage, Collection %>
+      <% if collection_presenter.solr_document.admin_set? %>
+        <%= render '/hyrax/my/admin_set_action_menu', admin_set_presenter: collection_presenter %>
+      <% else %>
+        <%= render '/hyrax/my/collection_action_menu', collection_presenter: collection_presenter %>
+      <% end %>
+    <% end %>
+   </td>
+</tr>

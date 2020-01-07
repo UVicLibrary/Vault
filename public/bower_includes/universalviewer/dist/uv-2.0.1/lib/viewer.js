@@ -594,6 +594,7 @@ Preferences._readFromStorage = function (prefObj) {
 var DownloadManager = (function DownloadManagerClosure() {
 
   function download(blobUrl, filename) {
+    alert('here')
     var a = document.createElement('a');
     if (a.click) {
       // Use a.click() if available. Otherwise, Chrome might show
@@ -605,6 +606,12 @@ var DownloadManager = (function DownloadManagerClosure() {
       // - Opera 9 - 12.15
       // - Internet Explorer 6 - 10
       // - Safari 6 (5.1- does not support a.click)
+      
+      //if(/(-?[0-9]{1,4}),(-?[0-9]{1,4}),(-?[0-9]{1,4}),(-?[0-9]{1,4})/.test(blobUrl)) {
+        console.log(blobUrl);
+        
+      //}
+      
       a.href = blobUrl;
       a.target = '_parent';
       // Use a.download if available. This increases the likelihood that

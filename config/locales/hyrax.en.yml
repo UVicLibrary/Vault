@@ -11,9 +11,13 @@ en:
     institution_name_full: The Institution Name
     product_name: Hyku
     product_twitter_handle: "@HydraInABox"
+    collection_type:
+      admin_set_title: "Admin Set"
   simple_form:
     hints:
       defaults:
         extent: The extent (size, duration, number, etc.) of the work.
-      labels:
-        extent: Extent
+    labels:
+      extent: Extent
+      defaults:
+        type_of_resource: Resource Type

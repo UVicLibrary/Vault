@@ -1,0 +1,2 @@
+module FeaturedCollectionsHelper
+end

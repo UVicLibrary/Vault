@@ -1,0 +1,9 @@
+en:
+  hyrax:
+    icons:
+      iaff_work:     'fa fa-file-text-o'
+    select_type:
+      iaff_work:
+        description:        "Iaff work works"
+        name:               "Iaff Work"
+        type_of_resource:   "Resource Type"

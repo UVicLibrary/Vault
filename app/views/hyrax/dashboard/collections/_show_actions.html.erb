@@ -1,0 +1,62 @@
+<h2 class="sr-only"><%= t('hyrax.collection.actions.header') %></h2>
+
+<div class="button-wrapper">
+
+<% if can? :edit, presenter.solr_document %>
+    <%= link_to t('hyrax.collection.actions.edit.label'),
+                hyrax.edit_dashboard_collection_path(presenter),
+                title: t('hyrax.collection.actions.edit.desc'),
+                class: 'btn btn-primary' %>
+<% end %>
+<% if presenter.collection_type_is_nestable? && presenter.user_can_nest_collection? %>
+<!-- The user should have deposit access to the parent and read access to the child (the collection we are already showing, so no test is necessary). -->
+    <%= button_tag '',
+                  class: 'btn btn-primary add-to-collection',
+                  title: t("hyrax.collection.actions.nested_subcollection.desc"),
+                  type: 'button',
+                  data: { nestable: presenter.collection_type_is_nestable?,
+                          hasaccess: true } do %>
+                  <%= t('hyrax.collection.actions.nested_subcollection.button_label') %>
+                <% end %>
+<% end %>
+
+<% if can? :destroy, presenter.solr_document %>
+    <%= link_to t('hyrax.collection.actions.delete.label'),
+                hyrax.dashboard_collection_path(presenter),
+                title: t('hyrax.collection.actions.delete.desc'),
+                class: 'btn btn-danger',
+                data: { confirm: t('hyrax.collection.actions.delete.confirmation'),
+                        method: :delete } %>
+<% end %>
+</div>
+
+<!-- 2nd row of buttons -->
+<div class="button-wrapper flex-container">
+<!-- Feature/Unfeature Collections -->
+<% if @presenter.collection_featurable? && can?(:create, FeaturedCollection) %>
+  <% if FeaturedCollection.can_create_another? || FeaturedCollection.pluck(:collection_id).include?(@presenter.id) %>
+    <%= link_to "Feature", featured_collections_path(collection_id: params[:id], order: 1, format: :json, remote: true), method: :post,
+        data: { behavior: 'feature' },
+        class: @presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
+        id: 'feature-coll-link' %>
+    <%= link_to "Unfeature", featured_collection_path(collection_id: params[:id], format: :json, remote: true), method: :delete,
+          data: { behavior: 'unfeature' },
+          class: @presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
+          id: 'unfeature-coll-link' %>
+  <% else %>
+    <span class="text-muted feature-collection-error">Maximum of 6 featured collections.</span>
+    <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
+  <% end %>
+<% elsif !@presenter.solr_document.public? %><%# could just be else statement, but this is more explicit %>
+    <span class="text-muted feature-collection-error">Collection must be public.</span>
+    <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
+<% end %>
+
+<!-- Change visibility of the collection, all of its works, and all of its filesets -->
+<% if can? :edit, presenter.solr_document %>
+    <%= link_to "Make public", main_app.coll_visibility_path(id: presenter.id, user_email: current_user, visibility: 'public'),
+    remote: :true, method: :post, class: 'btn btn-default' %>
+    <%= link_to "Make private", main_app.coll_visibility_path(id: presenter.id, user_email: current_user, visibility: 'private'),
+    remote: :true, method: :post, class: 'btn btn-default' %>
+<% end %>
+</div>

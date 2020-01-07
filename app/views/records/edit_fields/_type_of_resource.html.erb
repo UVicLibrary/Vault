@@ -1,0 +1,6 @@
+<% resource_type = IaffResourceTypesService.new %>
+	<%= f.input :type_of_resource,
+		collection: resource_type.select_active_options,
+		include_blank: true,
+		item_helper: resource_type.method(:include_current_value),
+		input_html: { class: 'form-control' } %>

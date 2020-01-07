@@ -63,7 +63,7 @@ en:
           members: Users
         title:
           add_user: Add User to Group
-          delete: Remove Group “%{group}”
+          delete: Remove Group "%{group}"
           edit: Edit Group
           index: Manage Groups
           list_members: Current Group Members
@@ -97,6 +97,8 @@ en:
         name: Name
         user_key: Username
   hyrax:
+    collection_type:
+      admin_set_title: "Admin Set"
     admin:
       appearances:
         show:

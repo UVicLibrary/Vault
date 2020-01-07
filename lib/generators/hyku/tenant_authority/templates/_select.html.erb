@@ -1,0 +1,6 @@
+<%% <%= field %> = <%= authority %>Service.new %>
+<%%= f.input :<%= field %>,
+  collection: <%= field %>.select_active_options,
+  include_blank: <%= !options['multiple'] %>,
+  item_helper: language.method(:include_current_value),
+  input_html: { class: 'form-control', multiple: <%= options['multiple'] %> } %>

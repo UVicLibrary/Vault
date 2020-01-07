@@ -1,0 +1,16 @@
+<div class="item<%= ' active' if document_counter == 0 %>">
+  <div class="frame">
+    <% @file_set = FileSet.find(document["member_ids_ssim"][0])%>
+        <% if (@file_set.mime_type.include?("pdf") if @file_set.mime_type) && request.base_url.include?("vault") %>
+          <%= link_to(image_tag("#{@file_set.pdf_thumbnail_path}"), "/concern/generic_works/#{document.id}") %>
+        <% else %>
+          <%= render_thumbnail_tag(document, {}, :counter => document_counter_with_offset(document_counter)) %>
+        <% end %>
+      <div class="caption">
+        <%= index_presenter(document).label(document_show_link_field(document)) %>
+      </div>
+      <span class="counter">
+        <%= t :'blacklight_gallery.catalog.modal_slideshow.counter', counter: document_counter + 1, count: count %>
+      </span>
+  </div>
+</div>

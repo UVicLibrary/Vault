@@ -28,6 +28,10 @@ class SolrDocument
   attribute :extent, Solr::Array, solr_name('extent')
   attribute :rendering_ids, Solr::Array, solr_name('hasFormat', :symbol)
   
+  def subject
+      fetch(Solrizer.solr_name('subject'), [])
+  end
+  
   def alternative_title
       fetch(Solrizer.solr_name('alternative_title'), [])
   end
@@ -113,7 +117,11 @@ class SolrDocument
   end
     
   def date_digitized
-      fetch(Solrizer.solr_name('date_digitized'), [])
+      edtf_date('date_digitized')#fetch(Solrizer.solr_name('date_digitized'), [])
+  end
+  
+  def date_created
+      edtf_date('date_created')#fetch(Solrizer.solr_name('date_created'), [])
   end
     
   def transcript

@@ -1,0 +1,8 @@
+fr:
+  hyrax:
+    icons:
+      iaff_work:     'fa fa-file-text-o'
+    select_type:
+      iaff_work:
+        description:        "Iaff work œuvres"
+        name:               "Iaff Work"

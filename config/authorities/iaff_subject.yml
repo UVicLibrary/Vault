@@ -1,0 +1,703 @@
+terms:
+  - id: http://id.loc.gov/authorities/subjects/sh2006007963.html
+    term: "Abron language"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85000796.html
+    term: "Adansonia"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85011713.html
+    term: "Adansonia digitata"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85002055.html
+    term: "Agate beads"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset000269.html
+    term: "Agricultural lands"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85002415.html
+    term: "Agriculture"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85006179.html
+    term: "Apprentices"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85006507.html
+    term: "Archaeology"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm000506.html
+    term: "Arrowheads"
+    active: true
+  - id: http://id.loc.gov/authorities/names/n80061113.html
+    term: "Ashanti     "
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85008587.html
+    term: "Ashanti (African people)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85010201.html
+    term: "Automobiles"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85011346.html
+    term: "Balo"
+    active: true
+  - id: http://id.loc.gov/authorities/names/n00032769.html
+    term: "Banda (Brong-Ahafo Region, Ghana)"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300045992
+    term: "Bangles"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm000840.html
+    term: "Basket making"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85012125.html
+    term: "Baskets"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85012617.html
+    term: "Beads"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85013911.html
+    term: "Bicycles"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2007005750.html
+    term: "Black Volta River"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300024917
+    term: "Blades (tool and equipment components)"
+    active: true
+  - id: http://id.loc.gov/authorities/names/n90617461.html
+    term: "Bondoukou"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85016061.html
+    term: "Bottles"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset002232.html
+    term: "Brickmaking"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85016808.html
+    term: "Bricks"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85016829.html
+    term: "Bridges"
+    active: true
+  - id: http://id.loc.gov/authorities/names/n90615819.html
+    term: "Brong-Ahafo Region"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2011002499.html
+    term: "Bui Dam (Ghana)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85017693.html
+    term: "Building"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85017710.html
+    term: "Building, Clay"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm001632.html
+    term: "Canoes"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm001660.html
+    term: "Captives"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh93006023.html
+    term: "Cash crops"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85020615.html
+    term: "Cassava"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85021286.html
+    term: "Cattle"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85021504.html
+    term: "Caves"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset002963.html
+    term: "Ceremonial objects"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85022633.html
+    term: "Charcoal"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85022634.html
+    term: "Charcoal burners"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85023298.html
+    term: "Chickens"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh90003613.html
+    term: "Chiefdoms"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset003134.html
+    term: "Chiefs"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85023418.html
+    term: "Children"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm004181.html
+    term: "Clay mining"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85028562.html
+    term: "Colonies"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset004107.html
+    term: "Controlled burns"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset004138.html
+    term: "Cooking"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85032341.html
+    term: "Copper alloys"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85032625.html
+    term: "Corn"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85033601.html
+    term: "Courtyard houses"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85033602.html
+    term: "Courtyards"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85033658.html
+    term: "Cowpea"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300196462
+    term: "Crucibles"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300024662
+    term: "Cutting tools"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85035659.html
+    term: "Dance"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300184735
+    term: "Direct metal sculpture"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85038796.html
+    term: "Dogs"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85039663.html
+    term: "Droughts"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85039773.html
+    term: "Drum"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset005643.html
+    term: "Drums (musical instrument)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85040207.html
+    term: "Dwellings--Maintenance and repair"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm003424.html
+    term: "Dyeing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh88006135.html
+    term: "Earth construction"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85041879.html
+    term: "Electric power distribution"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85042065.html
+    term: "Electricity"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh94007431.html
+    term: "Elmina Castle (Elmina, Ghana)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85042971.html
+    term: "Enameled ware"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset006161.html
+    term: "Epidemics"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85046042.html
+    term: "Ewe (African people)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85046105.html
+    term: "Excavations (Archaeology)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85046557.html
+    term: "Exterior walls"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85047075.html
+    term: "Famines"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm003860.html
+    term: "Farming"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300047455
+    term: "Figurines"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85048533.html
+    term: "Firearms"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85048572.html
+    term: "Fires"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset006914.html
+    term: "Firewood"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh99004070.html
+    term: "Firing (Ceramics)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85048659.html
+    term: "Fish Traps"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85048830.html
+    term: "Fishing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85048877.html
+    term: "Fishing villages"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset007241.html
+    term: "Food preparation"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm004181.html
+    term: "Food processing"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset007259.html
+    term: "Food stands"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset007266.html
+    term: "Foodways"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2003005585.html
+    term: "Fordjour (Festival)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85050766.html
+    term: "Forging"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh00002539.html
+    term: "Funeral customs and rites"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm004381.html
+    term: "Furnaces"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85052948.html
+    term: "Games"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85053101.html
+    term: "Gardens"
+    active: true
+  - id: http://id.loc.gov/authorities/names/n80061117.html
+    term: "Ghana"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85055102.html
+    term: "Glass"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85055116.html
+    term: "Glass beads"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85055188.html
+    term: "Glassware"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset007962.html
+    term: "Goats"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85055692.html
+    term: "Gold"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset007981.html
+    term: "Gold mining"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300391171
+    term: "Gold-weights"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85055857.html
+    term: "Gonja (African people)"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset008001.html
+    term: "Gongs"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset007962.html
+    term: "Gourd, Calabash"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset008026.html
+    term: "Governance"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset008061.html
+    term: "Grain mills"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85056515.html
+    term: "Grasses"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm004735.html
+    term: "Grinding"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300247516
+    term: "Handcuffs"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm004863.html
+    term: "Handicraft"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh91004510.html
+    term: "Hearths"
+    active: true
+  - id: http://id.loc.gov/authorities/names/n91076441.html
+    term: "Heritage"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85060993.html
+    term: "Hippopotamus"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85061212.html
+    term: "History"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset008805.html
+    term: "Hoeing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85062160.html
+    term: "Horses"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85062603.html
+    term: "Housing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85063113.html
+    term: "Hunters"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85063117.html
+    term: "Hunting"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85067221.html
+    term: "Intercropping"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85067282.html
+    term: "Interior walls"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85068131.html
+    term: "Iron"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85068390.html
+    term: "Islam"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85069108.html
+    term: "Ivory"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85071559.html
+    term: "Kapok"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm005711.html
+    term: "Knives"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2014001316.html
+    term: "Kulango (African people)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85074392.html
+    term: "Landscapes"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2003009032.html
+    term: "Leg irons"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85076431.html
+    term: "Libations"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85076860.html
+    term: "Lifting and carrying"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh99013626.html
+    term: "Ligbi language"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset010656.html
+    term: "Litters (vehicles)"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset010790.html
+    term: "Lost wax casting"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300053113
+    term: "Lost-wax process"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm006305.html
+    term: "Markets"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85081468.html
+    term: "Marriage customs and rites"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85081817.html
+    term: "Masks"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm006331.html
+    term: "Masonry"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset011448.html
+    term: "Metal casting"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2001003088.html
+    term: "Metal roofing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85084158.html
+    term: "Metallurgy"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85084093.html
+    term: "Metal-work"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm006481.html
+    term: "Metalworking"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85086358.html
+    term: "Mo language (Côte d'Ivoire and Ghana)"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm012330.html
+    term: "Mortars & pestles"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85087823.html
+    term: "Mountains"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85088762.html
+    term: "Music"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh98007129.html
+    term: "Nafaanra language"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2013000044.html
+    term: "Nafana (African people)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85093958.html
+    term: "Ocher"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85094485.html
+    term: "Okra"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85095238.html
+    term: "Oral history"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300266794
+    term: "Ornaments"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm007341.html
+    term: "Ovens"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh95006446.html
+    term: "Oware (Game)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85099033.html
+    term: "Pearl millet"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300046002
+    term: "Pendants (jewelry)"
+    active: true
+  - id: http://id.loc.gov/authorities/genreForms/gf2017027249.html
+    term: "Photographs"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm007880.html
+    term: "Plants"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85103114.html
+    term: "Plastering"
+    active: true
+  - id: http://id.loc.gov/authorities/childrensSubjects/sj96006292.html
+    term: "Play"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85105729.html
+    term: "Pottery"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm008121.html
+    term: "Pottery making"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300024860
+    term: "Projectile points"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85108607.html
+    term: "Puberty rites"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh94007844.html
+    term: "Python (Genus)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85112896.html
+    term: "Repairing"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300046012
+    term: "Rings (finger jewelry)"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh92001320.html
+    term: "Riparian forests"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85114211.html
+    term: "Rites and ceremonies"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85114228.html
+    term: "Ritual"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85114250.html
+    term: "Rivers"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85114487.html
+    term: "Roads"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85115317.html
+    term: "Roofing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85115910.html
+    term: "Rural electrification"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85117296.html
+    term: "Sanitation"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85118451.html
+    term: "Schools"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300247514
+    term: "Shackles"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85121208.html
+    term: "Sheep"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh94007668.html
+    term: "Shell beads"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85122135.html
+    term: "Shrines"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm009713.html
+    term: "Slave  trade"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85123347.html
+    term: "Slaves"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85123636.html
+    term: "Smelting"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset016900.html
+    term: "Snakes"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85125040.html
+    term: "Songs"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85125316.html
+    term: "Sorghum"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm009912.html
+    term: "Spears"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85126691.html
+    term: "Spindle whorls"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85126713.html
+    term: "Spinning"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85128633.html
+    term: "Streets"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300400684
+    term: "Tanged points"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85133315.html
+    term: "Telegraph"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset018450.html
+    term: "Termite mounds"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset018502.html
+    term: "Thatched roofs"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85135042.html
+    term: "Threshing"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85135709.html
+    term: "Tobacco"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset018731.html
+    term: "Tobacco pipes"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85136255.html
+    term: "Tourism"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm010945.html
+    term: "Toys"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85137027.html
+    term: "Transportation"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85137207.html
+    term: "Treaties"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85138148.html
+    term: "Trucks"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85139030.html
+    term: "Twi language"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85142531.html
+    term: "Vehicles"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85143356.html
+    term: "Villages"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh93005976.html
+    term: "Visual Anthropology"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85144957.html
+    term: "Walls"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh00005687.html
+    term: "Wars"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85145447.html
+    term: "Water"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm011565.html
+    term: "Water pumps"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset019934.html
+    term: "Water wells"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset019960.html
+    term: "Wattle and daub"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85145868.html
+    term: "Weaving"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85081468.html
+    term: "Wedding dances"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh88005051.html
+    term: "West African strip weaving"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85146745.html
+    term: "Wildlife refuges"
+    active: true
+  - id: http://vocab.getty.edu/page/aat/300011063
+    term: "Wire"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh2009000714.html
+    term: "Witch hunting "
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85147143.html
+    term: "Witchcraft"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset020257.html
+    term: "Witches"
+    active: true
+  - id: http://id.loc.gov/vocabulary/graphicMaterials/tgm011780.html
+    term: "Wood carvings"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85148860.html
+    term: "Xylophone"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85148976.html
+    term: "Yams"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh85073935.html
+    term: "Lagenaria siceraria"
+    active: true
+  - id: http://id.loc.gov/rwo/agents/n2011060563.html
+    term: "Mats"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset015143.html
+    term: "Regalia"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset015606.html
+    term: "Royal regalia"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset018494.html
+    term: "Textiles"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset009968.html
+    term: "Kente cloth"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset017672.html
+    term: "Stools"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset002988.html
+    term: "Chairs"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset001599.html
+    term: "Bells"
+    active: true
+  - id: http://id.loc.gov/vocabulary/ethnographicTerms/afset011179.html
+    term: "Masquerades"
+    active: true
+  - id: http://id.loc.gov/authorities/subjects/sh99005081.html
+    term: "Clothing"
+    active: true

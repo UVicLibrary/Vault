@@ -10,6 +10,7 @@ module Proprietor
       authorize! :manage, Account
       add_breadcrumb t(:'hyrax.controls.home'), root_path
       add_breadcrumb t(:'hyrax.admin.sidebar.accounts'), proprietor_accounts_path
+      @accounts = Account.all
     end
 
     # GET /accounts/1

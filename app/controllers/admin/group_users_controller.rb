@@ -8,7 +8,7 @@ module Admin
       add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
       add_breadcrumb t(:'hyku.admin.groups.title.edit'), edit_admin_group_path(@group)
       add_breadcrumb t(:'hyku.admin.groups.title.members'), request.path
-      @users = @group.search_members(params[:q]).page(page_number).per(page_size)
+      @users = @group.search_members(params[:q]).page(page_number)#.per(page_size)
       render template: 'admin/groups/users'
     end
     # rubocop:enable Metrics/AbcSize

@@ -1,11 +1,16 @@
 <% if Hyrax.config.display_media_download_link? %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-      <iframe src="<%= pdfjs.full_path(file: hyrax.download_path(file_set)) %>"style='width: 75vw; height: 100vw; overflow: hidden;' scrolling="no">
-      <%#= pdfjs_viewer pdf_url:  hyrax.download_path(file_set), style: :full %>
-      
-      
-      </iframe>
+      <% if params[:controller] == "hyrax/file_sets" && params[:action] == "show" %><%# for FileSet#show view %>
+        <%= image_tag FileSet.find(file_set.id).pdf_thumbnail_path,
+                      class: "representative-media",
+                      alt: "",
+                      role: "presentation" %>
+      <% else %>
+        <iframe src="<%= pdfjs.full_path(file: hyrax.download_path(file_set)) %>#disableAutoFetch=true&disableStream=true"style='width: 75vw; height: 100vw; overflow: hidden;' scrolling="no">
+        <%#= pdfjs_viewer pdf_url:  hyrax.download_path(file_set), style: :full %>
+        </iframe>
+      <% end %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
                   hyrax.download_path(file_set),
                   data: { turbolinks: false },

@@ -12,9 +12,9 @@ module Hyrax
 
       property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
 
+      property :creator, predicate: ::RDF::Vocab::DC11.creator, class_name: Hyrax::ControlledVocabularies::Creator
       property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
       property :resource_type, predicate: ::RDF::Vocab::DC.type
-      property :creator, predicate: ::RDF::Vocab::DC11.creator
       property :contributor, predicate: ::RDF::Vocab::DC11.contributor
       property :description, predicate: ::RDF::Vocab::DC11.description
       property :keyword, predicate: ::RDF::Vocab::DC11.relation
@@ -24,8 +24,8 @@ module Hyrax
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::SCHEMA.license
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
-      property :date_created, predicate: ::RDF::Vocab::DC.created, multiple: false do |index|
-        index.as :stored_searchable
+      property :date_created, predicate: ::RDF::Vocab::DC.created do |index|
+        index.as :stored_searchable, :facetable
       end
       property :subject, predicate: ::RDF::Vocab::DC11.subject
       property :language, predicate: ::RDF::Vocab::DC11.language
@@ -34,6 +34,7 @@ module Hyrax
       property :related_url, predicate: ::RDF::RDFS.seeAlso
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation
       property :source, predicate: ::RDF::Vocab::DC.source
+      
 
       id_blank = proc { |attributes| attributes[:id].blank? }
 

@@ -1,0 +1,16 @@
+<%# representative thumbnail for collection %>
+<% if request.base_url.include?("vault") && request.original_url.exclude?("dashboard") %>
+  <div class="public-collection-thumbnail">
+    <%= render 'hyrax/collections/media_display', presenter: @presenter %>
+  </div>
+<% end %>
+<% presenter.description.each do |description| %>
+  <%= simple_format(auto_link(description)) %>
+<% end %>
+&nbsp;
+<p class="collection-permalink">Permalink:
+  <a href="<%= request.base_url %>/collections/<%= @presenter.id %>">
+    <%= request.base_url %>/collections/<%= @presenter.id %>
+  </a>
+</p>
+</div>

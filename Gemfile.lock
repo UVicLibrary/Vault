@@ -115,6 +115,8 @@ GEM
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
+    bootstrap-will_paginate (1.0.0)
+      will_paginate
     breadcrumbs_on_rails (3.0.1)
     browse-everything (0.14.2)
       addressable (~> 2.5)
@@ -147,7 +149,7 @@ GEM
     carrierwave-aws (1.1.0)
       aws-sdk (~> 2.0)
       carrierwave (>= 0.7, < 2.0)
-    cdm_migrator (1.4.4)
+    cdm_migrator (3.0.0)
       rails (~> 5.0)
     childprocess (0.7.0)
       ffi (~> 1.0, >= 1.0.11)
@@ -162,6 +164,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    combine_pdf (1.0.16)
+      ruby-rc4 (>= 0.1.5)
     concurrent-ruby (1.0.5)
     concurrent-ruby-ext (1.0.5)
       concurrent-ruby (= 1.0.5)
@@ -241,6 +245,11 @@ GEM
     ebnf (1.1.2)
       rdf (>= 2.2, < 4.0)
       sxp (~> 1.0)
+    edtf (3.0.4)
+      activesupport (>= 3.0, < 6.0)
+    edtf-humanize (0.0.7)
+      activesupport (>= 4, < 6)
+      edtf (>= 2.3, < 4)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     erubi (1.7.1)
@@ -408,6 +417,7 @@ GEM
       rainbow (~> 2.2)
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
+    iconv (1.0.8)
     iiif_manifest (0.5.0)
       activesupport (>= 4)
     io-like (0.3.0)
@@ -567,6 +577,8 @@ GEM
       json (> 1.8.4)
       rails (> 4.2.0)
       sass-rails (~> 5.0)
+    pdftoimage (0.1.7)
+      iconv (~> 1.0)
     peek (1.0.1)
       concurrent-ruby (>= 0.9.0)
       concurrent-ruby-ext (>= 0.9.0)
@@ -757,6 +769,7 @@ GEM
       multipart-post
       oauth2
     ruby-progressbar (1.9.0)
+    ruby-rc4 (0.1.5)
     ruby_dep (1.5.0)
     rubyzip (1.2.2)
     safe_yaml (1.0.4)
@@ -891,6 +904,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
+    will_paginate (3.1.5)
     xml-simple (1.1.5)
     xpath (2.1.0)
       nokogiri (~> 1.3)
@@ -906,12 +920,14 @@ DEPENDENCIES
   active_elastic_job (~> 2.0)
   apartment
   blacklight (~> 6.7)
+  bootstrap-will_paginate (= 1.0.0)
   byebug
   capybara
   carrierwave-aws
-  cdm_migrator
+  cdm_migrator (~> 3.0.0)
   chromedriver-helper
   coffee-rails (~> 4.2)
+  combine_pdf
   config (~> 1.5, >= 1.5.1)
   coveralls
   database_cleaner
@@ -919,6 +935,7 @@ DEPENDENCIES
   devise-guests (~> 0.3)
   devise-i18n
   devise_invitable (~> 1.6)
+  edtf-humanize
   factory_bot_rails
   fcrepo_wrapper (~> 0.4)
   flipflop (~> 2.3)
@@ -934,6 +951,7 @@ DEPENDENCIES
   lograge
   mods (~> 2.1)
   pdfjs_viewer-rails
+  pdftoimage
   peek
   peek-faraday
   peek-git
@@ -957,7 +975,7 @@ DEPENDENCIES
   scss_lint
   secure_headers
   selenium-webdriver
-  sidekiq
+  sidekiq (~> 5.0.3)
   simplecov
   solr_wrapper (~> 2.0)
   spring (~> 1.7)
@@ -966,6 +984,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
   webmock
+  will_paginate (= 3.1.5)
   zk
 
 BUNDLED WITH

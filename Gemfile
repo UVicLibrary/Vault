@@ -1,5 +1,9 @@
 source 'https://rubygems.org'
 
+# For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
+gem 'combine_pdf'
+gem 'pdftoimage'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.1'
 # Use sqlite3 as the database for Active Record
@@ -31,10 +35,10 @@ gem 'active-fedora', '>= 11.1.4'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
-
+gem 'byebug'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  #gem 'byebug'
 
   gem 'i18n-debug', require: false
   gem 'i18n-tasks'
@@ -119,12 +123,22 @@ group :aws do
 end
 
 gem 'peek-sidekiq'
-gem 'sidekiq'
+gem 'sidekiq', '~> 5.0.3'
 
-gem 'cdm_migrator'
+gem 'cdm_migrator', '~> 3.0.0'
 
 gem 'secure_headers'
 
 gem 'honeybadger', '~> 3.0'
 
 gem 'pdfjs_viewer-rails'
+
+# https://github.com/mislav/will_paginate
+gem 'will_paginate', '3.1.5'
+# https://github.com/yrgoldteeth/bootstrap-will_paginate
+gem 'bootstrap-will_paginate', '1.0.0'
+# https://github.com/boazsegev/combine_pdf
+gem 'combine_pdf'
+gem 'pdftoimage'
+
+gem 'edtf-humanize'

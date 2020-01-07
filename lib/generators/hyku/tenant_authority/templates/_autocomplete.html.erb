@@ -1,0 +1,12 @@
+<%%= f.input key,
+          as: :multi_value,
+          placeholder: 'Search for a <%= field.humanize(capitalize: false) %>',
+          input_html: {
+            class: 'form-control',
+            data: { 'autocomplete-url' => "/authorities/search/local/<%= authority.underscore %>",
+                    'autocomplete' => key }
+          },
+          ### Required for the ControlledVocabulary javascript:
+          wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/local/<%= authority.underscore %>",
+                                  'field-name' => key }},
+          required: f.object.required?(key) %>

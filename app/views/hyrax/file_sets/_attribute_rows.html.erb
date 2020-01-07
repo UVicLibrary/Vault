@@ -1,0 +1,52 @@
+<%= presenter.attribute_to_html(:creator_label) %>
+<%= presenter.attribute_to_html(:creator) %>
+<%= presenter.attribute_to_html(:contributor_label) %>
+<%= presenter.attribute_to_html(:contributor, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:subject_label) %>
+<%= presenter.attribute_to_html(:subject, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:publisher, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:language, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:identifier, render_as: :linked, search_field: 'identifier_tesim') %>
+<%= presenter.attribute_to_html(:keyword, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:date_created, render_as: :linked, search_field: 'date_created_tesim') %>
+<%= presenter.attribute_to_html(:based_near_label) %>
+<%= presenter.attribute_to_html(:related_url, render_as: :external_link) %>
+<%= presenter.attribute_to_html(:resource_type, render_as: :resource_type) %>
+<%= presenter.attribute_to_html(:source) %>
+<%= presenter.attribute_to_html(:rights_statement, render_as: :rights_statement) %>
+<%= presenter.attribute_to_html(:licence, render_as: :rights_statement) %>
+<%= presenter.attribute_to_html(:extent) %>
+
+<%= presenter.attribute_to_html(:alternative_title) %>
+<%= presenter.attribute_to_html(:edition) %>
+<%= presenter.attribute_to_html(:geographic_coverage_label) %>
+<%= presenter.attribute_to_html(:geographic_coverage, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:coordinates) %>
+<%= presenter.attribute_to_html(:chronological_coverage) %>
+<%= presenter.attribute_to_html(:additional_physical_characteristics) %>
+<%= presenter.attribute_to_html(:has_format) %>
+<%= presenter.attribute_to_html(:physical_repository_label) %>
+<%= presenter.attribute_to_html(:physical_repository) %>
+<%= presenter.attribute_to_html(:collection) %>
+<%= presenter.attribute_to_html(:provenance) %>
+<%= presenter.attribute_to_html(:provider_label) %>
+<%= presenter.attribute_to_html(:provider) %>
+<%= presenter.attribute_to_html(:sponsor) %>
+<%= presenter.attribute_to_html(:genre_label) %>
+<%= presenter.attribute_to_html(:genre) %>
+<%= presenter.attribute_to_html(:format) %>
+<%= presenter.attribute_to_html(:archival_item_identifier) %>
+<%= presenter.attribute_to_html(:fonds_title) %>
+<%= presenter.attribute_to_html(:fonds_creator) %>
+<%= presenter.attribute_to_html(:fonds_description) %>
+<%= presenter.attribute_to_html(:fonds_identifier) %>
+<%= presenter.attribute_to_html(:is_referenced_by) %>
+<%= presenter.attribute_to_html(:date_digitized) %>
+<%= presenter.attribute_to_html(:transcript) %>
+<%= presenter.attribute_to_html(:technical_note) %>
+<%= presenter.attribute_to_html(:year) %>
+Permalink
+  <% permalink = "#{request.base_url}/concern/parent/#{presenter.parent.id}/file_sets/#{presenter.id}" %>
+<ul class="tabular">
+  <li class="attribute attribute-permalink"><a href="<%= permalink %>"><%= permalink %></a></li>
+</ul>

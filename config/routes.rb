@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount CdmMigrator::Engine => '/cdm_migrator'
+  #mount CdmMigrator::Engine => '/cdm_migrator'
 
   if Settings.multitenancy.enabled
     constraints host: Account.admin_host do
@@ -16,6 +16,16 @@ Rails.application.routes.draw do
     end
   end
 
+  # Upload a collection thumbnail
+  post "/dashboard/collections/:id/delete_uploaded_thumbnail", to: "hyrax/dashboard/collections#delete_uploaded_thumbnail", as: :delete_uploaded_thumbnail
+
+  # For CSV file path checker
+  get "/dashboard/file_path_checker/upload", to: "file_path_checker#upload", as: :upload_csv_checker
+  post "/dashboard/file_path_checker/upload", to: "file_path_checker#upload", as: :check_csv_upload
+
+  # For changing collection visibility
+  post '/dashboard/collections/:id/coll_visibility', to: 'hyrax/dashboard/collections#change_coll_visibility', as: 'coll_visibility'
+
   get 'status', to: 'status#index'
 
   mount BrowseEverything::Engine => '/browse'
@@ -31,6 +41,11 @@ Rails.application.routes.draw do
 
   mount Blacklight::Engine => '/'
   mount Hyrax::Engine, at: '/'
+
+  Hyrax::Engine.routes do
+    resources :featured_collection_lists
+    resources :featured_collections
+  end
 
   concern :searchable, Blacklight::Routes::Searchable.new
   concern :exportable, Blacklight::Routes::Exportable.new
@@ -78,6 +93,8 @@ Rails.application.routes.draw do
   mount Peek::Railtie => '/peek'
   mount Riiif::Engine => '/images', as: 'riiif'
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  authenticate :user, lambda { |u| u.ability.admin? } do
+  	mount Sidekiq::Web => '/sidekiq'
+	end
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 end

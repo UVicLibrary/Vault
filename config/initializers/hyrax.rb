@@ -2,6 +2,8 @@ Hyrax.config do |config|
   config.register_curation_concern :generic_work
   # Injected via `rails g hyrax:work Image`
   config.register_curation_concern :image
+  # Injected via `rails g hyrax:work IaffWork`
+  config.register_curation_concern :iaff_work
 
   config.iiif_image_server = true
 
@@ -165,7 +167,7 @@ Hyrax.config do |config|
   # end
   config.browse_everything = nil
 end
-
+AdminSet::DEFAULT_ID = "admin_set-default"
 Date::DATE_FORMATS[:standard] = "%m/%d/%Y"
 
 Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')

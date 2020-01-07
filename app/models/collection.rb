@@ -2,6 +2,27 @@
 class Collection < ActiveFedora::Base
   include ::Hyrax::CollectionBehavior
   # You can replace these metadata if they're not suitable
+  #include Hyrax::BasicMetadata
+  
+  property :creator, predicate: ::RDF::Vocab::DC11.creator
+  
+  property :contributor, predicate: ::RDF::Vocab::DC11.contributor
+  
+  property :subject, predicate: ::RDF::Vocab::DC11.subject
+  
+  property :provider, predicate: ::RDF::Vocab::EDM.provider
+  
+  property :physical_repository, predicate: ::RDF::Vocab::PROV.atLocation
+  
+  property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial
+  
+  property :genre, predicate: ::RDF::Vocab::SCHEMA.genre
+  
+  property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year') do |index|
+	index.as :stored_searchable, :facetable
+  end
+  
   include Hyrax::BasicMetadata
+  
   self.indexer = CollectionIndexer
 end

@@ -1,5 +1,24 @@
+<li class="h5"><%= t('hyrax.admin.sidebar.tasks') %></li>
+<li>
+		<%= menu.collapsable_section t('CDM Migrator'),
+							 icon_class: "fa fa-map-signs",
+							 id: 'collapseCdmMigrator',
+							 open: menu.cdm_migrator_section? do %>
+			<%= menu.nav_link(main_app.cdm_start_path) do %>
+				<span class="fa fa-map"></span> <span class="sidebar-action-text"><%= t('CDM Mapping Tool') %></span>
+			<% end %>
+     <%= menu.nav_link(main_app.file_path_checker_path) do %>
+       <span class="fa fa-check-circle"></span><span>File Path Checker</span>
+     <% end %>
+			<%= menu.nav_link(main_app.csv_upload_path) do %>
+				<span class="fa fa-angle-double-up"></span> <span class="sidebar-action-text"><%= t('CSV Batch Uploader') %></span>
+			<% end %>
+			<%= menu.nav_link(main_app.csv_my_batches_path) do %>
+				<span class="fa fa-database"></span> <span class="sidebar-action-text"><%= t('Batches') %></span>
+			<% end %>
+		<% end %>
+	</li>
   <% if can? :review, :submissions %>
-    <li class="h5"><%= t('hyrax.admin.sidebar.tasks') %></li>
     <%= menu.nav_link(hyrax.admin_workflows_path) do %>
       <span class="fa fa-flag" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('hyrax.admin.sidebar.workflow_review') %></span>
     <% end %>
@@ -10,7 +29,7 @@
       <span class="fa fa-user" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('hyrax.admin.sidebar.users') %></span>
     <% end %>
   <% end %>
-  
+
   <% if can? :manage, Hyku::Group %>
           <%= menu.nav_link(main_app.admin_groups_path) do %>
             <span class="fa fa-users"></span> <span class="sidebar-action-text"><%= t('hyrax.admin.sidebar.manage_groups') %></span>

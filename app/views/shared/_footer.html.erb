@@ -1,17 +1,58 @@
-<footer class="navbar navbar-inverse site-footer">
+<footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content;">
   <div class="container-fluid">
-    <div class="navbar-text text-left">
+    <% if true %>
+      <div class="row" >
+        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text" id="footer-logo" style="background: url(<%= asset_path 'lib-logo-white.png' %>) center center no-repeat;">
+        </div>
+        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text" >
+          <h5></h5>
+          <span>University of Victoria Libraries</span><br/>
+          <span>PO Box 1800 STN CSC</span><br/>
+          <span>Victoria BC &nbsp; V8W 3H5</span><br/><br/>
+          <span><a class="navbar-inverse navbar-link" href="https://www.uvic.ca/library/locations/" target="_blank">Hours and Locations</a></span>
+        </div>
+        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text">
+          <h5>Terms of Use</h5>
+          <!-- Policy from https://libguides.uvic.ca/uvicspace/policies/access -->
+          <span><a class="navbar-inverse navbar-link" href="http://vault.library.uvic.ca/about?locale=en">Terms of use</a></span><br/>
+          <span><a class="navbar-inverse navbar-link" href="http://vault.library.uvic.ca/about?locale=en">Withdrawal policy</a></span>
+        </div>
+        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text" >
+          <h5>Contact</h5>
+          <span><a></a></span>
+          <span><a class="navbar-inverse navbar-link" href="tel:1-250-721-6673">1-250-721-6673</a></span><br/>
+          <span>SMS/Text: 778-400-4518</span><br/>
+          <span>Email: see more <a class="navbar-inverse navbar-link" href="https://www.uvic.ca/library/home/home/contact/index.php" target="_blank">contact info</a></span>
+        </div>
+        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text">
+          <h5>Connect</h5>
+          <!-- font awesome: https://www.w3schools.com/icons/fontawesome_icons_brand.asp -->
+          <a class="navbar-inverse navbar-link" href="https://twitter.com/uviclib" target="_blank"><i class="fa fa-twitter footer-icon"></i></a>
+          <a class="navbar-inverse navbar-link" href="https://www.instagram.com/uviclibraries/?hl=en" target="_blank"><i class="fa fa-instagram footer-icon"></i></a>
+          <a class="navbar-inverse navbar-link" href="https://www.facebook.com/UVicLibraries/" target="_blank"><i class="fa fa-facebook-square footer-icon"></i></a>
+          <a class="navbar-inverse navbar-link" href="https://www.youtube.com/user/UVicLibraries" target="_blank"><i class="fa fa-youtube-play footer-icon"></i></a>
+        </div>
+        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text">
+          <h5></h5>
+          <span>&copy; 2019 University of Victoria</span><br/>
+          <!-- <span><a href="https://www.uvic.ca/home/about/copyright/index.php" target="_blank">Copyright info</a></span><br/>
+          <span><a href="https://www.uvic.ca/home/about/legal-notices/index.php" target="_blank">Legal notices</a></span><br/> -->
+        </div>
+      </div><!-- row -->
+    <% else %>
+      <div class="navbar-text text-left">
         <p><%= t('hyrax.footer.service_html') %></p>
         <p>Hyku v<%= Hyku::VERSION %></p>
-    </div>
-    <div class="navbar-right">
-      <div class="navbar-text text-right">
-        <p><%= t('hyrax.footer.copyright_html') %></p>
-        <p><%= t('hyrax.background_attribution_html') %></p>
-        <% if admin_host? && !user_signed_in? %>
-          <p><%= link_to t('hyku.footer.admin_login', default: [:'hyrax.toolbar.profile.login']), main_app.new_user_session_path %></p>
-        <% end %>
       </div>
-    </div>
-  </div>
+      <div class="navbar-right">
+        <div class="navbar-text text-right">
+          <p><%= t('hyrax.footer.copyright_html') %></p>
+          <p><%= t('hyrax.background_attribution_html') %></p>
+          <% if admin_host? && !user_signed_in? %>
+            <p><%= link_to t('hyku.footer.admin_login', default: [:'hyrax.toolbar.profile.login']), main_app.new_user_session_path %></p>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div><!-- container -->
 </footer>

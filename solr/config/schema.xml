@@ -143,7 +143,22 @@
         <filter class="solr.TrimFilterFactory"/>
       </analyzer>
     </fieldType>
-
+        
+     <!-- A text field with defaults appropriate for English and facets -->
+    <fieldType name="facet_text_en" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.PatternTokenizerFactory" pattern=";" />
+        <filter class="solr.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
+        <filter class="solr.EnglishPossessiveFilterFactory"/>
+        <!-- EnglishMinimalStemFilterFactory is less aggressive than PorterStemFilterFactory: -->
+        <filter class="solr.EnglishMinimalStemFilterFactory"/>
+        <!--
+        <filter class="solr.PorterStemFilterFactory"/>
+        -->
+        <filter class="solr.TrimFilterFactory"/>
+      </analyzer>
+    </fieldType>
+    
     <!-- queries for paths match documents at that path, or in descendent paths -->
     <fieldType name="descendent_path" class="solr.TextField">
       <analyzer type="index">
@@ -207,6 +222,7 @@
     <dynamicField name="*_tesm" type="text_en" stored="true" indexed="false" multiValued="true"/>
     <dynamicField name="*_tesi" type="text_en" stored="true" indexed="true" multiValued="false"/>
     <dynamicField name="*_tesim" type="text_en" stored="true" indexed="true" multiValued="true"/>
+    <dynamicField name="*_ftesim" type="facet_text_en" stored="true" indexed="true" multiValued="true"/>
     <dynamicField name="*_teiv" type="text_en" stored="false" indexed="true" multiValued="false" termVectors="true" termPositions="true" termOffsets="true"/>
     <dynamicField name="*_teimv" type="text_en" stored="false" indexed="true" multiValued="true" termVectors="true" termPositions="true" termOffsets="true"/>
     <dynamicField name="*_tesiv" type="text_en" stored="true" indexed="true" multiValued="false" termVectors="true" termPositions="true" termOffsets="true"/>

@@ -21,7 +21,9 @@
 
 <div class="panel panel-default users-listing">
   <div class="panel-heading">
-      <%= t('hyrax.admin.users.index.describe_users_html', count: @presenter.user_count) %>
+      <span style="display: inline-block; margin-top: 0.5em"><%= t('hyrax.admin.users.index.describe_users_html', count: @presenter.user_count) %></span>
+      <%# button for editing roles/permissions %>
+      <%= link_to "Edit Permissions", "/site/roles", class: "btn btn-primary", style: "float: right;" %>
   </div>
 
   <div class="panel-body">

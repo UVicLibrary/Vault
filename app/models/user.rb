@@ -44,8 +44,8 @@ class User < ApplicationRecord
   end
 
   def groups
-    return ['admin'] if has_role?(:admin, Site.instance)
-    []
+    #return ['admin'] if has_role?(:admin, Site.instance)
+    site_roles.map {|r| r.name }
   end
 
   private

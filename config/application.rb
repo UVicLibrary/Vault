@@ -2,6 +2,7 @@ require_relative 'boot'
 
 require 'rails/all'
 require 'i18n/debug' if ENV['I18N_DEBUG']
+#require 'ext/string'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -12,6 +13,9 @@ module Hyku
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+
+    # config.web_console.whitelisted_ips = '142.104.150.115'
+    # config.web_console.permissions = '142.104.150.115'
 
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
@@ -31,6 +35,7 @@ config.middleware.use WebConsole::Middleware
     end
 
     config.to_prepare do
+    	#Hyrax::ApplicationController.helper CdmMigrator::Application.helpers
       # Do dependency injection after the classes have been loaded.
       # Before moving this here (from an initializer) Devise was raising invalid
       # authenticity token errors.

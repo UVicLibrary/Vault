@@ -7,7 +7,7 @@ module Admin
       add_breadcrumb t(:'hyrax.controls.home'), root_path
       add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
       add_breadcrumb t(:'hyku.admin.groups.title.index'), admin_groups_path
-      @groups = Hyku::Group.search(params[:q]).page(page_number).per(page_size)
+      @groups = Hyku::Group.search(params[:q]).page(page_number)#.per(page_size)
     end
     # rubocop:enable Metrics/AbcSize
 

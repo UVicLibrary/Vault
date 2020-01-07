@@ -1,9 +1,11 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-  
+
   config.web_console.development_only = false
   config.web_console.automount = true
-  config.web_console.whitelisted_ips = '142.104.150.153'
+  config.web_console.whitelisted_ips = ['142.104.150.55','142.104.150.115']
+
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 
@@ -23,7 +25,7 @@ Rails.application.configure do
   config.public_file_server.headers = {
     'Cache-Control' => 'public, s-maxage=31536000, maxage=15552000',
     'Expires' => "#{1.year.from_now.to_formatted_s(:rfc822)}"
-  }
+    }
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
   # config.assets.css_compressor = :sass
@@ -46,7 +48,7 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
@@ -67,8 +69,20 @@ Rails.application.configure do
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
-  #
+
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+                address:              'smtp.uvic.ca',
+                port:                 587,
+                domain:               'uvic.ca',
+                #user_name:            '<username>',
+                #password:             '<password>',
+                authentication:       'plain',
+                enable_starttls_auto: true  }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_options = {from: 'no-reply@uvic.ca'}
+
   config.action_mailer.default_url_options = { protocol: Settings.ssl_configured ? 'https' : 'http' }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

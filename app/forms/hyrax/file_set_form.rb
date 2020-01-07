@@ -20,5 +20,19 @@ module Hyrax
            :thumbnail_id, :representative_id, :ordered_member_ids,
            :collection_ids, :in_works_ids, :admin_set_id]
       end
+      
+      def self.build_permitted_params
+    	super + [
+    	{
+            creator_attributes: [:id, :_destroy],
+            contributor_attributes: [:id, :_destroy],
+            physical_repository_attributes: [:id, :_destroy],
+            provider_attributes: [:id, :_destroy],
+            subject_attributes: [:id, :_destroy],
+            geographic_coverage_attributes: [:id, :_destroy],
+            genre_attributes: [:id, :_destroy]
+          }
+      ]
+    end
   end
 end

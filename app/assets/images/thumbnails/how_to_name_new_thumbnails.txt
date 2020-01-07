@@ -1,0 +1,3 @@
+Directories are named Collection.title.first.parameterize.underscore
+Thumbnails are named #{first_fileset.id}-thumb.jpg
+Example: official_gazettes_of_the_province_of_british_columbia/00b9236d-605e-4d3f-bf30-ad9a108a9f02-thumb.jpg

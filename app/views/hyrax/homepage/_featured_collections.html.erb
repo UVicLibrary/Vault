@@ -1,0 +1,16 @@
+<h2 class="sr-only"><%= t('hyrax.homepage.featured_works.title') %></h2>
+<% if @featured_collection_list.featured_collections.empty? %>
+  <p>You have no featured collections</p>
+<% else %>
+  <% @featured_collection_list.add_solr_document_to_collections %>
+  <%= form_for @featured_collection_list do |f| %>
+    <div class="panel-group dd" id="dd">
+      <ol id="featured_collections">
+        <%= f.fields_for :featured_collections do |featured| %>
+          <%= render 'sortable_featured', f: featured, presenter: featured.object.presenter, featured_category: FeaturedCollection %>
+        <% end %>
+      </ol>
+    </div>
+    <%= f.submit("Save order", class: 'btn btn-default') %>
+  <% end %>
+<% end %>

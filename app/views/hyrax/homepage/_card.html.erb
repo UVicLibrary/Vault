@@ -1,0 +1,17 @@
+<div class="example-1 card col-lg-4 col-md-4 col-sm-4 col-xs-12">
+    <div class="wrapper" style="background: url(<%= new_path %>); background-size: cover; background-position: center;">
+      <!-- First Card -->
+      <div class="data">
+        <div class="content">
+          <h2 class="title"><%= presenter.title.first %></h2>
+          <p class="text">
+            <% if presenter.description.first.present? %>
+              <%= presenter.description.first.truncate(100, separator: /\s/) %>
+            <% else %>
+              No description available.
+            <% end %>
+          </p>
+        </div><!-- .content -->
+      </div><!-- .data -->
+    </div><!-- .wrapper -->
+</div><!-- .card -->
