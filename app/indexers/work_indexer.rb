@@ -13,7 +13,7 @@ class WorkIndexer < Hyrax::WorkIndexer
   # Uncomment this block if you want to add custom indexing behavior:
    def generate_solr_document
     super.tap do |solr_doc|
-      solr_doc['title_sort_tesi'] = object.title.first unless object.title.first.nil?
+      solr_doc['title_sort_ssi'] = object.title.first unless object.title.first.nil?
 
       if solr_doc['date_created_tesim']
         date = Date.edtf(solr_doc['date_created_tesim'].first.gsub(/~|#/,'').gsub('X','0')) # Account for special characters; see https://github.com/UVicLibrary/Vault/issues/36
