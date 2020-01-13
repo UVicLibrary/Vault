@@ -16,7 +16,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       solr_doc['title_sort_tesi'] = object.title.first unless object.title.first.nil?
 
       if solr_doc['date_created_tesim']
-        date = Date.edtf(solr_doc['date_created_tesim'].first)
+        date = Date.edtf(solr_doc['date_created_tesim'].first.gsub(/~|#/,'').gsub('X','0')) # Account for special characters; see https://github.com/UVicLibrary/Vault/issues/36
         if date.class == EDTF::Interval
           solr_doc['year_sort_dtsim'] = solrize(date)
           solr_doc['year_sort_dtsi'] = solrize(date).first
