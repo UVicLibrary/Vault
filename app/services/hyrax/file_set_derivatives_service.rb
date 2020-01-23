@@ -71,7 +71,7 @@ module Hyrax
           new_pdf.save first_page_path
           # Resize, create and save a thumbnail in assets directory
           # Find what collection the fileset belongs to and create a folder named after it
-          collection = Collection.find(@file_set.parent.first.member_of_collection_ids.first)
+          collection = Collection.find(@file_set.parent.member_of_collection_ids.first)
           collection_title = collection.title.first.parameterize.underscore
           # If directory doesn't already exist, create one
           path_prefix = "/usr/local/rails/vault/public/pdf_thumbnails/#{collection_title}"
