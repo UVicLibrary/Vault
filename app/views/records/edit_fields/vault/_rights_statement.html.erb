@@ -1,4 +1,4 @@
-<% rights_statements = VaultRightsStatementService.new %>
+<% rights_statements = VaultRightsStatementsService.new %>
 <%= f.input :rights_statement,
   collection: rights_statements.select_active_options,
   include_blank: false,

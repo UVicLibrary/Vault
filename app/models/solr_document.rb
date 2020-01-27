@@ -140,11 +140,11 @@ class SolrDocument
     dc = fetch(Solrizer.solr_name(field_name), [])
     humanized = []
     Array(dc).each do |date|
-      if Date.edtf(date).nil?
+      if Date.edtf(date.gsub("X", "u")).nil?
         humanized << date + " (unable to parse)"
         next
       end
-      humanized << Date.edtf(date).humanize
+      humanized << Date.edtf(date.gsub("X", "u")).humanize
     end
     humanized
   end
