@@ -39,7 +39,8 @@ module Hyrax
     # @return [Hash] the hash straight form rsolr
     def get(query = nil, **args)
       # Make Hyrax.config.solr_select_path the default SOLR path
-      solr_path = args.delete(:path) || "http://perdita.library.uvic.ca:8983/solr/25e3429b-34de-4bbc-aa3e-167cc6ddde64"  # Hyrax.config.solr_select_path
+      byebug
+      solr_path = args.delete(:path) || Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url#"http://perdita.library.uvic.ca:8983/solr/25e3429b-34de-4bbc-aa3e-167cc6ddde64"  # Hyrax.config.solr_select_path
       args = args.merge(q: query) unless query.blank?
 
       if use_valkyrie
