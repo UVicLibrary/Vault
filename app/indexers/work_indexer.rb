@@ -13,9 +13,9 @@ class WorkIndexer < Hyrax::WorkIndexer
   # Uncomment this block if you want to add custom indexing behavior:
    def generate_solr_document
     super.tap do |solr_doc|
-      solr_doc['title_sort_ssi'] = object.title.first unless object.title.first.nil?
+      solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
-      if object.date_created
+      unless object.date_created.empty?
         solr_doc['year_sort_dtsim'] = []
         object.date_created.each do |solr_date|
           # modify date so that the interval encompasses the years on the last interval date
@@ -27,7 +27,7 @@ class WorkIndexer < Hyrax::WorkIndexer
             solr_doc['year_sort_dtsim'] += date.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
           else # date.class == Date
-            solr_doc['year_sort_dtsim'] += date.strftime("%FT%TZ")
+            solr_doc['year_sort_dtsim'] << date.strftime("%FT%TZ")
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
           end
         end
