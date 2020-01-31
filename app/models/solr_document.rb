@@ -139,12 +139,14 @@ class SolrDocument
   def edtf_date(field_name)
     dc = fetch(Solrizer.solr_name(field_name), [])
     humanized = []
-    Array(dc).each do |date|
-      if Date.edtf(date.gsub("X", "u")).nil?
-        humanized << date + " (unable to parse)"
+    Array(dc).each do |solr_date|
+      temp_date = solr_date.gsub('/..','').gsub('%','?~').gsub(/\/$/,'')
+      date = temp_date.include?("/") ? temp_date.gsub(/([0-9]+X+\/)([0-9]+)(X+)/){"#{$1}"+"#{$2.to_i+1}"+"#{$3}"}.gsub("X","u") : temp_date
+      if Date.edtf(date.gsub("XX-","uu-").gsub("X-", "u-")).nil?
+        humanized << solr_date + " (unable to parse)"
         next
       end
-      humanized << Date.edtf(date.gsub("X", "u")).humanize
+      humanized << Date.edtf(date.gsub("XX-","uu-").gsub("X-", "u-")).humanize
     end
     humanized
   end
