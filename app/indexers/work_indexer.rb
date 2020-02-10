@@ -24,7 +24,7 @@ class WorkIndexer < Hyrax::WorkIndexer
           parsed_date = Date.edtf(date.gsub("XX-","uu-").gsub("X-", "u-"))#.first.gsub(/~|#/,'').gsub('X','0')) # Account for special characters; see https://github.com/UVicLibrary/Vault/issues/36
           # Returns formatted string with time set to midnight; e.g. Wed, 01 Jan 1913 => "1913-01-01T00:00:00Z"
           # https://lucene.apache.org/solr/guide/7_7/working-with-dates.html
-          if (parsed_date.class == EDTF::Interval || parsed_date.class == EDTF::Decade || parsed_date.class == EDTF::Century)
+          if ([EDTF::Interval, EDTF::Decade, EDTF::Century, EDTF::Season].include?(parsed_date.class))
             solr_doc['year_sort_dtsim'] += parsed_date.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
           else # date.class == Date
