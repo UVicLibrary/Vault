@@ -178,8 +178,8 @@ module Hyrax
           end
           image = MiniMagick::Image.open(saved_file)
           # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
-          feature_card_image = image.resize('500x900').write("#{dir_name}/#{@collection.id}_card.jpg")
-          thumbnail = image.resize('150x300').write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
+          feature_card_image = image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
+          thumbnail = image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
         end
 
         process_member_changes
