@@ -113,6 +113,7 @@ gem 'mods', '~> 2.1'
 gem 'riiif', '~> 1.1'
 
 gem 'iiif_manifest', '~> 0.5.0'
+#gem 'iiif-presentation'
 
 group :aws, :test do
   gem 'carrierwave-aws'
