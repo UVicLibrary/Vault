@@ -1,4 +1,5 @@
 require 'iiif_manifest'
+#require 'iiif/presentation'
 
 module Hyrax
   module WorksControllerBehavior
@@ -126,6 +127,33 @@ module Hyrax
 
     def manifest
       headers['Access-Control-Allow-Origin'] = '*'
+
+      if request.base_url.include?("vault")
+        manifest = IIIF::Service.parse(JSON.parse(manifest_builder.to_h.to_json))
+        manifest.sequences.first.canvases.each do |canvas|
+          fs_id = canvas["@id"].split('/').last
+          fs = ::FileSet.find(fs_id)
+          resource = canvas.images.first.resource
+          # Add title and description
+          resource.label = fs.title.first
+          resource.description = fs.description.first
+          # Add other metadata
+          metadata_labels = fs.attribute_names -
+              ["head", "tail", "date_uploaded", "depositor", "date_modified",
+               "relative_path", "import_url", "based_near", "access_control_id",
+               "embargo_id", "lease_id", "label", "description", "title"] # Don't need these last 3 because they are handled separately
+          metadata = metadata_labels.each_with_object([]) do |label_name, array|
+            key = label_name.gsub("_"," ").capitalize
+            value = fs[label_name].first
+            next unless value.present?
+            array.push(key => value)
+          end
+          resource.metadata = metadata
+        end
+        json = manifest.to_json(pretty: true)
+      else
+        json = sanitize_manifest(JSON.parse(manifest_builder.to_h.to_json))
+      end
 
 
       respond_to do |wants|
