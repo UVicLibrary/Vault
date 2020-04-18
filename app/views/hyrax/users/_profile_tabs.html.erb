@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#contributions"><i class="glyphicon glyphicon-star"></i> <%= I18n.t('hyrax.user_profile.tab_highlighted') %></a></li>
+  <li><a href="#activity_log"><i class="glyphicon glyphicon-calendar"></i> <%= I18n.t('hyrax.user_profile.tab_activity') %></a></li>
+  <li><a href="#contact_user"><i class="glyphicon glyphicon-envelope"></i> Contact</a></li>
+</ul>
+
+<div class="tab-content">
+  <%= render 'contributions', presenter: presenter %>
+  <%= render 'activity', presenter: presenter %>
+  <%= render 'contact_user' %>
+</div> <!-- /tab-content -->

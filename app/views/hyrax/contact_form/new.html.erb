@@ -1,0 +1,4 @@
+<div class="alert alert-info">
+  <%= render 'hyrax/contact_form/directions' %>
+</div>
+<%= render partial: 'hyrax/contact_form/form', locals: { user_id: false, contact_form: @contact_form, url: hyrax.contact_form_index_path } %>

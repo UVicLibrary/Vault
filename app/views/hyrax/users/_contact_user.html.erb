@@ -1,0 +1,3 @@
+<div class="tab-pane" id="contact_user">
+  <%= render partial: 'hyrax/contact_form/form', locals: { user_id: @presenter.user.id, contact_form: Hyrax::ContactUserForm.new, url: main_app.contact_user_form_index_path } %>
+</div>

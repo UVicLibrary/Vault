@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     end
   end
 
+  # For contacting users directly from the user#show page
+  post 'hyrax/contact_user' => 'hyrax/contact_user_form#create', as: :contact_user_form_index
+  get 'hyrax/contact_user' => 'hyrax/contact_user_form#new'
+
   # Upload a collection thumbnail
   post "/dashboard/collections/:id/delete_uploaded_thumbnail", to: "hyrax/dashboard/collections#delete_uploaded_thumbnail", as: :delete_uploaded_thumbnail
 

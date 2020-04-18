@@ -73,8 +73,10 @@ module Hyrax
           # Ensure we have an up-to-date copy of the members association, so that we append to the end of the list.
           work.reload unless work.new_record?
           file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
-          file_set.creator = work.creator
-          file_set.save
+          if file_set.creator.blank? # Only set the file set's creator to the work creator if there isn't one provided
+            file_set.creator = work.creator
+            file_set.save
+          end
           work.ordered_members << file_set
           work.representative = file_set if work.representative_id.blank?
           work.thumbnail = file_set if work.thumbnail_id.blank?
