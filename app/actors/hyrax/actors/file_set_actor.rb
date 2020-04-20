@@ -75,8 +75,8 @@ module Hyrax
           file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
           if file_set.creator.blank? # Only set the file set's creator to the work creator if there isn't one provided
             file_set.creator = work.creator
-            file_set.save
           end
+          file_set.save
           work.ordered_members << file_set
           work.representative = file_set if work.representative_id.blank?
           work.thumbnail = file_set if work.thumbnail_id.blank?
