@@ -8,7 +8,7 @@ module Hyrax
       # Check for spam
       return if @contact_form.spam?
       headers = @contact_form.headers.dup
-      headers[:subject] << " [#{host_for_tenant}]"
+      headers[:subject] = "#{headers[:subject]} #{default_url_options[:host]}"
       if @user.present?
         headers["to"] << @user.email
       end
