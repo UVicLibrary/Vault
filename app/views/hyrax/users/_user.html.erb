@@ -2,11 +2,9 @@
   <div class="panel-heading">
     <%= image_tag user.avatar.url(:thumb), width: 100 if user.avatar.present? %>
     <h3>
-      <% if user.name != user.email %>
-        <%= user.name %><br />
-      <% else %>
-        <%= user.email.split("@").first %><br />
-      <% end %>
+      <h3>
+          <%= user.name %><br />
+      </h3>
       <%#= user.user_key %>
     </h3>
   </div>
