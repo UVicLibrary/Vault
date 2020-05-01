@@ -73,7 +73,7 @@ module Hyrax
           # Ensure we have an up-to-date copy of the members association, so that we append to the end of the list.
           work.reload unless work.new_record?
           file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
-          if file_set.creator.blank? # Only set the file set's creator to the work creator if there isn't one provided
+          if file_set.creator.blank? or file_set.creator == work.depositor # Only set the file set's creator to the work creator if there isn't one provided
             file_set.creator = work.creator
           end
           file_set.save
