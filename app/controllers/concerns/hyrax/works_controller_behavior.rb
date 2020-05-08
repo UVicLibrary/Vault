@@ -1,5 +1,5 @@
 require 'iiif_manifest'
-#require 'iiif/presentation'
+require 'iiif/presentation'
 
 module Hyrax
   module WorksControllerBehavior
@@ -128,8 +128,11 @@ module Hyrax
     def manifest
       headers['Access-Control-Allow-Origin'] = '*'
 
-      if request.base_url.include?("vault")
+      if Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("vault")
+        # Use the manifest created by the IIIF Manifest gem as a base
         manifest = IIIF::Service.parse(JSON.parse(manifest_builder.to_h.to_json))
+        # Assign work-level metadata (not just required fields)
+        manifest.metadata = presenter.manifest_metadata
         manifest.sequences.first.canvases.each do |canvas|
           fs_id = canvas["@id"].split('/').last
           fs = ::FileSet.find(fs_id)
@@ -143,7 +146,7 @@ module Hyrax
                "relative_path", "import_url", "based_near", "access_control_id",
                "embargo_id", "lease_id", "label", "description", "title"] # Don't need these last 3 because they are handled separately
           metadata = metadata_labels.each_with_object([]) do |label_name, array|
-            key = label_name.gsub("_"," ").capitalize
+            key = label_name.to_s.humanize
             value = fs[label_name].first
             next unless value.present?
             array.push(key => value)
