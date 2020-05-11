@@ -20,20 +20,20 @@
             }
         </style>
         <script type="text/javascript">
-        window.addEventListener('uvLoaded', function(e) { 
+        window.addEventListener('uvLoaded', function(e) {
                 urlDataProvider = new UV.URLDataProvider(true);
                 var formattedLocales;
                 var locales = urlDataProvider.get('locales', '');
-    
+
                 if (locales) {
                     var names = locales.split(',');
                     formattedLocales = [];
-    
+
                     for (var i in names) {
                         var nameparts = String(names[i]).split(':');
                         formattedLocales[i] = {name: nameparts[0], label: nameparts[1]};
                     }
-                    
+
                 } else {
                     formattedLocales = [
                         {
@@ -41,7 +41,7 @@
                         }
                     ]
                 }
-    
+
                 uv = createUV('#uv', {
                     root: '.',
                     iiifResourceUri: urlDataProvider.get('manifest'),
@@ -62,28 +62,28 @@
 
 
         </script>
-    </head>    
+    </head>
     <body>
-    
+
         <div id="uv" class="uv"></div>
-    
+
         <script>
 
             $(function() {
-        
+
                 var $UV = $('#uv');
-        
+
                 function resize() {
                     var windowWidth = window.innerWidth;
                     var windowHeight = window.innerHeight;
                     $UV.width(windowWidth);
                     $UV.height(windowHeight);
                 }
-        
+
                 $(window).on('resize' ,function() {
                     resize();
                 });
-                
+
                 resize();
 
             });
@@ -102,7 +102,7 @@
              $('.iiif-metadata-component').append(template);
              generateMetadata();
              // Refresh the metadata panel if user clicks the thumbnail gallery, arrows, or does an image search
-              $('.thumbsView').add('.prevOptions').add('.nextOptions').add('.go').on('click', function() {
+              $('.thumbsView').add('.paging.btn').add('a.go.btn.btn-primary').on('click', function() {
                  generateMetadata();
               });
               // Or prese enter in the image search bar
@@ -122,7 +122,7 @@
                  //$('.iiif-metadata-component').empty();
                  var selected = $('.thumbs').find('.selected'); // the current thumbnail
 	         var index = parseInt(selected.attr('id').replace('thumb',''));
-                 // Grab title, description, and other metadata from the manifest 
+                 // Grab title, description, and other metadata from the manifest
                  var title = data.sequences[0].canvases[index].images[0].resource.label;
                  var description = data.sequences[0].canvases[index].images[0].resource.description;
                  var metadata = data.sequences[0].canvases[index].images[0].resource.metadata;
@@ -152,7 +152,7 @@
               return item;
             }// generateItem()
 
-                         
+
             }// generateMetadata
 
 
