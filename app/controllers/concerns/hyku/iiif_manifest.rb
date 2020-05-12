@@ -28,7 +28,7 @@ module Hyku
           metadata_fields = Hyrax.config.iiif_metadata_fields
           metadata = metadata_fields.each_with_object([]) do |field, array|
             label = field.to_s.humanize.capitalize
-            unless doc.send(field).blank?
+            unless doc.send(field).blank? or field == :description
               value = doc.send(field).first
               array.push(label => value)
             end
