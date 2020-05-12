@@ -102,8 +102,12 @@
              $('.iiif-metadata-component').append(template);
              generateMetadata();
              // Refresh the metadata panel if user clicks the thumbnail gallery, arrows, or does an image search
-              $('.thumbsView').add('.paging.btn').add('a.go.btn.btn-primary').on('click', function() {
+              $('.thumbsView').add('.prevOptions').add('nextOptions').add('a.go.btn.btn-primary').on('click', function() {
                  generateMetadata();
+              });
+              // On clicking next or prev arrows in the center panel
+              $('#mainPanel').on('click', '.paging', function(){
+                generateMetadata();
               });
               // Or prese enter in the image search bar
               $('.autoCompleteText').keypress(function(event) {

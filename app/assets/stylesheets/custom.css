@@ -1,7 +1,7 @@
 /* Page-level (file set) transcripts in Universal Viewer (UV) */
 /* and work and file set level transcripts on show pages */
 .item .values .value, .attribute-transcript {
-  white-space: pre-wrap;
+  white-space: pre-wrap !important;
 }
 
 
