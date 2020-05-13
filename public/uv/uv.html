@@ -102,11 +102,11 @@
              $('.iiif-metadata-component').append(template);
              generateMetadata();
              // Refresh the metadata panel if user clicks the thumbnail gallery, arrows, or does an image search
-              $('.thumbsView').add('.prevOptions').add('nextOptions').add('a.go.btn.btn-primary').on('click', function() {
+              $('.thumbsView').add('.prevOptions').add('.nextOptions').add('a.go.btn.btn-primary').on('click', function() {
                  generateMetadata();
               });
               // On clicking next or prev arrows in the center panel
-              $('#mainPanel').on('click', '.paging', function(){
+              $(document).on('click', '.paging', function(){
                 generateMetadata();
               });
               // Or prese enter in the image search bar
@@ -134,11 +134,13 @@
                 // Append the metadata for the first item/file set
                   var items = $('<div class="items"></div>');
                   items.append(generateItem('Title', title));
-                  items.append(generateItem('Description', description));
+                  if (typeof description !== 'undefined') {
+                      items.append(generateItem('Description', description));
+                  }
                   for (var i = 0; i < metadata.length; i++) {
                      var obj = metadata[i];
                      for(var key in obj) {
-                       items.append(generateItem(key.toString(), obj[key]));
+                        items.append(generateItem(key.toString(), obj[key]));
                      }
                    }
                   $('.iiif-metadata-component .items').replaceWith(items);
@@ -151,7 +153,11 @@
               var item = $(document.createElement("div")).addClass("item" + " _" + label.toLowerCase());
               var label = $(document.createElement("div")).addClass("label").text(label);
               var values = $(document.createElement("div")).addClass("values");
-              values.html('<div class="value">' + value + '</div>');
+              if (label.html() == 'Transcript') {
+                  values.html('<div class="value" style="white-space: pre-wrap;">' + value + '</div>');
+              } else {
+                  values.html('<div class="value">' + value + '</div>');
+              }
               item.append(label, values);
               return item;
             }// generateItem()

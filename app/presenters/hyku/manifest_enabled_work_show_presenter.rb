@@ -28,10 +28,12 @@ module Hyku
     def manifest_metadata
       metadata = []
       (metadata_fields-[:format]).each do |field|
-        metadata << {
-          'label' => field.to_s.humanize.capitalize,
-          'value' => get_metadata_value(field)
-        }
+        unless field == :description # Prevents duplicate description in UV
+          metadata << {
+            'label' => field.to_s.humanize.capitalize,
+            'value' => get_metadata_value(field)
+          }
+        end
       end
       metadata
     end

@@ -11,14 +11,16 @@ module Hyku
     # @return [Array] array of metadata hashes to include in the manifest
     # See https://github.com/samvera/iiif_manifest
     def manifest_metadata
-      metadata_fields.each_with_object([]) do |field, array|
+      metadata = []
+      metadata_fields.each_with_object(metadata) do |field|
         unless get_metadata_value(field).blank?
-              array << {
+          metadata << {
                   'label' => field.to_s.humanize.capitalize,
                   'value' => get_metadata_value(field)
               }
-          end
         end
+      end
+      metadata
     end
 
     private
