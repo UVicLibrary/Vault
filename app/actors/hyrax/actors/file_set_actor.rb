@@ -77,6 +77,7 @@ module Hyrax
             file_set.creator = work.creator
           end
           file_set.save
+          file_set.update_index
           work.ordered_members << file_set
           work.representative = file_set if work.representative_id.blank?
           work.thumbnail = file_set if work.thumbnail_id.blank?
