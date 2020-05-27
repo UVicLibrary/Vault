@@ -16,6 +16,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # For (dis)allowing downloads for an entire collection
+  post '/dashboard/collections/:id/toggle_downloads', to: 'hyrax/dashboard/collections#toggle_downloads', as: 'toggle_downloads'
+
   # For contacting users directly from the user#show page
   post 'hyrax/contact_user' => 'hyrax/contact_user_form#create', as: :contact_user_form_index
   get 'hyrax/contact_user' => 'hyrax/contact_user_form#new'

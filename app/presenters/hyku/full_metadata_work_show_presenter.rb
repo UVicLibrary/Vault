@@ -23,6 +23,10 @@ module Hyku
       metadata
     end
 
+    def downloadable?
+      GenericWork.find(@solr_document.id).downloadable
+    end
+
     private
 
     # Expand this to include other fields besides the required fields (default)

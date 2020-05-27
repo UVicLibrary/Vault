@@ -34,20 +34,19 @@ module Hyrax
     end
 
     # Samvera doesn't use download user/groups, so make it an alias to read
-    # Grant all groups with read or edit access permission to download
     def download_groups(id)
       doc = permissions_doc(id)
       return [] if doc.nil?
-      groups = Array(doc[self.class.read_group_field]) + Array(doc[self.class.edit_group_field])
+      groups = Array(doc[self.class.edit_group_field]) # Remove ability for public users to download works unless they're flagged as downloadable
       Rails.logger.debug("[CANCAN] download_groups: #{groups.inspect}")
       groups
     end
 
-    # Grant all users with read or edit access permission to download
+    # Grant all users with edit access permission to download
     def download_users(id)
       doc = permissions_doc(id)
       return [] if doc.nil?
-      users = Array(doc[self.class.read_user_field]) + Array(doc[self.class.edit_user_field])
+      users = Array(doc[self.class.edit_user_field]) # Remove ability for public users to download works unless they're flagged as downloadable
       Rails.logger.debug("[CANCAN] download_users: #{users.inspect}")
       users
     end
