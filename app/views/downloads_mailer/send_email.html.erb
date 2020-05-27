@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<p>Hello,</p>
+<% if @downloadable %>
+  <% if @downloadable == true %>
+    <p>All files in <%= link_to @collection.title[0], @url %> are downloadable.</p>
+  <% else %>
+    <p>All files in <%= link_to @collection.title[0], @url %> are not downloadable by public users.</p>
+  <% end %>
+<% end %>
+</body>
+</html>

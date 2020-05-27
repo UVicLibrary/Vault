@@ -8,6 +8,9 @@ module Hyrax
     included do
       property :label, predicate: ActiveFedora::RDF::Fcrepo::Model.downloadFilename, multiple: false
 
+      # Used to allow/disallow downloads
+      property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
+
       property :relative_path, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#relativePath'), multiple: false
 
       property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false

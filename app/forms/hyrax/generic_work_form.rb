@@ -5,7 +5,7 @@ module Hyrax
     include Hyrax::FormTerms
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions
-    self.terms += [:resource_type, :alternative_title, :license, :edition, :geographic_coverage, :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics, :has_format, :physical_repository, :collection, :provenance, :provider, :sponsor, :genre, :format, :archival_item_identifier, :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+    self.terms += [:resource_type, :alternative_title, :license, :edition, :geographic_coverage, :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics, :has_format, :physical_repository, :collection, :provenance, :provider, :sponsor, :genre, :format, :archival_item_identifier, :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year, :downloadable]
     self.required_fields += [:provider] 
     self.required_fields -= [:keyword]
     def self.secondary_terms

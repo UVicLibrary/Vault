@@ -1,0 +1,9 @@
+Hello,
+
+<% if @downloadable %>
+  <% if @downloadable == true %>
+    All files in <%= @collection.title[0] %> are downloadable.
+  <% else %>
+    All files in <%= @collection.title[0] %> are not downloadable by public users.
+  <% end %>
+<% end %>

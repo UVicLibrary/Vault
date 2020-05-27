@@ -52,6 +52,7 @@ module Hyrax
     end
 
     def create
+      downloadable_to_boolean
       if actor.create(actor_environment)
         after_create_response
       else
@@ -95,6 +96,7 @@ module Hyrax
     end
 
     def update
+      downloadable_to_boolean
       if actor.update(actor_environment)
         after_update_response
       else
@@ -123,6 +125,12 @@ module Hyrax
     def inspect_work
       raise Hydra::AccessDenied unless current_ability.admin?
       presenter
+    end
+
+    def downloadable_to_boolean
+      if params[:generic_work][:downloadable].present?
+        params[:generic_work][:downloadable] = ActiveModel::Type::Boolean.new.cast(params[:generic_work][:downloadable])
+      end
     end
 
     def manifest

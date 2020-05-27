@@ -45,8 +45,16 @@ module Hyrax
       	  user_email = params[:user_email].gsub('-dot-', '.')
       	  visibility = params[:visibility]
       	  Hyrax::ChangeCollVisibilityJob.perform_later(params[:id], user_email, visibility, request.base_url)
-      	  format.js { render 'flash_msg.js.erb' } # Notify user that job has been enqueued
+      	  format.js { render 'queued_job_flash_msg.js.erb' } # Notify user that job has been enqueued
          end
+      end
+
+      # Make all works in the collection downloadable or non-downloadable
+      def toggle_downloads
+        respond_to do |format|
+          ToggleDownloadsJob.perform_later(params[:id], params[:user_email], params[:downloadable])
+          format.js { render 'queued_job_flash_msg.js.erb' } # Notify user that job has been enqueued
+        end
       end
 
       def deny_collection_access(exception)

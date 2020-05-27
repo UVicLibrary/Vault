@@ -1,0 +1,28 @@
+<div class="set-access-controls">
+
+  <h3>Visibility</h3>
+
+  <p><%= t('.para1') %></p>
+  <p><%= t('.para2') %></p>
+
+  <div class="form-group">
+    <label class="radio">
+      <input type="radio" id="visibility_open" name="<%= f.object_name %>[visibility]" value="<%= Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC %>" <% if @collection.open_access? %> checked="true"<% end %> /><strong><%= t('hyrax.visibility.open.text') %></strong> - <%= t('hyrax.visibility.open.note_html') %>
+    </label>
+    <label class="radio">
+      <input type="radio" id="visibility_registered" name="<%= f.object_name %>[visibility]" value="<%= Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>" <% if @collection.authenticated_only_access? %> checked="true"<% end %> /><strong><%= t('hyrax.visibility.authenticated.text', institution: institution_name) %></strong> - <%= t('hyrax.visibility.authenticated.note_html', institution: institution_name) %>
+    </label>
+    <label class="radio">
+      <input type="radio" id="visibility_restricted" name="<%= f.object_name %>[visibility]" value="<%= Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>" <% if @collection.private_access? %> checked="true"<% end %> /><strong><%= t('hyrax.visibility.restricted.text') %></strong>- <%= t('hyrax.visibility.restricted.note_html') %>
+    </label>
+  </div>
+
+</div>
+
+<section class="section-download-ability">
+  <h3>Downloads</h3>
+  <p>Turning this on will allow public users to download all files in this collection. Users who can edit files in a collection will still be able to download even if downloads are otherwise not allowed.</p>
+  <p>Currently, <strong><%=@collection.any_downloadable %></strong> works in this collection are downloadable.<p>
+  <%= link_to "Allow downloads", main_app.toggle_downloads_path(id: params[:id], user_email: current_user, downloadable: true), remote: :true, method: :post, class: 'btn btn-primary' %>
+  <%= link_to "Disallow downloads", main_app.toggle_downloads_path(id: params[:id], user_email: current_user, downloadable: false), remote: :true, method: :post, class: 'btn btn-default' %>
+</section>

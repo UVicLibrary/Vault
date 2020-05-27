@@ -9,9 +9,9 @@
       if params[:visibility]
         @visibility = params[:visibility]
         if @visibility == "public"
-          @url = "#{host}/collections/#{@collection.id}"
+          @url = "https://#{host}/collections/#{@collection.id}"
         else # == "private"
-          @url = "#{host}/dashboard/collections/#{@collection.id}"
+          @url = "https://#{host}/dashboard/collections/#{@collection.id}"
         end
       end
       # Send email
