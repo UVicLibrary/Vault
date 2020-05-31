@@ -45,7 +45,7 @@
                 uv = createUV('#uv', {
                     root: '.',
                     iiifResourceUri: urlDataProvider.get('manifest'),
-                    configUri: urlDataProvider.get('config'),
+                    configUri: 'uv-config.json',
                     collectionIndex: Number(urlDataProvider.get('c', 0)),
                     manifestIndex: Number(urlDataProvider.get('m', 0)),
                     sequenceIndex: Number(urlDataProvider.get('s', 0)),
@@ -124,8 +124,14 @@
 
                function success(data) { //if successful ajax request
                  //$('.iiif-metadata-component').empty();
-                 var selected = $('.thumbs').find('.selected'); // the current thumbnail
-	         var index = parseInt(selected.attr('id').replace('thumb',''));
+                   var selected = $('.thumbs').find('.selected'); // the current thumbnail
+
+                   if (typeof selected !== 'undefined') {
+                       var index = parseInt(selected.attr('id').replace('thumb',''));
+                    } else { // There are no thumbnails because there is only 1 image
+                       var index = 0;
+                    }
+
                  // Grab title, description, and other metadata from the manifest
                  var title = data.sequences[0].canvases[index].images[0].resource.label;
                  var description = data.sequences[0].canvases[index].images[0].resource.description;
@@ -137,12 +143,15 @@
                   if (typeof description !== 'undefined') {
                       items.append(generateItem('Description', description));
                   }
-                  for (var i = 0; i < metadata.length; i++) {
-                     var obj = metadata[i];
-                     for(var key in obj) {
-                        items.append(generateItem(key.toString(), obj[key]));
-                     }
-                   }
+                  if (typeof metadata !== 'undefined') {
+                      for (var i = 0; i < metadata.length; i++) {
+                          var obj = metadata[i];
+                          for (var key in obj) {
+                              items.append(generateItem(key.toString(), obj[key]));
+                          }
+                      }
+                  }
+
                   $('.iiif-metadata-component .items').replaceWith(items);
                }// function success
 

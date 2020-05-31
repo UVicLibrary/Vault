@@ -1,3 +1,10 @@
+/* Downloadable buttons in views/hyrax/dashboard/collections/_form_discovery */
+.downloadable {
+    border: none;
+    font-size: 1.15em;
+    margin-bottom: 0.5em;
+}
+
 /* Work and file set level transcripts on show pages */
 .attribute-transcript {
   white-space: pre-wrap;

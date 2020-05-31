@@ -29,7 +29,7 @@
       </li>
     <% end %>
 
-    <% if can?(:download, file_set.id) %>
+    <% if can?(:download, file_set.id) or file_set.parent.downloadable? %>
       <li role="menuitem" tabindex="-1">
         <%= link_to t('.download'),
                     hyrax.download_path(file_set),
