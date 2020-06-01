@@ -127,12 +127,6 @@ module Hyrax
       presenter
     end
 
-    def downloadable_to_boolean
-      if params[:generic_work][:downloadable].present?
-        params[:generic_work][:downloadable] = ActiveModel::Type::Boolean.new.cast(params[:generic_work][:downloadable])
-      end
-    end
-
     def manifest
       headers['Access-Control-Allow-Origin'] = '*'
 
@@ -174,6 +168,12 @@ module Hyrax
     end
 
     private
+
+      def downloadable_to_boolean
+        if params[:generic_work][:downloadable].present?
+          params[:generic_work][:downloadable] = ActiveModel::Type::Boolean.new.cast(params[:generic_work][:downloadable])
+        end
+      end
 
       def user_collections
         collections_service.search_results(:deposit)

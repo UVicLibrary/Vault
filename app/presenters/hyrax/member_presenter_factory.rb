@@ -64,7 +64,6 @@ module Hyrax
         source_ids = @work.class.to_s.include?("SolrDocument") ? @work._source['file_set_ids_ssim'] : @work.file_set_ids
         # If Solr (source_ids) doesn't have the same contents as ActiveFedora::SolrService (@file_set_ids)
         if source_ids.nil? # || (source_ids.length > @file_set_ids.length)
-          byebug
           solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url#"http://perdita.library.uvic.ca:8983/solr/25e3429b-34de-4bbc-aa3e-167cc6ddde64"
           response = solr.get 'select', params: {
             q: "*:*",
