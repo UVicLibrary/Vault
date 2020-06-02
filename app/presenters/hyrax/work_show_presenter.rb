@@ -57,6 +57,10 @@ module Hyrax
       Hyrax::Engine.routes.url_helpers.download_url(representative_presenter, host: request.host)
     end
 
+    def downloadable?
+      GenericWork.find(@solr_document.id).downloadable
+    end
+
     # @return [Boolean] render a IIIF viewer
     def iiif_viewer?
       representative_id.present? &&
@@ -246,10 +250,12 @@ module Hyrax
         end
       else
         Hyrax.config.iiif_metadata_fields.each do |field|
-          metadata << {
-            'label' => I18n.t("simple_form.labels.defaults.#{field}"),
-            'value' => Array.wrap(send(field))
-          }
+          unless Array.wrap(self.solr_document.send(field)).blank?
+            metadata << {
+              'label' => "#{field.to_s.capitalize.gsub('_', ' ')}",
+              'value' => Array.wrap(self.solr_document.send(field))
+            }
+          end
         end
       end
       metadata
