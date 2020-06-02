@@ -81,9 +81,9 @@ module Hyrax
     # Check whether works in the collection are downloadable
     def any_downloadable
       works = GenericWork.where(member_of_collection_ids_ssim: self.id)
-      if works.pluck(:downloadable).all?(true)
+      if works.pluck(:downloadable).all?
         "all"
-      elsif works.pluck(:downloadable).any?(true)
+      elsif works.pluck(:downloadable).any?
         "some"
       else
         "no"
