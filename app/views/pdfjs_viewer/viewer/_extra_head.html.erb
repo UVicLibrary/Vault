@@ -1,6 +1,6 @@
 <%# unless the parent work is downloadable, hide the download icon %>
 <% file_set = FileSet.find(params[:file].split("/").last.split("?").first) %>
-<% unless can?(:download, file_set.id) or file_set.parent.downloadable? or request.base_url.exclude?("vault") %>
+<% unless can?(:edit, file_set.id) or file_set.parent.downloadable? or request.base_url.exclude?("vault") %>
   <style>
     #download { display: none; }
   </style>

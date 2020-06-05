@@ -1,13 +1,12 @@
-  <video controls="controls" class="video-js vjs-default-skin" data-setup="{}" preload="auto">
+  <video controls="controls" id="video" controlsList="nodownload" class="video-js vjs-default-skin" data-setup="{}" preload="auto" style="max-width:100%;">
     <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
     <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
     Your browser does not support the video tag.
-    <% if can?(:download, file_set.id) or file_set.parent.downloadable? or request.base_url.exclude?("vault") %>
-      <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
-                  hyrax.download_path(file_set),
-                  data: { label: file_set.id },
-                  target: :_blank,
-                  id: "file_download" %>
-    <% end %>
   </video>
-
+  <% if allow_downloads?(file_set) %>
+    <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
+                hyrax.download_path(file_set),
+                data: { label: file_set.id },
+                target: :_blank,
+                id: "file_download" %>
+  <% end %>

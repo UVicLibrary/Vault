@@ -11,7 +11,7 @@
         <%#= pdfjs_viewer pdf_url:  hyrax.download_path(file_set), style: :full %>
         </iframe>
       <% end %>
-      <% if can?(:download, file_set.id) or file_set.parent.downloadable? or request.base_url.exclude?("vault") %>
+      <% if can?(:edit, file_set.id) or file_set.parent.downloadable? or request.base_url.exclude?("vault") %>
         <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
                     hyrax.download_path(file_set),
                     data: { turbolinks: false },

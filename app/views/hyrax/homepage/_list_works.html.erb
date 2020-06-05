@@ -25,7 +25,7 @@
         </div>
         <span class="works-list-description">
         <% if document.description.present? %>
-          <%= document.description.first.truncate(100, separator: /\s/) %>
+          <%= document.description.first.truncate(100, separator: /\s/).squish %>
         <% else %>
           No description available.
         <% end %>

@@ -23,7 +23,7 @@
           </div>
           <span class="works-list-description">
           <% if collection_presenter.description.present? %>
-            <%= collection_presenter.description&.first.truncate(100, separator: /\s/) %>
+            <%= collection_presenter.description&.first.truncate(100, separator: /\s/).squish %>
           <% else %>
             No description available.
           <% end %>
