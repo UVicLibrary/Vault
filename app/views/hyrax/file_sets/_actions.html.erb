@@ -1,4 +1,4 @@
-<% if file_set.user_can_perform_any_action? or allow_downloads?(file_set) %><%# if false, there are no actions so no point rendering %>
+<% if file_set.user_can_perform_any_action? %><%# if false, there are no actions so no point rendering %>
     <div class="btn-group">
 
       <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" id="dropdownMenu_<%= file_set.id %>" aria-haspopup="true" aria-expanded="false">
@@ -37,7 +37,6 @@
                       id: "file_download",
                       data: { label: file_set.id } %>
         </li>
-  <% end %>
 
   </ul>
   </div>

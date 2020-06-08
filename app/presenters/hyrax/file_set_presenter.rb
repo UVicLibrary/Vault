@@ -88,7 +88,7 @@ module Hyrax
     end
 
     def user_can_perform_any_action?
-      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || current_ability.can?(:download, id)
+      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || ::FileSet.find(self.id).parent.downloadable?
     end
 
     private
