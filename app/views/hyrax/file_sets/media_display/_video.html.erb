@@ -2,7 +2,7 @@
     <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
     <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
     Your browser does not support the video tag.
-  </video>
+  </video><br/>
   <% if allow_downloads?(file_set) %>
     <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                 hyrax.download_path(file_set),
