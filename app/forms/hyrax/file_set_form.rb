@@ -2,9 +2,15 @@ module Hyrax
   class FileSetForm < Hyrax::Forms::FileSetEditForm
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions
-    self.terms += [:resource_type, :alternative_title, :geographic_coverage, :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics, :has_format, :physical_repository, :provenance, :provider, :sponsor, :genre, :format, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
-    self.required_fields += [:date_created, :subject, :provider, :genre, :format, :resource_type] 
-    self.required_fields -= [:keyword, :license] 
+    # :date_created, :resource_type are inherited from FileSetEditForm.terms
+    self.terms += [:genre, :provider, :format, :alternative_title, :geographic_coverage,
+                   :coordinates, :chronological_coverage, :extent,
+                   :additional_physical_characteristics, :has_format,
+                   :physical_repository, :provenance, :provider, :sponsor, :genre,
+                   :format, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+
+    # Only required field should be :title
+    self.required_fields -= [:keyword, :license, :creator]
     
     # Fields that are automatically drawn on the page above the fold
       def self.primary_terms

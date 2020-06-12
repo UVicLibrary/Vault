@@ -56,7 +56,7 @@ class CatalogController < ApplicationController
       config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
       config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5
       config.add_facet_field solr_name("resource_type", :facetable), label: 'Resource Type', limit: 5, helper_method: :resource_type_links
-      config.add_facet_field solr_name('year', :facetable), label: 'Date', limit: 5
+      config.add_facet_field 'year_sort_dtsim', label: 'Year', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
       config.add_facet_field solr_name("geographic_coverage_label", :facetable), label: 'Geographic Coverage', limit: 5
       config.add_facet_field solr_name("subject", :facetable), limit: 5
       config.add_facet_field solr_name("language", :facetable), limit: 5
