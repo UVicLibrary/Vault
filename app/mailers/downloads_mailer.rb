@@ -6,7 +6,7 @@ class DownloadsMailer < HykuMailer
     @collection = Collection.find(params[:id])
     host = "https://vault.library.uvic.ca"
     if params[:downloadable]
-      @downloadable = params[:downloadable]
+      @downloadable = ActiveModel::Type::Boolean.new.cast(params[:downloadable])# "true" => true
       @url = "#{host}/dashboard/collections/#{@collection.id}"
     end
     # Send email

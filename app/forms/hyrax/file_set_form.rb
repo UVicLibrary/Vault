@@ -14,7 +14,7 @@ module Hyrax
     
     # Fields that are automatically drawn on the page above the fold
       def self.primary_terms
-        required_fields
+        [:title, :description, :transcript]
       end
 
       # Fields that are automatically drawn on the page below the fold
@@ -36,7 +36,8 @@ module Hyrax
             provider_attributes: [:id, :_destroy],
             subject_attributes: [:id, :_destroy],
             geographic_coverage_attributes: [:id, :_destroy],
-            genre_attributes: [:id, :_destroy]
+            genre_attributes: [:id, :_destroy],
+            transcript: []
           }
       ]
     end

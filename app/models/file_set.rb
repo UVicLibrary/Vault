@@ -102,9 +102,12 @@ class FileSet < ActiveFedora::Base
   accepts_nested_attributes_for :subject, reject_if: id_blank, allow_destroy: true
   accepts_nested_attributes_for :geographic_coverage, reject_if: id_blank, allow_destroy: true
   accepts_nested_attributes_for :genre, reject_if: id_blank, allow_destroy: true
-  
-  
-  
+
+
+  def required?(term)
+    Hyrax::Forms::FileSetForm.required_fields.include?(term)
+  end
+
 	def pdf_thumbnail_path
 		gw = GenericWork.where(member_ids_ssim: self.id).first
 		if gw.present? && gw.member_of_collections.first.present?
