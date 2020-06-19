@@ -39,21 +39,25 @@ module Hyrax
 
       load_and_authorize_resource except: [:index, :create], instance_name: :collection
 
-      def change_coll_visibility
+      def toggle_visibility
         respond_to do |format|
-      	  # Params passed in from hyrax/dashboard/collections/_show_actions.html.erb
-      	  user_email = params[:user_email].gsub('-dot-', '.')
-      	  visibility = params[:visibility]
-      	  Hyrax::ChangeCollVisibilityJob.perform_later(params[:id], user_email, visibility, request.base_url)
-      	  format.js { render 'queued_job_flash_msg.js.erb' } # Notify user that job has been enqueued
-         end
+          # Params passed in from hyrax/dashboard/collections/_show_actions.html.erb
+          user_email = params[:user_email].gsub('-dot-', '.')
+          visibility = params[:visibility]
+          Hyrax::ToggleVisibilityJob.perform_later(params[:id], user_email, visibility, request.base_url)
+          format.js {
+            render 'render_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
+          }
+        end
       end
 
       # Make all works in the collection downloadable or non-downloadable
       def toggle_downloads
         respond_to do |format|
           ToggleDownloadsJob.perform_later(params[:id], params[:user_email], params[:downloadable])
-          format.js { render 'queued_job_flash_msg.js.erb' } # Notify user that job has been enqueued
+          format.js {
+            render 'render_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
+          }
         end
       end
 

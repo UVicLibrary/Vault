@@ -31,7 +31,7 @@ Rails.application.routes.draw do
   post "/dashboard/file_path_checker/upload", to: "file_path_checker#upload", as: :check_csv_upload
 
   # For changing collection visibility
-  post '/dashboard/collections/:id/coll_visibility', to: 'hyrax/dashboard/collections#change_coll_visibility', as: 'coll_visibility'
+  post '/dashboard/collections/:id/toggle_visibility', to: 'hyrax/dashboard/collections#toggle_visibility', as: 'toggle_visibility'
 
   get 'status', to: 'status#index'
 

@@ -1,5 +1,5 @@
 module Hyrax
-  class ChangeCollVisibilityJob < Hyrax::ApplicationJob
+  class ToggleVisibilityJob < Hyrax::ApplicationJob
   # Params passed in from views/hyrax/dashboard/collections/_show_actions.html.erb when button is clicked
   # user_email = the email address of user who started the job
   # visibility = "public" or "private"

@@ -54,9 +54,9 @@
 
 <!-- Change visibility of the collection, all of its works, and all of its filesets -->
 <% if can? :edit, presenter.solr_document %>
-    <%= link_to "Make public", main_app.coll_visibility_path(id: presenter.id, user_email: current_user, visibility: 'public'),
+    <%= link_to "Make public", main_app.toggle_visibility_path(id: presenter.id, user_email: current_user, visibility: 'public'),
     remote: :true, method: :post, class: 'btn btn-default' %>
-    <%= link_to "Make private", main_app.coll_visibility_path(id: presenter.id, user_email: current_user, visibility: 'private'),
+    <%= link_to "Make private", main_app.toggle_visibility_path(id: presenter.id, user_email: current_user, visibility: 'private'),
     remote: :true, method: :post, class: 'btn btn-default' %>
 <% end %>
 </div>
