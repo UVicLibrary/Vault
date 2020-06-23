@@ -1,14 +1,13 @@
-<%= simple_form_for [main_app, curation_concern], html: { multipart: true, class: 'nav-safety' } do |f| %>
+<%= simple_form_for [main_app, @form], html: { data: { behavior: 'work-form',
+                                                       'param-key' => @form.model_name.param_key }, multipart: true, class: 'nav-safety' } do |f| %>
   <div>
-    <% Hyrax::FileSetForm.primary_terms.each do |term| %>
-      <% if f.object.has_attribute?(term.to_s) %>
-        <% if term == :title %>
-          <%= f.input :title, input_html: { value: f.object.title.first }, required: f.object.required?(term) %>
-        <% elsif f.object.class.multiple?(term.to_s) %><%# Make trancript box a bit bigger %>
-          <%= f.input term, as: :multi_value, input_html: { rows: '14', type: 'textarea', value: f.object.attributes[term.to_s].first }, required: f.object.required?(term) %>
-        <% else %>
-          <%= f.input term, as: :text, input_html: { rows: '14', type: 'textarea' }, required: f.object.required?(term) %>
-        <% end %>
+    <% f.object.class.primary_terms.each do |term| %>
+      <% if term == :title %>
+        <%= f.input :title, input_html: { value: f.object.title.first }, required: f.object.required?(term) %>
+        <% elsif f.object.class.multiple?(term.to_s) %><%# Make transcript box a bit bigger %>
+        <%= f.input term, as: :multi_value, input_html: { rows: '14', type: 'textarea'}, required: f.object.required?(term) %>
+      <% else %>
+        <%= f.input term, as: :text, input_html: { rows: '14', type: 'textarea' }, required: f.object.required?(term) %>
       <% end %>
     <% end %>
     <%= link_to t('hyrax.works.form.additional_fields'),
@@ -20,19 +19,16 @@
                 'aria-controls'=> "extended-terms" %>
 
     <div id="extended-terms" class='collapse'>
-      <% Hyrax::FileSetForm.secondary_terms.each do |term| %>
-        <% if f.object.has_attribute?(term.to_s) %>
-          <% tenant = URI.parse(request.base_url).host.split('.').first %>
-          <% partial_path = "records/edit_fields/#{tenant}/_#{term.to_s}.html.erb" %>
-          <% if partial_exists?(partial_path) %><%# authority node dropdown %>
-            <%= render partial: partial_path.gsub("_#{term.to_s}.html.erb","#{term.to_s}"), locals: {f: f, key: term} %>
-          <% elsif f.object.class.multiple?(term.to_s) %>
-            <%= f.input term, as: :multi_value, input_html: { class: 'form-control' }, required: f.object.required?(term) %>
-          <% elsif file_set.has_attribute?(term.to_s) %>
-            <%= f.input term, required: f.object.required?(term) %>
-          <% end %>
+      <% f.object.class.secondary_terms.each do |term| %>
+        <% tenant = URI.parse(request.base_url).host.split('.').first %>
+        <% partial_path = "records/edit_fields/#{tenant}/_#{term.to_s}.html.erb" %>
+        <% if partial_exists?(partial_path) %><%# authority node dropdown %>
+          <%= render partial: partial_path.gsub("_#{term.to_s}.html.erb","#{term.to_s}"), locals: {f: f, key: term} %>
+        <% elsif f.object.class.multiple?(term.to_s) %>
+          <%= f.input term, as: :multi_value, input_html: { class: 'form-control' }, required: f.object.required?(term) %>
+        <% elsif file_set.has_attribute?(term.to_s) %>
+          <%= f.input term, required: f.object.required?(term) %>
         <% end %>
-
       <% end %>
     </div>
 
@@ -48,4 +44,3 @@
 
 <% end %>
 </div>
-

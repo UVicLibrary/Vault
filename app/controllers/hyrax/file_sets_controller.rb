@@ -133,6 +133,7 @@ module Hyrax
       end
 
       def initialize_edit_form
+        @form = self.form_class.new(curation_concern) #new Hyrax::FileSetForm
         @parent = @file_set.in_objects.first
         original = @file_set.original_file
         @version_list = Hyrax::VersionListPresenter.new(original ? original.versions.all : [])
