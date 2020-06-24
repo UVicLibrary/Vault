@@ -126,7 +126,7 @@
                  //$('.iiif-metadata-component').empty();
                    var selected = $('.thumbs').find('.selected'); // the current thumbnail
 
-                   if (typeof selected !== 'undefined') {
+                   if (selected.length > 0) {
                        var index = parseInt(selected.attr('id').replace('thumb',''));
                     } else { // There are no thumbnails because there is only 1 image
                        var index = 0;
