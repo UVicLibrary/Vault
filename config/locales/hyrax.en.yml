@@ -20,4 +20,5 @@ en:
     labels:
       extent: Extent
       defaults:
+        description: Description
         type_of_resource: Resource Type
