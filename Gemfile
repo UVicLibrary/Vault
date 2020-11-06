@@ -139,8 +139,5 @@ gem 'pdfjs_viewer-rails'
 gem 'will_paginate', '3.1.5'
 # https://github.com/yrgoldteeth/bootstrap-will_paginate
 gem 'bootstrap-will_paginate', '1.0.0'
-# https://github.com/boazsegev/combine_pdf
-gem 'combine_pdf'
-gem 'pdftoimage'
 
 gem 'edtf-humanize'
