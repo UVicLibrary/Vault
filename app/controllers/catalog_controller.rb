@@ -62,23 +62,6 @@ class CatalogController < ApplicationController
       config.add_facet_field solr_name("language", :facetable), limit: 5
       config.add_facet_field solr_name("creator_label", :facetable), label: 'Creator', limit: 5
       config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
-    
-#     config.add_facet_field solr_name("human_readable_type", :facetable), label: "Type", limit: 5
-#     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5, helper_method: :resource_type_links
-#     config.add_facet_field solr_name("creator_label", :facetable), limit: 5
-#     config.add_facet_field solr_name("contributor", :facetable), label: "Contributor", limit: 5
-#     config.add_facet_field solr_name("keyword", :facetable), limit: 5
-#     config.add_facet_field solr_name("subject", :facetable), limit: 5
-#     config.add_facet_field solr_name('date_created', :facetable), limit: 5
-#     config.add_facet_field solr_name('year', :facetable), limit: 5
-#     config.add_facet_field solr_name("language", :facetable), limit: 5
-#     config.add_facet_field solr_name("provider", :facetable), limit: 5
-#     config.add_facet_field solr_name("physical_repository", :facetable), limit: 5
-#     config.add_facet_field solr_name("based_near_label", :facetable), limit: 5
-#     config.add_facet_field solr_name("publisher", :facetable), limit: 5
-#     config.add_facet_field solr_name("file_format", :facetable), limit: 5
-#     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
-
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -114,27 +97,27 @@ class CatalogController < ApplicationController
 
     #custom index fields
     config.add_index_field solr_name("edition", :stored_searchable), itemprop: "Edition"
-    config.add_index_field solr_name("geographic_coverage", :stored_searchable), itemprop: "Geographic Coverage"
-    config.add_index_field solr_name("coordinates", :stored_searchable), itemprop: "Coordinates"
+    config.add_index_field solr_name("geographic_coverage", :stored_searchable), itemprop: "Geographic Coverage", label: "Geographic Coverage"
+    config.add_index_field solr_name("coordinates", :stored_searchable), itemprop: "Coordinates", label: "Coordinates"
     config.add_index_field solr_name("chronological_coverage", :stored_searchable), itemprop: "Chronological Coverage"
     config.add_index_field solr_name("additional_physical_characteristics", :stored_searchable), itemprop:"Additional Physical Characteristics"
     config.add_index_field solr_name("has_format", :stored_searchable), itemprop: "Has Format"
-    config.add_index_field solr_name("physical_repository", :stored_searchable), itemprop: "Physical Repository"
-    config.add_index_field solr_name("collection", :stored_searchable), itemprop: "Collection"
-    config.add_index_field solr_name("provenance", :stored_searchable), itemprop: "Provenance"
-    config.add_index_field solr_name("provider", :stored_searchable), itemprop: "Provider"
+    config.add_index_field solr_name("physical_repository", :stored_searchable), itemprop: "Physical Repository", label: "Physical Repository"
+    config.add_index_field solr_name("collection", :stored_searchable), itemprop: "Collection", label: "Collection"
+    config.add_index_field solr_name("provenance", :stored_searchable), itemprop: "Provenance", label: "Provenance"
+    config.add_index_field solr_name("provider", :stored_searchable), itemprop: "Provider", label: "Provider"
     config.add_index_field solr_name("sponsor", :stored_searchable), itemprop: "Sponsor"
-    config.add_index_field solr_name("genre", :stored_searchable), itemprop: "Genre"
+    config.add_index_field solr_name("genre", :stored_searchable), itemprop: "Genre", label: "Genre"
     config.add_index_field solr_name("archival_item_identifier", :stored_searchable), itemprop:"Archival Item Identifier"
     config.add_index_field solr_name("fonds_title", :stored_searchable), itemprop: "Fonds Title"
     config.add_index_field solr_name("fonds_creator", :stored_searchable), itemprop: "Fonds Creator"
     config.add_index_field solr_name("fonds_description", :stored_searchable), itemprop: "Fonds Description"
     config.add_index_field solr_name("fonds_identifier", :stored_searchable), itemprop: "Fonds Identifier"
-    config.add_index_field solr_name("is_referenced_by", :stored_searchable), itemprop:"Is_referenced_by"
-    config.add_index_field solr_name("date_digitized", :stored_searchable), itemprop: "Date Digitized"
-    config.add_index_field solr_name("transcript", :stored_searchable), itemprop: "Transcript"
-    config.add_index_field solr_name("technical_note", :stored_searchable), itemprop: "Technical Note"
-    config.add_index_field solr_name("year", :stored_searchable), itemprop: "Year"
+    config.add_index_field solr_name("is_referenced_by", :stored_searchable), itemprop:"Is_referenced_by", label: "Is Referenced By"
+    config.add_index_field solr_name("date_digitized", :stored_searchable), itemprop: "Date Digitized", label: "Date Digitized"
+    config.add_index_field solr_name("transcript", :stored_searchable), itemprop: "Transcript", label: "Transcript"
+    config.add_index_field solr_name("technical_note", :stored_searchable), itemprop: "Technical Note", label: "Technical Note"
+    config.add_index_field solr_name("year", :stored_searchable), itemprop: "Year", label: "Year"
 
 
     # solr fields to be displayed in the show (single result) view

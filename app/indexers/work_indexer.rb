@@ -30,9 +30,9 @@ class WorkIndexer < Hyrax::WorkIndexer
           # modify date so that the interval encompasses the years on the last interval date
           temp_date = solr_date.gsub('/..','').gsub('%','?~').gsub(/\/$/,'')
           date = temp_date.include?("/") ? temp_date.gsub(/([0-9]+X+\/)([0-9]+)(X+)/){"#{$1}"+"#{$2.to_i+1}"+"#{$3}"}.gsub("X","u") : temp_date
-          date = date.gsub("XX-","uu-").gsub("X-", "u-")
-          if date[/\d{3}u/]# edtf can't parse single u in year (e.g. 192u), so we replace it
-            date = date.gsub('u','0')
+          date = date.gsub("XX-","uu-").gsub("X-", "u-").gsub("X?","u")
+          if match = date[/\d{3}u/] # edtf can't parse single u in year, so we replace it
+            date.gsub!(match, match.gsub("u","0"))
           end
           parsed_date = Date.edtf(date)#.first.gsub(/~|#/,'').gsub('X','0')) # Account for special characters; see https://github.com/UVicLibrary/Vault/issues/36
           # Returns formatted string with time set to midnight; e.g. Wed, 01 Jan 1913 => "1913-01-01T00:00:00Z"
@@ -43,10 +43,19 @@ class WorkIndexer < Hyrax::WorkIndexer
           elsif date.class == Date
             solr_doc['year_sort_dtsim'] << parsed_date.strftime("%FT%TZ")
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
+          elsif is_season?(date.split("/").first) and is_season?(date.split("/").second)
+            # Season interval
+            first_season = Date.edtf(date.split("/").first)
+            last_season = Date.edtf(date.split("/").last)
+            # edtf can't parse season intervals, so we create an interval using the first season's
+            # first date and the last season's last date
+            interval = EDTF::Interval.new(first_season.first, last_season.last)
+            solr_doc['year_sort_dtsim'] = interval.map{|d| d.strftime("%FT%TZ")}
+            solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
           elsif date == "unknown"
             # Do not index anything in year sort
           else # parsed_date == nil
-            # Show an error message?
+            raise "Unrecognized date in date_created field: #{date}"
           end
         end
       end
@@ -54,6 +63,10 @@ class WorkIndexer < Hyrax::WorkIndexer
   end
 
   private
+
+  def is_season?(date)
+    Date.edtf(date).class == EDTF::Season
+  end
 
   # field is a symbol/controlled property
   # returns an array of Hyrax::ControlledVocabularies::[field]
