@@ -22,7 +22,7 @@
       <% f.object.class.secondary_terms.each do |term| %>
         <% tenant = URI.parse(request.base_url).host.split('.').first %>
         <% partial_path = "records/edit_fields/#{tenant}/_#{term.to_s}.html.erb" %>
-        <% if partial_exists?(partial_path) %><%# authority node dropdown %>
+        <% if partial_exists?(partial_path) and f.object[term].first.class != String %><%# authority node dropdown %>
           <%= render partial: partial_path.gsub("_#{term.to_s}.html.erb","#{term.to_s}"), locals: {f: f, key: term} %>
         <% elsif f.object.class.multiple?(term.to_s) %>
           <%= f.input term, as: :multi_value, input_html: { class: 'form-control' }, required: f.object.required?(term) %>

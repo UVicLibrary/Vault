@@ -6,8 +6,12 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
     # This is needed for Hyrax::DeepIndexingService
     object.attribute_names.each do |field|
-      if object.controlled_properties.include?(field.to_sym) and object[field].present?
-        to_controlled_vocab(field)
+      if object.controlled_properties.include?(field.to_sym) and object[term].present?
+        object[field].each do |val|
+          unless val.class == String
+            to_controlled_vocab(field)
+          end
+        end
       end
     end
 
