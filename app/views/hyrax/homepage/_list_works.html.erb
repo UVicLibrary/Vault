@@ -1,9 +1,8 @@
 <tr id="document_<%= document.id %>">
-  <% file_set = FileSet.find(document['member_ids_ssim'].first) rescue nil %>
   <td style="word-wrap: break-word; min-width: 160px;max-width: 160px;">
     <div class='media'>
       <%= link_to [main_app, document], class: 'media-left', 'aria-hidden' => true do %>
-        <% if file_set.present? && file_set.mime_type.include?("pdf") %>
+        <% if file_set.present? && file_set.mime_type.present? && file_set.mime_type.include?("pdf") %>
           <%= image_tag(file_set.pdf_thumbnail_path, class: 'hidden-xs file_listing_thumbnail') %>
         <% else %>
           <%= render_thumbnail_tag document, { class: 'hidden-xs file_listing_thumbnail' }, { suppress_link: true } %>

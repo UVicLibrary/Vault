@@ -31,7 +31,7 @@ class WorkIndexer < Hyrax::WorkIndexer
           temp_date = solr_date.gsub('/..','').gsub('%','?~').gsub(/\/$/,'')
           date = temp_date.include?("/") ? temp_date.gsub(/([0-9]+X+\/)([0-9]+)(X+)/){"#{$1}"+"#{$2.to_i+1}"+"#{$3}"}.gsub("X","u") : temp_date
           date = date.gsub("XX-","uu-").gsub("X-", "u-").gsub("X?","u")
-          if match = date[/\d{3}u/] # edtf can't parse single u in year, so we replace it
+          if match = date[/\d{3}u/] # edtf can't parse single u in year (e.g. 192u), so we replace it
             date.gsub!(match, match.gsub("u","0"))
           end
           parsed_date = Date.edtf(date)#.first.gsub(/~|#/,'').gsub('X','0')) # Account for special characters; see https://github.com/UVicLibrary/Vault/issues/36
@@ -40,7 +40,7 @@ class WorkIndexer < Hyrax::WorkIndexer
           if ([EDTF::Interval, EDTF::Decade, EDTF::Century, EDTF::Season].include?(parsed_date.class))
             solr_doc['year_sort_dtsim'] += parsed_date.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
-          elsif date.class == Date
+          elsif parsed_date.class == Date
             solr_doc['year_sort_dtsim'] << parsed_date.strftime("%FT%TZ")
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
           elsif is_season?(date.split("/").first) and is_season?(date.split("/").second)
@@ -52,7 +52,11 @@ class WorkIndexer < Hyrax::WorkIndexer
             interval = EDTF::Interval.new(first_season.first, last_season.last)
             solr_doc['year_sort_dtsim'] = interval.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
+<<<<<<< HEAD
           elsif date == "unknown"
+=======
+          elsif date == "unknown" or date=="no date"
+>>>>>>> Fix single work edit for strings (i.e. not URIs). Add fixity check job with email notifications.
             # Do not index anything in year sort
           else # parsed_date == nil
             raise "Unrecognized date in date_created field: #{date}"
@@ -76,6 +80,8 @@ class WorkIndexer < Hyrax::WorkIndexer
     else
       class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
     end
-    object[field] =  object[field].map { |val| class_name.new(val) }
+    object[field] =  object[field].map do |val|
+    	val.include?("http") ? class_name.new(val.strip) : val
+    end
   end
 end

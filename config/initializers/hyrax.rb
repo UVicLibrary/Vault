@@ -80,7 +80,7 @@ Hyrax.config do |config|
   # Specify a date you wish to start collecting Google Analytic statistics for.
   # Leaving it blank will set the start date to when ever the file was uploaded by
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
-  # config.analytic_start_date = DateTime.new(2014,9,10)
+  config.analytic_start_date = DateTime.new(2020,8,24)
 
   # Location autocomplete uses geonames to search for named regions.
   # Specify the user for connecting to geonames:

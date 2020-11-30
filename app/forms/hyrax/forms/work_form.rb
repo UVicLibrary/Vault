@@ -17,7 +17,7 @@ module Hyrax
                :visibility_during_embargo, :embargo_release_date, :visibility_after_embargo,
                :visibility_during_lease, :lease_expiration_date, :visibility_after_lease,
                :visibility, :in_works_ids, :depositor, :on_behalf_of, :permissions,
-               :member_ids, :downloadable to: :model
+               :member_ids, :downloadable, to: :model
 
       attr_reader :agreement_accepted
 

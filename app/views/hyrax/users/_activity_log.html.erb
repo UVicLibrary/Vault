@@ -9,15 +9,15 @@
   <% events.each do |event| %>
     <% next if event[:action].blank? or event[:timestamp].blank? %>
     <tr>
-      <% string = sanitize event[:action] %>
+      <% string = event[:action] %>
       <% regex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/ %>
       <% email_address = string.match(regex)[0] if string.match(regex).present? %>
       <% if email_address.present? and User.find_by_email(email_address).present? %>
-        <td><%= string.gsub(email_address, User.find_by_email(email_address).name) %></td>
+        <td><%= sanitize string.gsub(email_address, User.find_by_email(email_address).name) %></td>
       <% elsif email_address.present? %>
-        <td><%= string.gsub(email_address, email_address.split("@").first) %></td>
+        <td><%= sanitize string.gsub(email_address, email_address.split("@").first) %></td>
       <% else %>
-        <td><%= string %></td>
+        <td><%= sanitize string %></td>
       <% end %>
       <% time = Time.zone.at(event[:timestamp].to_i) %>
       <td data-sort="<%= time.getutc.iso8601(5) %>">

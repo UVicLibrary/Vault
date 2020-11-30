@@ -142,13 +142,13 @@
     <div class="row">   <!-- Refreshes list with ajax (see application.js) -->
       <div class="col-lg-6">
         <h2>All Collections</h2>
-        <div id="collections-partial">
+        <div id="homepage-collections-partial">
           <%= render 'collections_table', docs: @collections %>
         </div>
       </div>
         <div class="col-lg-6">
           <h2>Recent Works</h2>
-          <div id="works-partial">
+          <div id="homepage-works-partial">
             <%= render 'works_table', docs: @works.paginate(:page => params[:works_page], :per_page => 10) %>
           </div>
         </div>

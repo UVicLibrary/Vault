@@ -170,9 +170,9 @@ module Hyrax
     private
 
       def downloadable_to_boolean
-        if params[:generic_work][:downloadable].present?
+        if params[:generic_work] && params[:generic_work][:downloadable].present?
           params[:generic_work][:downloadable] = ActiveModel::Type::Boolean.new.cast(params[:generic_work][:downloadable])
-        end
+        end	
       end
 
       def user_collections

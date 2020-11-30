@@ -6,7 +6,7 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
     # This is needed for Hyrax::DeepIndexingService
     object.attribute_names.each do |field|
-      if object.controlled_properties.include?(field.to_sym) and object[term].present?
+      if object.controlled_properties.include?(field.to_sym) and object[field].present?
         object[field].each do |val|
           unless val.class == String
             to_controlled_vocab(field)
@@ -17,11 +17,10 @@ class FileSetIndexer < Hyrax::FileSetIndexer
 
     super.tap do |solr_doc|
       solr_doc['hasFormat_ssim'] = object.rendering_ids
-        #if object.creator.present?
-        #  solr_doc['creator_tesim'] = Array.wrap(object.creator.first.id)
-        #  solr_doc['creator_label_tesim'] = object.creator.first.rdf_label
-        #end
-      end
+      #if object.creator.present?
+      #  solr_doc['creator_tesim'] = Array.wrap(object.creator.first.id)
+      #  solr_doc['creator_label_tesim'] = object.creator.first.rdf_label
+      #end
     end
   end
 
@@ -34,7 +33,9 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     else
       class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
     end
-    object[field] =  object[field].map { |val| class_name.new(val) }
+    object[field] =  object[field].map do |val|
+    	val.include?("http") ? class_name.new(val) : val
+    end
   end
 
 end

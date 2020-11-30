@@ -11,7 +11,10 @@
   </thead>
   <tbody>
   <% docs.each_with_index do |document, counter| %>
-    <%= render 'list_works', document: document,
+  	<% file_set = FileSet.find(document['member_ids_ssim'].first) rescue nil %>
+    <% next if file_set.nil? %>
+  	<%= render 'list_works', document: document,
+  													 file_set: file_set,
                              counter: counter,
                              presenter: Hyrax::WorkShowPresenter.new(document, current_ability) %>
   <% end %>

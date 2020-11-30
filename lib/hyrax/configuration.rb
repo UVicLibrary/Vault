@@ -256,7 +256,11 @@ module Hyrax
     #   @see Hyrax::RightsStatementService for implementation details
     attr_writer :rights_statement_service_class
     def rights_statement_service_class
-      @rights_statement_service_class ||= Hyrax::RightsStatementService
+      if Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("iaff")
+        IaffRightsStatementService
+      else
+        @rights_statement_service_class ||= Hyrax::RightsStatementService
+      end
     end
 
     attr_writer :banner_image

@@ -1,2 +1,2 @@
-$("#collections-partial").html('<%= escape_javascript(render 'collections_table', docs: @collections) %>');
-$("#works-partial").html('<%= escape_javascript(render 'works_table', docs: @works.paginate(:page => params[:works_page], :per_page => 10)) %>');
+$("#homepage-collections-partial").html('<%= escape_javascript(render 'collections_table', docs: @collections) %>');
+$("#homepage-works-partial").html('<%= escape_javascript(render 'works_table', docs: @works.paginate(:page => params[:works_page], :per_page => 10)) %>');

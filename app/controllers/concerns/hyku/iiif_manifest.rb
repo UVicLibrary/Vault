@@ -15,7 +15,7 @@ module Hyku
       base_manifest = JSON.parse(manifest_builder.to_h.to_json) # Manifest created by IIIF_Manifest gem
 
       # Add file set data to the manifest. Work-level metadata is set in Hyku::FullMetadataWorkShowPresenter
-      if Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("vault")
+      if request.base_url.include? "vault"
         manifest = IIIF::Service.parse(base_manifest)
         manifest.sequences.first.canvases.each do |canvas|
           fs_id = canvas["@id"].split('/').last
@@ -28,7 +28,7 @@ module Hyku
           metadata_fields = Hyrax.config.iiif_metadata_fields
           metadata = metadata_fields.each_with_object([]) do |field, array|
             label = field.to_s.humanize.capitalize
-            unless doc.send(field).blank? or field == :description
+            unless doc.send(field).blank?
               value = doc.send(field).first
               array.push(label => value)
             end
@@ -44,10 +44,6 @@ module Hyku
         wants.json { render json: json }
         wants.html { render json: json }
       end
-
-      #respond_to do |format|
-      #  format.json { render json: manifest_builder.to_h }
-      #end
     end
 
     private

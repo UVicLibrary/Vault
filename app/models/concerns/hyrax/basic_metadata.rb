@@ -45,5 +45,19 @@ module Hyrax
       self.controlled_properties = [:based_near]
       accepts_nested_attributes_for :based_near, reject_if: id_blank, allow_destroy: true
     end
+    
+    def to_controlled_vocab
+    	controlled_properties.each do |field|
+				if field.to_s == "based_near"
+					class_name = "Hyrax::ControlledVocabularies::Location".constantize
+				else
+					class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
+				end
+				output =  self.send(field.to_s).map do |val| 
+					val.include?("http") ? class_name.new(val.strip) : val
+				end
+				self.send(field.to_s+"=", output)
+			end
+		end
   end
 end

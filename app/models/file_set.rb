@@ -105,7 +105,7 @@ class FileSet < ActiveFedora::Base
 
 
   def required?(term)
-    Hyrax::Forms::FileSetForm.required_fields.include?(term)
+    Hyrax::FileSetForm.required_fields.include?(term)
   end
 
 	def pdf_thumbnail_path

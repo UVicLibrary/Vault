@@ -10,8 +10,8 @@ $(document).on('turbolinks:load', function() { // Turbolinks breaks document.rea
 
   // Refresh the collections or works list if user clicks pagination link
   $("#homepage-works-and-collections").on('click', '.pagination a', function() {
-    var c = "#collections-partial";
-    var w = "#works-partial";
+    var c = "#homepage-collections-partial";
+    var w = "#homepage-works-partial";
     if ($(this).closest(c) || $(this).closest(w)) {
       $(this).closest(':has(tbody)').find('tbody').css('opacity','0.6');
       $(this).closest('.pagination').html('Loading results...');

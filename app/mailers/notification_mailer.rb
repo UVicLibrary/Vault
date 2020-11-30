@@ -17,5 +17,11 @@
       # Send email
       mail(to: @user_email, subject: 'Job Completed')
     end
+    
+    def failures
+    	@user_email = params[:user_email]
+    	@failures = params[:failures]
+    	mail(to: @user_email, subject: 'Job Completed with Failures') if @failures
+    end
 
   end

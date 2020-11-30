@@ -48,6 +48,7 @@ Rails.application.routes.draw do
 
   mount Blacklight::Engine => '/'
   mount Hyrax::Engine, at: '/'
+  #mount ToSpotlight::Engine, at: '/to_spotlight'
 
   Hyrax::Engine.routes do
     resources :featured_collection_lists

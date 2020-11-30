@@ -127,7 +127,8 @@ end
 gem 'peek-sidekiq'
 gem 'sidekiq', '~> 5.0.3'
 
-gem 'cdm_migrator', '~> 3.0.0'
+gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.3.4/gems/cdm_migrator-3.2.1' #~> 3.2.0'
+gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
 
@@ -136,8 +137,9 @@ gem 'honeybadger', '~> 3.0'
 gem 'pdfjs_viewer-rails'
 
 # https://github.com/mislav/will_paginate
-gem 'will_paginate', '3.1.5'
+# gem 'will_paginate', '3.1.5'
 # https://github.com/yrgoldteeth/bootstrap-will_paginate
 gem 'bootstrap-will_paginate', '1.0.0'
 
 gem 'edtf-humanize'
+

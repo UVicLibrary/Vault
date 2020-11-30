@@ -58,7 +58,7 @@ module Hyrax
     end
 
     def downloadable?
-      GenericWork.find(@solr_document.id).downloadable
+      ActiveFedora::Base.find(@solr_document.id).downloadable
     end
 
     # @return [Boolean] render a IIIF viewer
