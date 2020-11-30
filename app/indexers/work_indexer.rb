@@ -52,11 +52,7 @@ class WorkIndexer < Hyrax::WorkIndexer
             interval = EDTF::Interval.new(first_season.first, last_season.last)
             solr_doc['year_sort_dtsim'] = interval.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
-<<<<<<< HEAD
-          elsif date == "unknown"
-=======
           elsif date == "unknown" or date=="no date"
->>>>>>> Fix single work edit for strings (i.e. not URIs). Add fixity check job with email notifications.
             # Do not index anything in year sort
           else # parsed_date == nil
             raise "Unrecognized date in date_created field: #{date}"
