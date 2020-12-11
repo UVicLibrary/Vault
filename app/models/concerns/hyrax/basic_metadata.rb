@@ -8,6 +8,9 @@ module Hyrax
     included do
       property :label, predicate: ActiveFedora::RDF::Fcrepo::Model.downloadFilename, multiple: false
 
+      # Indexed on file set
+      property :last_fixity_check, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#last_fixity_check'), multiple: false
+
       # Used to allow/disallow downloads
       property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
 

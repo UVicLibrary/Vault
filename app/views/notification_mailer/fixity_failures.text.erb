@@ -5,4 +5,7 @@ The following files failed fixity checks:
   <% host = "#{Account.find_by(tenant: Apartment::Tenant.current).cname}" %>
   <%= fs.title.first %>: <%= "https://#{host}/concern/parent/#{fs.parent_id}/file_sets/#{fs.id}" %></p>
   Download: <%= "http://#{host}/downloads/#{fs.id}" %>
+    Original checksum(md5): <%= fs.original_checksum.first %>
+    Current checksum(md5): <%= (Digest::MD5.file open(fs.files.first.uri.to_s)).hexdigest %>
+    Current checksum(sha1): <%= fs.files.first.checksum.value %>
 <% end %>

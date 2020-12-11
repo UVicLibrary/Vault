@@ -13,6 +13,8 @@ class FixityCheckJob < ActiveJob::Base
 					log_file.puts("#{fs.id} has a possible corruption")
 					failed.push(fs.id)
 				end
+				fs.last_fixity_check = filename
+				fs.save
 			end
 		end
 		log_file.puts("Finished Fixity Checking")
