@@ -21,6 +21,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       end
     end
 
+    failed = []
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 

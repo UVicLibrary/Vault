@@ -11,7 +11,7 @@ class FixityCheckJob < ActiveJob::Base
 				fixity = ActiveFedora::FixityService.new fs.files.first.uri
 				unless fixity.check
 					log_file.puts("#{fs.id} has a possible corruption")
-					failed.push(fs.id)
+					failed.push(fs)
 				end
 				fs.last_fixity_check = filename
 				fs.save

@@ -163,7 +163,7 @@ module Hyrax
         return unless work && (work.thumbnail_id == file_set.id || work.representative_id == file_set.id || work.rendering_ids.include?(file_set.id))
         work.thumbnail = nil if work.thumbnail_id == file_set.id
         work.representative = nil if work.representative_id == file_set.id
-        work.rendering_ids -= [file_set.id]
+        work.rendering_ids = work.rendering_ids - [file_set.id]
         work.save!
       end
       # rubocop:enable Metrics/AbcSize
