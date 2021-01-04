@@ -92,9 +92,9 @@ class FileSet < ActiveFedora::Base
     to_param
   end
 
-  # Returns current md5 checksum (to be compared to original checksum)
+  # Returns md5 checksum (to be compared to original checksum)
   def current_checksum
-    (Digest::MD5.file open(self.files.first.uri.to_s)).hexdigest
+    Digest::MD5.hexdigest self.files.first.content
   end
 
   id_blank = proc { |attributes| attributes[:id].blank? }
