@@ -56,10 +56,14 @@ class WorkIndexer < Hyrax::WorkIndexer
           elsif date == "unknown" or date=="no date"
             # Do not index anything in year sort
           else # parsed_date == nil
-            raise "Unrecognized date in date_created field: #{date}"
+            # raise "Unrecognized date in date_created field: #{date}"
+            failed.push(object.id)
           end
         end
       end
+    end
+    if failed.any?
+     ::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: failed).failures.deliver
     end
   end
 

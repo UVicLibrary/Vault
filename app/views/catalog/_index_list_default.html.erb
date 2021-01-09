@@ -1,15 +1,27 @@
-<div class="col-sm-5">
+<div class="col-sm-8 col-md-9 col-lg-9">
   <div class="metadata">
+    <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
     <% doc_presenter = index_presenter(document) %>
     <% index_fields(document).each do |field_name, field| -%>
         <% next if field_name == 'license_tesim' %>
       <% if should_render_index_field? document, field %>
         <div class="row metadata-row">
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <%= render_index_field_label document, field: field_name %>
           </div>
-          <div class="col-sm-8">
-            <%= doc_presenter.field_value field_name %>
+          <div class="col-sm-9">
+            <% value = doc_presenter.field_value field_name %>
+            <% if truncate_fields.any?(field_name) %>
+              <%= value.truncate(185) %>
+            <% else %>
+              <% if field_name == "is_referenced_by_tesim" and URI.extract(value).reject { |s| s.exclude?("http") }.any? %>
+                <%# Make clickable links %>
+                <% URI.extract(value).reject{ |s| s.exclude?("http") }.each do |url| %>
+                  <% value.gsub!( url, ('<a href="' + url + '">' + url + '</a>')) %>
+                <% end %>
+              <% end %>
+              <%= value.html_safe %>
+            <% end %>
           </div>
         </div>
       <% end %>

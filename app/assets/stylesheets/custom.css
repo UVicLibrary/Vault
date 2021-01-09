@@ -1,3 +1,78 @@
+/* Search Results Gallery View */
+.thumbnail {
+    text-align: center;
+    border: none !important;
+    overflow: hidden;
+    padding-top: 15px;
+    text-overflow: ellipsis;
+}
+
+.thumbnail:hover {
+    /*box-shadow: 0 10px 24px rgba(0,0,0,0.1), 0 13px 8px rgba(0,0,0,0.1);*/
+}
+
+#documents.gallery .document {
+    padding-right: 6px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-bottom: 1px dotted #ddd;
+}
+
+.masonry.document.col-xs-6.col-md-3 {
+    border-bottom: 0px !important;
+}
+
+.masonry.document {
+    padding: 0;
+    margin: 0 5px 10px 0;
+    border-bottom: 0;
+    min-height: 70px;
+}
+
+.hyc-blacklight.hyc-bl-results div#documents {
+    margin-top: 4em;
+}
+
+h5, #documents .document .document-title-heading, .h5, span.constraints-label {
+    font-size: 18px;
+}
+
+.search-result-wrapper .search-results-title-row .search-result-title {
+    display: inline-block;
+    margin: 0 15px;
+    font-size: 22px;
+}
+
+h4, .facets .facets-heading, .h4 {
+    font-size: 1.4em;
+}
+
+ /*Don't display metadata in gallery view */
+dl.document-metadata.dl-horizontal.dl-invert {
+    display: none;
+}
+
+#documents .document {
+    padding-top: 0px;
+}
+
+/* Search results metadata */
+.row.metadata-row {
+    margin-bottom: 10px;
+}
+
+.metadata-row .col-sm-8 {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.multi-line-truncate {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
 /* Downloadable buttons in views/hyrax/dashboard/collections/_form_discovery */
 .downloadable {
     border: none;

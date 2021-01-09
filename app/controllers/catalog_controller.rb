@@ -74,18 +74,20 @@ class CatalogController < ApplicationController
     #config.add_index_field solr_name("description", :stored_searchable), itemprop: 'description'
     config.add_index_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_index_field solr_name("tag", :stored_searchable), itemprop: 'keywords'
-    config.add_index_field solr_name("subject", :stored_searchable), itemprop: 'about'
-    config.add_index_field solr_name("creator", :stored_searchable), itemprop: 'creator'
-    config.add_index_field solr_name("creator_label", :stored_searchable), itemprop: 'creator', link_to_search: solr_name("creator_label", :facetable)
-    config.add_index_field solr_name("contributor", :stored_searchable), itemprop: 'contributor'
-    config.add_index_field solr_name("proxy_depositor", :symbol), label: "Depositor", helper_method: :link_to_profile
-    config.add_index_field solr_name("depositor"), label: "Owner", helper_method: :link_to_profile
+    # config.add_index_field solr_name("subject", :stored_searchable), itemprop: 'about'
+    config.add_index_field solr_name("subject_label", :stored_searchable), itemprop: 'about', label: "Subject"
+    # config.add_index_field solr_name("creator", :stored_searchable), itemprop: 'creator'
+    config.add_index_field solr_name("creator_label", :stored_searchable), itemprop: 'creator', link_to_search: solr_name("creator_label", :facetable), label: "Creator"
+    #config.add_index_field solr_name("contributor", :stored_searchable), itemprop: 'contributor'
+    config.add_index_field solr_name("contributor_label", :stored_searchable), itemprop: 'contributor'
+    # config.add_index_field solr_name("proxy_depositor", :symbol), label: "Depositor", helper_method: :link_to_profile
+    # config.add_index_field solr_name("depositor"), label: "Owner", helper_method: :link_to_profile
     config.add_index_field solr_name("publisher", :stored_searchable), itemprop: 'publisher'
     config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation'
     config.add_index_field solr_name("language", :stored_searchable), itemprop: 'inLanguage'
     config.add_index_field solr_name("date_uploaded", :stored_searchable), itemprop: 'datePublished'
     config.add_index_field solr_name("date_modified", :stored_searchable), itemprop: 'dateModified'
-    config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated'
+    config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated', helper_method: :humanize_date_created
     config.add_index_field solr_name("rights_statement", :stored_searchable), label: "Rights Statement", helper_method: :rights_statement_links
     config.add_index_field solr_name("license", :stored_searchable)
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", helper_method: :resource_type_index_links
@@ -96,23 +98,27 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name('extent', :stored_searchable)
 
     #custom index fields
-    config.add_index_field solr_name("edition", :stored_searchable), itemprop: "Edition"
-    config.add_index_field solr_name("geographic_coverage", :stored_searchable), itemprop: "Geographic Coverage", label: "Geographic Coverage"
+    config.add_index_field solr_name("edition", :stored_searchable), itemprop: "Edition", label: "Edition"
+    # config.add_index_field solr_name("geographic_coverage", :stored_searchable), itemprop: "Geographic Coverage", label: "Geographic Coverage"
+    config.add_index_field solr_name("geographic_coverage_label", :stored_searchable), itemprop: "Geographic Coverage", label: "Geographic Coverage"
     config.add_index_field solr_name("coordinates", :stored_searchable), itemprop: "Coordinates", label: "Coordinates"
-    config.add_index_field solr_name("chronological_coverage", :stored_searchable), itemprop: "Chronological Coverage"
-    config.add_index_field solr_name("additional_physical_characteristics", :stored_searchable), itemprop:"Additional Physical Characteristics"
+    config.add_index_field solr_name("chronological_coverage", :stored_searchable), itemprop: "Chronological Coverage", label: "Chronological Coverage"
+    config.add_index_field solr_name("additional_physical_characteristics", :stored_searchable), itemprop:"Additional Physical Characteristics", label: "Additional Physical Characteristics"
     config.add_index_field solr_name("has_format", :stored_searchable), itemprop: "Has Format"
-    config.add_index_field solr_name("physical_repository", :stored_searchable), itemprop: "Physical Repository", label: "Physical Repository"
+    #config.add_index_field solr_name("physical_repository", :stored_searchable), itemprop: "Physical Repository", label: "Physical Repository"
+    config.add_index_field solr_name("physical_repository_label", :stored_searchable), itemprop: "Physical Repository", label: "Physical Repository"
     config.add_index_field solr_name("collection", :stored_searchable), itemprop: "Collection", label: "Collection"
     config.add_index_field solr_name("provenance", :stored_searchable), itemprop: "Provenance", label: "Provenance"
-    config.add_index_field solr_name("provider", :stored_searchable), itemprop: "Provider", label: "Provider"
-    config.add_index_field solr_name("sponsor", :stored_searchable), itemprop: "Sponsor"
-    config.add_index_field solr_name("genre", :stored_searchable), itemprop: "Genre", label: "Genre"
-    config.add_index_field solr_name("archival_item_identifier", :stored_searchable), itemprop:"Archival Item Identifier"
-    config.add_index_field solr_name("fonds_title", :stored_searchable), itemprop: "Fonds Title"
-    config.add_index_field solr_name("fonds_creator", :stored_searchable), itemprop: "Fonds Creator"
-    config.add_index_field solr_name("fonds_description", :stored_searchable), itemprop: "Fonds Description"
-    config.add_index_field solr_name("fonds_identifier", :stored_searchable), itemprop: "Fonds Identifier"
+    # config.add_index_field solr_name("provider", :stored_searchable), itemprop: "Provider", label: "Provider"
+    config.add_index_field solr_name("provider_label", :stored_searchable), itemprop: "Provider", label: "Provider"
+    config.add_index_field solr_name("sponsor", :stored_searchable), itemprop: "Sponsor", label: "Sponsor"
+    # config.add_index_field solr_name("genre", :stored_searchable), itemprop: "Genre", label: "Genre"
+    config.add_index_field solr_name("genre_label", :stored_searchable), itemprop: "Genre", label: "Genre"
+    config.add_index_field solr_name("archival_item_identifier", :stored_searchable), itemprop:"Archival Item Identifier", label: "Archival Item Identifier"
+    config.add_index_field solr_name("fonds_title", :stored_searchable), itemprop: "Fonds Title", label: "Fonds Title"
+    config.add_index_field solr_name("fonds_creator", :stored_searchable), itemprop: "Fonds Creator", label: "Fonds Creator"
+    config.add_index_field solr_name("fonds_description", :stored_searchable), itemprop: "Fonds Description", label: "Fonds Description"
+    config.add_index_field solr_name("fonds_identifier", :stored_searchable), itemprop: "Fonds Identifier", label: "Fonds Identifier"
     config.add_index_field solr_name("is_referenced_by", :stored_searchable), itemprop:"Is_referenced_by", label: "Is Referenced By"
     config.add_index_field solr_name("date_digitized", :stored_searchable), itemprop: "Date Digitized", label: "Date Digitized"
     config.add_index_field solr_name("transcript", :stored_searchable), itemprop: "Transcript", label: "Transcript"
