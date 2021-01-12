@@ -79,7 +79,7 @@ class CatalogController < ApplicationController
     # config.add_index_field solr_name("creator", :stored_searchable), itemprop: 'creator'
     config.add_index_field solr_name("creator_label", :stored_searchable), itemprop: 'creator', link_to_search: solr_name("creator_label", :facetable), label: "Creator"
     #config.add_index_field solr_name("contributor", :stored_searchable), itemprop: 'contributor'
-    config.add_index_field solr_name("contributor_label", :stored_searchable), itemprop: 'contributor'
+    config.add_index_field solr_name("contributor_label", :stored_searchable), itemprop: 'contributor', label: "Contributor"
     # config.add_index_field solr_name("proxy_depositor", :symbol), label: "Depositor", helper_method: :link_to_profile
     # config.add_index_field solr_name("depositor"), label: "Owner", helper_method: :link_to_profile
     config.add_index_field solr_name("publisher", :stored_searchable), itemprop: 'publisher'
@@ -89,7 +89,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("date_modified", :stored_searchable), itemprop: 'dateModified'
     config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated', helper_method: :humanize_date_created
     config.add_index_field solr_name("rights_statement", :stored_searchable), label: "Rights Statement", helper_method: :rights_statement_links
-    config.add_index_field solr_name("license", :stored_searchable)
+    config.add_index_field solr_name("license", :stored_searchable), label: "License"
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", helper_method: :resource_type_index_links
     config.add_index_field solr_name("file_format", :stored_searchable), link_to_search: solr_name("file_format", :facetable)
     config.add_index_field solr_name("identifier", :stored_searchable)

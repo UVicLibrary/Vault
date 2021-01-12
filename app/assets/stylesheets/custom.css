@@ -1,3 +1,9 @@
+span[itemprop="Is_referenced_by"], span[itemprop="Provenance"] {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+}
+
 /* Search Results Gallery View */
 .thumbnail {
     text-align: center;
@@ -49,7 +55,7 @@ h4, .facets .facets-heading, .h4 {
 
  /*Don't display metadata in gallery view */
 dl.document-metadata.dl-horizontal.dl-invert {
-    display: none;
+    /*display: none;*/
 }
 
 #documents .document {
