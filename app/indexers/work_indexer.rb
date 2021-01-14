@@ -21,7 +21,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       end
     end
 
-    failed = []
+    #failed = []
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
@@ -57,14 +57,14 @@ class WorkIndexer < Hyrax::WorkIndexer
             # Do not index anything in year sort
           else # parsed_date == nil
             # raise "Unrecognized date in date_created field: #{date}"
-            failed.push(object.id)
+            ::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: [object.id]).failures.deliver
           end
         end
       end
     end
-    if failed.any?
-     ::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: failed).failures.deliver
-    end
+    #if failed.any?
+    # ::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: failed).failures.deliver
+    #end
   end
 
   private
