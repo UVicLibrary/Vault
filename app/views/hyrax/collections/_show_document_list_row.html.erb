@@ -11,7 +11,7 @@
         <!-- thumbnails for pdfs -->
         <% if request.base_url.include?('vault') && document['member_ids_ssim'].present? && @file_set = FileSet.find(document["member_ids_ssim"][0]) %>
           <% if @file_set.mime_type != nil && @file_set.mime_type.include?("pdf") %>
-              <%= image_tag("#{@file_set.pdf_thumbnail_path}", class: "hidden-xs file_listing_thumbnail") %>
+            <%= image_tag("#{@file_set.pdf_thumbnail_path}", class: "hidden-xs file_listing_thumbnail") %>
           <% else %>
             <%= render_thumbnail_tag document, { class: "hidden-xs file_listing_thumbnail" }, { suppress_link: true } %>
           <% end %>
@@ -25,6 +25,7 @@
       </div>
     </div>
   </td>
+  <td class="text-center"><%= document.date_created.first %> </td>
   <td class="text-center"><%= document.date_uploaded %> </td>
   <td class="text-center">
     <%= render_visibility_link(document) %>

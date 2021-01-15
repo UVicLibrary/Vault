@@ -12,7 +12,7 @@
           <div class="col-sm-9">
             <% value = doc_presenter.field_value field_name %>
             <% if truncate_fields.any? { |f| f == field_name } %>
-              <%= value.truncate(185).html_safe %>
+              <%= value.truncate(250).html_safe %>
             <% else %>
               <% if (field_name == "is_referenced_by_tesim" or field_name== "provenance_tesim") and URI.extract(value).reject { |s| s.exclude?("http") }.any? %>
                 <%# Make clickable links %>

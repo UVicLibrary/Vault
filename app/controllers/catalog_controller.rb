@@ -390,8 +390,8 @@ class CatalogController < ApplicationController
     # except in the relevancy case).
     # label is key, solr field is value
 
-    config.add_sort_field "year_sort_dtsi asc", label: "date created \u25B2"
-    config.add_sort_field "year_sort_dtsi desc", label: "date created \u25BC"
+    config.add_sort_field "year_sort_dtsi asc, title_sort_ssi asc", label: "date created \u25B2"
+    config.add_sort_field "year_sort_dtsi desc, title_sort_ssi desc", label: "date created \u25BC"
     config.add_sort_field "title_sort_ssi asc", label: "title \u25B2"
     config.add_sort_field "title_sort_ssi desc", label: "title \u25BC"
 
