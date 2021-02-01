@@ -41,9 +41,11 @@ class WorkIndexer < Hyrax::WorkIndexer
           if ([EDTF::Interval, EDTF::Decade, EDTF::Century, EDTF::Season].include?(parsed_date.class))
             solr_doc['year_sort_dtsim'] += parsed_date.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
+            solr_doc['year_range_isim'] = parsed_date.map { |d| d.year.to_i }
           elsif parsed_date.class == Date
             solr_doc['year_sort_dtsim'] << parsed_date.strftime("%FT%TZ")
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
+            solr_doc['year_range_isim'] = parsed_date.map { |d| d.year.to_i }
           elsif is_season?(date.split("/").first) and is_season?(date.split("/").second)
             # Season interval
             first_season = Date.edtf(date.split("/").first)
@@ -53,6 +55,7 @@ class WorkIndexer < Hyrax::WorkIndexer
             interval = EDTF::Interval.new(first_season.first, last_season.last)
             solr_doc['year_sort_dtsim'] = interval.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
+            solr_doc['year_range_isim'] = interval.map { |d| d.year.to_i }
           elsif date == "unknown" or date=="no date"
             # Do not index anything in year sort
           else # parsed_date == nil

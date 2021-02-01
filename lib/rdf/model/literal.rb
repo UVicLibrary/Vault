@@ -162,7 +162,11 @@ module RDF
     # @see http://www.w3.org/TR/rdf11-concepts/#section-Datatypes
     # @see #to_s
     def initialize(value, language: nil, datatype: nil, lexical: nil, validate: false, canonicalize: false, **options)
-      @object   = value.freeze
+      if value.encoding == Encoding::ASCII_8BIT and !value.ascii_only?
+        @object   = value.force_encoding('utf-8').freeze
+      else
+        @object   = value.freeze
+      end
       @string   = lexical if lexical
       @string   = value if !defined?(@string) && value.is_a?(String)
       @string   = @string.encode(Encoding::UTF_8).freeze if @string
@@ -185,11 +189,7 @@ module RDF
     ##
     # @return [Object]
     def object
-      if value.encoding == Encoding::ASCII_8BIT and !value.ascii_only?
-        defined?(@object) ? @object : value.force_encoding('utf-8')
-      else
         defined?(@object) ? @object : value
-      end
     end
 
     ##
