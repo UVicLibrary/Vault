@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new
   #mount CdmMigrator::Engine => '/cdm_migrator'
 
   if Settings.multitenancy.enabled
@@ -66,6 +67,7 @@ Rails.application.routes.draw do
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :searchable
+    concerns :range_searchable
   end
 
   resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do

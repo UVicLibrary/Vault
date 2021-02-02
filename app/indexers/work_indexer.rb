@@ -45,7 +45,7 @@ class WorkIndexer < Hyrax::WorkIndexer
           elsif parsed_date.class == Date
             solr_doc['year_sort_dtsim'] << parsed_date.strftime("%FT%TZ")
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
-            solr_doc['year_range_isim'] = parsed_date.map { |d| d.year.to_i }
+            solr_doc['year_range_isim'] = parsed_date.year.to_i
           elsif is_season?(date.split("/").first) and is_season?(date.split("/").second)
             # Season interval
             first_season = Date.edtf(date.split("/").first)
