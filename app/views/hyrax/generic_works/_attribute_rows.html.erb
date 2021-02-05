@@ -1,5 +1,5 @@
-<%= presenter.attribute_to_html(:creator_label) %>
-<%= presenter.attribute_to_html(:creator) %>
+<%= presenter.attribute_to_html(:creator_label) if presenter.creator_label.first.present? %>
+<%= presenter.attribute_to_html(:creator) if presenter.creator.first.present? %>
 <%= presenter.attribute_to_html(:contributor_label) %>
 <%= presenter.attribute_to_html(:contributor, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:subject_label) %>
