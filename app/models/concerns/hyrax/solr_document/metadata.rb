@@ -92,7 +92,7 @@ module Hyrax
         attribute :label, Solr::String, solr_name('label')
         attribute :file_format, Solr::String, solr_name('file_format')
         attribute :suppressed?, Solr::String, solr_name('suppressed', Solrizer::Descriptor.new(:boolean, :stored, :indexed))
-
+        attribute :current_file_version, Solr::String, "current_file_version_ssi"
         attribute :date_modified, Solr::Date, solr_name('date_modified', :stored_sortable, type: :date)
         attribute :date_uploaded, Solr::Date, solr_name('date_uploaded', :stored_sortable, type: :date)
         attribute :create_date, Solr::Date, solr_name('system_create', :stored_sortable, type: :date)

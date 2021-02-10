@@ -12,7 +12,7 @@ module Hyrax
     # Fix error where Riiif holds onto earlier versions of an image
     # See https://github.com/samvera/hyrax/pull/3165
     def display_image
-      return nil unless ::FileSet.exists?(id) && solr_document.image? && current_ability.can?(:read, id)
+      return nil unless solr_document.image? && current_ability.can?(:read, solr_document)
       # @todo this is slow, find a better way (perhaps index iiif url):
       # original_file = ::FileSet.find(id).original_file
       # latest version = ::FileSet.find(id).files.first.versions.last.uri
