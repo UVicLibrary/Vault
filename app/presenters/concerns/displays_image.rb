@@ -32,19 +32,19 @@ module DisplaysImage
       )
     end
 
-    # def base_image_url(file_id)
-    #   uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: request.base_url)
-    #   # TODO: There should be a riiif route for this:
-    #   uri.sub(%r{/info\.json\Z}, '')
-    # end
+     def base_image_url(file_id)
+       uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: request.base_url)
+       # TODO: There should be a riiif route for this:
+       uri.sub(%r{/info\.json\Z}, '')
+     end
 
-    def iiif_endpoint(file_id)
-      # IIIFManifest::IIIFEndpoint.new(base_image_url(file_id), profile: "http://iiif.io/api/image/2/level2.json")
-      return unless Hyrax.config.iiif_image_server?
-      IIIFManifest::IIIFEndpoint.new(
-          Hyrax.config.iiif_info_url_builder.call(file_id, request.base_url),
-          profile: Hyrax.config.iiif_image_compliance_level_uri
-      )
+    def iiif_endpoint(latest_file_id)
+      IIIFManifest::IIIFEndpoint.new(base_image_url(latest_file_id), profile: "http://iiif.io/api/image/2/level2.json")
+      #return unless Hyrax.config.iiif_image_server?
+      #IIIFManifest::IIIFEndpoint.new(
+      #    Hyrax.config.iiif_info_url_builder.call(latest_file_id, request.base_url),
+      #    profile: Hyrax.config.iiif_image_compliance_level_uri
+      #)
     end
 
     def unindexed_current_file_version
@@ -53,6 +53,6 @@ module DisplaysImage
     end
 
     def latest_file_id
-      current_file_version || unindexed_file_version
+      current_file_version || unindexed_current_file_version
     end
 end
