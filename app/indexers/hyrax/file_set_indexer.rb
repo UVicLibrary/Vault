@@ -39,6 +39,7 @@ module Hyrax
 
     # Refactored into Hyrax::VersioningService to better align with newer versions of Hyrax
     def latest_file_id
+      return unless object.original_file
       Hyrax::VersioningService.versioned_file_id object.original_file
     end
 
