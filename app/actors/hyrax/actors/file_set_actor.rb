@@ -74,7 +74,7 @@ module Hyrax
           work.reload unless work.new_record?
           file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
           if file_set.creator.blank? or file_set.creator == work.depositor # Only set the file set's creator to the work creator if there isn't one provided
-            file_set.creator = work.creator
+            file_set.creator = work.creator unless work.creator.blank?
           end
           file_set.save
           file_set.update_index
