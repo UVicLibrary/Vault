@@ -14,7 +14,10 @@ module DisplaysImage
     #  See https://github.com/samvera/hyrax/pull/3165 and
     # https://github.com/samvera/hyrax/pull/3764/commits/bb730aaf3367877ec2662e975aaa6208c7c60c7b#
     url = display_image_url(request.base_url)
-    IIIFManifest::DisplayImage.new(url, width: 640, height: 480, iiif_endpoint: iiif_endpoint(latest_file_id))
+    IIIFManifest::DisplayImage.new(url,
+                                   width: 640,
+                                   height: 480,
+                                   iiif_endpoint: iiif_endpoint(latest_file_id))
   end
 
   private
