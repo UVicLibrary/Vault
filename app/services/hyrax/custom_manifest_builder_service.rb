@@ -5,7 +5,7 @@ module Hyrax
   # manifest.
   #
   # @see !{.as_json}
-  class ManifestBuilderService < ManifestBuilderService
+  class CustomManifestBuilderService < ManifestBuilderService
     # @param presenter [Hyrax::IIIFManifestPresenter]
     def sanitized_manifest(presenter:)
       # ::IIIFManifest::ManifestBuilder#to_h returns a
