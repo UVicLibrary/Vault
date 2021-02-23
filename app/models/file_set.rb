@@ -135,7 +135,7 @@ class FileSet < ActiveFedora::Base
       parent_objects = parents
       return if parent_objects.empty?
       parent_objects.each do |work|
-        if work.rendering_ids.include(id)
+        if work.rendering_ids.class == Array and work.rendering_ids.include(id)
           new_rendering_ids = work.rendering_ids.delete(id)
           work.update(rendering_ids: new_rendering_ids)
         end

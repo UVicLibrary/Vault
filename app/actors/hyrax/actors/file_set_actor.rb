@@ -171,8 +171,10 @@ module Hyrax
         #if work.representative_id == file_set.id
         #  work.representative_id = work.file_set_ids[current_index + 1]
         #end
-        work.rendering_ids = work.rendering_ids - [file_set.id]
-        work.save!
+        if work.rendering_ids.class == Array
+          work.rendering_ids = work.rendering_ids - [file_set.id]
+          work.save!
+        end
       end
       # rubocop:enable Metrics/AbcSize
       # rubocop:enable Metrics/CyclomaticComplexity
