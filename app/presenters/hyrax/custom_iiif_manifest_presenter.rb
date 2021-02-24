@@ -73,16 +73,23 @@ module Hyrax
       metadata_fields.each_with_object([]) do |field_name, array|
         unless get_metadata_value(field_name).blank?
           array << {
-              'label' => field_name.to_s.humanize.capitalize,
+              'label' => field_name.to_s.humanize.capitalize.gsub(' label',''),
               'value' => get_metadata_value(field_name)
           }
         end
       end
     end
 
-    # Expand this to include other fields besides the required fields (default)
-    def metadata_fields
-      Hyrax.config.iiif_metadata_fields
+    def sequence_rendering
+      Array(try(:member_ids)).map do |file_set_id|
+        fsp = file_set_presenters.find { |p| p.id == file_set_id }
+        next unless fsp
+
+        { '@id' => Hyrax::Engine.routes.url_helpers.download_url(fsp.id, host: hostname),
+          'format' => fsp.mime_type.present? ? fsp.mime_type : I18n.t("hyrax.manifest.unknown_mime_text"),
+          'label' => (fsp.send(:title).first if fsp.send(:title).present? || '')
+        }
+      end.flatten
     end
 
     # Get the metadata value(s). Returns a string "foo" instead of ["foo"]
@@ -93,7 +100,7 @@ module Hyrax
     class DisplayImagePresenter < Draper::Decorator
       delegate_all
 
-      include DisplaysImage
+      include Hyrax::DisplaysImage
 
       ##
       # @!attribute [w] ability
@@ -109,7 +116,7 @@ module Hyrax
       # @return [IIIFManifest::DisplayImage] the display image required by the manifest builder.
       def display_image
         return nil unless model.image?
-        return nil unless current_file_version
+        return nil unless latest_file_id
 
         IIIFManifest::DisplayImage
             .new(display_image_url(hostname),
@@ -117,11 +124,11 @@ module Hyrax
                  #format: image_format(alpha_channels),
                  width: width,
                  height: height,
-                 iiif_endpoint: iiif_endpoint(current_file_version, base_url: hostname))
+                 iiif_endpoint: iiif_endpoint(latest_file_id, base_url: hostname))
       end
 
       def hostname
-        @hostname || 'localhost'
+        @hostname || request.base_url # 'localhost'
       end
 
       ##
@@ -133,8 +140,21 @@ module Hyrax
 
     private
 
+    # Expand this to include other fields besides the required fields (default)
     def metadata_fields
-      Hyrax.config.iiif_metadata_fields
+      if hostname.include?("vault")
+        [:creator_label, :contributor_label, :subject_label, :publisher,
+         :language, :identifier, :keyword, :date_created, :based_near_label,
+         :related_url, :resource_type, :source, :rights_statement, :license,
+         :extent, :alternative_title, :edition, :geographic_coverage_label,
+         :coordinates, :chronological_coverage, :additional_physical_characteristics,
+         :has_format, :physical_repository_label, :collection, :provenance,
+         :provider_label, :sponsor, :genre_label, :format, :archival_item_identifier,
+         :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier,
+         :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+      else
+        Hyrax::Forms::WorkForm.required_fields
+      end
     end
 
   end

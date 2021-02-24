@@ -129,7 +129,6 @@ module Hyrax
       Array(try(:rendering_ids)).map do |file_set_id|
         rendering = file_set_presenters.find { |p| p.id == file_set_id }
         next unless rendering
-        byebug
 
         { '@id' => Hyrax::Engine.routes.url_helpers.download_url(rendering.id, host: hostname),
           'format' => rendering.mime_type.present? ? rendering.mime_type : I18n.t("hyrax.manifest.unknown_mime_text"),
