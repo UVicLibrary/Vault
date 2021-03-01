@@ -25,6 +25,12 @@ class WorkIndexer < Hyrax::WorkIndexer
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
+      # Exception to handle "exhibition catalogs" not showing up in genre label
+      if object.genre.present? and value = object.genre.detect { |val| val.id == "http://vocab.getty.edu/aat/300026096" }
+        insert_index = object.genre.clone.to_a.index(value)
+        solr_doc['genre_label_tesim'] = solr_doc['genre_label_tesim'].insert(insert_index, "exhibition catalogs")
+      end
+
       unless object.date_created.empty?
         solr_doc['year_sort_dtsim'] = []
         object.date_created.each do |solr_date|

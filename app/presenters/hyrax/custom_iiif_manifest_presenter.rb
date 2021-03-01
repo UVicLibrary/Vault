@@ -87,14 +87,14 @@ module Hyrax
 
         { '@id' => Hyrax::Engine.routes.url_helpers.download_url(fsp.id, host: hostname),
           'format' => fsp.mime_type.present? ? fsp.mime_type : I18n.t("hyrax.manifest.unknown_mime_text"),
-          'label' => (fsp.send(:title).first if fsp.send(:title).present? || '')
+          'label' => (model.title.first if model.title.present? || '')
         }
       end.flatten
     end
 
     # Get the metadata value(s). Returns a string "foo" instead of ["foo"]
     def get_metadata_value(field)
-      model.send(field).first
+      model.try(field).first
     end
 
     class DisplayImagePresenter < Draper::Decorator

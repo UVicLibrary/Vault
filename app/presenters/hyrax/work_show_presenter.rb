@@ -15,9 +15,10 @@ module Hyrax
 
     # delegate fields from Hyrax::Works::Metadata to solr_document
     delegate :provider_label, :creator_label, :based_near_label, :subject_label, 
-    				 :contributor_label, :physical_repository_label, :genre_label, :geographic_coverage_label, 
+    				 :contributor_label, :physical_repository_label, :genre_label,
     				 :geographic_coverage, :genre, :related_url, :depositor, :identifier,
-    				 :resource_type, :keyword, :itemtype, :admin_set, to: :solr_document
+    				 :resource_type, :keyword, :itemtype, :admin_set, :geographic_coverage_label,
+             to: :solr_document
 
     # @param [SolrDocument] solr_document
     # @param [Ability] current_ability
@@ -40,8 +41,14 @@ module Hyrax
     # Metadata Methods
     delegate :title, :date_created, :description,
              :creator, :contributor, :subject, :publisher, :language, :embargo_release_date,
-             :lease_expiration_date, :license, :source, :rights_statement, :thumbnail_id, :representative_id,
-             :rendering_ids, :member_of_collection_ids, to: :solr_document
+             :lease_expiration_date, :license, :source, :rights_statement, :thumbnail_id,
+             :representative_id, :rendering_ids, :member_of_collection_ids, :technical_note,
+             :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier,
+             :is_referenced_by, :date_digitized, :technical_note, :year, :alternative_title,
+             :edition, :coordinates, :choronological_coverage, :physical_repository,
+             :additional_physical_characteristics, :has_format, :collection, :provenance,
+             :sponsor, :format, :transcript, :archival_item_identifier,
+             to: :solr_document
 
     def workflow
       @workflow ||= WorkflowPresenter.new(solr_document, current_ability)
