@@ -55,7 +55,7 @@ class CatalogController < ApplicationController
     
     # Collection
       config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
-      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5
+      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5, partial: 'genre_label_facet'
       config.add_facet_field solr_name("resource_type", :facetable), label: 'Resource Type', limit: 5, helper_method: :resource_type_links
       config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
       # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
@@ -65,6 +65,8 @@ class CatalogController < ApplicationController
       config.add_facet_field solr_name("language", :facetable), limit: 5
       config.add_facet_field "creator_label_tesim", label: 'Creator', limit: 5 # solr_name("creator_label", :facetable)
       config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
+    # Shadow field to deal with the "exhibition catalogs" exception
+      config.add_facet_field 'genre_sim', label: 'Genre', limit: 5, query: {exhibition_catalogs: {label: "exhibition catalogs", fq: 'genre_tesim: "http://vocab.getty.edu/aat/300026096"'}}
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request

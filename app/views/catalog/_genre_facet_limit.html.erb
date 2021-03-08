@@ -1,0 +1,60 @@
+<ul class="facet-values list-unstyled">
+
+  <% solr = RSolr.connect url: blacklight_config.connection_config['url'] %>
+  <% response = solr.get 'select', params: { q: "*:*", fq: [ "genre_tesim: \"http://vocab.getty.edu/aat/300026096\"" ] } %>
+  <% catalog_hits = response['response']['numFound'] %>
+  <% object_params = {sort: display_facet.sort, limit: display_facet.limit } %>
+  <% catalogs = Blacklight::Solr::Response::Facets::FacetItem.new value: "exhibition catalogs", hits: catalog_hits  %>
+  <% if display_facet.sort && display_facet.sort.to_sym == :count %>
+    <% new_items = (display_facet.items + [catalogs]).sort_by(&:hits).reverse %>
+    <% else %><%# elsif display_facet.sort && display_facet.sort.to_sym == :index %>
+    <% new_items = (display_facet.items + [catalogs]).sort_by(&:value) %>
+  <% end %>
+  <% new_facet = Blacklight::Solr::Response::Facets::FacetField.new display_facet.name, new_items, object_params  %>
+  <% paginator = facet_paginator(facet_field, new_facet) %>
+
+  <%= render_facet_limit_list paginator, field_name %>
+
+  <% unless paginator.last_page? || params[:action] == "facet" %>
+    <li class="more_facets_link">
+      <%= link_to t("more_#{field_name}_html", scope: 'blacklight.search.facets', default: :more_html, field_name: facet_field.label),
+                  search_facet_url(id: field_name), class: "more_facets_link" %>
+    </li>
+  <% end %>
+</ul>
+<script>
+    $(document).ready(function() {
+        jQuery.noConflict();
+        $('.facet_limit.blacklight-genre_sim').css('visibility','hidden');
+        $('#ajax-modal').on('show.bs.modal', function (e) {
+            e.stopImmediatePropagation();
+            replaceModalLink();
+
+            $('#ajax-modal').on('click', '.modal-footer .btn-link', function(e) {
+                e.stopImmediatePropagation();
+                replaceModalLink();
+            });
+
+            function replaceModalLink() {
+                var to_replace = $('a[href*="%5Bgenre_label_sim%5D%5B%5D=exhibition+catalogs"]').closest('li');
+                //console.log(to_replace);
+                if (typeof to_replace !== 'undefined') {
+                    to_replace.replaceWith($('#facet-genre_sim li'));
+                    $('#facet-genre_sim li').css('visiblity','visible')
+                }
+            };
+
+
+        }); //ajax-modal
+
+        <% if facet_in_params?("genre_sim", "exhibition_catalogs") %>
+            var panel = $('.blacklight-genre_label_sim');
+            panel.addClass('facet_limit-active');
+            $('#facet-genre_label_sim').collapse('show')
+            var to_replace = $('#facet-genre_label_sim a[href*="%5Bgenre_label_sim%5D%5B%5D=exhibition+catalogs"]').closest('li');
+            to_replace.replaceWith($('#facet-genre_sim li').css('visiblity','visible'));
+        <% end %>
+
+
+    });
+</script>

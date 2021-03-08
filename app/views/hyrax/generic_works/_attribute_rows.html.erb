@@ -25,7 +25,7 @@
 <%= presenter.attribute_to_html(:provenance) %>
 <%= presenter.attribute_to_html(:provider_label, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:sponsor) %>
-<%= presenter.attribute_to_html(:genre_label, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:genre_label, render_as: :genre_label, genre_tesim: presenter.genre) %>
 <%= presenter.attribute_to_html(:format) %>
 <%= presenter.attribute_to_html(:archival_item_identifier) %>
 <%= presenter.attribute_to_html(:fonds_title) %>
