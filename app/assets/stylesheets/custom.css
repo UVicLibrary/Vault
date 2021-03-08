@@ -5,7 +5,10 @@
 span[itemprop="Is_referenced_by"], span[itemprop="Provenance"] {
     text-overflow: ellipsis;
     overflow: hidden;
-    display: block;
+    /*display: block;*/
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 /* Search Results Gallery View */

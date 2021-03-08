@@ -14,12 +14,14 @@ module Hyrax
       #
       # wild times. maybe there's a better way to do this with the
       # ManifestFactory interface?
+      #
       manifest = manifest_factory.new(presenter).to_h
       hash = JSON.parse(manifest.to_json)
-
+      #hash['sequences'].first.delete("rendering")
       hash['label'] = sanitize_value(hash['label']) if hash.key?('label')
       hash['description'] = Array(hash['description'])&.collect { |elem| sanitize_value(elem) } if hash.key?('description')
-      # Adding file set metadata to the DisplayImagePresenters doesn't seem to work so we add it here
+
+      # Adding file set metadata to the DisplayImagePresenters doesn't persist so we add it here
       member_presenters = presenter.member_presenters
       hash['sequences']&.each do |sequence|
         sequence['canvases']&.each do |canvas|
@@ -37,10 +39,10 @@ module Hyrax
     # @param presenter DisplayImagePresenter, which inherits from Hyku::FileSetPresenter
       def add_file_set_metadata(image, fsp)
         image['resource']['label'] = fsp.title.first
-        (image['resource']['description'] = fsp.description.first if fsp.description.first.present )
+        (image['resource']['description'] = fsp.description.first if fsp.description )
 
         metadata = Hyrax.config.iiif_metadata_fields.each_with_object([]) do |field, array|
-            label = field.to_s.humanize.capitalize.gsub(' label','')
+            label = field.to_s.humanize.capitalize
             # Sending the format field returns too few arguments error
             if field == :format
                 if fsp['format_tesim'].present?
@@ -49,12 +51,13 @@ module Hyrax
                 end
                 next
             end
-            unless fsp.send(field).blank? or field == :description
+            unless fsp.try(field).blank? or field == :description
                 value = sanitize_value(fsp.send(field).first)
                 array.push(label => value)
             end
         end
         (image['resource']['metadata'] = metadata if metadata.any?)
       end
+
   end
 end

@@ -116,6 +116,7 @@ gem 'riiif', '~> 1.1'
 
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'iiif-presentation'
+gem 'draper'
 
 group :aws, :test do
   gem 'carrierwave-aws'

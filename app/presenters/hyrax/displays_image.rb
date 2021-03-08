@@ -38,7 +38,7 @@ module Hyrax::DisplaysImage
   end
 
   def base_image_url(file_id, base_url)
-    Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url).sub(%r{/info\.json\Z}, '')
+    Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url[:base_url]).sub(%r{/info\.json\Z}, '')
   end
 
   def iiif_endpoint(latest_file_id, base_url)
