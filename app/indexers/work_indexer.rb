@@ -25,6 +25,15 @@ class WorkIndexer < Hyrax::WorkIndexer
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
+      # Exception for Keith McHenry field not showing up in creator label for some items
+      if solr_doc['creator_tesim'].include?("http://id.worldcat.org/fast/01984031")
+        if solr_doc['creator_label_tesim']
+          solr_doc['creator_label_tesim'].push("McHenry, Keith, 1957-")
+        else
+          solr_doc['creator_label_tesim'] = ["McHenry, Keith, 1957-"]
+        end
+      end
+
       unless object.date_created.empty?
         solr_doc['year_sort_dtsim'] = []
         object.date_created.each do |solr_date|

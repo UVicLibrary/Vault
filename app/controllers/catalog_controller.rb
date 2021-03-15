@@ -63,10 +63,10 @@ class CatalogController < ApplicationController
       config.add_facet_field solr_name("geographic_coverage_label", :facetable), label: 'Geographic Coverage', limit: 5
       config.add_facet_field solr_name("subject_label", :facetable), label: 'Subject', limit: 5
       config.add_facet_field solr_name("language", :facetable), limit: 5
-      config.add_facet_field "creator_label_tesim", label: 'Creator', limit: 5 # solr_name("creator_label", :facetable)
+      config.add_facet_field solr_name("creator_label", :facetable), label: 'Creator', limit: 5
       config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
     # Shadow field to deal with the "exhibition catalogs" exception
-      config.add_facet_field 'genre_sim', label: 'Genre', limit: 5, query: {exhibition_catalogs: {label: "exhibition catalogs", fq: 'genre_tesim: "http://vocab.getty.edu/aat/300026096"'}}
+      config.add_facet_field 'genre_sim', label: 'Genre', limit: 5, show: false, query: {exhibition_catalogs: {label: "exhibition catalogs", fq: 'genre_tesim: "http://vocab.getty.edu/aat/300026096"'}}
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request

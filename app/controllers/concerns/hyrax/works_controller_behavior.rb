@@ -13,9 +13,11 @@ module Hyrax
 
       class_attribute :_curation_concern_type, :show_presenter, :work_form_service, :search_builder_class
       class_attribute :iiif_manifest_builder, instance_accessor: false
-      self.show_presenter = ::Hyku::WorkShowPresenter # Hyrax::WorkShowPresenter
+      self.show_presenter = ::Hyku::WorkShowPresenter
       self.work_form_service = Hyrax::WorkFormService
       self.search_builder_class = WorkSearchBuilder
+      self.iiif_manifest_builder = Hyrax::CustomManifestBuilderService.new
+
       attr_accessor :curation_concern
       helper_method :curation_concern, :contextual_path
 
@@ -131,36 +133,9 @@ module Hyrax
     def manifest
       headers['Access-Control-Allow-Origin'] = '*'
 
-      if Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("vault")
-        # Use the manifest created by the IIIF Manifest gem as a base
-        manifest = IIIF::Service.parse(JSON.parse(manifest_builder.to_h.to_json))
-        # Assign work-level metadata (not just required fields)
-        manifest.metadata = presenter.manifest_metadata
-        manifest.sequences.first.canvases.each do |canvas|
-          fs_id = canvas["@id"].split('/').last
-          fs = ::FileSet.find(fs_id)
-          resource = canvas.images.first.resource
-          # Add title and description
-          resource.label = fs.title.first
-          resource.description = fs.description.first
-          # Add other metadata
-          metadata_labels = fs.attribute_names -
-              ["head", "tail", "date_uploaded", "depositor", "date_modified",
-               "relative_path", "import_url", "based_near", "access_control_id",
-               "embargo_id", "lease_id", "label", "description", "title"] # Don't need these last 3 because they are handled separately
-          metadata = metadata_labels.each_with_object([]) do |label_name, array|
-            key = label_name.to_s.humanize
-            value = fs[label_name].first
-            next unless value.present?
-            array.push(key => value)
-          end
-          resource.metadata = metadata
-        end
-        json = manifest.to_json(pretty: true)
-      else
-        json = sanitize_manifest(JSON.parse(manifest_builder.to_h.to_json))
-      end
-
+      json = iiif_manifest_builder.manifest_for(presenter: iiif_manifest_presenter)
+      # For debugging
+      # json = JSON.pretty_generate(json)
 
       respond_to do |wants|
         wants.json { render json: json }
@@ -198,8 +173,16 @@ module Hyrax
         @form = work_form_service.build(curation_concern, current_ability, self)
       end
 
-      def manifest_builder
-        ::IIIFManifest::ManifestFactory.new(presenter)
+      def iiif_manifest_presenter
+        Hyrax::CustomIiifManifestPresenter.new(search_result_document(id: params[:id])).tap do |p|
+          p.hostname = request.base_url
+          p.ability = current_ability
+        end
+      end
+
+      def iiif_manifest_builder
+        self.class.iiif_manifest_builder ||
+            (Flipflop.cache_work_iiif_manifest? ? Hyrax::CachingIiifManifestBuilder.new : Hyrax::CustomManifestBuilderService.new)
       end
 
       def actor

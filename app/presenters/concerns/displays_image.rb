@@ -23,9 +23,6 @@ module DisplaysImage
   private
 
     def display_image_url(base_url)
-      # Riiif::Engine.routes.url_helpers.image_url(latest_file_id,
-      #                                            host: base_url,
-      #                                            size: Hyrax.config.iiif_image_size_default)
       Hyrax.config.iiif_image_url_builder.call(
           latest_file_id,
           base_url,
@@ -36,18 +33,11 @@ module DisplaysImage
     end
 
      def base_image_url(file_id)
-       uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: request.base_url)
-       # TODO: There should be a riiif route for this:
-       uri.sub(%r{/info\.json\Z}, '')
+       Riiif::Engine.routes.url_helpers.info_url(file_id, host: request.base_url).sub(%r{/info\.json\Z}, '')
      end
 
     def iiif_endpoint(latest_file_id)
       IIIFManifest::IIIFEndpoint.new(base_image_url(latest_file_id), profile: "http://iiif.io/api/image/2/level2.json")
-      #return unless Hyrax.config.iiif_image_server?
-      #IIIFManifest::IIIFEndpoint.new(
-      #    Hyrax.config.iiif_info_url_builder.call(latest_file_id, request.base_url),
-      #    profile: Hyrax.config.iiif_image_compliance_level_uri
-      #)
     end
 
     def unindexed_current_file_version

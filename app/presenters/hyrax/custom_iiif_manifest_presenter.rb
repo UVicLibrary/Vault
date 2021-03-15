@@ -32,59 +32,14 @@ module Hyrax
       # @param [Hyrax::Resource, SolrDocument]
       def for(model)
         klass = model.file_set? ? DisplayImagePresenter : CustomIiifManifestPresenter
-
         klass.new(model)
       end
     end
 
     ##
-    # @return [#can?]
-    def ability
-      @ability ||= NullAbility.new
-    end
-
-    ##
-    # @return [String]
-    def description
-      Array(super).first || ''
-    end
-
-    ##
-    # @return [Boolean]
-    def file_set?
-      model.try(:file_set?) || Array(model[:has_model_ssim]).include?('FileSet')
-    end
-
-    ##
-    # @return [Array<DisplayImagePresenter>]
-    def file_set_presenters
-      member_presenters.select(&:file_set?)
-    end
-
-    ##
-    # @note cache member presenters to avoid querying repeatedly; we expect this
-    #   presenter to live only as long as the request.
-    #
-    # @note skips presenters for objects the current `@ability` cannot read.
-    #   the default ability has all permissions.
-    #
-    # @return [Array<IiifManifestPresenter>]
-    def member_presenters
-      @member_presenters_cache ||= Factory.build_for(ids: ordered_member_ids, presenter_class: self.class).map do |presenter|
-        next unless ability.can?(:read, presenter.model)
-
-        presenter.hostname = hostname
-        presenter.ability  = ability
-        presenter
-      end.compact
-    end
-
-    ##
     # IIIF metadata for inclusion in the manifest
-    #  Called by the `iiif_manifest` gem to add metadata
-    #
-    # @todo should this use the simple_form i18n keys?! maybe the manifest
-    #   needs its own?
+    # Called by the `iiif_manifest` gem to add metadata
+    # https://github.com/samvera/iiif_manifest
     #
     # @return [Array<Hash{String => String}>] array of metadata hashes
     def manifest_metadata
@@ -110,21 +65,6 @@ module Hyrax
     #    }
     #  end.flatten
     #end
-
-    def ordered_member_ids
-      solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
-      response = solr.get 'select', params: {
-          q: "proxy_in_ssi:#{self.id}",
-          rows: 10_000,
-          fl: "ordered_targets_ssim"
-      }
-      response['response']['docs'].first['ordered_targets_ssim']
-    end
-
-    # Get the metadata value(s). Returns a string "foo" instead of ["foo"]
-    def get_metadata_value(field)
-      model.try(field).first
-    end
 
     class DisplayImagePresenter < Draper::Decorator
       delegate_all
@@ -157,7 +97,7 @@ module Hyrax
       end
 
       def hostname
-        @hostname || request.base_url # 'localhost'
+        @hostname || request.base_url
       end
 
       ##
@@ -169,24 +109,39 @@ module Hyrax
 
     private
 
-    # Expand this to include other fields besides the required fields (default)
-    def metadata_fields
-      if hostname.include?("vault")
-        #[:creator_label, :contributor_label, :subject_label, :publisher,
-        # :language, :identifier, :keyword, :date_created, :based_near_label,
-        # :related_url, :resource_type, :source, :rights_statement, :license,
-        # :extent, :alternative_title, :edition, :geographic_coverage_label,
-        # :coordinates, :chronological_coverage, :additional_physical_characteristics,
-        # :has_format, :physical_repository_label, :collection, :provenance,
-        # :provider_label, :sponsor, :genre_label, :format, :archival_item_identifier,
-        # :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier,
-        # :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
-
-        [:creator_label, :creator, :contributor_label, :contributor, :subject_label, :subject, :publisher, :language, :identifier, :keyword, :date_created, :based_near_label, :related_url, :resource_type, :source, :rights_statement, :license, :extent, :alternative_title, :edition, :geographic_coverage_label, :geographic_coverage, :coordinates, :chronological_coverage, :additional_physical_characteristics, :has_format, :physical_repository_label, :physical_repository, :collection, :provenance, :provider_label, :provider, :sponsor, :genre_label, :genre, :format, :archival_item_identifier, :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
-      else
-        Hyrax::Forms::WorkForm.required_fields
+      # Expand this to include other fields besides the required fields (default)
+      def metadata_fields
+        if hostname.include?("vault")
+           [:creator_label, :creator, :contributor_label, :contributor,
+           :subject_label, :subject, :publisher, :language, :identifier,
+           :keyword, :date_created, :based_near_label, :related_url,
+           :resource_type, :source, :rights_statement, :license, :extent,
+           :alternative_title, :edition, :geographic_coverage_label,
+           :geographic_coverage, :coordinates, :chronological_coverage,
+           :additional_physical_characteristics, :has_format, :physical_repository_label,
+           :physical_repository, :collection, :provenance, :provider_label, :provider,
+           :sponsor, :genre_label, :genre, :format, :archival_item_identifier,
+           :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier,
+           :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+        else
+          Hyrax::Forms::WorkForm.required_fields
+        end
       end
-    end
+
+      def ordered_member_ids
+        solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
+        response = solr.get 'select', params: {
+            q: "proxy_in_ssi:#{self.id}",
+            rows: 10_000,
+            fl: "ordered_targets_ssim"
+        }
+        response['response']['docs'].first['ordered_targets_ssim']
+      end
+
+      # Get the metadata value(s). Returns a string "foo" instead of ["foo"]
+      def get_metadata_value(field)
+        model.try(field).first
+      end
 
   end
 end

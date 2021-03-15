@@ -86,11 +86,6 @@ module Hyrax
       Hyrax.config.iiif_metadata_fields
     end
 
-    # Get the metadata value(s). Returns a string "foo" instead of ["foo"]
-    def get_metadata_value(field)
-      model.send(field).first
-    end
-
     ##
     # @return [String] the URL where the manifest can be found
     def manifest_url

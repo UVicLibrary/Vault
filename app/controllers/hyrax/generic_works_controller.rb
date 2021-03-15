@@ -6,8 +6,6 @@ module Hyrax
 
     self.curation_concern_type = GenericWork
 
-    include Hyku::IIIFManifest
-    
     def additional_response_formats(format)
       format.endnote do
         send_data(presenter.solr_document.export_as_endnote,

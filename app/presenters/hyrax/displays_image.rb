@@ -15,7 +15,7 @@ module Hyrax::DisplaysImage
     #  Fixes error where Riiif holds onto earlier versions of an image.
     #  See https://github.com/samvera/hyrax/pull/3165 and
     # https://github.com/samvera/hyrax/pull/3764/commits/bb730aaf3367877ec2662e975aaa6208c7c60c7b#
-    url = display_image_url(request.base_url)
+    url = display_image_url(hostname)
     IIIFManifest::DisplayImage.new(url,
                                    width: 640,
                                    height: 480,
@@ -25,9 +25,6 @@ module Hyrax::DisplaysImage
   private
 
   def display_image_url(base_url)
-    # Riiif::Engine.routes.url_helpers.image_url(latest_file_id,
-    #                                            host: base_url,
-    #                                            size: Hyrax.config.iiif_image_size_default)
     Hyrax.config.iiif_image_url_builder.call(
         latest_file_id,
         base_url,
@@ -37,12 +34,12 @@ module Hyrax::DisplaysImage
     )
   end
 
-  def base_image_url(file_id, base_url)
-    Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url[:base_url]).sub(%r{/info\.json\Z}, '')
+  def base_image_url(file_id)
+    Riiif::Engine.routes.url_helpers.info_url(file_id, host: hostname).sub(%r{/info\.json\Z}, '')
   end
 
-  def iiif_endpoint(latest_file_id, base_url)
-    IIIFManifest::IIIFEndpoint.new(base_image_url(latest_file_id, base_url), profile: "http://iiif.io/api/image/2/level2.json")
+  def iiif_endpoint(latest_file_id)
+    IIIFManifest::IIIFEndpoint.new(base_image_url(latest_file_id), profile: "http://iiif.io/api/image/2/level2.json")
   end
 
   def unindexed_current_file_version
@@ -52,5 +49,9 @@ module Hyrax::DisplaysImage
 
   def latest_file_id
     current_file_version || unindexed_current_file_version
+  end
+
+  def hostname
+    @request.base_url || request.base_url
   end
 end
