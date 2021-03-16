@@ -15,6 +15,14 @@
         <%= @presenter.permission_badge %>
       </div>
 
+      <% if can? :edit, @presenter.solr_document %>
+        <%= link_to t('hyrax.collection.actions.edit.label'),
+                    hyrax.edit_dashboard_collection_path(@presenter),
+                    title: t('hyrax.collection.actions.edit.desc'),
+                    class: 'btn btn-primary',
+                    style: 'float: right;' %>
+      <% end %>
+
       <% unless @presenter.logo_record.blank? %>
           <div class="hyc-logos">
             <% @presenter.logo_record.each_with_index  do |lr, i| %>

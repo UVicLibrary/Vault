@@ -1,8 +1,6 @@
 <ul class="facet-values list-unstyled">
-  <% unless facet_in_params?("genre_sim", "exhibition_catalogs") %>
-      <% solr = RSolr.connect url: blacklight_config.connection_config['url'] %>
-      <% response = solr.get 'select', params: { q: "*:*", fq: [ "genre_tesim: \"http://vocab.getty.edu/aat/300026096\"" ] } %>
-      <% catalog_hits = response['response']['numFound'] %>
+  <% unless facet_in_params?("genre_sim", "exhibition_catalogs") or @response.facet_counts['facet_queries'].none? %>
+      <% catalog_hits = @response.facet_counts['facet_queries']["genre_tesim: \"http://vocab.getty.edu/aat/300026096\""] %>
       <% object_params = {sort: display_facet.sort, limit: display_facet.limit } %>
       <% catalogs = Blacklight::Solr::Response::Facets::FacetItem.new value: "exhibition catalogs", hits: catalog_hits  %>
       <% if display_facet.sort && display_facet.sort.to_sym == :count %>
@@ -24,16 +22,17 @@
                   search_facet_url(id: field_name), class: "more_facets_link" %>
     </li>
   <% end %>
+  <%#= @response.facet_fields.keys %>
 </ul>
 <script>
-    <% if facet_in_params?("genre_sim", "exhibition_catalogs") %>
-      var panel = $('.blacklight-genre_label_sim');
-      panel.addClass('facet_limit-active');
-      panel.find('ul').prepend($('#facet-genre_sim li'));
-      $('#facet-genre_label_sim').collapse('show');
-      //var to_replace = $('#facet-genre_label_sim a.facet_select').first().closest('li');
-      //to_replace.replaceWith($('#facet-genre_sim li'));
-      $('.blacklight-genre_sim').hide();
-    <% end %>
+    $(document).on('turbolinks:load', function() {
+        if (window.location.href.includes("%5Bgenre_sim%5D%5B%5D=exhibition_catalogs")) {
+            var panel = $('.blacklight-genre_label_sim');
+            panel.addClass('facet_limit-active');
+            panel.find('ul').prepend($('#facet-genre_sim li'));
+            $('#facet-genre_label_sim').collapse('show');
+        }
+        $('.blacklight-genre_sim').hide();
+    });
 
 </script>

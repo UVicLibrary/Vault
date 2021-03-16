@@ -120,7 +120,7 @@ module Blacklight::FacetsHelperBehavior
   # @return [String]
   def render_facet_value(facet_field, item, options ={})
     if facet_field == "genre_label_sim" and item.value == "exhibition catalogs"
-      path = path_for_facet(facet_field, item).gsub('genre_label_sim','genre_sim').gsub('exhibition+catalogs','exhibition_catalogs')
+      path = path_for_facet(facet_field, item).gsub('genre_label_sim%5D%5B%5D=exhibition+catalogs', 'genre_sim%5D%5B%5D=exhibition_catalogs')
     else
       path = path_for_facet(facet_field, item)
     end

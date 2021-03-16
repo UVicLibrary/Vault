@@ -66,6 +66,24 @@ module Hyrax
     #  end.flatten
     #end
 
+    ##
+    # @note cache member presenters to avoid querying repeatedly; we expect this
+    #   presenter to live only as long as the request.
+    #
+    # @note skips presenters for objects the current `@ability` cannot read.
+    #   the default ability has all permissions.
+    #
+    # @return [Array<IiifManifestPresenter>]
+    def member_presenters
+      @member_presenters_cache ||= Factory.build_for(ids: ordered_member_ids, presenter_class: self.class).map do |presenter|
+        next unless ability.can?(:read, presenter.model)
+
+        presenter.hostname = hostname
+        presenter.ability  = ability
+        presenter
+      end.compact
+    end
+
     class DisplayImagePresenter < Draper::Decorator
       delegate_all
 
@@ -93,7 +111,7 @@ module Hyrax
                  #format: image_format(alpha_channels),
                  width: width,
                  height: height,
-                 iiif_endpoint: iiif_endpoint(latest_file_id, base_url: @hostname))
+                 iiif_endpoint: iiif_endpoint(latest_file_id))
       end
 
       def hostname
