@@ -26,7 +26,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Exception for Keith McHenry field not showing up in creator label for some items
-      if solr_doc['creator_tesim'].include?("http://id.worldcat.org/fast/01984031")
+      if solr_doc['creator_tesim'] and solr_doc['creator_tesim'].include?("http://id.worldcat.org/fast/01984031")
         if solr_doc['creator_label_tesim']
           solr_doc['creator_label_tesim'].push("McHenry, Keith, 1957-")
         else
@@ -40,7 +40,7 @@ class WorkIndexer < Hyrax::WorkIndexer
           # modify date so that the interval encompasses the years on the last interval date
           temp_date = solr_date.gsub('/..','').gsub('%','?~').gsub(/\/$/,'')
           date = temp_date.include?("/") ? temp_date.gsub(/([0-9]+X+\/)([0-9]+)(X+)/){"#{$1}"+"#{$2.to_i+1}"+"#{$3}"}.gsub("X","u") : temp_date
-          date = date.gsub("XX-","uu-").gsub("X-", "u-").gsub("X?","u")
+          date = date.gsub("XX-","uu-").gsub("X-", "u-").gsub("X?","u").gsub("u?","u")
           if match = date[/\d{3}u/] # edtf can't parse single u in year (e.g. 192u), so we replace it
             date.gsub!(match, match.gsub("u","0"))
           end

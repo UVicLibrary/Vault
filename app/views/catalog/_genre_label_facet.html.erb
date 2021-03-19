@@ -3,10 +3,14 @@
       <% catalog_hits = @response.facet_counts['facet_queries']["genre_tesim: \"http://vocab.getty.edu/aat/300026096\""] %>
       <% object_params = {sort: display_facet.sort, limit: display_facet.limit } %>
       <% catalogs = Blacklight::Solr::Response::Facets::FacetItem.new value: "exhibition catalogs", hits: catalog_hits  %>
-      <% if display_facet.sort && display_facet.sort.to_sym == :count %>
-        <% new_items = (display_facet.items + [catalogs]).sort_by(&:hits).reverse %>
-        <% else %><%# elsif display_facet.sort && display_facet.sort.to_sym == :index %>
-        <% new_items = (display_facet.items + [catalogs]).sort_by(&:value) %>
+      <% if catalog_hits %>
+          <% if display_facet.sort && display_facet.sort.to_sym == :count %>
+                <% new_items = (display_facet.items + [catalogs]).sort_by(&:hits).reverse %>
+            <% else %><%# elsif display_facet.sort && display_facet.sort.to_sym == :index %>
+                <% new_items = (display_facet.items + [catalogs]).sort_by(&:value) %>
+          <% end %>
+      <% else %>
+         <% new_items = display_facet.items %>
       <% end %>
       <% new_facet = Blacklight::Solr::Response::Facets::FacetField.new display_facet.name, new_items, object_params  %>
       <% paginator = facet_paginator(facet_field, new_facet) %>
