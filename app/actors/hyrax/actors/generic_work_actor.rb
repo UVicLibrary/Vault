@@ -18,15 +18,26 @@ module Hyrax
       
 			def clean_controlled_properties(env, attributes)
 				qa_attributes = {}
+
 				env.curation_concern.controlled_properties.each do |field_symbol|
 					field = field_symbol.to_s
-					next unless attributes.keys.include?(field+'_attributes')
-          qa_attributes[field] = attributes[field+'_attributes'].map do |att|
-            att[1]['id']
+					next unless attributes.keys.include?(field+'_attributes') or attributes.keys.include?(field)
+          if attributes.keys.include?(field+'_attributes')
+            qa_attributes[field] = attributes[field+'_attributes'].map do |att|
+              att[1]['id']
+            end
           end
+
+          # Save string values if they exist
+          if attributes.keys.include?(field)
+            qa_attributes[field] = [] unless qa_attributes.has_key?(field)
+            attributes[field].each { |val| qa_attributes[field].push(val) }
+          end
+
           attributes.delete(field)
           attributes.delete(field+'_attributes')
         end
+        byebug
 				env.curation_concern.attributes = qa_attributes
 				env.curation_concern.to_controlled_vocab
 				save(env)

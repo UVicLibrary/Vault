@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-//= require turbolinks
+
 //= require peek
 //= require peek/views/faraday
 //= require peek/views/performance_bar
@@ -34,3 +34,5 @@
 //= require statistics_tab_manager
 //= require blacklight_gallery/default
 //= require masonry
+
+//= require turbolinks
