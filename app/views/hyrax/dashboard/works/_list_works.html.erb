@@ -1,5 +1,5 @@
 <tr id="document_<%= document.id %>">
-  <% file_set = FileSet.find(document['member_ids_ssim'].first) rescue nil %>
+  <% file_set = FileSet.find(document.thumbnail_id) rescue nil %>
   <td>
     <label for="batch_document_<%= document.id %>" class="sr-only"><%= t("hyrax.dashboard.my.sr.batch_checkbox") %></label>
     <%= render 'hyrax/batch_select/add_button', document: document %>&nbsp;

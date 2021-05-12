@@ -1,6 +1,6 @@
 <div class="masonry document col-xs-6 col-md-3">
   <div class="thumbnail">
-    <% @file_set = FileSet.find(document["member_ids_ssim"][0]) %>
+    <% @file_set = FileSet.find(document.thumbnail_id) %>
     <% if (@file_set.mime_type.include?("pdf") if @file_set.mime_type) && request.base_url.include?('vault') %>
       <%= link_to(image_tag("#{@file_set.pdf_thumbnail_path}"), "/concern/generic_works/#{document.id}") %><%#= helper name doesn't work for some reason? %>
     <% else %>

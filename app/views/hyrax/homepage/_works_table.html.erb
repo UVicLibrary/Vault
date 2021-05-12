@@ -11,7 +11,7 @@
   </thead>
   <tbody>
   <% docs.each_with_index do |document, counter| %>
-  	<% file_set = FileSet.find(document['member_ids_ssim'].first) rescue nil %>
+  	<% file_set = FileSet.find(document.thumbnail_id) rescue nil %>
     <% next if file_set.nil? %>
   	<%= render 'list_works', document: document,
   													 file_set: file_set,
