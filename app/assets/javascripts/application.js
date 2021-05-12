@@ -29,10 +29,11 @@
 //= require hyku/groups/add_member
 
 //= require hyrax
+//= require handlebars-v4.0.5
 //= require jquery.flot.pie
 //= require flot_graph
 //= require statistics_tab_manager
+//= require turbolinks
 //= require blacklight_gallery/default
 //= require masonry
 
-//= require turbolinks

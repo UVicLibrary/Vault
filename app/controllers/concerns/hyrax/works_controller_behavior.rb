@@ -105,7 +105,7 @@ module Hyrax
           hash["#{prop.to_s}_label"] = []
           values.each do |val|
             if val.include?("http")
-              hash["#{prop.to_s}_label"].push({label: "#{labels[values.index(val)]}" })
+              hash["#{prop.to_s}_label"].push({label: "#{labels[values.index(val)]}", uri: "#{val}" })
             elsif val.present?
               hash["#{prop.to_s}_label"].push({string: "#{labels[values.index(val)]}" })
             end

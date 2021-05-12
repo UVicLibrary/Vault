@@ -31,16 +31,18 @@ module Hyrax
           # Save string values if they exist
           if attributes.keys.include?(field)
             qa_attributes[field] = [] unless qa_attributes.has_key?(field)
-            attributes[field].each { |val| qa_attributes[field].push(val) }
+            attributes[field].each do |val|
+              next if val.include? "ActiveTriples"
+              qa_attributes[field].push(val)
+            end
           end
 
           attributes.delete(field)
           attributes.delete(field+'_attributes')
         end
-        byebug
 				env.curation_concern.attributes = qa_attributes
-				env.curation_concern.to_controlled_vocab
-				save(env)
+        env.curation_concern.to_controlled_vocab
+        save(env)
 				attributes
 			end
       

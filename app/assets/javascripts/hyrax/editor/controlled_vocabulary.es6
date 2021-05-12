@@ -79,16 +79,27 @@ export default class ControlledVocabulary extends FieldManager {
     // Labels and strings are read from a data attribute set in the edit field partial.
     _convertStringInputs() {
         let fields = $(this.element.find('.listing').children('li'))
+        // Retrieve the values from data attributes in view partials (views/records/vault/...)
         let labelValues = fields.first().children('input').first().data('labelValues')
         fields.each(function(index, field) {
-            if (labelValues[index].hasOwnProperty('string')) {
-                $(field).children('input').not(':first').remove()
-                var inputField = $(field).children('input')
-                inputField.select2('destroy')
-                inputField.removeAttr('readonly value data-autocomplete-url data-autocomplete data-attribute placeholder')
-                inputField.val(labelValues[index]['string'])
-            } else { // display the label
-                $(field).find('span.select2-chosen').text(labelValues[index]['label'])
+            if (typeof labelValues !== 'undefined' && labelValues.length > 0) {
+                // Remove autocomplete for string values
+                if (labelValues[index].hasOwnProperty('string')) {
+                    $(field).children('input').not(':first').remove()
+                    var inputField = $(field).children('input')
+                    inputField.attr('id',inputField.attr('class').split(' ')[4])
+                    var fieldName = inputField.attr('id').replace('generic_work_','')
+                    inputField.attr('name','generic_work[' + fieldName + '][]')
+                    inputField.select2('destroy')
+                    inputField.removeAttr('readonly value data-autocomplete-url data-attribute placeholder')
+                    inputField.val(labelValues[index]['string'])
+                } else { // Display the label
+                    console.log("uri = " + labelValues[index]['uri'])
+                    $(field).children('input').eq(1).attr('value', labelValues[index]['uri'])
+                    console.log($(field).children('input').eq(1).attr('value'))
+                    $(field).find('span.select2-chosen').text(labelValues[index]['label'])
+                    $(field).children('input').first().attr('readonly', true)
+                }
             }
         });
     }
