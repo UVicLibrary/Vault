@@ -104,7 +104,7 @@ module Hyrax
       def create_video_derivatives(filename)
         Hydra::Derivatives::VideoDerivatives.create(filename,
                                                     outputs: [{ label: :thumbnail, format: 'jpg', url: derivative_url('thumbnail') },
-                                                              { label: 'webm', format: 'webm', url: derivative_url('webm') },
+                                                              # { label: 'webm', format: 'webm', url: derivative_url('webm') },
                                                               { label: 'mp4', format: 'mp4', url: derivative_url('mp4') }])
       end
 

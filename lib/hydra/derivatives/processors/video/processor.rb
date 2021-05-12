@@ -14,7 +14,7 @@ module Hydra::Derivatives::Processors
 
         if format == "jpg"
           # Use a frame that is halfway through the video regardless of the video duration
-          input_options +=  "-ss `ffmpeg -i INPUT_PATH 2>&1 | grep Duration | awk '{print $2}' | tr -d , | awk -F ':' '{print ($3+$2*60+$1*3600)/2}'`" # " -itsoffset -2"
+          input_options += " -skip_frame nokey -ss 00:00:20" # "-ss `ffmpeg -i INPUT_PATH 2>&1 | grep Duration | awk '{print $2}' | tr -d , | awk -F ':' '{print ($3+$2*60+$1*3600)/2}'`"
           output_options += " -vframes 1 -an -f rawvideo"
         else
           output_options += " #{config.video_attributes} #{config.audio_attributes}"
