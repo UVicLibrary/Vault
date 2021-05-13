@@ -25,6 +25,11 @@ class WorkIndexer < Hyrax::WorkIndexer
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
+      # Index file sets' extracted text for display in search results
+      if full_text_contents = object.file_sets.select { |fs| fs.extracted_text.present? } and full_text_contents.present?
+        solr_doc['full_text_tsi'] = full_text_contents.map {|fs| fs.extracted_text.content }.join("")
+      end
+
       # Exception for Keith McHenry field not showing up in creator label for some items
       if solr_doc['creator_tesim'] and solr_doc['creator_tesim'].include?("http://id.worldcat.org/fast/01984031")
         if solr_doc['creator_label_tesim']

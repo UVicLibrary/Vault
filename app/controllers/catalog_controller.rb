@@ -75,18 +75,11 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
-    #config.add_index_field solr_name("title", :stored_searchable), label: "Title", itemprop: 'name'
-    #config.add_index_field solr_name("description", :stored_searchable), itemprop: 'description'
     config.add_index_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_index_field solr_name("tag", :stored_searchable), itemprop: 'keywords'
-    # config.add_index_field solr_name("subject", :stored_searchable), itemprop: 'about'
     config.add_index_field solr_name("subject_label", :stored_searchable), itemprop: 'about', label: "Subject"
-    # config.add_index_field solr_name("creator", :stored_searchable), itemprop: 'creator'
     config.add_index_field solr_name("creator_label", :stored_searchable), itemprop: 'creator', link_to_search: solr_name("creator_label", :facetable), label: "Creator"
-    #config.add_index_field solr_name("contributor", :stored_searchable), itemprop: 'contributor'
     config.add_index_field solr_name("contributor_label", :stored_searchable), itemprop: 'contributor', label: "Contributor"
-    # config.add_index_field solr_name("proxy_depositor", :symbol), label: "Depositor", helper_method: :link_to_profile
-    # config.add_index_field solr_name("depositor"), label: "Owner", helper_method: :link_to_profile
     config.add_index_field solr_name("publisher", :stored_searchable), itemprop: 'publisher'
     config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation'
     config.add_index_field solr_name("language", :stored_searchable), itemprop: 'inLanguage'
@@ -104,20 +97,16 @@ class CatalogController < ApplicationController
 
     #custom index fields
     config.add_index_field solr_name("edition", :stored_searchable), itemprop: "Edition", label: "Edition"
-    # config.add_index_field solr_name("geographic_coverage", :stored_searchable), itemprop: "Geographic Coverage", label: "Geographic Coverage"
     config.add_index_field solr_name("geographic_coverage_label", :stored_searchable), itemprop: "Geographic Coverage", label: "Geographic Coverage"
     config.add_index_field solr_name("coordinates", :stored_searchable), itemprop: "Coordinates", label: "Coordinates"
     config.add_index_field solr_name("chronological_coverage", :stored_searchable), itemprop: "Chronological Coverage", label: "Chronological Coverage"
     config.add_index_field solr_name("additional_physical_characteristics", :stored_searchable), itemprop:"Additional Physical Characteristics", label: "Additional Physical Characteristics"
     config.add_index_field solr_name("has_format", :stored_searchable), itemprop: "Has Format"
-    #config.add_index_field solr_name("physical_repository", :stored_searchable), itemprop: "Physical Repository", label: "Physical Repository"
     config.add_index_field solr_name("physical_repository_label", :stored_searchable), itemprop: "Physical Repository", label: "Physical Repository"
     config.add_index_field solr_name("collection", :stored_searchable), itemprop: "Collection", label: "Collection"
     config.add_index_field solr_name("provenance", :stored_searchable), itemprop: "Provenance", label: "Provenance"
-    # config.add_index_field solr_name("provider", :stored_searchable), itemprop: "Provider", label: "Provider"
     config.add_index_field solr_name("provider_label", :stored_searchable), itemprop: "Provider", label: "Provider"
     config.add_index_field solr_name("sponsor", :stored_searchable), itemprop: "Sponsor", label: "Sponsor"
-    # config.add_index_field solr_name("genre", :stored_searchable), itemprop: "Genre", label: "Genre"
     config.add_index_field solr_name("genre_label", :stored_searchable), itemprop: "Genre", label: "Genre"
     config.add_index_field solr_name("archival_item_identifier", :stored_searchable), itemprop:"Archival Item Identifier", label: "Archival Item Identifier"
     config.add_index_field solr_name("fonds_title", :stored_searchable), itemprop: "Fonds Title", label: "Fonds Title"
@@ -129,7 +118,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("transcript", :stored_searchable), itemprop: "Transcript", label: "Transcript"
     config.add_index_field solr_name("technical_note", :stored_searchable), itemprop: "Technical Note", label: "Technical Note"
     config.add_index_field solr_name("year", :stored_searchable), itemprop: "Year", label: "Year"
-
+    config.add_index_field "full_text_tsi", label: "Full text", helper_method: :excerpt_search_term
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
@@ -198,7 +187,7 @@ class CatalogController < ApplicationController
       all_names = config.show_fields.values.map(&:field).join(" ")
       title_name = solr_name("title", :stored_searchable)
       field.solr_parameters = {
-        qf: "#{all_names} file_format_tesim all_text_timv",
+        qf: "#{all_names} file_format_tesim all_text_timv full_text_tsi",
         pf: title_name.to_s
       }
     end
@@ -220,6 +209,15 @@ class CatalogController < ApplicationController
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
+      }
+    end
+
+    config.add_search_field('full text') do |field|
+      field.solr_parameters = { "spellcheck.dictionary": "full text" }
+      solr_name = "full_text_tsi"
+      field.solr_local_parameters = {
+          qf: solr_name,
+          pf: solr_name
       }
     end
 
