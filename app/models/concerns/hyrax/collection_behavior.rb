@@ -78,6 +78,12 @@ module Hyrax
       title.present? ? title.join(' | ') : 'No Title'
     end
 
+    # Override method in hydra-access-controls/app/models/concerns/hydra/acces_controls/access_right.rb
+    def authenticated_only_access?
+      return false if open_access?
+      self.visibility == "authenticated"
+    end
+
     # Check whether works in the collection are downloadable
     def any_downloadable
       works = GenericWork.where(member_of_collection_ids_ssim: self.id)
@@ -176,7 +182,8 @@ module Hyrax
 
     def visibility_group
       return [Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_PUBLIC] if visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-      return [Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_AUTHENTICATED] if visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+      return [::Ability.registered_group_name] if visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+      # return [Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_AUTHENTICATED] if visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
       []
     end
 

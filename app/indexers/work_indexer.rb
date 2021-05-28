@@ -30,6 +30,11 @@ class WorkIndexer < Hyrax::WorkIndexer
         solr_doc['full_text_tsi'] = full_text_contents.map {|fs| fs.extracted_text.content }.join("")
       end
 
+      # Allow public users to discover items with institution visibility
+      if object.visibility == "authenticated"
+        solr_doc["discover_access_group_ssim"] = "public"
+      end
+
       # Exception for Keith McHenry field not showing up in creator label for some items
       if solr_doc['creator_tesim'] and solr_doc['creator_tesim'].include?("http://id.worldcat.org/fast/01984031")
         if solr_doc['creator_label_tesim']
