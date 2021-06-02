@@ -1,0 +1,3 @@
+en:
+  unauthorized:
+    default: "You are not authorized to access this page. Log in with your UVic account to access restricted material, or email speccoll@uvic.ca to request access."

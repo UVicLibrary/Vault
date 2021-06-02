@@ -26,7 +26,7 @@ module Hyrax
 
     class_methods do
       def curation_concern_type=(curation_concern_type)
-        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:show, :file_manager, :inspect_work, :manifest]
+        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:file_manager, :inspect_work, :manifest]
 
         # Load the fedora resource to get the etag.
         # No need to authorize for the file manager, because it does authorization via the presenter.
