@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   post "/dashboard/file_path_checker/upload", to: "file_path_checker#upload", as: :check_csv_upload
 
   # For changing collection visibility
-  post '/dashboard/collections/:id/toggle_visibility', to: 'hyrax/dashboard/collections#toggle_visibility', as: 'toggle_visibility'
+  post '/dashboard/collections/:id/inherit_visibility', to: 'hyrax/dashboard/collections#inherit_visibility', as: 'inherit_collection_visibility'
 
   get 'status', to: 'status#index'
 
@@ -104,7 +104,7 @@ Rails.application.routes.draw do
   mount Riiif::Engine => '/images', as: 'riiif'
   require 'sidekiq/web'
   authenticate :user, lambda { |u| u.ability.admin? } do
-  	mount Sidekiq::Web => '/sidekiq'
-	end
+    mount Sidekiq::Web => '/sidekiq'
+  end
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 end

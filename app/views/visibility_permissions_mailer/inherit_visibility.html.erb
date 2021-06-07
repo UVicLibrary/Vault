@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>Hello,</p>
+    <% case @visibility %>
+    <% when "open" %>
+      <p><%= link_to @collection.title[0], @url %> is now public.</p>
+    <% when "authenticated" %>
+      <p><%= link_to @collection.title[0], @url %> is now limited to UVic users.</p>
+    <% when "restricted" %>
+      <p><%= link_to @collection.title[0], @url %> is now private.</p>
+    <% end %>
+  </body>
+</html>

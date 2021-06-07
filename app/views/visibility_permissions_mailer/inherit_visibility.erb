@@ -1,0 +1,10 @@
+Hello,
+
+<% case @visibility %>
+<% when "open" %>
+  <p><%= @collection.title[0] %> is now public.</p>
+<% when "authenticated" %>
+  <p><%= @collection.title[0] %> is now limited to UVic users.</p>
+<% when "restricted" %>
+  <p><%= @collection.title[0] %> is now private.</p>
+<% end %>

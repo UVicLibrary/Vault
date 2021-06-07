@@ -19,5 +19,6 @@
  *= require blacklight_range_limit
  *= require custom
  *= require sign_in
+ *= require dashboard_collections
  *= require_self
  */

@@ -39,12 +39,26 @@ module Hyrax
 
       load_and_authorize_resource except: [:index, :create], instance_name: :collection
 
-      def toggle_visibility
+
+      def copy_permissions
+        authorize! :edit, @collection
+        user_email = current_user.email
+        Hyrax::InheritCollectionPermissionsJob.perform_later(params[:id], user_email, request.base_url)
+        flash_message = 'Updating permissions of collection contents. You will receive an email when the update is finished.'
+        redirect_to edit_dashboard_collection_path(params[:id], anchor: session[:current_tab]), notice: flash_message
+      end
+
+      def no_copy_permissions
+        flash_message = "Collection was successfully updated."
+        redirect_to edit_dashboard_collection_path(params[:id], anchor: session[:current_tab]), notice: flash_message
+      end
+
+      def inherit_visibility
         respond_to do |format|
           # Params passed in from hyrax/dashboard/collections/_show_actions.html.erb
           user_email = params[:user_email].gsub('-dot-', '.')
           visibility = params[:visibility]
-          Hyrax::ToggleVisibilityJob.perform_later(params[:id], user_email, visibility, request.base_url)
+          Hyrax::InheritCollectionVisibilityJob.perform_later(params[:id], user_email, visibility, request.base_url)
           format.js {
             render 'render_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
           }
@@ -172,14 +186,12 @@ module Hyrax
           process_logo_input
         end
 
-        #thumbnail_upload_params
-
-
+        # For uploading custom thumbnails
         if params[:collection][:thumbnail_upload] # Save the image in the proper dimensions to public folder
           uploaded_file = params[:collection][:thumbnail_upload]
            dir_name = "public/uploaded_collection_thumbnails/#{@collection.id}"
            saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
-    # Create directory if it doesn't already exist
+        # Create directory if it doesn't already exist
           unless File.directory?(dir_name)
             FileUtils.mkdir_p(dir_name)
           else # clear contents

@@ -32,31 +32,40 @@
 
 <!-- 2nd row of buttons -->
 <div class="button-wrapper flex-container">
-<!-- Feature/Unfeature Collections -->
-<% if @presenter.collection_featurable? && can?(:create, FeaturedCollection) %>
-  <% if FeaturedCollection.can_create_another? || FeaturedCollection.pluck(:collection_id).include?(@presenter.id) %>
-    <%= link_to "Feature", featured_collections_path(collection_id: params[:id], order: 1, format: :json, remote: true), method: :post,
-        data: { behavior: 'feature' },
-        class: @presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
-        id: 'feature-coll-link' %>
-    <%= link_to "Unfeature", featured_collection_path(collection_id: params[:id], format: :json, remote: true), method: :delete,
-          data: { behavior: 'unfeature' },
-          class: @presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
-          id: 'unfeature-coll-link' %>
-  <% else %>
-    <span class="text-muted feature-collection-error">Maximum of 6 featured collections.</span>
-    <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
+  <!-- Change visibility of the collection, all of its works, and all of its filesets -->
+  <% if can? :edit, presenter.solr_document %>
+    <%= link_to "Make Public", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'open'),
+                remote: :true, method: :post, class: 'btn btn-default', id: 'make-public-button' %>
+    <%= link_to "Make UVic-Only", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'authenticated'),
+                remote: :true, method: :post, class: 'btn btn-default', id: 'make-uvic-only-button' %>
+    <%= link_to "Make Private", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'restricted'),
+                remote: :true, method: :post, class: 'btn btn-default', id: 'make-private-button' %>
   <% end %>
-<% elsif !@presenter.solr_document.public? %><%# could just be else statement, but this is more explicit %>
-    <span class="text-muted feature-collection-error">Collection must be public.</span>
-    <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
-<% end %>
-
-<!-- Change visibility of the collection, all of its works, and all of its filesets -->
-<% if can? :edit, presenter.solr_document %>
-    <%= link_to "Make public", main_app.toggle_visibility_path(id: presenter.id, user_email: current_user, visibility: 'public'),
-    remote: :true, method: :post, class: 'btn btn-default' %>
-    <%= link_to "Make private", main_app.toggle_visibility_path(id: presenter.id, user_email: current_user, visibility: 'private'),
-    remote: :true, method: :post, class: 'btn btn-default' %>
-<% end %>
 </div>
+
+  <div class="button-wrapper">
+    <!-- Feature/Unfeature Collections -->
+    <% if can? :edit, presenter.solr_document %>
+      <% if @presenter.collection_featurable? && can?(:create, FeaturedCollection) %>
+        <% if FeaturedCollection.can_create_another? || FeaturedCollection.pluck(:collection_id).include?(@presenter.id) %>
+          <%= link_to "Feature", featured_collections_path(collection_id: params[:id], order: 1, format: :json, remote: true), method: :post,
+                      data: { behavior: 'feature' },
+                      class: @presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
+                      id: 'feature-coll-link' %>
+          <%= link_to "Unfeature", featured_collection_path(collection_id: params[:id], format: :json, remote: true), method: :delete,
+                      data: { behavior: 'unfeature' },
+                      class: @presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
+                      id: 'unfeature-coll-link' %>
+        <% else %>
+          <span class="text-muted feature-collection-error">Maximum of 6 featured collections.</span>
+          <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
+        <% end %>
+        <% elsif !@presenter.solr_document.public? %><%# could just be else statement, but this is more explicit %>
+        <span class="text-muted feature-collection-error">Collection must be public.</span>
+        <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
+      <% end %>
+    <% end %>
+  </div>
+
+
+

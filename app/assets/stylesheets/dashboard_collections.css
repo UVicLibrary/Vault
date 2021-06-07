@@ -1,0 +1,43 @@
+.collection-title-row-content.flex-container {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.collection-title-row-content.flex-container .button-wrapper:not(:last-child) {
+    margin-bottom: 2%;
+}
+.collection-title-row-content.flex-container .button-wrapper:last-child {
+    text-align: right;
+}
+
+span.feature-collection-error {
+    display: inline-block;
+    max-width: 100%;
+    vertical-align: bottom;
+    text-align: right;
+    margin-bottom: 2%;
+}
+
+/* Public */
+#make-public-button {
+    background-color: #daf5da;
+}
+#make-public-button:hover {
+    background-color: #c0ebc0;
+}
+
+/* UVic-Only */
+#make-uvic-only-button {
+    background-color: #abd3ff;
+}
+#make-uvic-only-button:hover {
+    background-color: #97c1f0;
+}
+
+/* Private */
+#make-private-button {
+    background-color: #ffbab8;
+}
+#make-private-button:hover {
+    background-color: #ffa6a3;
+}
