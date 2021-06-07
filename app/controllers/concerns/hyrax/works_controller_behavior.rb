@@ -78,7 +78,8 @@ module Hyrax
         wants.html { presenter && parent_presenter }
         wants.json do
           # load @curation_concern manually because it's skipped for html
-          @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+          # @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+          @curation_concern = ActiveFedora::Base.find(params[:id])
           render :show, status: :ok
         end
         additional_response_formats(wants)

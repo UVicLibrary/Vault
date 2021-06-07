@@ -1,0 +1,31 @@
+.sign-in-text {
+    font-weight: normal;
+}
+
+#sign-in-with-uvic {
+    margin-top: 1em;
+}
+
+/* Make whitespace look cleaner */
+.email-form-group {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+.password-form-group {
+    margin-bottom: 1em;
+}
+.remember-form-group {
+    margin-bottom: 0.5em;
+}
+
+.login-button {
+    background-color: #4198d9;
+    color: white;
+    font-style: normal;
+    border-color: #4198d9;
+}
+
+.login-button:hover, .login-button:active {
+    color: white;
+    background-color: #337ab7;
+}

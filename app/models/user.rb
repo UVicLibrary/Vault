@@ -13,9 +13,27 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :invitable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable,
+         :omniauthable, omniauth_providers: [:cas], authentication_keys: [:email]
 
-  before_create :add_default_roles
+  # before_create :add_default_roles
+
+  # When a user authenticates via CAS (UVic login), find
+  # an existing user by email or create a new user and
+  # populate the model's attributes with info from
+  # the CAS service
+  def self.find_or_create_from_auth_hash(auth_hash)
+    User.where(email: auth_hash.extra.mail).first_or_create do |user|
+      # This block only runs if a new instance is being created,
+      # NOT for an existing record
+      user.display_name = auth_hash.extra.cn #First and last name
+      user.email = auth_hash.extra.mail
+      user.password = Devise.friendly_token[0,20]
+      user.site_roles = ["uvic"]
+      user.save!
+      user
+    end
+  end
 
   # Method added by Blacklight; Blacklight uses #to_s on your
   # user class to get a user-displayable login/identifier.
