@@ -13,7 +13,7 @@ Apartment.configure do |config|
   # A typical example would be a Customer or Tenant model that stores each Tenant's information.
   config.excluded_models = %w{ Account Endpoint SolrEndpoint FcrepoEndpoint RedisEndpoint }
 
-  # In order to migrate all of your Tenants you need to provide a list of Tenant names to Apartment.
+  # In order to migrate-old all of your Tenants you need to provide a list of Tenant names to Apartment.
   # You can make this dynamic by providing a Proc object to be called on migrations.
   # This object should yield an array of strings representing each Tenant name.
   config.tenant_names = lambda { Account.pluck :tenant }

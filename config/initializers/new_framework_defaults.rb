@@ -2,7 +2,7 @@
 #
 # This file contains migration options to ease your Rails 5.0 upgrade.
 #
-# Once upgraded flip defaults one by one to migrate to the new default.
+# Once upgraded flip defaults one by one to migrate-old to the new default.
 #
 # Read the Rails 5.0 release notes for more info on each option.
 

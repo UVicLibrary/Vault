@@ -33,4 +33,12 @@
       end
     end
 
+    def inherit_collection_permissions
+      @user_email = params[:user_email]
+      @collection = Collection.find(params[:id])
+      host = params[:account_host]
+      @url = "https://#{host}/collections/#{@collection.id}"
+      mail(to: @user_email, subject: 'Job Completed')
+    end
+
   end

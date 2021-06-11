@@ -31,7 +31,7 @@ module Hyrax
         user_key = user_key.user_key if user_key.respond_to?(:user_key)
         version = latest_version_of(content)
         return if version.nil?
-        VersionCommitter.create(version_id: version.uri, committer_login: user_key)
+        Hyrax::VersionCommitter.create(version_id: version.uri, committer_login: user_key)
       end
     end
   end

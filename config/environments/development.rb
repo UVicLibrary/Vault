@@ -1,10 +1,18 @@
 Rails.application.configure do
+
+  require 'socket'
+  require 'ipaddr'
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = !!Sidekiq.server?
+
+  # http://meta-lambda.com/rails-5-web-console-and-docker
+  config.web_console.whitelisted_ips = Socket.ip_address_list.reduce([]) do |res, addrinfo|
+    addrinfo.ipv4? ? res << IPAddr.new(addrinfo.ip_address).mask(24) : res
+  end
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -40,13 +48,19 @@ Rails.application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
-  config.assets.debug = true
+  # config.assets.debug = true
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
+  config.serve_static_assets = true
+
+  config.force_ssl = false
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  #
+
 
   config.action_mailer.default_url_options = { host: "localhost:3001" }
 

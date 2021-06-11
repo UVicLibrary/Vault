@@ -131,7 +131,7 @@ gem 'peek-sidekiq'
 gem 'sidekiq', '~> 5.0.3'
 gem 'sidekiq-benchmark'
 
-gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.3.4/gems/cdm_migrator-3.2.1' #~> 3.2.0'
+gem 'cdm_migrator'
 gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'

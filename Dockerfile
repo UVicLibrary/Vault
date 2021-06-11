@@ -1,5 +1,7 @@
 FROM ruby:2.5.3
 RUN apt-get update -qq && \
+    apt-get install nano && \
+    apt-get install poppler-utils && \
     apt-get install -y build-essential libpq-dev nodejs libreoffice imagemagick unzip ghostscript && \
     rm -rf /var/lib/apt/lists/*
 # If changes are made to fits version or location,
@@ -12,7 +14,10 @@ RUN mkdir /data
 WORKDIR /data
 ADD Gemfile /data/Gemfile
 ADD Gemfile.lock /data/Gemfile.lock
+RUN rails db:migrate
 RUN bundle install
 ADD . /data
-RUN bundle exec rake assets:precompile
+# Configure Active Fedora to use the right core
+# RUN sed 's/hydra-development/vault_dev/g' /usr/local/bundle/gems/active-fedora-11.5.2/config/solr.yml
+# RUN bundle exec rake assets:precompile
 EXPOSE 3000

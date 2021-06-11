@@ -9,7 +9,7 @@
   <td>
     <div class='media'>
       <%= link_to [main_app, document], class: 'media-left', 'aria-hidden' => true do %>
-        <% if file_set.present? && file_set.mime_type.include?("pdf") %>
+        <% if file_set.present? && file_set.mime_type && file_set.mime_type.include?("pdf") %>
           <%= image_tag(file_set.pdf_thumbnail_path, class: 'hidden-xs file_listing_thumbnail') %>
         <% else %>
           <%= render_thumbnail_tag document, { class: 'hidden-xs file_listing_thumbnail' }, { suppress_link: true } %>

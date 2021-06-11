@@ -13,6 +13,7 @@ en:
     product_twitter_handle: "@HydraInABox"
     collection_type:
       admin_set_title: "Admin Set"
+      default_title: "User Collection"
   simple_form:
     hints:
       defaults:

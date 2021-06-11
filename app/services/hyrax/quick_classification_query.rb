@@ -9,7 +9,7 @@ module Hyrax
     def initialize(user, options = {})
       @user = user
       @concern_name_normalizer = options.fetch(:concern_name_normalizer, ->(str) { str.constantize })
-      @models = options.fetch(:models, Hyrax.config.registered_curation_concern_types)
+      @models = ["GenericWork", "Image", "IaffWork"] #options.fetch(:models, Hyrax.config.registered_curation_concern_types)
     end
 
     def each(&block)
@@ -32,7 +32,8 @@ module Hyrax
 
       # Transform the list of requested model names into a list of class names
       def normalized_model_names
-        models.map { |name| concern_name_normalizer.call(name) if Site.first.available_works.include? name }
+        models.map { |name| concern_name_normalizer.call(name) }
+        # models.map { |name| concern_name_normalizer.call(name) if Site.first.available_works.include? name }
       end
   end
 end
