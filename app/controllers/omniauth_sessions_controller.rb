@@ -2,6 +2,7 @@
 class OmniauthSessionsController < Devise::SessionsController
 
   def create
+    # Rails.logger.warn "sessions controller auth hash = #{auth_hash.inspect}"
     @user = User.find_or_create_from_auth_hash(auth_hash)
     update_existing_user(@user, auth_hash)
     @current_user = @user

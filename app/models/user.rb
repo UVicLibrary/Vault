@@ -23,11 +23,17 @@ class User < ApplicationRecord
   # populate the model's attributes with info from
   # the CAS service
   def self.find_or_create_from_auth_hash(auth_hash)
-    User.where(email: auth_hash.extra.mail).first_or_create do |user|
-      # This block only runs if a new instance is being created,
+    User.where(email: auth_hash.extra.eduPersonPrincipalName).first_or_create do |user|
+      # This block only runs if a new user is being created,
       # NOT for an existing record
-      user.display_name = auth_hash.extra.cn #First and last name
-      user.email = auth_hash.extra.mail
+      if auth_hash.extra.cn
+        # Staff profile, use first and last name
+        user.display_name = auth_hash.extra.cn
+      else
+        # No name specified, use their Netlink ID
+        user.display_name = auth_hash.extra.user
+      end
+      user.email = auth_hash.extra.eduPersonPrincipalName
       user.password = Devise.friendly_token[0,20]
       user.site_roles = ["uvic"]
       user.save!

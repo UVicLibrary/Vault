@@ -15,7 +15,9 @@
 
     <%= render 'hyrax/dashboard/sidebar/activity', menu: menu %>
     <%= render 'hyrax/dashboard/sidebar/repository_content', menu: menu %>
-    <%= render 'hyrax/dashboard/sidebar/tasks', menu: menu %>
+    <% if can? :create, SolrDocument %>
+      <%= render 'hyrax/dashboard/sidebar/tasks', menu: menu %>
+    <% end %>
     <%= render 'hyrax/dashboard/sidebar/configuration', menu: menu %>
   </ul>
 </nav>

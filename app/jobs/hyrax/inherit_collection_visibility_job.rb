@@ -17,7 +17,7 @@ module Hyrax
       end
       change_visibility(collection, visibility)
       # Send an email when done
-      ::VisibilityPermissionsMailer.with(account_host: host, user_email: user_email, id: collection_id, visibility: visibility).inherit_visibility.deliver
+      # ::VisibilityPermissionsMailer.with(account_host: host, user_email: user_email, id: collection_id, visibility: visibility).inherit_visibility.deliver
     end
 
     private

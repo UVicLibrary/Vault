@@ -52,7 +52,7 @@
                       data: { behavior: 'feature' },
                       class: @presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
                       id: 'feature-coll-link' %>
-          <%= link_to "Unfeature", featured_collection_path(collection_id: params[:id], format: :json, remote: true), method: :delete,
+          <%= link_to "Unfeature", featured_collection_path(collection_id: params[:id], format: :json, remote: true), method: :post,
                       data: { behavior: 'unfeature' },
                       class: @presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
                       id: 'unfeature-coll-link' %>

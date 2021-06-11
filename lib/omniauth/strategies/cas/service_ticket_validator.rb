@@ -23,9 +23,7 @@ module OmniAuth
 
         # Executes a network request to process the CAS Service Response
         def call
-          Rails.logger.warn "@uri = #{@uri}"
           @response_body = get_service_response_body
-          Rails.logger.warn "@response_body = #{@response_body}"
           @success_body = find_authentication_success(@response_body)
           self
         end
