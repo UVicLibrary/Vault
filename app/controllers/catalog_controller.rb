@@ -118,7 +118,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("transcript", :stored_searchable), itemprop: "Transcript", label: "Transcript"
     config.add_index_field solr_name("technical_note", :stored_searchable), itemprop: "Technical Note", label: "Technical Note"
     config.add_index_field solr_name("year", :stored_searchable), itemprop: "Year", label: "Year"
-    config.add_index_field "full_text_tsi", label: "Full text", helper_method: :excerpt_search_term
+    config.add_index_field "full_text_tsi", label: "Keyword in Context", helper_method: :excerpt_search_term
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
