@@ -25,8 +25,8 @@
       this.fileupload($.extend({
         // xhrFields: {withCredentials: true},              // to send cross-domain cookies
         // acceptFileTypes: /(\.|\/)(png|mov|jpe?g|pdf)$/i, // not a strong check, just a regex on the filename
-        limitMultiFileUploadSize: 1000000000, // bytes
-        maxFileSize: 1000000000,
+        limitMultiFileUploadSize: 2000000000, // bytes
+        maxFileSize: 2000000000,
         autoUpload: true,
         url: '/uploads/',
         type: 'POST',

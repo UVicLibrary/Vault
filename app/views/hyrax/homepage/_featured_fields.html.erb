@@ -4,7 +4,7 @@
       <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
       <h3>
         <%= link_to [main_app, featured] do %>
-          <% if presenter.member_presenters.first.mime_type.include? "pdf" %>
+          <% if featured.member_presenters.first.mime_type.include? "pdf" %>
             <%= image_tag(file_set.pdf_thumbnail_path, width: 90) + featured.title.first %>
           <% else %>
             <%= render_thumbnail_tag(featured, {width: 90}, {suppress_link: true}) + featured.title.first %>
