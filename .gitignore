@@ -1,3 +1,5 @@
+public/uv
+public/uv/*
 *.rbc
 capybara-*.html
 .rspec
