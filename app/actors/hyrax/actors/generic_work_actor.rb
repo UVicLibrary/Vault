@@ -23,6 +23,8 @@ module Hyrax
 					field = field_symbol.to_s
 					next unless attributes.keys.include?(field+'_attributes') or attributes.keys.include?(field)
           if attributes.keys.include?(field+'_attributes')
+            # Don't include deleted attributes
+            next unless attributes[field+'_attributes'].any? { |k,v| v.keys.exclude?("_destroy") }
             qa_attributes[field] = attributes[field+'_attributes'].map do |att|
               att[1]['id']
             end

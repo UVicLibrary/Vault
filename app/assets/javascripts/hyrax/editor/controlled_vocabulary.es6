@@ -42,8 +42,9 @@ export default class ControlledVocabulary extends FieldManager {
 
     // Copied from app/assets/javascripts/hydra-editor/field_manager.es6
     _attachEvents() {
-        this.element.on('click', this.removeSelector, (e) => this.removeTextFieldFromList(e))
+        this.element.on('click', this.removeSelector, (e) => this.removeFromList(e))
         this.element.on('click', this.addSelector, (e) => this.addToList(e))
+        // this.element.on('click', this.addSelector, (e) => this.removeFromList(e))
         this.element.on('click', this.options.addTextSelector, (e) => this.addTextFieldToList(e))
     }
 
