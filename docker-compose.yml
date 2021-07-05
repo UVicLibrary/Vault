@@ -140,7 +140,8 @@ services:
       - SOLR_URL=http://solr:8983/solr/vault_dev
       - SETTINGS__ACTIVE_JOB__QUEUE_ADAPTER=sidekiq
       - SETTINGS__MULTITENANCY__ENABLED=false
-      - SETTINGS__MULTITENANCY__ADMIN_ONLY_TENANT_CREATION=false
+      # - SETTINGS__MULTITENANCY__ADMIN_HOST=http://localhost:3000
+      # - SETTINGS__MULTITENANCY__ADMIN_ONLY_TENANT_CREATION=false
       - SETTINGS__SOLR__URL=http://solr:8983/solr/vault_dev
       - SETTINGS__ZOOKEEPER__CONNECTION_STR=zookeeper_cluster:2181/configs
       - RAILS_ENV=development # production
@@ -149,6 +150,7 @@ services:
       - SECRET_KEY_BASE=asdf
       - RAILS_CACHE_STORE_URL=memcache
       # version and location of fits are set in Dockerfile:
+      #- LD_LIBRARY_PATH=/opt/fits-1.0.5/tools/mediainfo/linux
       - LD_LIBRARY_PATH=/opt/fits-1.0.5/tools/mediainfo/linux
     volumes:
       - app:/data/tmp/uploads
@@ -159,9 +161,6 @@ services:
     extends:
       service: app
 #    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -p 3000 -b '0.0.0.0'"
-    command: >
-      bash -c "rm -f tmp/pids/server.pid
-      & fcrepo_wrapper"
     depends_on:
       - db
       - solr
