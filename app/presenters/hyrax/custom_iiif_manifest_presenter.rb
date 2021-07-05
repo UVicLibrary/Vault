@@ -147,7 +147,8 @@ module Hyrax
       end
 
       def ordered_member_ids
-        solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
+        #solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
+        solr = RSolr.connect url: Settings.solr.url
         response = solr.get 'select', params: {
             q: "proxy_in_ssi:#{self.id}",
             rows: 10_000,

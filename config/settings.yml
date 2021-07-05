@@ -5,21 +5,22 @@
 #
 multitenancy:
   enabled: true
-  default_host: "%{tenant}.library.uvic.ca"
-  host: 'vault.library.uvic.ca'
-  admin_host: 'belinda.library.uvic.ca'
+  default_host: "%{tenant}.localhost:3000"
+  host: 'localhost:3000'
+  admin_host: 'localhost:3000'
   admin_only_tenant_creation: true
 
-ssl_configured: true
+#ssl_configured: true
 
-action_controller:
-  asset_host:
+#action_controller:
+#  asset_host:
 
 redis:
   default_namespace: hyku
 
 solr:
-  url: "http://perdita.library.uvic.ca:8983/solr/"
+  url: "http://127.0.0.1:8983/solr/"
+  url: "http://127.0.0.1:8983/solr/"
   configset: hyku
   configset_source_path: <%= File.join(Rails.root, 'solr', 'config') %>
   collection_options:
@@ -28,9 +29,9 @@ solr:
     collection:
       config_name: hyku
     create_node_set:
-    max_shards_per_node: 6
-    num_shards: 2
-    replication_factor: 3
+    max_shards_per_node:
+    num_shards: 1
+    replication_factor:
     router:
       name:
       field:
@@ -50,7 +51,9 @@ active_job_queue:
 s3:
   upload_bucket:
 
-fits_path: "/home/sufia/fits/fits-0.8.5/fits.sh"
+# fits_path: "./fits-1.5.0/fits.sh"
+fits_path: "/opt/fits-1.0.5/fits.sh"
+#fits_path: "/home/sufia/fits/fits-0.8.5/fits.sh"
 
 google_analytics_id:
 
@@ -58,9 +61,9 @@ google_analytics_id:
 geonames_username: 'jcoyne'
 
 # The address to which the contact form is submitted
-contact_email: "lgoddard@uvic.ca"
-
+contact_email: "tjychan@uvic.ca"
+#
 devise:
   account_signup: true
   # The address from which user invitations are sent
-  invitation_from_email: "bjustice@uvic.ca"
+  invitation_from_email: "tjychan@uvic.ca"

@@ -9,7 +9,7 @@ module Hyrax
     def initialize(user, options = {})
       @user = user
       @concern_name_normalizer = options.fetch(:concern_name_normalizer, ->(str) { str.constantize })
-      @models = ["GenericWork", "Image", "IaffWork"] #options.fetch(:models, Hyrax.config.registered_curation_concern_types)
+      @models = ["GenericWork"] #options.fetch(:models, Hyrax.config.registered_curation_concern_types)
     end
 
     def each(&block)
