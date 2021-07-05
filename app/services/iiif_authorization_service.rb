@@ -6,7 +6,7 @@ class IIIFAuthorizationService
 
   def can?(_action, object)
     
-    Rails.logger.debug "\n\rCONTROLLER: #{@controller.inspect} \n\r ACTION: #{_action.inspect} \n\r OBJECT: #{object.inspect}"
+    # Rails.logger.debug "\n\rCONTROLLER: #{@controller.inspect} \n\r ACTION: #{_action.inspect} \n\r OBJECT: #{object.inspect}"
     controller.current_ability.can?(:show, file_set_id_for(object))
     return true
   end
