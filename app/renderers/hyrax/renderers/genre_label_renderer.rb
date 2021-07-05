@@ -7,7 +7,7 @@ module Hyrax
       def render
         markup = ''
 
-        return markup if values.blank? && !options[:include_empty]
+        return markup if values.none?(&:present?) && !options[:include_empty]
         markup << %(<tr><th>#{label}</th>\n<td><ul class='tabular'>)
         attributes = microdata_object_attributes(field).merge(class: "attribute attribute-#{field}")
         values_array = Array(values)
