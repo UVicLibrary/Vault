@@ -18,27 +18,12 @@ module Hyrax
       
 			def clean_controlled_properties(env, attributes)
 				qa_attributes = {}
-
 				env.curation_concern.controlled_properties.each do |field_symbol|
 					field = field_symbol.to_s
-					next unless attributes.keys.include?(field+'_attributes') or attributes.keys.include?(field)
-          if attributes.keys.include?(field+'_attributes')
-            # Don't include deleted attributes
-            next unless attributes[field+'_attributes'].any? { |k,v| v.keys.exclude?("_destroy") }
-            qa_attributes[field] = attributes[field+'_attributes'].map do |att|
-              att[1]['id']
-            end
-          end
-
-          # Save string values if they exist
-          if attributes.keys.include?(field)
-            qa_attributes[field] = [] unless qa_attributes.has_key?(field)
-            attributes[field].each do |val|
-              next if val.include? "ActiveTriples"
-              qa_attributes[field].push(val)
-            end
-          end
-
+          # Do not include deleted attributes
+					next unless attributes.keys.include?(field+'_attributes')
+          filtered_attributes = attributes[field+'_attributes'].select  { |k,v| v['_destroy'].blank? }
+          qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
           attributes.delete(field)
           attributes.delete(field+'_attributes')
         end
