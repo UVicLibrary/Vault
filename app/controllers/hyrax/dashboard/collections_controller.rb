@@ -60,7 +60,7 @@ module Hyrax
           visibility = params[:visibility]
           Hyrax::InheritCollectionVisibilityJob.perform_later(params[:id], user_email, visibility, request.base_url)
           format.js {
-            render 'render_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
+            render 'render_ajax_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
           }
         end
       end
@@ -70,7 +70,7 @@ module Hyrax
         respond_to do |format|
           ToggleDownloadsJob.perform_later(params[:id], params[:user_email], params[:downloadable])
           format.js {
-            render 'render_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
+            render 'render_ajax_flash_messages.js.erb' # Notify user that job has been enqueued and warn about subcollections
           }
         end
       end
