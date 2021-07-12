@@ -84,16 +84,10 @@ module Hyrax
       self.visibility == "authenticated"
     end
 
-    # Check whether works in the collection are downloadable
-    def any_downloadable
+    # Returns an array. First integer is how many downloadable, the second is the total no. of works.
+    def count_downloadable
       works = GenericWork.where(member_of_collection_ids_ssim: self.id)
-      if works.pluck(:downloadable).all?
-        "all"
-      elsif works.pluck(:downloadable).any?
-        "some"
-      else
-        "no"
-      end
+      [ works.select(&:downloadable).count, works.count ]
     end
 
     # Return works that are not downloadable
