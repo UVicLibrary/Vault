@@ -22,7 +22,7 @@
   <section class="section-download-ability" style="margin-bottom: 3em;">
     <h3>Downloads</h3>
     <p>Turning this on will allow public users to download all files in this collection. Users who can edit files in a collection will still be able to download even if downloads are otherwise not allowed.</p>
-    <p>Currently, <strong><%=@collection.any_downloadable %></strong> works in this collection are downloadable.<p>
+    <p>Currently, <strong><%= @collection.count_downloadable[0] %></strong> out of <%= @collection.count_downloadable[1] %> works in this collection are downloadable.<p>
     <%= link_to "Enable downloads", main_app.toggle_downloads_path(id: params[:id], user_email: current_user, downloadable: true), remote: :true, method: :post, class: 'btn btn-primary' %>
     <%= link_to "Disable downloads", main_app.toggle_downloads_path(id: params[:id], user_email: current_user, downloadable: false), remote: :true, method: :post, class: 'btn btn-default' %>
   </section>
