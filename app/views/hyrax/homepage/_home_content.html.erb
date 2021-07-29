@@ -1,7 +1,7 @@
 <% if request.base_url.include? 'vault' %>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+<!--  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">-->
   <h1 id="featured-header"></h1>
   <!-- Navigation for Featured works and researcher -->
   <ul class="nav nav-pills" id="featured-nav" role="tablist">
@@ -34,7 +34,6 @@
 <!------------------- Featured Works -------------------->
   <div class="tab-pane fade" id="featured-works">
     <div class="container-fluid">
-      <%# byebug %>
     <%= render 'work_card_row', work_presenters: @featured_work_list.featured_works.map(&:presenter) %>
     </div><!-- .container -->
   </div><!-- tab-pane -->
