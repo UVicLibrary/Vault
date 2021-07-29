@@ -23,6 +23,10 @@ class WorkIndexer < Hyrax::WorkIndexer
 
     #failed = []
     super.tap do |solr_doc|
+      if object.thumbnail.video? and object.thumbnail.label.include?(".m4a")
+        solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
+      end
+
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index file sets' extracted text for display in search results
