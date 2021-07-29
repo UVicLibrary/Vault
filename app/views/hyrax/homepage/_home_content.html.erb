@@ -1,58 +1,60 @@
 <% if request.base_url.include? 'vault' %>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
   <div class="welcome-text">
     <p>Welcome to Vault, the digital asset management system used by UVic Libraries to store and provide access to digitized materials both from the rare and unique holdings in Special Collections and University Archives and from UVic Libraries’ project partners.</p>
     <p>Click on a collection below to get started or use the search bar to search across collections. For additional guidelines on searching Vault, see the <a href="/help">Help section</a>.</p>
   </div>
-  <h1 id="featured-header">Featured Collections</h1>
-    <ul id="featured-nav" role="tablist">
-      <li class="active">
-        <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" aria-controls="featured-collections" aria-selected="true" tabindex="0">Featured Collections</button>
-      </li>
-      <li>
-        <button id="featured-works-tab" href="#featured-works" data-toggle="tab" role="tab" aria-controls="featured-works" aria-selected="false" tabindex="-1">Featured Works</button>
-      </li>
-      <li>
-        <button id="recent-collections-tab" href="#recent-collections" data-toggle="tab" role="tab" aria-controls="recent-collections" aria-selected="false" tabindex="-1">Recently Added Collections</button>
-      </li>
-      <li>
-        <button id="recent-works-tab" href="#recent-works" data-toggle="tab" role="tab" aria-controls="recent-works" aria-selected="false" tabindex="-1">Recently Added Works</button>
-      </li>
-    </ul>
+  <h1 id="featured-header"></h1>
+  <!-- Navigation for Featured works and researcher -->
+  <ul class="nav nav-pills" id="featured-nav" role="tablist">
+    <li class="nav-item active">
+      <a class="nav-link" aria-expanded="false" href="#featured-collections" data-toggle="tab" role="tab">Featured Collections</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-expanded="true" href="#featured-works" data-toggle="tab" role="tab">Featured Works</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-expanded="false" href="#recent-collections" data-toggle="tab" role="tab">Recently Added Collections</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-expanded="false" href="#recent-works" data-toggle="tab" role="tab">Recently Added Works</a>
+    </li>
+
+  </ul>
 
 <!------------------- Card Rows -------------------->
-<div class="tab-content" >
+<div class="tab-content">
 
-  <!---------------------------- Featured Collections ----------------------------->
-    <% @featured_collection_list.add_solr_document_to_collections %>
-    <div class="tab-pane active" id="featured-collections" role="tabpanel"  aria-selected="true">
-      <div class="container-fluid card-container">
-        <%= render 'collection_card_row', collection_presenters: @featured_collection_list.collection_presenters %>
-      </div><!-- .container -->
-    </div><!-- .tab-pane active, #featured-collections -->
+<!---------------------------- Featured Collections ----------------------------->
+  <% @featured_collection_list.add_solr_document_to_collections %>
+  <div class="tab-pane active" id="featured-collections">
+    <div class="container-fluid">
+      <%= render 'collection_card_row', collection_presenters: @featured_collection_list.collection_presenters %>
+    </div><!-- .container -->
+  </div><!-- .tab-pane active, #featured-collections -->
 
-  <!------------------- Featured Works -------------------->
-    <div class="tab-pane fade" id="featured-works" role="tabpanel">
-      <div class="container-fluid card-container">
-      <%= render 'work_card_row', work_presenters: @featured_work_list.featured_works.map(&:presenter) %>
-      </div><!-- .container -->
-    </div><!-- tab-pane -->
+<!------------------- Featured Works -------------------->
+  <div class="tab-pane fade" id="featured-works">
+    <div class="container-fluid">
+      <%# byebug %>
+    <%= render 'work_card_row', work_presenters: @featured_work_list.featured_works.map(&:presenter) %>
+    </div><!-- .container -->
+  </div><!-- tab-pane -->
 
-    <!------------- Recent Collections ----------------->
-    <div class="tab-pane fade" id="recent-collections" role="tabpanel">
-      <div class="container-fluid card-container">
-          <%= render 'collection_card_row', collection_presenters: @recent_collection_presenters %>
-      </div><!-- .container -->
-    </div><!-- tab-pane -->
+  <!------------- Recent Collections ----------------->
+  <div class="tab-pane fade" id="recent-collections">
+    <div class="container-fluid">
+        <%= render 'collection_card_row', collection_presenters: @recent_collection_presenters %>
+    </div><!-- .container -->
+  </div><!-- tab-pane -->
 
-    <!------------- Recent Works ----------------->
-    <div class="tab-pane fade" id="recent-works" role="tabpanel">
-      <div class="container-fluid card-container">
-        <%= render 'work_card_row', work_presenters: @recent_work_presenters %>
-      </div><!-- .container -->
-    </div><!-- tab-pane -->
+  <!------------- Recent Works ----------------->
+  <div class="tab-pane fade" id="recent-works">
+    <div class="container-fluid">
+      <%= render 'work_card_row', work_presenters: @recent_work_presenters %>
+    </div><!-- .container -->
+  </div><!-- tab-pane -->
 
   <!---------------------- Update Featured ----------------------->
 <div class="container">

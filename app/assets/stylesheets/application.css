@@ -20,7 +20,7 @@
  *= require custom
  *= require sign_in
  *= require dashboard_collections
- * require vault_homepage
+ *= require vault_homepage
  *= require browse_collections
  *= require pagination
  *= require_self
