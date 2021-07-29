@@ -1,94 +1,57 @@
 <% if request.base_url.include? 'vault' %>
-<%#= console %>
-  <h1>Featured <span id="featured-header"></span></h1><!-- See application.js -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <h1 id="featured-header"></h1>
   <!-- Navigation for Featured works and researcher -->
   <ul class="nav nav-pills" id="featured-nav" role="tablist">
     <li class="nav-item active">
-      <a class="nav-link" aria-expanded="false" href="#featured-collections" data-toggle="tab" role="tab">Collections</a>
+      <a class="nav-link" aria-expanded="false" href="#featured-collections" data-toggle="tab" role="tab">Featured Collections</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" aria-expanded="true" href="#featured-works" data-toggle="tab" role="tab">Works</a>
+      <a class="nav-link" aria-expanded="true" href="#featured-works" data-toggle="tab" role="tab">Featured Works</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" aria-expanded="false" href="#featured-researcher" data-toggle="tab" role="tab">Researcher</a>
+      <a class="nav-link" aria-expanded="false" href="#recent-collections" data-toggle="tab" role="tab">Recently Added Collections</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" aria-expanded="false" href="#recent-works" data-toggle="tab" role="tab">Recently Added Works</a>
     </li>
 
   </ul>
 
-<!------------------- Cards -------------------->
+<!------------------- Card Rows -------------------->
 <div class="tab-content">
 
 <!---------------------------- Featured Collections ----------------------------->
   <% @featured_collection_list.add_solr_document_to_collections %>
   <div class="tab-pane active" id="featured-collections">
     <div class="container-fluid">
-      <div class="card-row row">
-          <% @featured_collection_list.collection_presenters.each do |presenter| %>
-            <% if presenter.solr_document.thumbnail_path %>
-              <% if presenter.solr_document.thumbnail_path.include? "uploaded_collection_thumbnails" %>
-                <%# use the higher resolution derivative %>
-                <% new_path = presenter.solr_document.thumbnail_path.gsub('_thumbnail.jpg','_card.jpg') %>
-              <% else %>
-          <!-- If string contains thumbnail dimensions, change them -->
-                <% new_path = presenter.solr_document.thumbnail_path.gsub '!150,300', '!500,900' %>
-              <% end %>
-            <% else %><!-- use placeholder -->
-              <% new_path = asset_path 'collection.png', skip_pipeline: true %>
-            <% end %>
-        <%= link_to [hyrax, presenter], class: "plain-link" do %><!-- path copied from _featured_fields.html.erb -->
-          <%= render 'card', presenter: presenter, new_path: new_path %>
-          <% end %><!-- link_to -->
-        <% end %><!-- @featured_collection_list.collection_presenters.each -->
-      </div><!-- .row -->
+      <%= render 'collection_card_row', collection_presenters: @featured_collection_list.collection_presenters %>
     </div><!-- .container -->
   </div><!-- .tab-pane active, #featured-collections -->
 
 <!------------------- Featured Works -------------------->
   <div class="tab-pane fade" id="featured-works">
-  <div class="container-fluid">
-      <div class="card-row row">
-        <% @featured_work_list.featured_works.each do |featured_work| %>
-          <% presenter = featured_work.presenter %>
-          <% if presenter.solr_document.thumbnail_path && request.base_url.include?('vault') %>
-            <% if presenter.solr_document.thumbnail_path.include?('uploaded') %>
-              <% new_path = presenter.solr_document.thumbnail_path.sub! 'thumbnail.jpg', 'card.jpg' %>
-            <% else %>
-              <!-- If string contains thumbnail dimensions, change them -->
-              <% new_path = presenter.solr_document.thumbnail_path.sub! '!150,300', '!500,900' %>
-            <% end %>
-          <% else %><!-- use placeholder -->
-            <% new_path = asset_path 'work.png' %>
-          <% end %>
-        <%= link_to [main_app, presenter], class: "plain-link" do %><!-- path copied from _featured_fields.html.erb -->
-          <%= render 'card', presenter: presenter, new_path: new_path %>
-        <% end %><!-- link_to -->
-      <% end %><!-- @featured_work_list.each -->
-  </div><!-- .row -->
-</div><!-- .container -->
-</div><!-- tab-pane -->
-
-
-  <!---------------------- Featured Researcher ------------------------->
-  <div class="tab-pane fade" id="featured-researcher">
     <div class="container-fluid">
-      <div class="row" >
-        <div class="col-lg-1"><!-- Offset and justify-content-center doesn't work for some reason? -->
-        </div>
-        <div class="col-lg-3">
-          <h2 class="researcher-name"><%= @featured_researcher.researcher_name %></h2>
-          <%= image_tag("/uploads/researchers/#{@featured_researcher.researcher_thumbnail}", class: "researcher-thumbnail") %>
-          <h4 class="researcher-title"><%= @featured_researcher.researcher_title %></h4>
-        </div><!-- .col-lg-4 -->
-        <div class="col-lg-7">
-          <%= render 'featured_researcher' %>
-        </div>
-      </div><!-- .row -->
-    </div><!-- .container-fluid -->
-  </div><!-- .tab-pane.fade -->
-</div><!-- .tab-content -->
+      <%# byebug %>
+    <%= render 'work_card_row', work_presenters: @featured_work_list.featured_works.map(&:presenter) %>
+    </div><!-- .container -->
+  </div><!-- tab-pane -->
 
-  <%#= render 'carousel' %>
+  <!------------- Recent Collections ----------------->
+  <div class="tab-pane fade" id="recent-collections">
+    <div class="container-fluid">
+        <%= render 'collection_card_row', collection_presenters: @recent_collection_presenters %>
+    </div><!-- .container -->
+  </div><!-- tab-pane -->
 
+  <!------------- Recent Works ----------------->
+  <div class="tab-pane fade" id="recent-works">
+    <div class="container-fluid">
+      <%= render 'work_card_row', work_presenters: @recent_work_presenters %>
+    </div><!-- .container -->
+  </div><!-- tab-pane -->
 
   <!---------------------- Update Featured ----------------------->
 <div class="container">

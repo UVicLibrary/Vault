@@ -23,16 +23,28 @@ class Hyrax::HomepageController < ApplicationController
     @presenter = presenter_class.new(current_ability, collections)
     @featured_researcher = ContentBlock.for(:researcher)
     @marketing_text = ContentBlock.for(:marketing)
-    @featured_work_list = FeaturedWorkList.new
     @announcement_text = ContentBlock.for(:announcement)
-    (@response, @works) = search_results(q: '', sort: sort_field, rows: 100) # Returns an array of 3 things. [0] is the solr response, [1] is an array of SolrDocuments
-    # Sort works by date created, descending:
-    # @works = @response[1].sort_by { |w| w.date_created }.reverse
-    # @collections = @presenter.collections.sort_by{ |d| d.works.first.date_created }.paginate(:page => params[:collections_page], :per_page => 10)
-    # Sort collections by alpha order:
-    @collections = @presenter.collections.sort_by{ |d| d.title }.paginate(:page => params[:collections_page], :per_page => 10)
+
+    # Featured collections
     @featured_collections = FeaturedCollection.all
     @featured_collection_list = FeaturedCollectionList.new
+    # Featured works
+    @featured_work_list = FeaturedWorkList.new
+    # Recent collections
+    collections = @presenter.collections.sort_by(&:date_created).slice(0,5)
+    @recent_collection_presenters = Hyrax::PresenterFactory.build_for(ids: collections.pluck(:id),
+                                      presenter_class: Hyrax::CollectionPresenter,
+                                      presenter_args: nil)
+    # Recent works
+    (@response, @works) = search_results(q: '', sort: sort_field, rows: 100) # Returns an array of 3 things. [0] is the solr response, [1] is an array of SolrDocuments
+    # recent_work_ids = @works.slice(0,5).pluck(:id)
+    @recent_work_presenters = Hyrax::PresenterFactory.build_for(ids: @works.slice(0,5).pluck(:id),
+                                                                presenter_class: Hyrax::WorkShowPresenter,
+                                                                presenter_args: nil)
+
+
+    # For collections table, sort by alpha order:
+    @collections = collections.sort_by(&:title).paginate(:page => params[:collections_page], :per_page => 10)
 
     recent
   end

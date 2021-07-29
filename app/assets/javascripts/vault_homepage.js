@@ -1,5 +1,5 @@
 
-$(document).on('turbolinks:load', function() { // Turbolinks breaks document.ready
+$(document).on('turbolinks:load', function() { // Instead of document.ready
 
   // Changes the header ("Featured ____") to match the tab that is currently active
   $("span#featured-header").html($("ul#featured-nav li.active").text());
@@ -8,7 +8,7 @@ $(document).on('turbolinks:load', function() { // Turbolinks breaks document.rea
     $("span#featured-header").html(featuredText);
   });
 
-  // Refresh the collections or works list if user clicks pagination link
+  // Refresh the collections or works table if user clicks pagination link
   $("#homepage-works-and-collections").on('click', '.pagination a', function() {
     var c = "#homepage-collections-partial";
     var w = "#homepage-works-partial";

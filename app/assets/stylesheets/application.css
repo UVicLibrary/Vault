@@ -20,5 +20,6 @@
  *= require custom
  *= require sign_in
  *= require dashboard_collections
+ *= require vault_home-page
  *= require_self
  */

@@ -1,9 +1,10 @@
-<div class="example-1 card col-lg-4 col-md-4 col-sm-4 col-xs-12">
+<!-------------- app/views/hyrax/homepage/_collection_card.html.erb -------------->
+<div class="card col-lg-4 col-md-4 col-sm-4 col-xs-12">
+  <%= link_to [hyrax, presenter], class: "plain-link" do %>
     <div class="wrapper" style="background: url(<%= new_path %>); background-size: cover; background-position: center;">
-      <!-- First Card -->
       <div class="data">
         <div class="content">
-          <h2 class="title"><%= presenter.title.first %></h2>
+          <h2 class="card-title collection-card-title"><%= presenter.title.first %></h2>
           <p class="text">
             <% if presenter.description.first.present? %>
               <%= presenter.description.first.truncate(100, separator: /\s/) %>
@@ -14,4 +15,5 @@
         </div><!-- .content -->
       </div><!-- .data -->
     </div><!-- .wrapper -->
+  <% end %>
 </div><!-- .card -->
