@@ -75,11 +75,11 @@ class WorkIndexer < Hyrax::WorkIndexer
             solr_doc['year_sort_dtsim'] = interval.map{|d| d.strftime("%FT%TZ")}
             solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
             solr_doc['year_range_isim'] = interval.map { |d| d.year.to_i }
-          elsif date == "unknown" or date=="no date"
+          elsif date == "unknown" or date=="no date" or object.date_created.blank?
             # Do not index anything in year sort
           else # parsed_date == nil
             # raise "Unrecognized date in date_created field: #{date}"
-            ::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: [object.id]).failures.deliver
+            #::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: [object.id]).failures.deliver
           end
         end
       end
