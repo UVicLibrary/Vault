@@ -16,11 +16,18 @@
       </div>
 
       <% if can? :edit, @presenter.solr_document %>
-        <%= link_to t('hyrax.collection.actions.edit.label'),
-                    hyrax.edit_dashboard_collection_path(@presenter),
-                    title: t('hyrax.collection.actions.edit.desc'),
-                    class: 'btn btn-primary',
-                    style: 'float: right;' %>
+        <div class="extra-actions">
+          <%= link_to "Dashboard view",
+                      hyrax.dashboard_collection_path(@presenter),
+                      title: t('hyrax.collection.actions.edit.desc'),
+                      class: 'btn btn-default',
+                      style: 'margin-right: 0.25em;' %>
+          <%= link_to t('hyrax.collection.actions.edit.label'),
+                      hyrax.edit_dashboard_collection_path(@presenter),
+                      title: t('hyrax.collection.actions.edit.desc'),
+                      class: 'btn btn-primary',
+                      data: { turbolinks: false } %>
+        </div>
       <% end %>
 
       <% unless @presenter.logo_record.blank? %>

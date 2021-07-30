@@ -3,11 +3,12 @@
     justify-content: flex-end;
 }
 
-.collection-title-row-content.flex-container .button-wrapper:not(:last-child) {
+.collection-title-row-content.flex-container .button-wrapper {
     margin-bottom: 2%;
 }
 .collection-title-row-content.flex-container .button-wrapper:last-child {
     text-align: right;
+    margin-left: 4px;
 }
 
 span.feature-collection-error {
