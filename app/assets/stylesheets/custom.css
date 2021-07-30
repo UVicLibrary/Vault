@@ -1,3 +1,7 @@
+.extra-actions {
+    float: right;
+    display: inline-block;
+}
 
 .work_description {
     white-space: pre-line;
@@ -183,7 +187,7 @@ form #content_block_researcher_title {
   text-align: center !important;
 }
 
-.plain-link, .plain-link:hover {
+.plain-link, .plain-link:hover, .plain-link:focus {
   text-decoration: none;
   color: inherit;
 }
