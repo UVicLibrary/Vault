@@ -1,5 +1,4 @@
 public/uv
-public/uv/*
 *.rbc
 capybara-*.html
 .rspec
@@ -76,3 +75,5 @@ solr
 db
 spec
 .gitignore
+
+public/uv
