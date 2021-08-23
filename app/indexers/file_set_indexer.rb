@@ -17,9 +17,14 @@ class FileSetIndexer < Hyrax::FileSetIndexer
 
     super.tap do |solr_doc|
       solr_doc['hasFormat_ssim'] = object.rendering_ids
-      if object.audio? or object.files.first.file_name.first.include?(".m4a")
-        solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object)
+      if object.files.first.present?
+        if object.audio? or (object.files.first.file_name.first.present? and object.files.first.file_name.first.include?(".m4a"))
+          solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object)
+        else
+          solr_doc['thumbnail_path_ss'] = self.thumbnail_path_service.call(object)
+        end
       end
+
       if object.parent and object.parent.creator.present?
         parent_doc = SolrDocument.find(object.parent.id)
         solr_doc['creator_tesim'] = parent_doc['creator_tesim']

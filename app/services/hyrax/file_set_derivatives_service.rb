@@ -64,7 +64,7 @@ module Hyrax
           end
 
           puts new_filename
-          first_page = CombinePDF.load(new_filename).pages[0]
+          first_page = CombinePDF.load(new_filename, allow_optional_content: true).pages[0]
           new_pdf = CombinePDF.new
           new_pdf << first_page
           first_page_path = "/usr/local/rails/vault/working/#{File.basename(new_filename).split(".")[0].gsub("&","_").gsub("'","")}-cover.pdf" # & in a file name causes this to fail

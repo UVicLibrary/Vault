@@ -23,8 +23,10 @@ class WorkIndexer < Hyrax::WorkIndexer
 
     #failed = []
     super.tap do |solr_doc|
-      if object.thumbnail and (object.thumbnail.audio? or object.thumbnail.files.first.file_name.first.include?(".m4a"))
-        solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
+      if object.thumbnail and object.thumbnail.files.any?
+        if object.thumbnail.audio? or object.thumbnail.files.first.file_name.first.include?(".m4a")
+            solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
+        end
       end
 
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
