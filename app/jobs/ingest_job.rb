@@ -13,7 +13,7 @@ class IngestJob < Hyrax::ApplicationJob
   # @see 'config/initializers/hyrax_callbacks.rb'
   # rubocop:disable Lint/UnusedMethodArgument
   def perform(wrapper, notification: false)
-    Sidekiq::Logging.logger.info "Performing Ingest Job"
+    Sidekiq.logger.info "Performing Ingest Job"
     wrapper.ingest_file
   end
 end
