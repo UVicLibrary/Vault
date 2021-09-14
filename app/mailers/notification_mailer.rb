@@ -33,4 +33,11 @@
       end
     end
 
+    def batch_create_files_failures
+      @user_email = params[:user_email]
+      @error_message = params[:error_message]
+      @work_id = params[:work_id]
+      mail(to: @user_email, subject: 'File Creation Error')
+    end
+
   end
