@@ -116,7 +116,6 @@ gem 'mods', '~> 2.1'
 gem 'riiif', '~> 1.1'
 
 gem 'iiif_manifest', '~> 0.5.0'
-gem 'iiif-presentation'
 gem 'draper'
 
 group :aws, :test do
@@ -128,8 +127,7 @@ group :aws do
 end
 
 gem 'peek-sidekiq'
-gem 'sidekiq', '~> 5.0.3'
-gem 'sidekiq-benchmark'
+gem 'sidekiq', '~> 5.0.3' # '~> 6.0.7'
 
 gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.3.4/gems/cdm_migrator-3.2.1' #~> 3.2.0'
 gem 'to_spotlight', '~> 0.2.7'
