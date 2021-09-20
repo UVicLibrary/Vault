@@ -517,7 +517,12 @@ module Hyrax
         end
 
         def member_works
-          @response = collection_member_service.available_member_works
+          # For sort by relevance (score), use collection_member_service.available_member_works
+          if params[:sort]
+            @response = collection_member_service.available_member_works
+          else
+            @response = collection_member_service.sorted_member_works("year_sort_dtsi asc")
+          end
           @member_docs = @response.documents
           @members_count = @response.total
         end
