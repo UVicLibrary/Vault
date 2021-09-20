@@ -521,7 +521,7 @@ module Hyrax
           if params[:sort]
             @response = collection_member_service.available_member_works
           else
-            @response = collection_member_service.sorted_member_works("year_sort_dtsi asc")
+            @response = collection_member_service.sorted_member_works("year_sort_dtsi asc, title_sort_ssi asc")
           end
           @member_docs = @response.documents
           @members_count = @response.total
