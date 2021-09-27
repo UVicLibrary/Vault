@@ -49,7 +49,7 @@ class EdtfDateService
       else
         # Capitalize seasons
         seasons = ["spring", "summer", "autumn", "winter"]
-        @parsed_date.humanize.split(" ").each { |word| word.capitalize if seasons.include?(word) }.join(" ")
+        @parsed_date.humanize.split(" ").each { |word| word.capitalize! if seasons.include?(word) }.join(" ")
       end
     end
 
