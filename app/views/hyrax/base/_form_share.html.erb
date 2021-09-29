@@ -78,7 +78,7 @@
       </td>
       <td>
         <%= permission_fields.label :agent_name, class: "control-label" do %>
-          <%= user_display_name_and_key(permission_fields.object.agent_name.titleize) %>
+          <%= user_display_name_and_key(permission_fields.object.agent_name) %>
         <% end %>
         <button class="btn close remove_perm" data-index="<%= permission_fields.index %>">&times;</button>
       </td>
