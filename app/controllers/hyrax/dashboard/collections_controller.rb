@@ -37,8 +37,7 @@ module Hyrax
       # The search builder to find the collections' members
       self.membership_service_class = Collections::CollectionMemberService
 
-      load_and_authorize_resource except: [:index, :create], instance_name: :collection
-
+      load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
 
       def copy_permissions
         authorize! :edit, @collection

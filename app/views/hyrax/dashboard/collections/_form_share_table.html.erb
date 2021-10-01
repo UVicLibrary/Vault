@@ -1,0 +1,77 @@
+<!-- <h3><%#= t(".#{access}.title") %></h3> -->
+<p><%= t(".#{access}.help") %></p>
+<p><%= t(".#{access}.help_with_works", type_title: @collection.collection_type.title) if @collection.share_applies_to_new_works? && access != 'depositors' %></p>
+<% if (access == "viewers" and @form.permission_template.access_grants.select(&:view?).any?) or (access == "managers" and @form.permission_template.access_grants.select(&:manage?).any?)%>
+  <table class="table table-striped share-status">
+    <thead>
+    <tr>
+      <th><%= t(".#{access}.agent_name") %></th>
+      <% unless access == "viewers" %>
+      <th>Role</th>
+      <% end %>
+      <th><%= t(".#{access}.type") %></th>
+      <th><%= t(".#{access}.action") %></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% if access == "viewers" %>
+        <%@form.permission_template.access_grants.select(&:view?).each do |g| %>
+          <tr>
+            <% if g.agent_type == "group" %>
+              <td data-agent="<%= g.agent_id %>"><%= g.label.titleize %></td>
+            <% else %>
+              <td data-agent="<%= g.agent_id %>"><%= user_display_name_and_key(g.agent_id) %></td>
+            <% end %>
+            <td><%= g.agent_type.titleize %></td>
+            <td>
+              <% if g.admin_group? %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'discovery'), method: :delete, class: 'btn btn-sm btn-danger disabled', disabled: true, title: t('hyrax.admin.admin_sets.form.permission_destroy_errors.admin_group') %>
+              <% else %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'discovery'), method: :delete, class: 'btn btn-sm btn-danger' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+    <% else %>
+        <% @form.permission_template.access_grants.select(&:manage?).each do |g| %>
+          <tr>
+            <% if g.agent_type == "group" %>
+              <td data-agent="<%= g.agent_id %>"><%= g.label.titleize %></td>
+            <% else %>
+              <td data-agent="<%= g.agent_id %>"><%= g.label %></td>
+            <% end %>
+            <td>Manager</td>
+            <td><%= g.agent_type.titleize %></td>
+            <td>
+              <% if g.admin_group? %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'sharing'), method: :delete, class: 'btn btn-sm btn-danger disabled', disabled: true, title: t('hyrax.admin.admin_sets.form.permission_destroy_errors.admin_group') %>
+              <% else %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'sharing'), method: :delete, class: 'btn btn-sm btn-danger' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% @form.permission_template.access_grants.select(&:deposit?).each do |g| %>
+          <tr>
+            <% if g.agent_type == "group" %>
+              <td data-agent="<%= g.agent_id %>"><%= g.label.titleize %></td>
+            <% else %>
+              <td data-agent="<%= g.agent_id %>"><%= g.label %></td>
+            <% end %>
+            <td>Depositor</td>
+            <td><%= g.agent_type.titleize %></td>
+            <td>
+              <% if g.admin_group? %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'discovery'), method: :delete, class: 'btn btn-sm btn-danger disabled', disabled: true, title: t('hyrax.admin.admin_sets.form.permission_destroy_errors.admin_group') %>
+              <% else %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'discovery'), method: :delete, class: 'btn btn-sm btn-danger' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p><em><%= t(".#{access}.empty") %></em></p>
+<% end %>
