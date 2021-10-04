@@ -37,6 +37,7 @@
       @user_email = params[:user_email]
       @error_message = params[:error_message]
       @work_id = params[:work_id]
+      @ingest_work_id = params[:ingest_work_id]
       mail(to: @user_email, subject: 'File Creation Error')
     end
 
