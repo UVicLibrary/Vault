@@ -21,7 +21,7 @@ module Hyrax
       rescue_from Hydra::AccessDenied, CanCan::AccessDenied, with: :deny_collection_access
 
       # actions: index, create, new, edit, show, update, destroy, permissions, citation
-      before_action :authenticate_user!, except: [:index]
+      before_action :authenticate_user!, except: [:index, :copy_permissions]
 
       class_attribute :presenter_class,
                       :form_class,
@@ -40,7 +40,6 @@ module Hyrax
       load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
 
       def copy_permissions
-        authorize! :edit, @collection
         user_email = current_user.email
         Hyrax::InheritCollectionPermissionsJob.perform_later(params[:id], user_email, request.base_url)
         flash_message = 'Updating permissions of collection contents. You will receive an email when the update is finished.'
