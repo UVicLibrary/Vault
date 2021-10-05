@@ -1,4 +1,4 @@
-<% if file_set and file_set.user_can_perform_any_action? %><%# if false, there are no actions so no point rendering %>
+<% if file_set and file_set.class == Hyrax::FileSetPresenter and file_set.user_can_perform_any_action? %><%# if false, there are no actions so no point rendering %>
     <div class="btn-group">
 
       <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" id="dropdownMenu_<%= file_set.id %>" aria-haspopup="true" aria-expanded="false">
@@ -40,4 +40,6 @@
 
   </ul>
   </div>
+<% else %>
+  File is still uploading, please check back later.
 <% end %>
