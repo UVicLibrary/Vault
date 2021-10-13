@@ -12,6 +12,14 @@ module Hyrax
     class_attribute :create_work_presenter_class
     self.create_work_presenter_class = Hyrax::SelectTypeListPresenter
 
+    # delegate fields from Hyrax::Works::Metadata to solr_document
+    delegate :provider_label, :creator_label, :based_near_label, :subject_label,
+             :contributor_label, :physical_repository_label, :genre_label,
+             :geographic_coverage, :genre, :related_url, :identifier,
+             :resource_type, :keyword, :geographic_coverage_label,
+             :chronological_coverage,
+             to: :solr_document
+
     # @param [SolrDocument] solr_document
     # @param [Ability] current_ability
     # @param [ActionDispatch::Request] request the http request context

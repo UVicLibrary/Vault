@@ -108,6 +108,22 @@ module Hyrax
 
       def edit
         form
+        if request.base_url.include?("vault")
+          document = ::SolrDocument.find(params[:id])
+          @all_labels = Collection.controlled_properties.each_with_object({}) do |prop, hash|
+            labels = document.send("#{prop.to_s}_label")
+            values = document.send(prop)
+
+            hash["#{prop.to_s}_label"] = []
+            values.each do |val|
+              if val.include?("http")
+                hash["#{prop.to_s}_label"].push({label: "#{labels[values.index(val)]}", uri: "#{val}" })
+              elsif val.present?
+                hash["#{prop.to_s}_label"].push({string: "#{labels[values.index(val)]}" })
+              end
+            end
+          end
+        end
         # Gets original filename of an uploaded thumbnail. See #update
         if ::SolrDocument.find(@collection.id).thumbnail_path.include? "uploaded_collection_thumbnails" and uploaded_thumbnail?
           @thumbnail_filename = File.basename(uploaded_thumbnail_files.reject { |f| File.basename(f).include? @collection.id }.first)
@@ -210,11 +226,33 @@ module Hyrax
         @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
         # we don't have to reindex the full graph when updating collection
         @collection.reindex_extent = Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX
-        if @collection.update(collection_params.except(:members))
+
+        # Add URIs and string values for controlled properties
+        uris = clean_controlled_properties(extract_controlled_properties)
+        strings = collection_params.except(:members)
+        @collection.attributes = uris.merge(strings) { |key, oldval, newval| newval + oldval }
+        @collection.to_controlled_vocab
+
+        # if @collection.update(collection_params.except(:members))
+        if @collection.save!
           after_update
         else
           after_update_error
         end
+      end
+
+      def clean_controlled_properties(attributes)
+        qa_attributes = {}
+        @collection.controlled_properties.each do |field_symbol|
+          field = field_symbol.to_s
+          # Do not include deleted attributes
+          next unless attributes.keys.include?(field+'_attributes')
+          filtered_attributes = attributes[field+'_attributes'].select  { |k,v| v['_destroy'].blank? }
+          qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
+          attributes.delete(field)
+          attributes.delete(field+'_attributes')
+        end
+        qa_attributes
       end
 
       # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
@@ -418,6 +456,20 @@ module Hyrax
         def collection_params
           @participants = extract_old_style_permission_attributes(params[:collection])
           form_class.model_attributes(params[:collection])
+        end
+
+        def extract_controlled_properties
+          attributes = {}
+          Collection.controlled_properties.each do |prop|
+            attribute_key = "#{prop}_attributes"
+            if params.has_key?(attribute_key)
+              params[attribute_key].permit!
+              attributes[attribute_key] = params[attribute_key].to_h
+            elsif
+            params
+            end
+          end
+          attributes
         end
 
         def extract_old_style_permission_attributes(attributes)
