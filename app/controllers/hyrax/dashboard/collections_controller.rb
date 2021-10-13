@@ -21,7 +21,7 @@ module Hyrax
       rescue_from Hydra::AccessDenied, CanCan::AccessDenied, with: :deny_collection_access
 
       # actions: index, create, new, edit, show, update, destroy, permissions, citation
-      before_action :authenticate_user!, except: [:index]
+      before_action :authenticate_user!, except: [:index, :copy_permissions]
 
       class_attribute :presenter_class,
                       :form_class,
@@ -37,11 +37,9 @@ module Hyrax
       # The search builder to find the collections' members
       self.membership_service_class = Collections::CollectionMemberService
 
-      load_and_authorize_resource except: [:index, :create], instance_name: :collection
-
+      load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
 
       def copy_permissions
-        authorize! :edit, @collection
         user_email = current_user.email
         Hyrax::InheritCollectionPermissionsJob.perform_later(params[:id], user_email, request.base_url)
         flash_message = 'Updating permissions of collection contents. You will receive an email when the update is finished.'
@@ -110,6 +108,22 @@ module Hyrax
 
       def edit
         form
+        if request.base_url.include?("vault")
+          document = ::SolrDocument.find(params[:id])
+          @all_labels = Collection.controlled_properties.each_with_object({}) do |prop, hash|
+            labels = document.send("#{prop.to_s}_label")
+            values = document.send(prop)
+
+            hash["#{prop.to_s}_label"] = []
+            values.each do |val|
+              if val.include?("http")
+                hash["#{prop.to_s}_label"].push({label: "#{labels[values.index(val)]}", uri: "#{val}" })
+              elsif val.present?
+                hash["#{prop.to_s}_label"].push({string: "#{labels[values.index(val)]}" })
+              end
+            end
+          end
+        end
         # Gets original filename of an uploaded thumbnail. See #update
         if ::SolrDocument.find(@collection.id).thumbnail_path.include? "uploaded_collection_thumbnails" and uploaded_thumbnail?
           @thumbnail_filename = File.basename(uploaded_thumbnail_files.reject { |f| File.basename(f).include? @collection.id }.first)
@@ -212,11 +226,33 @@ module Hyrax
         @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
         # we don't have to reindex the full graph when updating collection
         @collection.reindex_extent = Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX
-        if @collection.update(collection_params.except(:members))
+
+        # Add URIs and string values for controlled properties
+        uris = clean_controlled_properties(extract_controlled_properties)
+        strings = collection_params.except(:members)
+        @collection.attributes = uris.merge(strings) { |key, oldval, newval| newval + oldval }
+        @collection.to_controlled_vocab
+
+        # if @collection.update(collection_params.except(:members))
+        if @collection.save!
           after_update
         else
           after_update_error
         end
+      end
+
+      def clean_controlled_properties(attributes)
+        qa_attributes = {}
+        @collection.controlled_properties.each do |field_symbol|
+          field = field_symbol.to_s
+          # Do not include deleted attributes
+          next unless attributes.keys.include?(field+'_attributes')
+          filtered_attributes = attributes[field+'_attributes'].select  { |k,v| v['_destroy'].blank? }
+          qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
+          attributes.delete(field)
+          attributes.delete(field+'_attributes')
+        end
+        qa_attributes
       end
 
       # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
@@ -422,6 +458,20 @@ module Hyrax
           form_class.model_attributes(params[:collection])
         end
 
+        def extract_controlled_properties
+          attributes = {}
+          Collection.controlled_properties.each do |prop|
+            attribute_key = "#{prop}_attributes"
+            if params.has_key?(attribute_key)
+              params[attribute_key].permit!
+              attributes[attribute_key] = params[attribute_key].to_h
+            elsif
+            params
+            end
+          end
+          attributes
+        end
+
         def extract_old_style_permission_attributes(attributes)
           # TODO: REMOVE in 3.0 - part of deprecation of permission attributes
           permissions = attributes.delete("permissions_attributes")
@@ -521,7 +571,7 @@ module Hyrax
           if params[:sort]
             @response = collection_member_service.available_member_works
           else
-            @response = collection_member_service.sorted_member_works("year_sort_dtsi asc")
+            @response = collection_member_service.sorted_member_works("year_sort_dtsi asc, title_sort_ssi asc")
           end
           @member_docs = @response.documents
           @members_count = @response.total

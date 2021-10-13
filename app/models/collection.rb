@@ -14,10 +14,11 @@ class Collection < ActiveFedora::Base
   
   property :physical_repository, predicate: ::RDF::Vocab::PROV.atLocation
   
-  property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial
+  # property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial
+  property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial, class_name: Hyrax::ControlledVocabularies::GeographicCoverage
   
-  property :genre, predicate: ::RDF::Vocab::SCHEMA.genre
-  
+  property :genre, predicate: ::RDF::Vocab::SCHEMA.genre, class_name: Hyrax::ControlledVocabularies::Genre
+
   property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year') do |index|
 	index.as :stored_searchable, :facetable
   end
@@ -25,4 +26,16 @@ class Collection < ActiveFedora::Base
   include Hyrax::BasicMetadata
   
   self.indexer = CollectionIndexer
+
+  id_blank = proc { |attributes| attributes[:id].blank? }
+
+  self.controlled_properties += [:creator, :contributor, :physical_repository, :provider, :subject, :geographic_coverage, :genre]
+  accepts_nested_attributes_for :creator, reject_if: id_blank, allow_destroy: true
+  accepts_nested_attributes_for :contributor, reject_if: id_blank, allow_destroy: true
+  accepts_nested_attributes_for :physical_repository, reject_if: id_blank, allow_destroy: true
+  accepts_nested_attributes_for :provider, reject_if: id_blank, allow_destroy: true
+  accepts_nested_attributes_for :subject, reject_if: id_blank, allow_destroy: true
+  accepts_nested_attributes_for :geographic_coverage, reject_if: id_blank, allow_destroy: true
+  accepts_nested_attributes_for :genre, reject_if: id_blank, allow_destroy: true
+
 end

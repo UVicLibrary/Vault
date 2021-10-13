@@ -8,6 +8,8 @@
   <%= simple_format(auto_link(description)) %>
 <% end %>
 &nbsp;
+<%= render 'hyrax/collections/metadata', presenter: @presenter %>
+
 <p class="collection-permalink">Permalink:
   <a href="<%= request.base_url %>/collections/<%= @presenter.id %>">
     <%= request.base_url %>/collections/<%= @presenter.id %>
