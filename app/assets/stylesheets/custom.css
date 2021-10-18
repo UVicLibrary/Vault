@@ -187,7 +187,7 @@ form #content_block_researcher_title {
   text-align: center !important;
 }
 
-.plain-link, .plain-link:hover, .plain-link:focus {
+.plain-link, .plain-link:hover {
   text-decoration: none;
   color: inherit;
 }
@@ -211,18 +211,24 @@ body {
 
 @media only screen and (max-width: 840px ) {
   body {
-    margin-bottom: 50%
+    margin-bottom: 55%
   }
 }
 
 @media only screen and (max-width: 600px ) {
   body {
-    margin-bottom: 70%
+    margin-bottom: 75%
+  }
+  #paginate_sml {
+    display: flex;
+  }
+  #paginate_lrg {
+      display: none;
   }
 }
 
 @media only screen and (max-width: 500px ) {
   body {
-    margin-bottom: 90%
+    margin-bottom: 95%
   }
 }
