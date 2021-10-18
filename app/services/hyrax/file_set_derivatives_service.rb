@@ -67,7 +67,7 @@ module Hyrax
           first_page = CombinePDF.load(new_filename, allow_optional_content: true).pages[0]
           new_pdf = CombinePDF.new
           new_pdf << first_page
-          first_page_path = "/usr/local/rails/vault/working/#{File.basename(new_filename).split(".")[0].gsub("&","_").gsub("'","")}-cover.pdf" # & in a file name causes this to fail
+          first_page_path = "/usr/local/rails/vault/working/#{File.basename(new_filename).split(".")[0].gsub("&","_").gsub("'","").gsub(' ','_')}-cover.pdf" # & in a file name causes this to fail
           new_pdf.save first_page_path
           # Resize, create and save a thumbnail in assets directory
           # Find what collection the fileset belongs to and create a folder named after it
@@ -79,7 +79,7 @@ module Hyrax
             FileUtils.mkdir_p(path_prefix)
           end
           target_path = "#{path_prefix}/#{@file_set.id}-thumb.jpg"
-          image = PDFToImage.open(first_page_path).first.resize("50%").save(target_path) # Change to assets folder named by collection
+          PDFToImage.open(first_page_path).first.resize("50%").save(target_path) # Change to assets folder named by collection
           File.delete(first_page_path)
           extract_full_text(new_filename, uri)
       end
