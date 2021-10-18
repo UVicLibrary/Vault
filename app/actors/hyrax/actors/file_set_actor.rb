@@ -161,20 +161,17 @@ module Hyrax
       def unlink_from_work
         work = file_set.parent
         return unless work && (work.thumbnail_id == file_set.id || work.representative_id == file_set.id || work.rendering_ids.include?(file_set.id))
-        work.thumbnail = nil if work.thumbnail_id == file_set.id
-        work.representative = nil if work.representative_id == file_set.id
-        # Use the next available file set
-        #current_index = work.file_set_ids.index(file_set.id)
-        #if work.thumbnail_id == file_set.id
-        #  work.thumbnail_id = work.file_set_ids[current_index + 1]
-        #end
-        #if work.representative_id == file_set.id
-        #  work.representative_id = work.file_set_ids[current_index + 1]
-        #end
+        # Use the (new) first file set
+        if work.thumbnail_id == file_set.id
+         work.thumbnail_id = (work.ordered_member_ids - [file_set.id]).first
+        end
+        if work.representative_id == file_set.id
+         work.representative_id = (work.ordered_member_ids - [file_set.id]).first
+        end
         if work.rendering_ids.class == Array
           work.rendering_ids = work.rendering_ids - [file_set.id]
-          work.save!
         end
+        work.save!
       end
       # rubocop:enable Metrics/AbcSize
       # rubocop:enable Metrics/CyclomaticComplexity

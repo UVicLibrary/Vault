@@ -16,7 +16,6 @@ export default class LinkedData {
     // Called when a choice is made
     selected(e) {
         let result = this.element.select2("data")
-        console.log(result)
         this.element.select2("destroy")
         this.element.val(result.label).attr("readonly", "readonly")
         if (result.id.startsWith("fst")) {
@@ -52,7 +51,6 @@ export default class LinkedData {
                     id: element.val(),
                     label: element.val()
                 };
-                console.log(data);
                 callback(data);
             },
             ajax: { // Use the jQuery.ajax wrapper provided by Select2
