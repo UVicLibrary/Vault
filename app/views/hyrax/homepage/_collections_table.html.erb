@@ -19,7 +19,10 @@
 </table>
 
 <div class="row">
-  <div class="col-lg-12 center-content">
-    <%= will_paginate docs, :param_name => 'collections_page'  %>
+  <div id="paginate_lrg" class="col-lg-12 center-content">
+    <%= will_paginate docs, :param_name => 'collections_page' %>
+  </div>
+  <div id="paginate_sml" class="col-lg-12 center-content">
+    <%= will_paginate docs, :param_name => 'collections_page', :inner_window => 1, :outer_window => 0, :previous_label => " ← ", :next_label => " → " %>
   </div>
 </div>
