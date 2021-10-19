@@ -74,7 +74,7 @@ class EdtfDateService
           # modify date so that the interval encompasses the years on the last interval date
           temp_date = date_string.gsub('/..','').gsub('%','?~').gsub(/\/$/,'')
           date = temp_date.include?("/") ? temp_date.gsub(/([0-9]+X+\/)([0-9]+)(X+)/){"#{$1}"+"#{$2.to_i+1}"+"#{$3}"}.gsub("X","u") : temp_date
-          date = date.gsub("XX-","uu-").gsub("X-", "u-").gsub("X?","u").gsub("u?","u")
+          date.gsub!("X","u").gsub!('?','')
           if match = date[/\d{3}u/] # edtf can't parse single u in year (e.g. 192u), so we replace it
             date.gsub!(match, match.gsub("u","0"))
           end
