@@ -29,7 +29,7 @@
                                      group_options,
                                      { prompt: "Select a group..." },
                                      class: 'form-control' %>
-                  as
+                  can
                   <%= builder.select :access,
                                      access_options,
                                      { prompt: "Select a role..." },
@@ -59,7 +59,7 @@
                   <%= builder.hidden_field :agent_type %>
                   <%= builder.text_field :agent_id,
                                          placeholder: "Search for a user..." %>
-                  as
+                  can
                   <%= builder.select :access,
                                      access_options,
                                      { prompt: "Select a role..." },
