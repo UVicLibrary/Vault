@@ -199,60 +199,19 @@ module Hyrax
           process_banner_input
           process_logo_input
         end
-
-        # For uploading custom thumbnails
-        if params[:collection][:thumbnail_upload] # Save the image in the proper dimensions to public folder
-          uploaded_file = params[:collection][:thumbnail_upload]
-           dir_name = "public/uploaded_collection_thumbnails/#{@collection.id}"
-           saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
-        # Create directory if it doesn't already exist
-          unless File.directory?(dir_name)
-            FileUtils.mkdir_p(dir_name)
-          else # clear contents
-            delete_uploaded_thumbnail
-          end
-          File.open(saved_file, 'wb') do |file|
-           file.write(uploaded_file.read)
-          end
-          image = MiniMagick::Image.open(saved_file)
-          # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
-          feature_card_image = image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
-          thumbnail = image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
-          File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
-          File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
-        end
-
+        process_uploaded_thumbnail(params[:collection][:thumbnail_upload]) if params[:collection][:thumbnail_upload] # Save the image in the proper dimensions to public folder
         process_member_changes
         @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
+        # @collection.attributes = controlled_properties
+        @collection.attributes = clean_controlled_properties(extract_controlled_properties)
+        @collection.to_controlled_vocab
         # we don't have to reindex the full graph when updating collection
         @collection.reindex_extent = Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX
-
-        # Add URIs and string values for controlled properties
-        uris = clean_controlled_properties(extract_controlled_properties)
-        strings = collection_params.except(:members)
-        @collection.attributes = uris.merge(strings) { |key, oldval, newval| newval + oldval }
-        @collection.to_controlled_vocab
-
-        # if @collection.update(collection_params.except(:members))
         if @collection.save!
           after_update
         else
           after_update_error
         end
-      end
-
-      def clean_controlled_properties(attributes)
-        qa_attributes = {}
-        @collection.controlled_properties.each do |field_symbol|
-          field = field_symbol.to_s
-          # Do not include deleted attributes
-          next unless attributes.keys.include?(field+'_attributes')
-          filtered_attributes = attributes[field+'_attributes'].select  { |k,v| v['_destroy'].blank? }
-          qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
-          attributes.delete(field)
-          attributes.delete(field+'_attributes')
-        end
-        qa_attributes
       end
 
       # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
@@ -319,7 +278,41 @@ module Hyrax
         Hyrax::Dashboard::CollectionsSearchBuilder
       end
 
-      private
+      # private
+
+        def process_uploaded_thumbnail(uploaded_file)
+          dir_name = "public/uploaded_collection_thumbnails/#{@collection.id}"
+          saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
+          # Create directory if it doesn't already exist
+          unless File.directory?(dir_name)
+            FileUtils.mkdir_p(dir_name)
+          else # clear contents
+          delete_uploaded_thumbnail
+          end
+          File.open(saved_file, 'wb') do |file|
+            file.write(uploaded_file.read)
+          end
+          image = MiniMagick::Image.open(saved_file)
+          # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
+          feature_card_image = image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
+          thumbnail = image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
+          File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
+          File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
+        end
+
+        def clean_controlled_properties(attributes)
+          qa_attributes = {}
+          @collection.controlled_properties.each do |field_symbol|
+            field = field_symbol.to_s
+            # Do not include deleted attributes
+            next unless attributes.keys.include?(field+'_attributes')
+            filtered_attributes = attributes[field+'_attributes'].select  { |k,v| v['_destroy'].blank? }
+            qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
+            attributes.delete(field)
+            attributes.delete(field+'_attributes')
+          end
+          qa_attributes
+        end
 
         def default_collection_type
           Hyrax::CollectionType.find_or_create_default_collection_type
@@ -462,11 +455,13 @@ module Hyrax
           attributes = {}
           Collection.controlled_properties.each do |prop|
             attribute_key = "#{prop}_attributes"
-            if params.has_key?(attribute_key)
-              params[attribute_key].permit!
-              attributes[attribute_key] = params[attribute_key].to_h
-            elsif
-            params
+            if params[:collection].has_key?(attribute_key)
+              if params[:collection].has_key?(attribute_key)
+                params[:collection][attribute_key].permit!
+                attributes[attribute_key] = params[:collection][attribute_key].to_h
+              end
+            else
+              params
             end
           end
           attributes
