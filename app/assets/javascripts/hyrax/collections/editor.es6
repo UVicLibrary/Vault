@@ -13,6 +13,7 @@ export default class {
         let field = elem.find('#collection_thumbnail_id')
         this.thumbnailSelect = new ThumbnailSelect(url, field)
         this.element = elem
+        this.paramKey = "collection"
         tabifyForm(elem.find('form.editor'))
 
         let participants = new Participants(elem.find('#participants'))
