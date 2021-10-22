@@ -1,3 +1,27 @@
+.search-result-wrapper .collection-counts-wrapper .collection-counts-item span {
+    font-size: 18px;
+    margin-bottom: 0.2em;
+}
+
+.collection-counts-item:first-child {
+    padding: 0.75em 0.8em 0.5em 0.8em !important;
+    margin-left: 0px;
+}
+
+.collection-counts-item:nth-child(2) {
+    width: 6.75em;
+    padding-top: 0.75em !important;
+}
+
+.search-result-wrapper .collection-counts-wrapper .collection-counts-item {
+    font-size: 16px;
+    margin-bottom: 0.9em;
+}
+
+.search-result-wrapper .collection-counts-wrapper {
+    text-align: left;
+}
+
 .extra-actions {
     float: right;
     display: inline-block;
