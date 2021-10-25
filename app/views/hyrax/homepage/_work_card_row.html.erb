@@ -3,15 +3,9 @@
   <% work_presenters.each do |presenter| %>
     <% document = presenter.solr_document %>
     <% if document.thumbnail_path && request.base_url.include?('vault') %>
-      <% if SolrDocument.find(presenter.thumbnail_id).video? and SolrDocument.find(presenter.thumbnail_id).label.include?('.m4a') and presenter.member_of_collection_ids.any? %>
-        <% coll_thumb_path = SolrDocument.find(presenter.member_of_collection_ids.first).thumbnail_path %>
-        <% if coll_thumb_path.include? "uploaded_collection_thumbnails" %>
-          <%# use the higher resolution derivative %>
-          <% new_path = coll_thumb_path.gsub '_thumbnail.jpg','_card.jpg' %>
-        <% else %>
-          <!-- If string contains thumbnail dimensions, change them -->
-          <% new_path = coll_thumb_path.gsub '!150,300', '!500,900' %>
-        <% end %>
+      <% thumbnail = FileSet.find(presenter.thumbnail_id) %>
+      <% if thumbnail.audio? or (thumbnail.video? and thumbnail.label.include?('.m4a') and presenter.member_of_collection_ids.any?) %>
+        <% new_path = AudioFileSetThumbnailService.call(thumbnail) %>
       <% else %>
         <% new_path = document.thumbnail_path.sub! '!150,300', '!500,900' %>
       <% end %>

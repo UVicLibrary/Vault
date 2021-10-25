@@ -3,7 +3,7 @@
       <%= link_to [main_app, presenter], class: "plain-link work-card-link" do %>
         <div class="data">
           <div class="content">
-            <h2 class="card-title work-card-title"><%= presenter.title.first %></h2>
+            <h2 class="card-title work-card-title"><%= presenter.title.first.truncate(75, separator: /\s/) %></h2>
             <p class="text">
               <% if presenter.description.first.present? %>
                 <%= presenter.description.first.truncate(100, separator: /\s/) %>

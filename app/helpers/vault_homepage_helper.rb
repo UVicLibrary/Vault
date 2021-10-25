@@ -9,7 +9,7 @@ module VaultHomepageHelper
       collection_links << link
       collection_links << ', ' unless links[n + 1].nil?
     end
-    tag.p safe_join([t('hyrax.collection.is_part_of'), ': '] + collection_links), class: 'card-collection-link'
+    tag.p safe_join([t('hyrax.collection.is_part_of'), ': '] + collection_links), class: 'card-collection-link', tabindex: 0
   end
 
 end
