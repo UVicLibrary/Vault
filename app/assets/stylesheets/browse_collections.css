@@ -1,0 +1,27 @@
+.browse-card .wrapper {
+    min-height: 285px;
+}
+
+.browse-header {
+    margin-bottom: 1em;
+}
+
+@media screen and (max-width: 1190px ) {
+    .browse-card .wrapper {
+        min-height: 250px ;
+    }
+}
+
+@media screen and (max-width: 850px ) {
+    .browse-card .wrapper {
+        min-height: 285px ;
+    }
+}
+
+.browse-card-title {
+    margin-bottom: 0.7em;
+    margin-top: 0.3em !important;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-size: 24px;
+}

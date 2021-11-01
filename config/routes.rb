@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/browse_collections/demo', to: 'browse_collections#index'
+
   # For (dis)allowing downloads for an entire collection
   post '/dashboard/collections/:id/toggle_downloads', to: 'hyrax/dashboard/collections#toggle_downloads', as: 'toggle_downloads'
 
