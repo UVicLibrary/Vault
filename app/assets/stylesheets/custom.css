@@ -229,38 +229,27 @@ form #content_block_researcher_title {
 
 .site-footer {
   left: 0;
+  position: relative;
+  flex-shrink: 0;
 }
 
 body {
-  margin-bottom: 25%;
+  margin-bottom: 0;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 #paginate_sml {
     display: none;
 }
 
-@media only screen and (max-width: 840px ) {
-  body {
-    margin-bottom: 55%
-  }
-}
-
 @media only screen and (max-width: 600px ) {
-  body {
-    margin-bottom: 75%
-  }
   #paginate_sml {
     display: flex;
   }
   #paginate_lrg {
       display: none;
-  }
-}
-
-@media only screen and (max-width: 500px ) {
-  body {
-    margin-bottom: 95%
   }
 }

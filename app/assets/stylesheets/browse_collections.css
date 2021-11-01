@@ -1,5 +1,10 @@
+.browse-card .data .content {
+    background-color: #fff;
+}
+
 .browse-card .wrapper {
     min-height: 285px;
+    margin-bottom: 2em;
 }
 
 .browse-header {
