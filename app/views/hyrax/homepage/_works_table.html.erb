@@ -25,6 +25,9 @@
   <div id="paginate_lrg" class="col-lg-12 center-content">
     <%= will_paginate docs, :param_name => 'works_page' %>
   </div>
+  <div id="paginate_med" class="col-lg-12 center-content">
+    <%= will_paginate docs, :param_name => 'collections_page', :inner_window => 2, :outer_window => 1, :previous_label => " ← ", :next_label => " → " %>
+  </div>
   <div id="paginate_sml" class="col-lg-12 center-content">
     <%= will_paginate docs, :param_name => 'works_page', :inner_window => 1, :outer_window => 0, :previous_label => " ← ", :next_label => " → " %>
   </div>

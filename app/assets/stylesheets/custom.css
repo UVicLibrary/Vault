@@ -1,3 +1,11 @@
+.facet-values.list-unstyled {
+    width: auto;
+}
+
+span.facet-count {
+    width: auto !important;
+}
+
 .catalog img {
     margin-bottom: 3em;
 }
