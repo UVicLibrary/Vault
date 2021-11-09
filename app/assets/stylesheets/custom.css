@@ -240,16 +240,3 @@ body {
   display: flex;
   flex-direction: column;
 }
-
-#paginate_sml {
-    display: none;
-}
-
-@media only screen and (max-width: 600px ) {
-  #paginate_sml {
-    display: flex;
-  }
-  #paginate_lrg {
-      display: none;
-  }
-}

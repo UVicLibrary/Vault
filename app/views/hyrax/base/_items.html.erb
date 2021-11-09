@@ -21,8 +21,15 @@
   <div class="row">
     <% if presenter.total_pages > 1 %>
       <div class="row record-padding col-md-9">
-        <%= paginate array_of_ids, outer_window: 2, theme: 'blacklight', param_name: :page, route_set: main_app %>
-      </div><!-- /pager -->
+        <div id="paginate_lrg">
+          <%= paginate array_of_ids, theme: 'blacklight', param_name: :page, route_set: main_app %>
+        </div>
+        <div id="paginate_med">
+          <%= paginate array_of_ids, outer_window: 1, inner_window: 1, theme: 'blacklight', param_name: :page, route_set: main_app %>
+        </div>
+        <div id="paginate_sml">
+          <%= paginate array_of_ids, outer_window: 1, inner_window: 0, theme: 'blacklight', param_name: :page, route_set: main_app %>
+        </div><!-- /pager -->
     <% end %>
   </div>
 <% elsif can? :edit, presenter.id %>
