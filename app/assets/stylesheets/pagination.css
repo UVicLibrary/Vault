@@ -1,0 +1,31 @@
+#paginate_sml {
+    display: none;
+}
+
+#paginate_med {
+    display: none;
+}
+
+@media only screen and (max-width: 600px ) {
+    #paginate_sml {
+        display: none;
+    }
+    #paginate_med {
+        display: flex;
+    }
+    #paginate_lrg {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 500px ) {
+    #paginate_sml {
+        display: flex;
+    }
+    #paginate_med {
+        display: none;
+    }
+    #paginate_lrg {
+        display: none;
+    }
+}
