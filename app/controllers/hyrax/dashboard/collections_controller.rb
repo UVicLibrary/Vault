@@ -203,7 +203,7 @@ module Hyrax
         process_member_changes
         @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
         # @collection.attributes = controlled_properties
-        @collection.attributes = clean_controlled_properties(extract_controlled_properties)
+        @collection.attributes = collection_params.merge(clean_controlled_properties(extract_controlled_properties))
         @collection.to_controlled_vocab
         # we don't have to reindex the full graph when updating collection
         @collection.reindex_extent = Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX
