@@ -25,8 +25,6 @@ class Hyrax::HomepageController < ApplicationController
     @marketing_text = ContentBlock.for(:marketing)
     @announcement_text = ContentBlock.for(:announcement)
 
-    # Featured collections
-    @featured_collections = FeaturedCollection.all
     @featured_collection_list = FeaturedCollectionList.new
     # Featured works
     @featured_work_list = FeaturedWorkList.new

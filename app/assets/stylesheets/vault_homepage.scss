@@ -1,3 +1,20 @@
+.welcome-text p {
+  font-size: 16px;
+}
+
+.welcome-text a {
+  text-decoration: underline;
+}
+
+#featured-nav li {
+  font-size: 16px;
+}
+
+.welcome-text {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
 #featured-researcher {
   padding-top: 5%;
   padding-bottom: 5%;
@@ -54,11 +71,13 @@ footer .navbar-link i {
 }
 
 #featured-nav li button:hover, #featured-nav li button:focus {
-  text-decoration: none;
+  text-decoration: underline;
   background-color: #eeeeee;
+  color: #333;
 }
 
 #featured-nav li.active button {
+  text-decoration: none;
   background-color: #005EB7 !important;
   color: #fff;
 }
