@@ -1,0 +1,17 @@
+h4 a.page-heading {
+    display: inline-block;
+    margin-top: 0.75em;
+}
+
+a.page-heading {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul.contents-link {
+    list-style-type: none;
+}
+
+h2.help-page-section-heading {
+    margin-top: 1em;
+}
