@@ -18,6 +18,7 @@
  *= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
  *= require blacklight_range_limit
  *= require custom
+ *= require pages
  *= require sign_in
  *= require dashboard_collections
  *= require vault_homepage
