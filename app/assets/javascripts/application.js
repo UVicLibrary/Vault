@@ -30,6 +30,7 @@
 
 //= require hyrax
 //= require handlebars-v4.0.5
+//= require vault_homepage
 //= require jquery.flot.pie
 //= require flot_graph
 //= require statistics_tab_manager
