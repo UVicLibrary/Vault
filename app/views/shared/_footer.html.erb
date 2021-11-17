@@ -1,6 +1,6 @@
-<footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content;">
-  <div class="container-fluid">
-    <% if true %>
+<% if request.base_url.include? "vault" %>
+  <footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content;">
+    <div class="container-fluid">
       <div class="row" >
         <div class="col-xs-4 col-lg-2 col-md-2 col-sm-2 navbar-text" id="footer-logo" style="background: url(<%= asset_path 'lib-logo-white.png' %>) center center no-repeat;">
         </div>
@@ -40,20 +40,25 @@
           <span><a href="https://www.uvic.ca/home/about/legal-notices/index.php" target="_blank">Legal notices</a></span><br/> -->
         </div>
       </div><!-- row -->
-    <% else %>
+    </div><!-- container -->
+  </footer>
+<% else %>
+  <footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content; position: absolute; bottom: 0;">
+    <div class="container-fluid">
       <div class="navbar-text text-left">
-        <p><%= t('hyrax.footer.service_html') %></p>
+<!--        <p><%#= t('hyrax.footer.service_html') %></p>-->
         <p>Hyku v<%= Hyku::VERSION %></p>
       </div>
       <div class="navbar-right">
         <div class="navbar-text text-right">
-          <p><%= t('hyrax.footer.copyright_html') %></p>
-          <p><%= t('hyrax.background_attribution_html') %></p>
+<!--          <p><%#= t('hyrax.footer.copyright_html') %></p>-->
+<!--          <p><%#= t('hyrax.background_attribution_html') %></p>-->
           <% if admin_host? && !user_signed_in? %>
             <p><%= link_to t('hyku.footer.admin_login', default: [:'hyrax.toolbar.profile.login']), main_app.new_user_session_path %></p>
           <% end %>
         </div>
       </div>
-    <% end %>
-  </div><!-- container -->
-</footer>
+    </div><!-- container -->
+  </footer>
+<% end %>
+

@@ -30,6 +30,7 @@
         <div id="paginate_sml">
           <%= paginate array_of_ids, outer_window: 1, inner_window: 0, theme: 'blacklight', param_name: :page, route_set: main_app %>
         </div><!-- /pager -->
+      </div>
     <% end %>
   </div>
 <% elsif can? :edit, presenter.id %>
