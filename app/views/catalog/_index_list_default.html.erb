@@ -19,7 +19,7 @@
           Description:
         </div>
         <div class="col-sm-9">
-          <%= collection_presenter.description.first.truncate(275, separator: /\s/) if collection_presenter.description %>
+          <%= collection_presenter.description.first.truncate(275, separator: /\s/) if collection_presenter.description.first %>
         </div>
       </div>
     <% end %>
