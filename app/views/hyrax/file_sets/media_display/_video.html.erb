@@ -11,8 +11,8 @@
                 id: "file_download" %>
   <% end %>
 
-  <%# Include link to transcript %>
-  <% if file_set.parent.member_presenters.any? { |fs| fs.pdf? } %>
+  <%# Include link to transcript on work show page, but not on file set edit page %>
+  <% if file_set.respond_to?(:parent) && file_set.parent.member_presenters.any? { |fs| fs.pdf? } %>
     <% transcript = file_set.parent.member_presenters.find { |fs| fs.pdf? } %>
     &ensp;|&ensp;
     <%= link_to "Download transcript (PDF)",

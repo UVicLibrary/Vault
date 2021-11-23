@@ -3,7 +3,7 @@
   <div>
     <% f.object.class.primary_terms.each do |term| %>
       <% if term == :title %>
-        <%= f.input :title, input_html: { value: f.object.title.first }, required: f.object.required?(term) %>
+        <%= f.input :title, as: :multi_value, input_html: { value: f.object.title.first }, required: f.object.required?(term) %>
         <% elsif f.object.class.multiple?(term.to_s) %><%# Make transcript box a bit bigger %>
         <%= f.input term, as: :multi_value, input_html: { rows: '14', type: 'textarea'}, required: f.object.required?(term) %>
       <% else %>
