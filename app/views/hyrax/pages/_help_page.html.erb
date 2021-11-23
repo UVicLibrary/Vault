@@ -8,27 +8,27 @@
         </ul>
     <li><a href="#viewing" >Viewing</a></li>
         <ul class="contents-link">
-            <li><a href="#transcripts">How do I view transcripts?</a></li>
+            <li><a href="/help#transcripts">How do I view transcripts?</a></li>
         </ul>
     <li><a href="#downloading" >Downloading</a></li>
         <ul class="contents-link">
-            <li><a href="#how-can-i-download-high-resolution-images-of-items" >How can I download high-resolution images of items?</a></li>
-            <li><a href="#how-can-i-download-high-resolution-images-of-items" >How can I download video and audio files?</a></li>
+            <li><a href="/help#how-can-i-download-high-resolution-images-of-items" >How can I download high-resolution images of items?</a></li>
+            <li><a href="/help#how-can-i-download-high-resolution-images-of-items" >How can I download video and audio files?</a></li>
         </ul>
     <li><a href="#copyright-in-vault-collections" >Copyright in Vault Collections</a></li>
         <ul class="contents-link">
-            <li><a href="#are-items-in-vault-collections-available-for-reuse" >Are items in Vault collections available for reuse?</a></li>
+            <li><a href="/help#are-items-in-vault-collections-available-for-reuse" >Are items in Vault collections available for reuse?</a></li>
         </ul>
     <li><a href="#accessing-the-physical-item" >Accessing the Physical Item</a></li>
         <ul class="contents-link">
-            <li><a href="#can-i-see-the-physical-items" >Can I see the physical items?</a></li>
+            <li><a href="/help#can-i-see-the-physical-items" >Can I see the physical items?</a></li>
         </ul>
 </ul>
 
 <section>
     <h2 class="help-page-section-heading"><a name="search" class="page-heading">Search</a></h2>
     <h3><a name="how-do-i-search-in-vault" class="page-heading">How do I search in Vault?</a></h3>
-    Start with a basic keyword search and then use the Facets on the left to limit/filter your search. Vault does not have an Advanced Search function. The keyword search searches metadata and full text/transcripts of the digital objects (when available).
+    Start with a basic keyword search and then use the Facets on the left to limit/filter your search, or press enter in teh empty search bar to browse by Facets. Vault does not have an Advanced Search function. The keyword search searches metadata and full text/transcripts of the digital objects (when available). Names of people will be listed under the Subject facet.
     <h3><a name="what-facets-are-included" class="page-heading">What facets are included?</a></h3>
     You can limit/filter your search by these facets:
     <ul>
@@ -75,5 +75,23 @@
     <h3><a name="can-i-see-the-physical-items" class="page-heading">Can I see the physical items?</a></h3>
     <p>All digital objects are provided by UVic Libraries, but not all physical items are held in the Libraries. Check the metadata field "Physical Repository" to determine where the physical item is held. </p>
     <img src="/pages/help/phys_repo.png" alt="Circled physical repository label" width="30%" />
-    <p>If the item is held at the <strong>University of Victoria (B.C.) Library</strong>, you can contact UVic Special Collections and University Archives to inquire about accessing it. Any questions about physical items/collections can be directed to Special Collections and University Archives staff at <a href="mailto:speccoll@uvic.ca">speccoll@uvic.ca</a></p>
+    <p>If the item is held at the <strong>University of Victoria (B.C.) Library</strong>, you can contact UVic Special Collections and University Archives to inquire about accessing it. Any questions about physical items/collections can be directed to Special Collections and University Archives staff at <a href="mailto:speccoll@uvic.ca">speccoll@uvic.ca</a>.</p>
 </section><!-- Accessing the Physical Item -->
+
+<script>
+  // https://stackoverflow.com/questions/38588346/anchor-a-tags-not-working-in-chrome-when-using
+    $(function() {
+        $('a[href*="#"]:not([href="#"])').click(function() {
+            if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+</script>
