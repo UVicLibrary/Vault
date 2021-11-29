@@ -1,6 +1,6 @@
 <% provide :page_title, t("hyrax.pages.tabs.#{@page.name}") %>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400" rel="stylesheet">
-<% if lookup_context.template_exists?("#{@page.name}","pages", true) %>
+<% if lookup_context.template_exists?("#{@page.name}","hyrax/pages", true) %>
   <%= render "#{@page.name}" %>
 <% else %>
   <%= sanitize(displayable_content_block @page) %>
