@@ -14,7 +14,7 @@ var total = button.attr('data-total');
 var oldStart = parseInt(button.attr('data-start'));
 var buttonTemplate = [
     '<button class="btn" id="load-more-button">',
-      '<a data-start="" data-total="<%= @total_count %>" data-remote="true" data-method="get" href="/vault_browse_collections/load_more?locale=en&amp;start=8">+ Load More Collections</a>',
+      '<a data-start="" data-total="' + total + '" data-remote="true" data-method="get" href="/vault_browse_collections/load_more?locale=en&amp;start=8">+ Load More Collections</a>',
     '</button>'
     ].join('');
 
@@ -22,7 +22,7 @@ var buttonTemplate = [
 $('.load-more-button-wrapper').empty();
 
 // If we're not at the end of the results, append the "Load More Collections" button
-if ($('#browse-collections-wrapper').children().length <= total) {
+if ($('#browse-collections-wrapper').children().length < total) {
     $('.load-more-button-wrapper').append(buttonTemplate);
 }
 
