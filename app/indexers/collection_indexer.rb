@@ -11,7 +11,6 @@ class CollectionIndexer < Hyrax::CollectionIndexer
   self.thumbnail_path_service = IIIFCollectionThumbnailPathService
 
   def generate_solr_document
-
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
     # This is needed for Hyrax::DeepIndexingService
     object.attribute_names.each do |field|
@@ -20,10 +19,9 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       end
     end
 
-    super
-    # Uncomment this block and delete super if you want to add custom indexing behavior:
-    # super.tap do |solr_doc|
-    # end
+    super.tap do |solr_doc|
+      solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
+    end
   end
 
 
