@@ -14,13 +14,14 @@
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-
+// require js.cookie
 //= require peek
 //= require peek/views/faraday
 //= require peek/views/performance_bar
 // Required by Blacklight
 //= require blacklight/blacklight
 //= require blacklight_range_limit
+//= require browse_collections
 
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
 // a pattern found in ScholarSphere)
