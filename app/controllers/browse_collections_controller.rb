@@ -1,34 +1,42 @@
 class BrowseCollectionsController < Hyrax::HomepageController
-  require 'faraday'
+
+  class_attribute :search_builder_class
+  self.search_builder_class = BrowseCollectionsSearchBuilder
 
   def index
-    # see hyrax/homepage_controller#index
-    super
-    # Make hashes from Vault collection results
-    featured_collections = @featured_collection_list.collection_presenters.map do |presenter|
-       document = presenter.solr_document
-       if document.thumbnail_path
-         if document.thumbnail_path.include? "uploaded_collection_thumbnails"
-           # use the higher resolution derivative
-           new_path = document.thumbnail_path.gsub('_thumbnail.jpg','_card.jpg')
-         else
-           # If string contains thumbnail dimensions, change them
-           new_path = document.thumbnail_path.gsub '!150,300', '!500,900'
-         end
-       else # use placeholder
-         new_path = asset_path 'collection.png', skip_pipeline: true
-       end
-       { 'collection' => {
-           'title' => presenter.title.first,
-           'description' => presenter.description.first,
-           'url' => presenter.show_path.gsub('/dashboard',''),
-           'thumbnail' => new_path }
-       }
+    builder = self.search_builder_class.new(self).rows(8)
+    response = repository.search(builder).response
+    @total_count = response['numFound']
+    @collection_presenters = build_presenters(response['docs'])
+  end
+
+  def load_more
+    respond_to do |format|
+      results = collections({ start: params[:start].to_i, rows: 8, sort: params[:sort] })
+      presenters = build_presenters(results)
+      format.js { render 'load_more.js.erb', locals: { presenters: presenters } }
     end
-    @total_results = (featured_collections + spotlight_exhibits).sort_by { |hash| hash[hash.keys.first]['title'] }
   end
 
   private
+
+  def build_presenters(documents)
+    Hyrax::PresenterFactory.build_for(ids: documents.pluck(:id),
+                                      presenter_class: Hyrax::CollectionPresenter,
+                                      presenter_args: nil)
+  end
+
+  # Return all collections
+  def collections(options = {})
+    builder = self.search_builder_class.new(self).rows(options[:rows])
+    # Override default search to be title A-Z instead of relevance
+    sort = options[:sort] ||= builder.default_sort_field
+    builder.merge(sort: sort, start: options[:start])
+    response = repository.search(builder)
+    response.documents
+  rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
+    []
+  end
       
   def spotlight_exhibits
     response = Faraday.get 'https://exhibits.library.uvic.ca/exhibits/json'

@@ -1,0 +1,32 @@
+<% presenters.each do |pres| %>
+  var toAppend = $("<%= j (render partial: 'collection_card',
+          locals: {
+            title: pres.title.first,
+            description: pres.description.first,
+            url: "#{request.base_url}/collections/#{pres.id}",
+            thumbnail: pres.thumbnail_path }) %>").hide().fadeIn(300);
+  $(document.getElementById("browse-collections-wrapper")).append(toAppend);
+<% end %>
+
+// Grab the hidden button's attributes
+var button = $('#load-more-button a');
+var total = button.attr('data-total');
+var oldStart = parseInt(button.attr('data-start'));
+var buttonTemplate = [
+    '<button class="btn" id="load-more-button">',
+      '<a data-start="" data-total="<%= @total_count %>" data-remote="true" data-method="get" href="/vault_browse_collections/load_more?locale=en&amp;start=8">+ Load More Collections</a>',
+    '</button>'
+    ].join('');
+
+// Remove the old button since we don't need it anymore
+$('.load-more-button-wrapper').empty();
+
+// If we're not at the end of the results, append the "Load More Collections" button
+if ($('#browse-collections-wrapper').children().length <= total) {
+    $('.load-more-button-wrapper').append(buttonTemplate);
+}
+
+$('#load-more-button a').attr('data-start', String(oldStart + 8))
+    .attr('href', ('/vault_browse_collections/load_more?start=' + String(oldStart + 8)))
+    // see browse_collections.js
+    .click( function() { showLoadingText(); });
