@@ -3,7 +3,7 @@
   <% work_presenters.each do |presenter| %>
     <% document = presenter.solr_document %>
     <% if document.thumbnail_path && request.base_url.include?('vault') %>
-      <% if SolrDocument.find(presenter.thumbnail_id).video? and SolrDocument.find(presenter.thumbnail_id).label.include?('.m4a') and presenter.member_of_collection_ids.any? %>
+      <% if presenter.thumbnail_id.present? and SolrDocument.find(presenter.thumbnail_id).video? and SolrDocument.find(presenter.thumbnail_id).label.include?('.m4a') and presenter.member_of_collection_ids.any? %>
         <% coll_thumb_path = SolrDocument.find(presenter.member_of_collection_ids.first).thumbnail_path %>
         <% if coll_thumb_path.include? "uploaded_collection_thumbnails" %>
           <%# use the higher resolution derivative %>
