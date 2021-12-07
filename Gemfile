@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem 'omniauth-cas'
 
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
-gem 'combine_pdf'
-gem 'pdftoimage'
+# gem 'combine_pdf'
+# gem 'pdftoimage'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.1'
@@ -55,26 +55,29 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.50', '<= 0.52.1'
   gem 'rubocop-rspec', '~> 1.22', '<= 1.22.2'
+
+  gem 'rails-perftest'
+  gem 'ruby-prof'
 end
 
 group :test do
-  gem 'capybara'
-  gem 'chromedriver-helper'
+  # gem 'capybara'
+  # gem 'chromedriver-helper'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   # rack-test >= 0.71 does not work with older Capybara versions (< 2.17). See #214 for more details
   gem 'rack-test', '0.7.0'
   gem 'rails-controller-testing'
-  gem 'selenium-webdriver'
+  # gem 'selenium-webdriver'
   gem 'webmock'
 end
 
 # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '>= 3.3.0'
+#   gem 'web-console', '>= 3.3.0'
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  #gem 'web-console', '>= 3.3.0'
+  gem 'web-console', '>= 3.3.0'
 
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -87,7 +90,7 @@ end
 gem 'blacklight', '~> 6.7'
 gem 'blacklight_range_limit', '~> 6.5'
 
-gem 'hyrax', '~>2.3.0'
+gem 'hyrax', '~>2.4.0'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -128,7 +131,7 @@ group :aws do
 end
 
 gem 'peek-sidekiq'
-gem 'sidekiq', '~> 5.0.3'
+gem 'sidekiq', '~> 6.0.0'
 gem 'sidekiq-benchmark'
 
 gem 'cdm_migrator'

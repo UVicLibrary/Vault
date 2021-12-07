@@ -1,0 +1,18 @@
+# Does this supersede
+development:
+  default:
+    url: http://solr:8983/solr/vault_dev
+  full_text:
+    url: http://localhost:8983/solr/development
+test:
+  default:
+#    url: http://localhost:<%#= ENV['SOLR_TEST_PORT'] || 8985 %>/solr/hydra-test
+    url: http://solr:8983/solr/test
+  full_text:
+#    url: http://localhost:<%#= ENV['SOLR_TEST_PORT'] || 8985 %>/solr/test
+     url: http://solr:8983/solr/test
+production:
+  default:
+    url: http://localhost:8080/solr/production
+  full_text:
+    url: http://localhost:8080/solr/production

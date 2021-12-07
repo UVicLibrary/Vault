@@ -1,7 +1,7 @@
 public/uv
 *.rbc
 capybara-*.html
-.rspec
+#.rspec
 /log
 /tmp
 /db/*.sqlite3
@@ -14,7 +14,6 @@ pg_upgrade_*.log
 **.orig
 rerun.txt
 pickle-email-*.html
-/config/*.yml
 *.jpg
 *.png
 *.tif
@@ -51,9 +50,9 @@ bower.json
 /fcrepo4-test-data
 /fcrepo4-data
 
-config/settings.local.yml
-config/settings/*.local.yml
-config/environments/*.local.yml
+#config/settings.local.yml
+#config/settings/*.local.yml
+#config/environments/*.local.yml
 
 # Avatars and such
 public/uploads
@@ -73,7 +72,6 @@ fits.log
 ops
 solr
 db
-spec
 .gitignore
 
 public/uv

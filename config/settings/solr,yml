@@ -2,3 +2,5 @@
 # TODO: there's also a Settings.solr.url configuration that is used in multitenant environments
 development:
   url: <%= ENV['SOLR_URL'] || "http://solr:8983/solr/vault_dev" %>
+test:
+  url: "http://solr:8985/solr/test"

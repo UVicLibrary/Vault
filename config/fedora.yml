@@ -1,0 +1,9 @@
+development:
+#  user: fedoraAdmin
+#  password: secret3
+#  url: <%= ENV['FEDORA_URL'] || "http://fcrepo:8080/fcrepo/rest" %>
+  url: "http://fcrepo:8080/fcrepo/rest"
+  base_path: /vault_dev
+test:
+  url: <%= ENV['FEDORA_URL'] || "http://fcrepo:#{ENV.fetch('FCREPO_TEST_PORT', 8986)}/rest" %>
+  base_path: /vault_test

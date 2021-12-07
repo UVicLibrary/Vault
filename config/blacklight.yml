@@ -1,0 +1,6 @@
+development:
+  adapter: solr
+  url: "http://solr:8983/solr/vault_dev"
+test:
+  adapter: solr
+  url: "http://solr:8983/solr/test"
