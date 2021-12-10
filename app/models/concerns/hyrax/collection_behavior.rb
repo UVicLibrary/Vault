@@ -14,7 +14,7 @@ module Hyrax
 
     included do
       validates_with HasOneTitleValidator
-      after_destroy :destroy_permission_template
+      after_destroy :destroy_permission_template, :destroy_featured
 
       self.indexer = Hyrax::CollectionIndexer
 
@@ -207,5 +207,13 @@ module Hyrax
     rescue ActiveRecord::RecordNotFound
       true
     end
+
+    # Destroy the related featured collection if there is one
+    def destroy_featured
+      FeaturedCollection.find_by!(collection_id: id).destroy
+    rescue ActiveRecord::RecordNotFound
+      true
+    end
+
   end
 end
