@@ -22,7 +22,7 @@ var buttonTemplate = [
 $('.load-more-button-wrapper').empty();
 
 // If we're not at the end of the results, append the "Load More Collections" button
-if ($('#browse-collections-wrapper').children().length < total) {
+if ((($('#browse-collections-wrapper').children().length < total) && (oldStart + 8) < total)) {
     $('.load-more-button-wrapper').append(buttonTemplate);
 }
 
