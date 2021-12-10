@@ -7,11 +7,11 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     # This is needed for Hyrax::DeepIndexingService
     object.attribute_names.each do |field|
       if object.controlled_properties.include?(field.to_sym) and object[field].present?
-        object[field].each do |val|
-          unless val.class == String
-            to_controlled_vocab(field)
-          end
-        end
+        object[field].each { |val| to_controlled_vocab(field) }
+          #unless val.class == String
+          #  to_controlled_vocab(field)
+          #end
+        #end
       end
     end
 
