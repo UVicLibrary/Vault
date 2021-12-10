@@ -1,5 +1,6 @@
 class FeaturedCollectionList < ApplicationRecord
   include ActiveModel::Model
+  delegate :empty?, to: :featured_collections
 
   # @param [ActionController::Parameters] a collection of nested perameters
   def featured_collections_attributes=(attributes_collection)
