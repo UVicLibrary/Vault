@@ -1,8 +1,22 @@
 class EdtfDateService
-  # A class for working with EDTF dates. See https://www.loc.gov/standards/datetime/
-  require 'edtf'
+  # A service for indexing and humanzing EDTF dates
+  # Used by app/indexers/work_indexer for date_created and
+  # chronological_coverage.
+  # (see https://www.loc.gov/standards/datetime/).
+  #
+  # For extended examples of different types of dates and
+  # what they index as, see
+  # spec/services/edtf_date_service_spec.rb
+  #
+  # For more on expected behaviour, see
+  # https://connect.uvic.ca/sites/library/units/tech/cat/_layouts/15/WopiFrame2.aspx?sourcedoc=/sites/library/units/tech/cat/Documents/Metadata%20Documents/Vault/Vault_EDTF_Table.xlsx&action=default
+  #
+  # Based on the edtf gem by Sylvester Keil
+  # (https://github.com/inukshuk/edtf-ruby)
+  # and the edtf-humanize gem from Duke Libraries.
+  # (https://github.com/duke-libraries/edtf-humanize)
 
-  class InvalidEdtfDateError < StandardError; end
+  require 'edtf'
 
     def initialize(edtf_string)
       @edtf_string = edtf_string
@@ -52,8 +66,6 @@ class EdtfDateService
         else
           @parsed_date.humanize.gsub('circa','approximately')
         end
-      when "NilClass" # cannot parse
-        @parsed_date + " (cannot parse)"
       when "String" # "unknown" or "no date"
         @parsed_date
       when "Date"
@@ -65,6 +77,12 @@ class EdtfDateService
       else
         @parsed_date.humanize.gsub('circa','approximately')
       end
+    end
+
+    class InvalidEdtfDateError < StandardError; end
+
+    def self.error_classes
+      [InvalidEdtfDateError]
     end
 
     private
@@ -105,9 +123,9 @@ class EdtfDateService
           EDTF::Interval.new(first_season.first, last_season.last)
         elsif Date.edtf(date_string).nil? # Invalid date
           if date_string.include? "#"
-            raise InvalidEdtfDateError.new("Could not parse date: #{date_string}. Date includes #.")
+            raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" Date includes #, please use X or another alternative.")
           else
-            raise InvalidEdtfDateError.new("Could not parse date: #{date_string}. If date is unknown, use \"unknown\" or \"no date\"")
+            raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" If date is unknown, use \"unknown\" or \"no date\"")
           end
         else
           # modify date so that the interval encompasses the years on the last interval date
