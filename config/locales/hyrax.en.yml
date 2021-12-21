@@ -14,6 +14,10 @@ en:
     collection_type:
       admin_set_title: "Admin Set"
       default_title: "User Collection"
+    dashboard:
+      collections:
+        show:
+          metadata_header: Collection Details
   simple_form:
     hints:
       defaults:
