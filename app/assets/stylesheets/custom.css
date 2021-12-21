@@ -1,3 +1,7 @@
+#search-form-header label[for='search-field-header'] {
+    color: #333;
+}
+
 .search-result-wrapper .collection-counts-wrapper .collection-counts-item span {
     font-size: 18px;
     margin-bottom: 0.2em;
