@@ -2,6 +2,10 @@
     color: #333;
 }
 
+#rendering {
+    margin-bottom: 2em;
+}
+
 .search-result-wrapper .collection-counts-wrapper .collection-counts-item span {
     font-size: 18px;
     margin-bottom: 0.2em;
