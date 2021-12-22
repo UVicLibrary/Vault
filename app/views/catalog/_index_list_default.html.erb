@@ -1,51 +1,80 @@
-<div class="col-sm-8 col-md-9 col-lg-9">
-  <div class="metadata">
-    <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
-    <% doc_presenter = index_presenter(document) %>
-    <% if(doc_presenter.field_value('has_model_ssim') == 'Collection') %>
-      <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
-      <div class="col-sm-12" style="padding-left: 0px;">
-        <div class="collection-counts-wrapper">
-          <div class="collection-counts-item">
-            <span><%= collection_presenter.total_viewable_collections %></span>Collections
+<% if request.base_url.include? "vault" %>
+  <div class="col-sm-8 col-md-9 col-lg-9">
+    <div class="metadata">
+      <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
+      <% doc_presenter = index_presenter(document) %>
+      <% if(doc_presenter.field_value('has_model_ssim') == 'Collection') %>
+        <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
+        <div class="col-sm-12" style="padding-left: 0px;">
+          <div class="collection-counts-wrapper">
+            <div class="collection-counts-item">
+              <span><%= collection_presenter.total_viewable_collections %></span>Collections
+            </div>
+            <div class="collection-counts-item">
+              <span><%= collection_presenter.total_viewable_works %></span>Works
+            </div>
           </div>
-          <div class="collection-counts-item">
-            <span><%= collection_presenter.total_viewable_works %></span>Works
-          </div>
         </div>
-      </div>
-      <div class="row metadata-row">
-        <div class="col-sm-3">
-          Description:
-        </div>
-        <div class="col-sm-9">
-          <%= collection_presenter.description.first.truncate(275, separator: /\s/) if collection_presenter.description.first %>
-        </div>
-      </div>
-    <% end %>
-    <% index_fields(document).each do |field_name, field| -%>
-        <% next if field_name == 'license_tesim' %>
-      <% if should_render_index_field? document, field %>
         <div class="row metadata-row">
           <div class="col-sm-3">
-            <%= render_index_field_label document, field: field_name %>
+            Description:
           </div>
           <div class="col-sm-9">
-            <% value = doc_presenter.field_value field_name %>
-            <% if truncate_fields.any? { |f| f == field_name } %>
-              <%= value.truncate(275).html_safe %>
-            <% else %>
-              <% if (field_name == "is_referenced_by_tesim" or field_name== "provenance_tesim") and URI.extract(value).reject { |s| s.exclude?("http") }.any? %>
-                <%# Make clickable links %>
-                <% URI.extract(value).reject{ |s| s.exclude?("http") }.each do |url| %>
-                  <% value.gsub!( url, ('<a href="' + url + '">' + url + '</a>')) %>
-                <% end %>
-              <% end %>
-              <%= value.html_safe %>
-            <% end %>
+            <%= collection_presenter.description.first.truncate(275, separator: /\s/) if collection_presenter.description.first %>
           </div>
         </div>
       <% end %>
-    <% end %>
+      <% index_fields(document).each do |field_name, field| -%>
+          <% next if field_name == 'license_tesim' %>
+        <% if should_render_index_field? document, field %>
+          <div class="row metadata-row">
+            <div class="col-sm-3">
+              <%= render_index_field_label document, field: field_name %>
+            </div>
+            <div class="col-sm-9">
+              <% value = doc_presenter.field_value field_name %>
+              <% if truncate_fields.any? { |f| f == field_name } %>
+                <%= value.truncate(275).html_safe %>
+              <% else %>
+                <% if (field_name == "is_referenced_by_tesim" or field_name== "provenance_tesim") and URI.extract(value).reject { |s| s.exclude?("http") }.any? %>
+                  <%# Make clickable links %>
+                  <% URI.extract(value).reject{ |s| s.exclude?("http") }.each do |url| %>
+                    <% value.gsub!( url, ('<a href="' + url + '">' + url + '</a>')) %>
+                  <% end %>
+                <% end %>
+                <%= value.html_safe %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
+<% else %>
+  <div class="col-md-6">
+    <div class="metadata">
+      <dl class="dl-horizontal">
+        <% doc_presenter = index_presenter(document) %>
+        <% index_fields(document).each do |field_name, field| -%>
+          <% if should_render_index_field? document, field %>
+            <dt><%= render_index_field_label document, field: field_name %></dt>
+            <dd><%= doc_presenter.field_value field_name %></dd>
+          <% end %>
+        <% end %>
+      </dl>
+    </div>
+  </div>
+  <% if(doc_presenter.field_value('has_model_ssim') == 'Collection') %>
+    <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
+    <div class="col-md-4">
+      <div class="collection-counts-wrapper">
+        <div class="collection-counts-item">
+          <span><%= collection_presenter.total_viewable_collections %></span>Collections
+        </div>
+        <div class="collection-counts-item">
+          <span><%= collection_presenter.total_viewable_works %></span>Works
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
