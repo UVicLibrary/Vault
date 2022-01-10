@@ -109,7 +109,6 @@ Rails.application.routes.draw do
     end
   end
 
-  mount Peek::Railtie => '/peek'
   mount Riiif::Engine => '/images', as: 'riiif'
   require 'sidekiq/web'
   authenticate :user, lambda { |u| u.ability.admin? } do
