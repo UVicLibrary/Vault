@@ -58,7 +58,6 @@ class Ability
     can [:read, :update], Account do |account|
       account == Site.account
     end
-    can :peek, Hyku::Application
   end
 
   def superadmin?
