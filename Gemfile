@@ -90,7 +90,7 @@ end
 gem 'blacklight', '~> 6.7'
 gem 'blacklight_range_limit', '~> 6.5'
 
-gem 'hyrax', '~>2.4.0'
+gem 'hyrax', '~>2.5.1'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -103,13 +103,6 @@ gem 'config', '~> 1.5', '>= 1.5.1'
 gem 'is_it_working'
 gem 'rolify'
 
-gem 'peek'
-gem 'peek-faraday'
-gem 'peek-git'
-gem 'peek-performance_bar'
-gem 'peek-pg'
-gem 'peek-redis'
-
 gem 'flipflop', '~> 2.3'
 gem 'lograge'
 
@@ -119,7 +112,6 @@ gem 'mods', '~> 2.1'
 gem 'riiif', '~> 1.1'
 
 gem 'iiif_manifest', '~> 0.5.0'
-gem 'iiif-presentation'
 gem 'draper'
 
 group :aws, :test do
@@ -130,7 +122,6 @@ group :aws do
   gem 'active_elastic_job', '~> 2.0'
 end
 
-gem 'peek-sidekiq'
 gem 'sidekiq', '~> 6.0.0'
 gem 'sidekiq-benchmark'
 
