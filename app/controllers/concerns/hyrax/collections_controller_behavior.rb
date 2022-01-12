@@ -8,6 +8,10 @@ module Hyrax
       # include the display_trophy_link view helper method
       helper Hyrax::TrophyHelper
 
+      # Catch deleted collection
+      rescue_from Ldp::Gone, with: :not_found
+      rescue_from ActiveFedora::ObjectNotFoundError, with: :not_found
+
       # This is needed as of BL 3.7
       copy_blacklight_config_from(::CatalogController)
 
@@ -22,6 +26,12 @@ module Hyrax
       self.single_item_search_builder_class = SingleCollectionSearchBuilder
       # The search builder to find the collections' members
       self.membership_service_class = Collections::CollectionMemberService
+    end
+
+    def not_found
+      flash.alert = "The collection you're looking for may have moved or does not exist. Try searching for it in the search bar."
+      redirect_to help_path
+      return
     end
 
     def show
