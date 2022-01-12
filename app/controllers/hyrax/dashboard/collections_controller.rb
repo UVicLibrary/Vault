@@ -20,6 +20,10 @@ module Hyrax
       # Catch permission errors
       rescue_from Hydra::AccessDenied, CanCan::AccessDenied, with: :deny_collection_access
 
+      # Catch deleted collection
+      rescue_from Ldp::Gone, with: :not_found
+      rescue_from ActiveFedora::ObjectNotFoundError, with: :not_found
+
       # actions: index, create, new, edit, show, update, destroy, permissions, citation
       before_action :authenticate_user!, except: [:index, :copy_permissions]
 
@@ -38,6 +42,12 @@ module Hyrax
       self.membership_service_class = Collections::CollectionMemberService
 
       load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
+
+      def not_found
+        flash.alert = "The collection you're looking for may have moved or does not exist. Try searching for it in the search bar."
+        redirect_to help_path
+        return
+      end
 
       def copy_permissions
         user_email = current_user.email
@@ -97,6 +107,9 @@ module Hyrax
       end
 
       def show
+        byebug
+        redirect_to :controller => page_error_controller, :action => deleted_collection
+        return
         if @collection.collection_type.brandable?
           banner_info = CollectionBrandingInfo.where(collection_id: @collection.id.to_s).where(role: "banner")
           @banner_file = "/" + banner_info.first.local_path.split("/")[-4..-1].join("/") unless banner_info.empty?

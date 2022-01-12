@@ -11,6 +11,9 @@ module Hyrax
       with_themed_layout :decide_layout
       copy_blacklight_config_from(::CatalogController)
 
+      # Catch deleted work
+      rescue_from Blacklight::Exceptions::RecordNotFound, with: :not_found
+
       class_attribute :_curation_concern_type, :show_presenter, :work_form_service, :search_builder_class
       class_attribute :iiif_manifest_builder, instance_accessor: false
       self.show_presenter = ::Hyku::WorkShowPresenter
@@ -22,6 +25,12 @@ module Hyrax
       helper_method :curation_concern, :contextual_path
 
       rescue_from WorkflowAuthorizationException, with: :render_unavailable
+    end
+
+    def not_found
+      flash.alert = "The work you're looking for may have moved or does not exist. Try searching for it in the search bar."
+      redirect_to help_path
+      return
     end
 
     class_methods do
