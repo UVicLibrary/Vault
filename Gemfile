@@ -87,7 +87,7 @@ end
 gem 'blacklight', '~> 6.7'
 gem 'blacklight_range_limit', '~> 6.5'
 
-gem 'hyrax', '~>2.3.0'
+gem 'hyrax', '~>2.5.1'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -99,13 +99,6 @@ gem 'apartment'
 gem 'config', '~> 1.5', '>= 1.5.1'
 gem 'is_it_working'
 gem 'rolify'
-
-gem 'peek'
-gem 'peek-faraday'
-gem 'peek-git'
-gem 'peek-performance_bar'
-gem 'peek-pg'
-gem 'peek-redis'
 
 gem 'flipflop', '~> 2.3'
 gem 'lograge'
@@ -126,10 +119,9 @@ group :aws do
   gem 'active_elastic_job', '~> 2.0'
 end
 
-gem 'peek-sidekiq'
 gem 'sidekiq', '~> 5.0.3' # '~> 6.0.7'
 
-gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.3.4/gems/cdm_migrator-3.2.1' #~> 3.2.0'
+gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.5.3/gems/cdm_migrator-3.2.1'
 gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
