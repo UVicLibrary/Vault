@@ -21,12 +21,35 @@ class WorkIndexer < Hyrax::WorkIndexer
       end
     end
 
-    #failed = []
     super.tap do |solr_doc|
+
       if object.thumbnail and object.thumbnail.files.any?
         if object.thumbnail.audio? or object.thumbnail.files.first.file_name.first.include?(".m4a")
-            solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
+          solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
         end
+      end
+
+      # Index OAI-PMH fields
+
+      # dc:coverage = geographic coverage + chronological coverage
+      if solr_doc['geographic_coverage_label_tesim'] or solr_doc['chronological_coverage_tesim']
+        geographic_label = solr_doc['geographic_coverage_label_tesim']
+        chronological_label = solr_doc['chronological_coverage_tesim']
+        solr_doc['oai_dc_coverage_tesim'] = [geographic_label, chronological_label].reject { |val| val.nil? }.flatten
+      end
+      # dc:resource_type = human readable label for resource type (e.g. StillImage)
+      if resource_type = solr_doc['resource_type_tesim']
+        solr_doc['oai_dc_type_tesim'] = resource_type.map { |val| Hyrax::ResourceTypesService.label(val).gsub(' ','') }
+      end
+      # dc:relation = title of parent collection if one exists
+      if collections = solr_doc['member_of_collections_ssim']
+        solr_doc['oai_dc_relation_tesim'] = collections.map { |val| "IsPartOf #{val}" }
+      end
+
+      # Vault considers m4a files to be videos even if they only have an audio track.
+      # This sets the thumbnail path back to the audio thumbnail.
+      if object.thumbnail and object.thumbnail.video? and object.thumbnail.label.include?(".m4a")
+        solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
       end
 
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
@@ -39,15 +62,6 @@ class WorkIndexer < Hyrax::WorkIndexer
       # Allow public users to discover items with institution visibility
       if object.visibility == "authenticated"
         solr_doc["discover_access_group_ssim"] = "public"
-      end
-
-      # Exception for Keith McHenry field not showing up in creator label for some items
-      if solr_doc['creator_tesim'] and solr_doc['creator_tesim'].include?("http://id.worldcat.org/fast/01984031")
-        if solr_doc['creator_label_tesim']
-          solr_doc['creator_label_tesim'].push("McHenry, Keith, 1957-")
-        else
-          solr_doc['creator_label_tesim'] = ["McHenry, Keith, 1957-"]
-        end
       end
 
       unless object.date_created.empty?
@@ -78,7 +92,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
     end
     object[field] =  object[field].map do |val|
-    	val.include?("http") ? class_name.new(val.strip) : val
+      val.include?("http") ? class_name.new(val.strip) : val
     end
   end
 end

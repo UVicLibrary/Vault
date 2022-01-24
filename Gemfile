@@ -85,6 +85,7 @@ group :development do
 end
 
 gem 'blacklight', '~> 6.7'
+gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
 
 gem 'hyrax', '~>2.5.1'
