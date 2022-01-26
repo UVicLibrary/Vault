@@ -107,8 +107,6 @@ module Hyrax
       end
 
       def show
-        redirect_to :controller => page_error_controller, :action => deleted_collection
-        return
         if @collection.collection_type.brandable?
           banner_info = CollectionBrandingInfo.where(collection_id: @collection.id.to_s).where(role: "banner")
           @banner_file = "/" + banner_info.first.local_path.split("/")[-4..-1].join("/") unless banner_info.empty?
