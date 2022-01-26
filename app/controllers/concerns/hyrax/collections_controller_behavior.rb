@@ -9,8 +9,7 @@ module Hyrax
       helper Hyrax::TrophyHelper
 
       # Catch deleted collection
-      rescue_from Ldp::Gone, with: :not_found
-      rescue_from ActiveFedora::ObjectNotFoundError, with: :not_found
+      rescue_from Ldp::Gone, ActiveFedora::ObjectNotFoundError, with: :not_found
 
       # This is needed as of BL 3.7
       copy_blacklight_config_from(::CatalogController)
@@ -29,6 +28,7 @@ module Hyrax
     end
 
     def not_found
+      # Sets alert to display once redirected page has loaded
       flash.alert = "The collection you're looking for may have moved or does not exist. Try searching for it in the search bar."
       redirect_to help_path
       return

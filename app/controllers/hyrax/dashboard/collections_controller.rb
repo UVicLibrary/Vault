@@ -21,8 +21,7 @@ module Hyrax
       rescue_from Hydra::AccessDenied, CanCan::AccessDenied, with: :deny_collection_access
 
       # Catch deleted collection
-      rescue_from Ldp::Gone, with: :not_found
-      rescue_from ActiveFedora::ObjectNotFoundError, with: :not_found
+      rescue_from Ldp::Gone, ActiveFedora::ObjectNotFoundError, with: :not_found
 
       # actions: index, create, new, edit, show, update, destroy, permissions, citation
       before_action :authenticate_user!, except: [:index, :copy_permissions]
@@ -44,6 +43,7 @@ module Hyrax
       load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
 
       def not_found
+        # Sets alert to display once redirected page has loaded
         flash.alert = "The collection you're looking for may have moved or does not exist. Try searching for it in the search bar."
         redirect_to help_path
         return
@@ -107,7 +107,6 @@ module Hyrax
       end
 
       def show
-        byebug
         redirect_to :controller => page_error_controller, :action => deleted_collection
         return
         if @collection.collection_type.brandable?

@@ -28,6 +28,7 @@ module Hyrax
     end
 
     def not_found
+      # Sets alert to display once redirected page has loaded
       flash.alert = "The work you're looking for may have moved or does not exist. Try searching for it in the search bar."
       redirect_to help_path
       return
