@@ -5,12 +5,10 @@
 </head>
 <body>
 <p>Hello,</p>
-<% if @downloadable %>
-  <% if @downloadable == true %>
+ <% if @downloadable == true %>
     <p>All files in <%= link_to @collection.title[0], @url %> are downloadable.</p>
-  <% else %>
+<% else %>
     <p>All files in <%= link_to @collection.title[0], @url %> are not downloadable by public users.</p>
-  <% end %>
 <% end %>
 </body>
 </html>

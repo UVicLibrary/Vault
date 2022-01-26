@@ -5,10 +5,9 @@ class DownloadsMailer < HykuMailer
     @user_email = params[:user_email]
     @collection = Collection.find(params[:id])
     host = "https://vault.library.uvic.ca"
-    if params[:downloadable]
-      @downloadable = ActiveModel::Type::Boolean.new.cast(params[:downloadable])# "true" => true
-      @url = "#{host}/dashboard/collections/#{@collection.id}"
-    end
+    @downloadable = ActiveModel::Type::Boolean.new.cast(params[:downloadable])# "true" => true
+    @url = "#{host}/collections/#{@collection.id}"
+    puts @url
     # Send email
     mail(to: @user_email, subject: 'Job Completed')
   end
