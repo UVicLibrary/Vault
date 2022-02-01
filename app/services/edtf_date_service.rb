@@ -61,6 +61,8 @@ class EdtfDateService
       when "EDTF::Interval"
         if season_interval?(@edtf_string)
           humanized_season_interval(@edtf_string)
+        elsif century_or_decade_interval?(@edtf_string)
+          humanized_century_or_decade_interval(@edtf_string)
         elsif approx_and_uncertain?(@edtf_string)
           humanized_approx_and_uncertain_interval
         else
@@ -107,20 +109,43 @@ class EdtfDateService
         Date.edtf(date_string).class == EDTF::Season
       end
 
+      def century?(date_string)
+        Date.edtf(date_string).class == EDTF::Century
+      end
+
+      def decade?(date_string)
+        Date.edtf(date_string).class == EDTF::Decade
+      end
+
       def season_interval?(date_string)
         season?(date_string.split("/").first) and season?(date_string.split("/").second)
+      end
+
+      def century_or_decade_interval?(date_string)
+        first_date = date_string.split("/").first
+        last_date = date_string.split("/").second
+        (century?(first_date) and century?(last_date)) ||
+        (decade?(first_date) and decade?(last_date))
+      end
+
+      def century_interval?(date_string)
+        century?(date_string.split("/").first) and century?(date_string.split("/").second)
+      end
+
+      def decade_interval?(date_string)
+        decade?(date_string.split("/").first) and decade?(date_string.split("/").second)
       end
 
       def parse_date(date_string)
         date_string = date_string.gsub('%','~')
         if date_string == "unknown" or date_string == "no date"
           date_string
-        elsif season_interval?(date_string)
-          first_season = Date.edtf(date_string.split("/").first)
-          last_season = Date.edtf(date_string.split("/").last)
-          # edtf can't parse season intervals, so we create an interval using the first season's
+        elsif season_interval?(date_string) or century_interval?(date_string) or decade_interval?(date_string)
+          # edtf can't parse season or century intervals, so we create an interval using the first season's
           # first date and the last season's last date
-          EDTF::Interval.new(first_season.first, last_season.last)
+          first_date = Date.edtf(date_string.split("/").first)
+          last_date = Date.edtf(date_string.split("/").last)
+          EDTF::Interval.new(first_date.first, last_date.last)
         elsif Date.edtf(date_string).nil? # Invalid date
           if date_string.include? "#"
             raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" Date includes #, please use X or another alternative.")
@@ -146,6 +171,12 @@ class EdtfDateService
         first_season = Date.edtf(date_string.split("/").first)
         last_season = Date.edtf(date_string.split("/").last)
         "#{humanized_season(first_season)} to #{humanized_season(last_season)}"
+      end
+
+      def humanized_century_or_decade_interval(date_string)
+        first_date = Date.edtf(date_string.split("/").first)
+        last_date = Date.edtf(date_string.split("/").last)
+        "#{first_date.humanize} to #{last_date.humanize}"
       end
 
 end

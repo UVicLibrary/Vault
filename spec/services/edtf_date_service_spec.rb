@@ -62,7 +62,9 @@ RSpec.describe EdtfDateService do
         "season" => "2011-22/2011-24",
         "uncertain" => "1965-10?/1970-10?",
         "approximate" => "1965-10~/1975-11~",
-        "approx_and_uncertain" => "1965-10%/1975-11%" }
+        "approx_and_uncertain" => "1965-10%/1975-11%",
+        "century" => "14XX/15XX",
+        "decade" => "198X/199X" }
       hash.transform_values { |val| EdtfDateService.new(val) }
     }
 
@@ -73,7 +75,9 @@ RSpec.describe EdtfDateService do
          "season" => "Summer, 2011 to Winter, 2011",
          "uncertain" => "October 1965? to October 1970?",
          "approximate" => "approximately October 1965 to approximately November 1975",
-         "approx_and_uncertain" => "approximately October 1965? to approximately November 1975?"
+         "approx_and_uncertain" => "approximately October 1965? to approximately November 1975?",
+         "century" => "1400s to 1500s",
+         "decade" => "1980s to 1990s"
          })
     end
 
@@ -84,7 +88,9 @@ RSpec.describe EdtfDateService do
         "season" => [2011, 2012],
         "uncertain" => [1965, 1966, 1967, 1968, 1969, 1970],
         "approximate" => [*1965..1975],
-        "approx_and_uncertain" => [*1965..1975]
+        "approx_and_uncertain" => [*1965..1975],
+        "century" => [*1400..1599],
+        "decade" => [*1980..1999]
       })
     end
 
@@ -97,7 +103,8 @@ RSpec.describe EdtfDateService do
         expect(transformed['approximate']).to eq(transformed['approx_and_uncertain']) &
                                                   start_with("1965-10-01T00:00:00Z") &
                                                   end_with("1975-11-01T00:00:00Z")
-      # end
+        expect(transformed['century']).to start_with("1400-01-01T00:00:00Z") & end_with("1599-01-01T00:00:00Z")
+        expect(transformed['decade']).to start_with("1980-01-01T00:00:00Z") & end_with("1999-01-01T00:00:00Z")
     end
 
     it 'responds to #first_solr_date with the first possible (solr-formatted) date' do
@@ -107,7 +114,9 @@ RSpec.describe EdtfDateService do
         "season" => "2011-06-01T00:00:00Z",
         "uncertain" => "1965-10-01T00:00:00Z",
         "approximate" => "1965-10-01T00:00:00Z",
-        "approx_and_uncertain" => "1965-10-01T00:00:00Z"
+        "approx_and_uncertain" => "1965-10-01T00:00:00Z",
+        "century" => "1400-01-01T00:00:00Z",
+        "decade" => "1980-01-01T00:00:00Z"
       })
     end
 
@@ -202,11 +211,11 @@ RSpec.describe EdtfDateService do
   context 'when date is invalid or contains #' do
 
     it 'raises an invalid date error' do
-      expect { EdtfDateService.new("invalid") }.to raise_error(EdtfDateService::InvalidEdtfDateError, "Could not parse date: invalid. If date is unknown, use \"unknown\" or \"no date\"")
+      expect { EdtfDateService.new("invalid") }.to raise_error(EdtfDateService::InvalidEdtfDateError, 'Could not parse date: "invalid." If date is unknown, use "unknown" or "no date"')
     end
 
     it 'raises a specific error message for #' do
-      expect { EdtfDateService.new("1989#") }.to raise_error(EdtfDateService::InvalidEdtfDateError, "Could not parse date: 1989#. Date includes #.")
+      expect { EdtfDateService.new("1989#") }.to raise_error(EdtfDateService::InvalidEdtfDateError, 'Could not parse date: "1989#." Date includes #, please use X or another alternative.')
     end
 
   end
