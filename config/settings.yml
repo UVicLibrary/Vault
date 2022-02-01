@@ -67,3 +67,10 @@ devise:
   account_signup: true
   # The address from which user invitations are sent
   invitation_from_email: "tjychan@uvic.ca"
+
+oai:
+  name: Vault
+  url: http://vault.localhost:3000/catalog/oai
+  prefix: oai:hyku
+  email: change-me-in-hyku-settings@example.org
+  sample_id: 806bbc5e-8ebe-468c-a188-b7c14fbe34df

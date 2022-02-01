@@ -3,6 +3,7 @@
 class SolrDocument
   include Blacklight::Solr::Document
   include Blacklight::Gallery::OpenseadragonSolrDocument
+  include BlacklightOaiProvider::SolrDocument
 
   # Adds Hyrax behaviors to the SolrDocument.
   include Hyrax::SolrDocumentBehavior
@@ -27,7 +28,24 @@ class SolrDocument
 
   attribute :extent, Solr::Array, solr_name('extent')
   attribute :rendering_ids, Solr::Array, solr_name('hasFormat', :symbol)
-  
+
+  field_semantics.merge!(
+      contributor: 'contributor_label_tesim',
+      coverage: 'oai_dc_coverage_tesim',
+      creator: 'creator_label_tesim',
+      date: 'date_created_tesim',
+      description: 'description_tesim',
+      format: 'extent_tesim',
+      identifier: 'identifier_tesim',
+      language: 'language_tesim',
+      publisher: 'publisher_tesim',
+      relation: 'oai_dc_relation_tesim',
+      rights: 'rights_statement_tesim',
+      source: 'physical_repository_label_tesim',
+      subject: 'subject_label_tesim',
+      title: 'title_tesim',
+      type: 'oai_dc_type_tesim'
+  )
   def subject
       fetch(Solrizer.solr_name('subject'), [])
   end
@@ -142,5 +160,5 @@ class SolrDocument
       array.push(EdtfDateService.new(date).humanized)
     end
   end
-  
+
 end

@@ -21,6 +21,25 @@ class CollectionIndexer < Hyrax::CollectionIndexer
 
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
+
+      # Index OAI-PMH fields
+      # dc:coverage = geographic coverage + chronological coverage
+      if solr_doc['geographic_coverage_label_tesim'] or solr_doc['chronological_coverage_tesim']
+        geographic_label = solr_doc['geographic_coverage_label_tesim']
+        chronological_label = solr_doc['chronological_coverage_tesim']
+        solr_doc['oai_dc_coverage_tesim'] = [geographic_label, chronological_label].reject { |val| val.nil? }.flatten
+      end
+      # dc:type = human readable label for resource type (e.g. StillImage)
+      if resource_type = solr_doc['resource_type_tesim']
+        solr_doc['oai_dc_type_tesim'] = resource_type.map { |val| Hyrax::ResourceTypesService.label(val).gsub(' ','') }
+      end
+      # dc:relation = titles of parent or child collections if any exist
+      if object.parent_collections or object.child_collections
+        parents = object.parent_collections.map { |c| "IsPartOf #{c.title.first}" }
+        children = object.child_collections.map { |c| "HasPart #{c.title.first}" }
+        solr_doc['oai_dc_relation_tesim'] = parents + children
+      end
+
     end
   end
 

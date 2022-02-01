@@ -67,9 +67,19 @@ module Hyrax
     # @param [Array] val an array of two elements, first is a string (the uri) and the second is a hash with one key: `:label`
     def append_label_and_uri(solr_doc, solr_field_key, field_info, val)
       begin
-        val = val.solrize
+        # Some uris don't save labels so we specify them manually
+        # "exhibition catalogs"
+        if val.id == "http://vocab.getty.edu/aat/300026096"
+          label = val.rdf_label.find { |v| v.language == :"en-us" }.to_s
+          val = [val.id, { label: "#{label}$#{val.id}" }]
+        # "McHenry, Keith, 1957-"
+        elsif val.id == "http://id.worldcat.org/fast/1984031"
+          val = [val.id, { label: "#{val.rdf_label.first}$#{val.id}" }]
+        else
+          val = val.solrize
+        end
       rescue NoMethodError
-        val = [val.id, {label: "#{val.rdf_label.first}$#{val.id}"}]
+        val = [val.id, { label: "#{val.rdf_label.first}$#{val.id}" }]
       end
 
       # Fix Geonames
