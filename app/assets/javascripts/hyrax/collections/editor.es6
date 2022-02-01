@@ -9,9 +9,8 @@ import AuthoritySelect from 'hyrax/authority_select'
 // Add search for thumbnail to the edit descriptions
 export default class {
     constructor(elem) {
-        let url =  window.location.pathname.replace('edit', 'files')
         let field = elem.find('#collection_thumbnail_id')
-        this.thumbnailSelect = new ThumbnailSelect(url, field)
+        this.thumbnailSelect = new ThumbnailSelect(this.url(), field)
         this.element = elem
         this.paramKey = "collection"
         tabifyForm(elem.find('form.editor'))
@@ -21,6 +20,12 @@ export default class {
         if (window.location.href.includes("collection")) {
             this.init()
         }
+    }
+
+    url() {
+        let urlParts = window.location.pathname.split("/")
+        urlParts[urlParts.length - 1] = "files"
+        return urlParts.join("/")
     }
 
     init() {
