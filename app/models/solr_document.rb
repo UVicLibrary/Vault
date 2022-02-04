@@ -136,7 +136,7 @@ class SolrDocument
   end
 
   def date_digitized
-    edtf_date('date_digitized')#fetch(Solrizer.solr_name('date_digitized'), [])
+    fetch(Solrizer.solr_name('date_digitized'), [])
   end
 
   def date_created
