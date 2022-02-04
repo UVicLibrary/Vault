@@ -21,7 +21,8 @@
                       hyrax.dashboard_collection_path(@presenter),
                       title: t('hyrax.collection.actions.edit.desc'),
                       class: 'btn btn-default',
-                      style: 'margin-right: 0.25em;' %>
+                      style: 'margin-right: 0.25em;',
+                      data: {turbolinks: false} %>
           <%= link_to t('hyrax.collection.actions.edit.label'),
                       hyrax.edit_dashboard_collection_path(@presenter),
                       title: t('hyrax.collection.actions.edit.desc'),
