@@ -6,9 +6,9 @@ class VisibilityPermissionsMailer < HykuMailer
     host = params[:account_host]
     @visibility = params[:visibility]
     if @visibility == "open"
-      @url = "https://#{host}/collections/#{@collection.id}"
+      @url = "#{host}/collections/#{@collection.id}"
     else
-      @url = "https://#{host}/dashboard/collections/#{@collection.id}"
+      @url = "#{host}/dashboard/collections/#{@collection.id}"
     end
     # Send email
     mail(to: @user_email, subject: 'Job Completed')
@@ -18,7 +18,7 @@ class VisibilityPermissionsMailer < HykuMailer
     @user_email = params[:user_email]
     @collection = Collection.find(params[:id])
     host = params[:account_host]
-    @url = "https://#{host}/collections/#{@collection.id}"
+    @url = "#{host}/collections/#{@collection.id}"
     mail(to: @user_email, subject: 'Job Completed')
   end
 
