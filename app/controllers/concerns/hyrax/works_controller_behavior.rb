@@ -12,7 +12,7 @@ module Hyrax
       copy_blacklight_config_from(::CatalogController)
 
       # Catch deleted work
-      rescue_from Blacklight::Exceptions::RecordNotFound, with: :not_found
+      rescue_from Ldp::Gone, ActiveFedora::ObjectNotFoundError, with: :not_found
 
       class_attribute :_curation_concern_type, :show_presenter, :work_form_service, :search_builder_class
       class_attribute :iiif_manifest_builder, instance_accessor: false
