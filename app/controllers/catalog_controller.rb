@@ -2,6 +2,7 @@ class CatalogController < ApplicationController
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
   include BlacklightRangeLimit::ControllerOverride
+  include BlacklightOaiProvider::Controller
 
   # These before_action filters apply the hydra access controls
   before_action :enforce_show_permissions, only: :show
@@ -55,7 +56,7 @@ class CatalogController < ApplicationController
     
     # Collection
       config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
-      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5, partial: 'genre_label_facet'
+      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5
       config.add_facet_field solr_name("resource_type", :facetable), label: 'Resource Type', limit: 5, helper_method: :resource_type_links
       config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
       # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
@@ -65,8 +66,6 @@ class CatalogController < ApplicationController
       config.add_facet_field solr_name("language", :facetable), limit: 5
       config.add_facet_field solr_name("creator_label", :facetable), label: 'Creator', limit: 5
       config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
-    # Shadow field to deal with the "exhibition catalogs" exception
-      config.add_facet_field 'genre_sim', label: 'Genre', limit: 5, query: {exhibition_catalogs: {label: "exhibition catalogs", fq: 'genre_tesim: "http://vocab.getty.edu/aat/300026096"'}}
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -399,6 +398,22 @@ class CatalogController < ApplicationController
     config.add_sort_field "title_sort_ssi desc", label: "title \u25BC"
     config.add_sort_field "#{modified_field} desc", label: "date modified \u25BC"
     config.add_sort_field "#{modified_field} asc", label: "date modified \u25B2"
+
+    config.oai = {
+        provider: {
+            repository_name: Settings.oai.name,
+            repository_url: Settings.oai.url,
+            record_prefix: Settings.oai.prefix,
+            admin_email: Settings.oai.email,
+            sample_id: Settings.oai.sample_id
+        },
+        document: {
+            limit: 10000, # number of records returned with each request, default: 15
+            set_fields: [ # ability to define ListSets, optional, default: nil
+                { label: 'collection', solr_field: 'member_of_collections_ssim' }
+            ]
+        }
+    }
 
     # If there are more than this many search results, no spelling ("did you
     # mean") suggestion is offered.
