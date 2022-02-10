@@ -32,12 +32,12 @@ class Hyrax::HomepageController < ApplicationController
     sorted_collections = @presenter.collections.sort_by(&:create_date).reverse
     @recent_collection_presenters = Hyrax::PresenterFactory.build_for(ids: sorted_collections.pluck(:id),
                                       presenter_class: Hyrax::CollectionPresenter,
-                                      presenter_args: nil).slice(0,6)
+                                      presenter_args: nil).slice(0,8)
     # Recent works
     (@response, @works) = search_results(q: '', sort: sort_field, rows: 100) # Returns an array of 3 things. [0] is the solr response, [1] is an array of SolrDocuments
     @recent_work_presenters = Hyrax::PresenterFactory.build_for(ids: @works.pluck(:id),
                                                                 presenter_class: Hyrax::WorkShowPresenter,
-                                                                presenter_args: nil).slice(0,6)
+                                                                presenter_args: nil).slice(0,8)
 
 
     # For collections table, sort by alpha order:

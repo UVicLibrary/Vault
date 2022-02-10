@@ -1,3 +1,7 @@
+.feature-collection-message, .feature-work-message {
+    display: inline-block;
+}
+
 #rendering {
     margin-bottom: 2em;
 }

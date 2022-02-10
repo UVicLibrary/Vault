@@ -1,21 +1,21 @@
-<div class="card work-card col-lg-4 col-md-4 col-sm-4 col-xs-12">
-    <div class="wrapper" style="background: url(<%= new_path %>); background-size: cover; background-position: center;">
-      <%= link_to [main_app, presenter], class: "plain-link work-card-link" do %>
-        <div class="data">
-          <div class="content">
-            <h2 class="card-title work-card-title"><%= presenter.title.first.truncate(75, separator: /\s/) %></h2>
-            <p class="text">
-              <% if presenter.description.first.present? %>
-                <%= presenter.description.first.truncate(100, separator: /\s/) %>
-              <% else %>
-                No description available.
-              <% end %>
-            </p>
-          </div><!-- .content -->
-        </div><!-- .data -->
-      <% end %>
-      <%= render_card_collection_links(presenter) %>
-    </div><!-- .wrapper -->
+<div class="card work-card col-lg-<%= card_width %> col-md-<%= card_width %> col-sm-<%= card_width %> col-xs-12">
+  <div class="wrapper" style="background: url(<%= new_path %>); background-size: cover; background-position: center;">
+    <%= link_to [main_app, presenter], class: "plain-link work-card-link" do %>
+      <div class="data">
+        <div class="content">
+          <h2 class="card-title work-card-title"><%= presenter.title.first.truncate(55, separator: /\s/) %></h2>
+          <p class="text">
+            <% if presenter.description.first.present? %>
+              <%= presenter.description.first.truncate(100, separator: /\s/) %>
+            <% else %>
+              No description available.
+            <% end %>
+          </p>
+        </div><!-- .content -->
+      </div><!-- .data -->
+    <% end %>
+    <%= render_card_collection_links(presenter) %>
+  </div><!-- .wrapper -->
   <%# end %>
 </div><!-- .card -->
 
