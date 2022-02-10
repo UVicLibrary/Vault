@@ -45,9 +45,7 @@
 
   <div class="button-wrapper">
     <!-- Feature/Unfeature Collections -->
-    <% if can? :edit, presenter.solr_document %>
-      <% if @presenter.collection_featurable? && can?(:create, FeaturedCollection) %>
-        <% if FeaturedCollection.can_create_another? || FeaturedCollection.pluck(:collection_id).include?(@presenter.id) %>
+      <% if @presenter.display_feature_link? || presenter.display_unfeature_link? %>
           <%= link_to "Feature", featured_collections_path(collection_id: params[:id], order: 1, format: :json, remote: true), method: :post,
                       data: { behavior: 'feature' },
                       class: @presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
@@ -56,15 +54,9 @@
                       data: { behavior: 'unfeature' },
                       class: @presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
                       id: 'unfeature-coll-link' %>
-        <% else %>
-          <span class="text-muted feature-collection-error">Maximum of 6 featured collections.</span>
-          <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
-        <% end %>
-        <% elsif !@presenter.solr_document.public? %><%# could just be else statement, but this is more explicit %>
-        <span class="text-muted feature-collection-error">Collection must be public.</span>
-        <a class="btn btn-default btn-disabled" disabled="disabled">Feature</a>
+      <% else %>
+          <%= render_featured_help_message(@presenter) %>
       <% end %>
-    <% end %>
   </div>
 
 

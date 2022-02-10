@@ -1,5 +1,5 @@
 class FeaturedCollection < ApplicationRecord
-  FEATURE_LIMIT = 6
+  FEATURE_LIMIT = 8
   validate :count_within_limit, on: :create
   validates :order, inclusion: { in: proc { 0..FEATURE_LIMIT } }
 
@@ -16,6 +16,10 @@ class FeaturedCollection < ApplicationRecord
   class << self
     def can_create_another?
       FeaturedCollection.count < FEATURE_LIMIT
+    end
+
+    def feature_limit
+      FEATURE_LIMIT
     end
   end
 end

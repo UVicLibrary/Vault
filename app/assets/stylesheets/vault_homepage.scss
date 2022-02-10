@@ -223,10 +223,11 @@ sans-serif;
     }
     &:hover {
       .data {
-        transform: translateY(0);
+        transform: translateY(-20px);
       }
       .content {
-        padding-bottom: 2em;
+        padding-bottom: 3.5em;
+        margin-bottom: -1.5em;
       }
       .text {
         height: 50px;
@@ -280,4 +281,12 @@ sans-serif;
   input[type='checkbox']:checked + .menu-content {
     transform: translateY(-60px);
   }
+}
+
+.card.col-lg-3 .wrapper {
+  min-height: 310px;
+}
+
+.card.col-lg-3 h2 {
+  font-size: 26px;
 }

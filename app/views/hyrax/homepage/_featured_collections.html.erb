@@ -7,7 +7,7 @@
     <div class="panel-group dd" id="dd">
       <ol id="featured_collections">
         <%= f.fields_for :featured_collections do |featured| %>
-          <%= render 'sortable_featured', f: featured, presenter: featured.object.presenter, featured_category: FeaturedCollection %>
+          <%= render 'sortable_featured', f: featured, presenter: Hyrax::CollectionPresenter.new(SolrDocument.find(featured.object.collection_id), current_ability), featured_category: FeaturedCollection %>
         <% end %>
       </ol>
     </div>

@@ -4,7 +4,7 @@
       <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
       <h3>
         <%= link_to [main_app, featured] do %>
-          <% if featured.member_presenters.first.mime_type.include? "pdf" %>
+          <% if featured.member_presenters.first.mime_type && featured.member_presenters.first.mime_type.include?("pdf") %>
             <%= image_tag(file_set.pdf_thumbnail_path, width: 90) + featured.title.first %>
           <% else %>
             <%= render_thumbnail_tag(featured, {width: 90}, {suppress_link: true}) + featured.title.first %>
@@ -22,13 +22,13 @@
       </h3>
     <% end %>
   </div>
-    <div class="featured_field featured-item-description">
-      <p>
-        <% if featured.description.first.present? %>
-          <%= featured.description.first.truncate(100, separator: /\s/) %>
-        <% else %>
-          No description available.
-        <% end %>
-      </p>
-    </div>
+  <div class="featured_field featured-item-description">
+    <p>
+      <% if featured.description.first.present? %>
+        <%= featured.description.first.truncate(100, separator: /\s/) %>
+      <% else %>
+        No description available.
+      <% end %>
+    </p>
+  </div>
 </div>
