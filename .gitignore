@@ -19,8 +19,6 @@ pickle-email-*.html
 *.tif
 *.jp2
 fits-1.5.0
-solr
-ops
 
 .gitignore
 
@@ -69,8 +67,6 @@ fits.log
 # Ignore docker files
 .solr_wrapper
 .env
-ops
-solr
 db
 
 public/uv
