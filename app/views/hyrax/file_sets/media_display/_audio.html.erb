@@ -1,32 +1,8 @@
-<% if Hyrax.config.display_media_download_link? and allow_downloads?(file_set) %>
-  <div>
-    <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-    <audio controls="controls" id="audio" class="audiojs" controlsList="nodownload" preload="auto" style="max-width:100%;">
-      <source src="<%= hyrax.download_path(file_set, file: 'ogg') %>" type="audio/ogg" />
-      <source src="<%= hyrax.download_path(file_set, file: 'mp3') %>" type="audio/mpeg" />
-      <%= t('hyrax.file_set.show.downloadable_content.audio_tag_not_supported') %>
-    </audio><br/>
-      <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
-                  hyrax.download_path(file_set),
-                  data: { label: file_set.id },
-                  target: :_blank,
-                  id: "file_download" %>
-    <%# Include link to transcript %>
-    <% if file_set.parent.member_presenters.any? { |fs| fs.pdf? } %>
-      <% transcript = file_set.parent.member_presenters.find { |fs| fs.pdf? } %>
-      &ensp;|&ensp;
-      <%= link_to "Download transcript (PDF)",
-                  hyrax.download_path(transcript),
-                  data: { turbolinks: false },
-                  target: :_blank,
-                  id: "transcript_file_download",
-                  data: { label: transcript.id } %>
-    <% end %>
-  </div>
+<% if request.base_url.include? "vault" %>
+  <%= render 'hyrax/file_sets/media_display/vault/audio', file_set: file_set %>
 <% else %>
   <div>
     <audio controls="controls" class="audiojs" controlsList="nodownload" preload="auto" style="max-width:100%;">
-      <source src="<%= hyrax.download_path(file_set, file: 'ogg') %>" type="audio/ogg" />
       <source src="<%= hyrax.download_path(file_set, file: 'mp3') %>" type="audio/mpeg" />
       <%= t('hyrax.file_set.show.downloadable_content.audio_tag_not_supported') %>
     </audio>

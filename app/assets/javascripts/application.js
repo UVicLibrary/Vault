@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-// require js.cookie
+//= require js.cookie
 // Required by Blacklight
 //= require blacklight/blacklight
 //= require blacklight_range_limit

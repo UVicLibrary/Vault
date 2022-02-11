@@ -1,0 +1,36 @@
+  <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
+  <link rel="stylesheet" href="<%= request.base_url %>/able_player/build/ableplayer.min.css" type="text/css"/>
+  <link rel="stylesheet" href="<%= request.base_url %>/able_player/build/ableplayer-light.css" type="text/css"/>
+  <script src="http://vault.localhost:3000/able_player/build/ableplayer.min.js"></script>
+  <% if Hyrax.config.display_media_download_link? and allow_downloads?(file_set) %>
+    <div>
+      <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
+
+    <% audio_files = file_set.parent.file_set_presenters.select { |fsp| fsp.audio? } %>
+    <% if audio_files.count > 1 and work_show_page? %>
+        <%= render 'hyrax/file_sets/media_display/vault/audio_playlist', audio_files: audio_files, parent: file_set.parent %>
+    <% else %>
+        <audio id="audio1" data-able-player data-skin="2020" preload="auto" width="600">
+          <source type="<%= file_set.mime_type %>" src="<%= hyrax.download_path(file_set) %>"/>
+        </audio>
+        <% if Hyrax.config.display_media_download_link? && allow_downloads?(file_set) %>
+          <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
+                      hyrax.download_path(file_set),
+                      data: { label: file_set.id },
+                      target: :_blank,
+                      id: "file_download" %>
+        <%# Include link to transcript %>
+        <% if file_set.parent.member_presenters.any? { |fs| fs.pdf? } and work_show_page? %>
+          <% transcript = file_set.parent.member_presenters.find { |fs| fs.pdf? } %>
+          &ensp;|&ensp;&ensp;
+          <%= link_to "Download transcript (PDF)",
+                      hyrax.download_path(transcript),
+                      data: { turbolinks: false },
+                      target: :_blank,
+                      id: "transcript_file_download",
+                      data: { label: transcript.id } %>
+        <% end %>
+        <% end %>
+    <% end %>
+    </div>
+<% end %>
