@@ -1,0 +1,237 @@
+/*    Custom styles for Vault    */
+
+.able {
+    border-radius: 8px;
+    box-shadow: 0 0 14px #444;
+}
+
+.able-vidcap-container {
+    border-radius: 8px;
+}
+
+.able-player {
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+    background-color: #ddd;
+    border-radius: 8px;
+}
+
+.able-modal-dialog {
+    border-radius: 6px;
+    position: relative;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: none;
+}
+
+.able-black-controls, .able-now-playing {
+    color: #333 !important;
+}
+
+div.able-now-playing span {
+    font-size: 1em;
+}
+
+div.able-now-playing span span {
+    font-weight: 400;
+    margin-right: 0.5em;
+    margin-bottom: 0.25em;
+}
+
+.able-controller {
+    position: relative;
+    background-color: #f5f5f5;
+    min-height: 38px;
+    border: none;
+}
+
+.able-modal-dialog button.modal-button {
+    background-color: #286090;
+    border-color: #265b89;
+    color: #fff;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.able-modal-dialog button.modal-button:last-child {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.able-modal-dialog hr {
+    margin-top: 0px;
+    margin-bottom: 15px;
+}
+
+div.able-modal-dialog h1 {
+    font-weight: 400;
+}
+
+div.able-modal-dialog p {
+    margin: 0 0 15px;
+    white-space: pre-line;
+}
+
+.able-prefs-form ul {
+    padding-left: 2em;
+}
+
+.able-prefs-keyboard {
+    margin-bottom: 1em;
+}
+
+.able-prefs-keyboard label {
+    font-weight: 400;
+}
+
+.able-prefs-form legend, .able-prefs-form h2 {
+    font-weight: 400;
+    font-size: 1.25em;
+    border: none;
+    margin-bottom: 0.25em;
+}
+
+.able-prefs-form fieldset div input {
+    margin-top: -2px;
+}
+
+a#transcript_file_download {
+    display: inline-block;
+    margin-bottom: 1.5em;
+}
+
+.able-left-controls {
+    margin-left: 0.75em;
+    margin-bottom: 0.5em;
+}
+
+.able-right-controls {
+    margin-right: 0.75em;
+    margin-bottom: 0.5em;
+}
+
+.able-media-container {
+    border-radius: 8px;
+}
+
+.able-controller .able-seekbar {
+    border-radius: 3px;
+}
+
+.able-seekbar-loaded {
+    height: auto;
+}
+
+.able-status-bar {
+    /*padding: 0.75em 1.25em 2em 1.25em;*/
+    padding: 0.5em 0.5em 1.75em 1em;
+;
+    font-size: 1em;
+    color: #333;
+}
+
+.able-black-controls .able-seekbar {
+    border: 1px solid #333;
+    background-color: #333;
+}
+
+.able-alert, .able-tooltip {
+    position: absolute;
+    padding: 5px 10px;
+    border-color: #fff;
+    border-width: 1px;
+    color: #fff!important;
+    background-color: #333;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    display: block;
+}
+
+.able-seekbar-head {
+    padding: 0.4em 0.4em 0.4em 0.5em;
+    border: 2px solid;
+}
+.able-seekbar-head:hover {
+    padding: 0.4em 0.4em 0.4em 0.5em;
+    border-radius: 2px;
+    outline-color: #117F97 !important;
+}
+.able-controller div[role=button]:hover, .able-controller input:hover,
+.able-window-toolbar input:hover,
+.able-window-toolbar select:hover {
+    padding: 0.1em 0.1em 0.1em 0.2em;
+    border-radius: 2px;
+    outline-color: #117F97 !important;
+}
+
+.able-controller div[role=button]:focus,
+.able-controller input:focus, .able-seekbar-head:focus,
+.able-window-toolbar input:focus,
+.able-window-toolbar select:focus {
+    padding: 0.1em 0.1em 0.1em 0.2em;
+    border-radius: 2px;
+    outline-color: #C48403!important;
+}
+
+.able-controller div[role=button] {
+    height: 1.2em;
+}
+
+div[role=button] svg {
+    display: inline-block;
+    margin: auto;
+}
+
+.able-right-controls img {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.able-status {
+    margin-right: 0.5em;
+}
+
+.able-wrapper {
+    display: flex;
+    margin-bottom: 0.5em;
+}
+
+.able-seekbar-played {
+    background-color: #117F97;
+    top: -1px;
+    border-radius: 3px;
+}
+
+.able-seekbar-head {
+    width: 1em;
+    height: 0.9em;
+    top: -.35em;
+}
+
+.able-playlist li {
+    border: none;
+}
+
+.able-playlist li.able-current, .able-playlist li button:active {
+    background-color: #117F97;
+}
+
+.able-playlist li.able-current button {
+    border-radius: 5px;
+}

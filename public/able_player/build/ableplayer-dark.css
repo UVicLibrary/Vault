@@ -1,0 +1,111 @@
+/*    Custom styles for Vault    */
+
+.able {
+    border-radius: 8px;
+}
+
+.able-modal-dialog {
+    border-radius: 6px;
+}
+
+.able-modal-dialog button.modal-button {
+    background-color: #286090;
+    border-color: #265b89;
+    color: #fff;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+}
+
+.able-modal-dialog button.modal-button:last-child {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+a#transcript_file_download {
+    display: inline-block;
+    margin-bottom: 1.5em;
+}
+
+.able-left-controls {
+    margin-left: 1em;
+}
+
+.able-right-controls {
+    margin-right: 1em;
+}
+
+.able-media-container {
+    border-radius: 8px;
+}
+
+.able-controller .able-seekbar {
+    border-radius: 3px;
+}
+
+.able-seekbar-loaded {
+    height: auto;
+}
+
+.able-status-bar {
+    padding: 1em 1.25em 2em 1.25em;
+    font-size: 1em;
+}
+
+.able-controller div[role=button]:hover, .able-controller input:hover,
+.able-seekbar-head:hover, .able-window-toolbar input:hover,
+.able-window-toolbar select:hover {
+    padding: 0.1em 0.1em 0.1em 0.2em;
+    border-radius: 2px;
+    outline-color: #14a4c3 !important;
+}
+
+.able-controller div[role=button] {
+    height: 1.2em;
+}
+
+div[role=button] svg {
+    display: inline-block;
+    margin: auto;
+}
+
+.able-right-controls img {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.able-status {
+    margin-right: 0.5em;
+}
+
+.able-wrapper {
+    display: flex;
+    margin-bottom: 0.5em;
+}
+
+.able-seekbar-played {
+    background-color: #14a4c3;
+    left: -1px;
+    top: -1px;
+    border-radius: 3px;
+}
+
+.able-seekbar-head {
+    width: 1em;
+    height: 0.9em;
+    top: -.35em;
+}
