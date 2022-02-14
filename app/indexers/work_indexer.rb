@@ -67,15 +67,13 @@ class WorkIndexer < Hyrax::WorkIndexer
       unless object.date_created.empty?
         object.date_created.each do |date|
           service = EdtfDateService.new(date)
-          # Email for unparseable dates
-          if service.first_solr_date.blank? and (date != "unknown" and date != "no date")
-            ::NotificationMailer.with(user_email: "tjychan@uvic.ca", failures: [object.id]).failures.deliver
-          end
-          # Unparseable dates will return nil so nothing gets indexed here
-          solr_doc['year_sort_dtsim'] = service.solr_date_range
-          solr_doc['year_sort_dtsi'] = service.first_solr_date
-          solr_doc['year_range_isim'] = service.year_range
+          (solr_doc['year_sort_dtsim']||= []) << service.solr_date_range
+          (solr_doc['year_sort_dtsi']||= []) << service.first_solr_date
+          (solr_doc['year_range_isim']||=[]) << service.year_range
         end
+        solr_doc['year_sort_dtsim'] = solr_doc['year_sort_dtsim'].flatten.uniq.sort
+        solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
+        solr_doc['year_range_isim'] = solr_doc['year_range_isim'].flatten.uniq.sort
       end
 
     end
