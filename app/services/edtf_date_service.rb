@@ -55,29 +55,42 @@ class EdtfDateService
     # Returns human-readable date (string). See edtf-humanize:
     # https://github.com/duke-libraries/edtf-humanize
     def humanized
-      case @parsed_date.class.name
-      when "EDTF::Season"
-        humanized_season(@parsed_date)
-      when "EDTF::Interval"
-        if season_interval?(@edtf_string)
-          humanized_season_interval(@edtf_string)
-        elsif century_or_decade_interval?(@edtf_string)
-          humanized_century_or_decade_interval(@edtf_string)
-        elsif approx_and_uncertain?(@edtf_string)
-          humanized_approx_and_uncertain_interval
-        else
-          @parsed_date.humanize.gsub('circa','approximately')
-        end
-      when "String" # "unknown" or "no date"
-        @parsed_date
-      when "Date"
-        if approx_and_uncertain?(@edtf_string)
-          humanized_approx_and_uncertain_date(@parsed_date.humanize)
-        else
-          @parsed_date.humanize.gsub('circa','approximately')
-        end
+      # Open-ended date intervals
+      if @edtf_string.include?("/..")
+        "Post #{@parsed_date.humanize.capitalize}"
+      elsif @edtf_string.include?("../")
+        "Before #{@parsed_date.humanize.capitalize}"
       else
-        @parsed_date.humanize.gsub('circa','approximately')
+        case @parsed_date.class.name
+        when "EDTF::Season"
+          humanized_season(@parsed_date)
+        when "EDTF::Interval"
+          if season_interval?(@edtf_string)
+            humanized_season_interval(@edtf_string)
+          elsif century_or_decade_interval?(@edtf_string)
+            humanized_century_or_decade_interval(@edtf_string)
+          elsif approx_and_uncertain?(@edtf_string)
+            humanized_approx_and_uncertain_interval
+          else
+            @parsed_date.humanize.gsub('circa','approximately')
+          end
+        when "EDTF::Century", "EDTF::Decade"
+          if @edtf_string =~ /(X?|x?)/
+            humanized_uncertain_century_or_decade(@parsed_date)
+          else
+            @parsed_date.humanize.gsub('circa','approximately')
+          end
+        when "String" # "unknown" or "no date"
+          @parsed_date
+        when "Date"
+          if approx_and_uncertain?(@edtf_string)
+            humanized_approx_and_uncertain_date(@parsed_date.humanize)
+          else
+            @parsed_date.humanize.gsub('circa','approximately')
+          end
+        else
+          @parsed_date.humanize.gsub('circa','approximately')
+        end
       end
     end
 
@@ -94,7 +107,11 @@ class EdtfDateService
       end
 
       def humanized_approx_and_uncertain_date(parsed_date)
-        parsed_date.gsub('circa','approximately') << '?'
+        parsed_date.humanize.gsub('circa','approximately') << '?'
+      end
+
+      def humanized_uncertain_century_or_decade(parsed_date)
+        parsed_date.humanize.gsub('circa','approximately') << '?'
       end
 
       def humanized_approx_and_uncertain_interval
@@ -140,6 +157,11 @@ class EdtfDateService
         date_string = date_string.gsub('%','~')
         if date_string == "unknown" or date_string == "no date"
           date_string
+        elsif date_string.include? "/.." # This is an open-ended interval such as "1867/.. "
+          # Only index the first date
+          Date.edtf(date_string.split("/").first)
+        elsif date_string.include? "../"
+          Date.edtf(date_string.split("/").last)
         elsif season_interval?(date_string) or century_interval?(date_string) or decade_interval?(date_string)
           # edtf can't parse season or century intervals, so we create an interval using the first season's
           # first date and the last season's last date
