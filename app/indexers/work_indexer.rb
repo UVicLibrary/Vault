@@ -42,8 +42,12 @@ class WorkIndexer < Hyrax::WorkIndexer
 
       # Vault considers m4a files to be videos even if they only have an audio track.
       # This sets the thumbnail path back to the audio thumbnail.
-      if object.thumbnail and object.thumbnail.video? and object.thumbnail.label.include?(".m4a")
-        solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
+      if object.thumbnail
+        if object.thumbnail.video? and object.thumbnail.label.include?(".m4a")
+          solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
+        elsif object.thumbnail.pdf?
+          solr_doc['thumbnail_path_ss'] = PdfThumbnailPathService.call(object.thumbnail)
+        end
       end
 
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
