@@ -8,7 +8,7 @@
     </li>
   <% end %>
 </ul>
-<% if Hyrax.config.display_media_download_link? && allow_downloads?(file_set) %>
+<% if Hyrax.config.display_media_download_link? && allow_downloads?(audio_files.first) %>
     <%= link_to "Download selected audio",
                 hyrax.download_path(audio_files.first),
                 data: { label: audio_files.first.id },
