@@ -21,5 +21,7 @@
  *= require vault_homepage
  *= require browse_collections
  *= require pagination
+ *= require ableplayer
+ *= require ableplayer-light
  *= require_self
  */
