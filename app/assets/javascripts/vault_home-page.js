@@ -1,5 +1,40 @@
 $(document).on('turbolinks:load', function() {
 
+    function hideDescr(card) {
+        titleHeight= $(card.find('.card-title')).outerHeight();
+        linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
+        cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
+        card.css('transform','translateY(' + (cardHeight - linkHeight - titleHeight - 28) + 'px)');
+    }
+
+    function showDescr(card) {
+        cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
+        linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
+        titleHeight= $(card.find('.card-title')).outerHeight();
+        card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - linkHeight -titleHeight - 98) + 'px)');
+    }
+
+    function transformCards() {
+        // Adjust position of work-card titles based on height
+        $('.card.work-card .data').each(function(index) {
+            card = $($('.card.work-card .data')[index]);
+            hideDescr(card);
+        });
+        // Move the description up so it is visible on hover
+        $('.card.work-card .wrapper').on({
+            mouseenter: function() {
+                showDescr($(this).find('.data'));
+            }, mouseleave: function() {
+                hideDescr($(this).find('.data'));
+            }
+        })
+    }
+
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        transformCards();
+    });
+
+
     // Set initial states
     // Changes the header ("Featured ____") to match the tab that is currently active
     $("h1#featured-header").html($("#featured-nav li.active").text());
@@ -77,9 +112,6 @@ $(document).on('turbolinks:load', function() {
         $(this).prop('disabled', true);
     });
 
-    // Fix margin on work cards that aren't in any collections
-    // var noCollectionLinks = $('.work-card .work-card-title').filter(function() {
-    //     return !$(this).closest('.wrapper').find('.card-collection-link').length
-    // });
-    // noCollectionLinks.css('margin-bottom','0.7em')
 });
+
+

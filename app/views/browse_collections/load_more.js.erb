@@ -1,32 +1,42 @@
+var appendTo = $('#<%= append_to %>')
+
+<% case append_to %>
+  <% when "browse-collections-wrapper" %>
+    <% url = "/vault_browse_collections/load_more" %>
+  <% when "recent-collections-wrapper" %>
+    <% url = "/vault_homepage/more_recent_collections" %>
+<% end %>
+
 <% presenters.each do |pres| %>
-  var toAppend = $("<%= j (render partial: 'collection_card',
+  var toAppend = $("<%= j (render partial: "browse_collections/collection_card",
           locals: {
             title: pres.title.first,
             description: pres.description.first,
             url: "#{request.base_url}/collections/#{pres.id}",
             thumbnail: pres.thumbnail_path }) %>").hide().fadeIn(300);
-  $(document.getElementById("browse-collections-wrapper")).append(toAppend);
+  $(appendTo).append(toAppend);
 <% end %>
 
+var buttonWrapper = appendTo.parent().find('.load-more-button-wrapper');
 // Grab the hidden button's attributes
-var button = $('#load-more-button a');
+var button = buttonWrapper.find('.load-more-button a');
 var total = button.attr('data-total');
 var oldStart = parseInt(button.attr('data-start'));
 var buttonTemplate = [
-    '<button class="btn" id="load-more-button">',
-      '<a data-start="" data-total="' + total + '" data-remote="true" data-method="get" href="/vault_browse_collections/load_more?locale=en&amp;start=8">+ Load More Collections</a>',
+    '<button class="btn load-more-button">',
+      '<a data-start="" data-total="' + total + '" data-remote="true" data-method="get" href="<%= url %>?locale=en&amp;start=8">+ Load More</a>',
     '</button>'
     ].join('');
 
 // Remove the old button since we don't need it anymore
-$('.load-more-button-wrapper').empty();
-
+buttonWrapper.empty();
 // If we're not at the end of the results, append the "Load More Collections" button
-if ($('#browse-collections-wrapper').children().length < total) {
-    $('.load-more-button-wrapper').append(buttonTemplate);
+if (oldStart + 8 <= total) {
+    buttonWrapper.append(buttonTemplate);
+    buttonWrapper.find('.load-more-button a').attr('data-start', String(oldStart + 8))
+        .attr('href', ('<%= url %>?start=' + String(oldStart + 8) + '&append_to=' + '<%= append_to %>'))
+        // assets/javascripts/browse_collections.js
+        .click( function(e) { showLoadingText(e); });
 }
 
-$('#load-more-button a').attr('data-start', String(oldStart + 8))
-    .attr('href', ('/vault_browse_collections/load_more?start=' + String(oldStart + 8)))
-    // see browse_collections.js
-    .click( function() { showLoadingText(); });
+

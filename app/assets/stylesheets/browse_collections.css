@@ -70,8 +70,8 @@
     padding-right: 3.2rem;
 }
 
-#load-more-button a, .loading-text {
-    color: #005EB7;
+.load-more-button a, .loading-text {
+    color: #005493;
     display: block;
     font-size: 20px;
     min-height: 2.5em;
@@ -83,16 +83,16 @@
     align-items: baseline;
 }
 
-#load-more-button a {
+.load-more-button a {
     width: 100%;
 }
 
-#load-more-button {
+.load-more-button {
     width: 100%;
     background-color: #fff;
     height: fit-content;
     padding: 0;
-    border: 2px solid #005EB7;
+    border: 2px solid #005493;
 }
 
 .load-more-button-wrapper {
@@ -100,19 +100,19 @@
     text-align: center;
 }
 
-#load-more-button:hover {
-    background-color: #005EB7;
+.load-more-button:hover {
+    background-color: #005493;
 }
 
-#load-more-button a:hover {
+.load-more-button a:hover {
     color: #fff;
 }
 
 #back-to-top {
     display: inline-block;
     background-color: #fff;
-    border: 2px solid #005EB7;
-    width: 100px;
+    border: 2px solid #005493;
+    width: 85px;
     height: 76px;
     text-align: center;
     border-radius: 4px;
@@ -128,7 +128,7 @@
 
 #back-to-top span {
     display: block;
-    color: #005EB7;
+    color: #005493;
     padding-top: 1em;
 }
 
@@ -139,7 +139,7 @@
     font-style: normal;
     font-size: 3em;
     line-height: 23px;
-    color: #005EB7;
+    color: #005493;
     margin-top: 1em;
     position: relative;
     top: 0.3em;
@@ -151,7 +151,7 @@
 
 #back-to-top:hover {
     cursor: pointer;
-    background-color: #005EB7;
+    background-color: #005493;
     text-decoration: none;
 }
 
@@ -194,7 +194,7 @@
 .browse-sort-button {
     display: inline;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     position: relative;
     padding: 10px 15px;
     background: none;
@@ -204,6 +204,6 @@
 
 .browse-sort-button.active {
     text-decoration: none;
-    background-color: #005EB7;
+    background-color: #005493;
     color: #fff;
 }

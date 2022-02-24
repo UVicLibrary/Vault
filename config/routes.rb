@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get '/browse_collections/demo', to: 'browse_collections#index'
   # Add vault prefix because browse everything gem hogs routes that start with 'browse'
   get '/vault_browse_collections/load_more', to: 'browse_collections#load_more', as: :load_more
+  get '/vault_homepage/more_recent_collections', to: 'hyrax/homepage#more_recent_collections', as: :more_recent_collections
+  get '/vault_homepage/more_recent_works', to: 'hyrax/homepage#more_recent_works', as: :more_recent_works
 
   # For (dis)allowing downloads for an entire collection
   post '/dashboard/collections/:id/toggle_downloads', to: 'hyrax/dashboard/collections#toggle_downloads', as: 'toggle_downloads'
