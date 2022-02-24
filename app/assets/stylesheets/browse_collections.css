@@ -73,9 +73,9 @@
 .load-more-button a, .loading-text {
     color: #005493;
     display: block;
-    font-size: 20px;
-    min-height: 2.5em;
-    padding-top: 0.5em;
+    font-size: 18px;
+    min-height: 2em;
+    padding-top: 0.25em;
 }
 
 .loading-text {
@@ -88,11 +88,12 @@
 }
 
 .load-more-button {
-    width: 100%;
+    width: 17%;
     background-color: #fff;
     height: fit-content;
     padding: 0;
     border: 2px solid #005493;
+    border-radius: 6px;
 }
 
 .load-more-button-wrapper {
@@ -198,12 +199,12 @@
     position: relative;
     padding: 10px 15px;
     background: none;
-    color: #2e74b2;
+    color: #3376a8;
     letter-spacing: 0.75px;
 }
 
 .browse-sort-button.active {
     text-decoration: none;
-    background-color: #005493;
+    background-color: #3376a8;
     color: #fff;
 }

@@ -3,6 +3,8 @@
   <% thumbnail = FileSet.find(presenter.thumbnail_id) %>
   <% if thumbnail.audio? or (thumbnail.video? and thumbnail.label.include?('.m4a') and presenter.member_of_collection_ids.any?) %>
     <% new_path = AudioFileSetThumbnailService.call(thumbnail) %>
+  <% elsif FileSet.find(document.thumbnail_id).pdf? %>
+    <% new_path = FileSet.find(document.thumbnail_id).pdf_thumbnail_path %>
   <% else %>
     <% new_path = document.thumbnail_path.sub! '!150,300', '!500,900' %>
   <% end %>
@@ -28,6 +30,4 @@
     <% end %>
     <%= render_card_collection_links(presenter) %>
   </div><!-- .wrapper -->
-  <%# end %>
 </div><!-- .card -->
-
