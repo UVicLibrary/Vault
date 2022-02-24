@@ -6,25 +6,19 @@ class BrowseCollectionsController < Hyrax::HomepageController
   def index
     builder = self.search_builder_class.new(self).rows(8)
     response = repository.search(builder).response
-    @total_count = response['numFound']
-    @collection_presenters = build_presenters(response['docs'])
+    @collections_count = response['numFound']
+    @collection_presenters = build_presenters(response['docs'], Hyrax::CollectionPresenter)
   end
 
   def load_more
     respond_to do |format|
       results = collections({ start: params[:start].to_i, rows: 8, sort: params[:sort] })
-      presenters = build_presenters(results)
-      format.js { render 'load_more.js.erb', locals: { presenters: presenters } }
+      presenters = build_presenters(results, Hyrax::CollectionPresenter)
+      format.js { render 'load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
     end
   end
 
   private
-
-  def build_presenters(documents)
-    Hyrax::PresenterFactory.build_for(ids: documents.pluck(:id),
-                                      presenter_class: Hyrax::CollectionPresenter,
-                                      presenter_args: nil)
-  end
 
   # Return all collections
   def collections(options = {})

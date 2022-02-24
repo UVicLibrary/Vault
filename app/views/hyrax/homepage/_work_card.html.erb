@@ -1,12 +1,26 @@
+<% document = presenter.solr_document %>
+<% if document.thumbnail_path && request.base_url.include?('vault') %>
+  <% thumbnail = FileSet.find(presenter.thumbnail_id) %>
+  <% if thumbnail.audio? or (thumbnail.video? and thumbnail.label.include?('.m4a') and presenter.member_of_collection_ids.any?) %>
+    <% new_path = AudioFileSetThumbnailService.call(thumbnail) %>
+  <% elsif FileSet.find(document.thumbnail_id).pdf? %>
+    <% new_path = FileSet.find(document.thumbnail_id).pdf_thumbnail_path %>
+  <% else %>
+    <% new_path = document.thumbnail_path.sub! '!150,300', '!500,900' %>
+  <% end %>
+  <!-- If string contains thumbnail dimensions, change them -->
+<% else %><!-- use placeholder -->
+  <% new_path = asset_path 'work.png' %>
+<% end %>
 <div class="card work-card col-lg-<%= card_width %> col-md-<%= card_width %> col-sm-<%= card_width %> col-xs-12">
   <div class="wrapper" style="background: url(<%= new_path %>); background-size: cover; background-position: center;">
     <%= link_to [main_app, presenter], class: "plain-link work-card-link" do %>
       <div class="data">
         <div class="content">
-          <h2 class="card-title work-card-title"><%= presenter.title.first.truncate(55, separator: /\s/) %></h2>
+          <h3 class="card-title work-card-title"><%= presenter.title.first.truncate(55, separator: /\s/) %></h3>
           <p class="text">
             <% if presenter.description.first.present? %>
-              <%= presenter.description.first.truncate(100, separator: /\s/) %>
+              <%= presenter.description.first.truncate(95, separator: /\s/) %>
             <% else %>
               No description available.
             <% end %>
@@ -16,5 +30,4 @@
     <% end %>
     <%= render_card_collection_links(presenter) %>
   </div><!-- .wrapper -->
-  <%# end %>
 </div><!-- .card -->

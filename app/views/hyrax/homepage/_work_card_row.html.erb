@@ -3,26 +3,6 @@
   <%# Size cards dynamically based on whether there are 6 or 8 featured works %>
   <% work_presenters.count < 5 ? card_width = 4 : card_width = 12/(work_presenters.count.to_f/2).round %>
   <% work_presenters.each do |presenter| %>
-    <% document = presenter.solr_document %>
-    <% if document.thumbnail_path && request.base_url.include?('vault') %>
-      <% if presenter.thumbnail_id.present? and SolrDocument.find(presenter.thumbnail_id).video? and SolrDocument.find(presenter.thumbnail_id).label.include?('.m4a') and presenter.member_of_collection_ids.any? %>
-        <% coll_thumb_path = SolrDocument.find(presenter.member_of_collection_ids.first).thumbnail_path %>
-        <% if coll_thumb_path.include? "uploaded_collection_thumbnails" %>
-          <%# use the higher resolution derivative %>
-          <% new_path = coll_thumb_path.gsub '_thumbnail.jpg','_card.jpg' %>
-        <% else %>
-          <!-- If string contains thumbnail dimensions, change them -->
-          <% new_path = coll_thumb_path.gsub '!150,300', '!500,900' %>
-        <% end %>
-      <% elsif FileSet.find(document.thumbnail_id).pdf? %>
-        <% new_path = FileSet.find(document.thumbnail_id).pdf_thumbnail_path %>
-      <% else %>
-        <% new_path = document.thumbnail_path.sub! '!150,300', '!500,900' %>
-      <% end %>
-      <!-- If string contains thumbnail dimensions, change them -->
-    <% else %><!-- use placeholder -->
-      <% new_path = asset_path 'work.png' %>
-    <% end %>
-    <%= render 'work_card', presenter: presenter, new_path: new_path, card_width: card_width %>
+    <%= render 'work_card', presenter: presenter, card_width: card_width %>
   <% end %>
 </div><!-- .row -->

@@ -4,7 +4,7 @@
     <div class="wrapper" style="background: url(<%= new_path %>); background-size: cover; background-position: center;">
       <div class="data">
         <div class="content">
-          <h2 class="card-title collection-card-title"><%= presenter.title.first %></h2>
+          <h3 class="card-title collection-card-title"><%= presenter.title.first %></h3>
           <p class="text">
             <% if presenter.description.first.present? %>
               <%= presenter.description.first.truncate(110, separator: /\s/) %>

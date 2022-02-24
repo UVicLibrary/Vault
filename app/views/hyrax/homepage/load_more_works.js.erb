@@ -1,0 +1,65 @@
+var appendTo = $('#<%= append_to %>')
+<% url = "/vault_homepage/more_recent_works" %>
+<% presenters.each do |pres| %>
+    var toAppend = $("<%= j (render partial: "work_card",
+              locals: {
+                presenter: pres,
+                card_width: 3,
+                }) %>").hide().fadeIn(300);
+    $(appendTo).append(toAppend);
+<% end %>
+
+var buttonWrapper = appendTo.parent().find('.load-more-button-wrapper');
+// Grab the hidden button's attributes
+var button = buttonWrapper.find('.load-more-button a');
+var total = button.attr('data-total');
+var oldStart = parseInt(button.attr('data-start'));
+var buttonTemplate = [
+    '<button class="btn load-more-button">',
+    '<a data-start="" data-total="' + total + '" data-remote="true" data-method="get" href="<%= url %>?locale=en&amp;start=8">+ Load More</a>',
+    '</button>'
+].join('');
+
+// Remove the old button since we don't need it anymore
+buttonWrapper.empty();
+
+function hideDescr(card) {
+    titleHeight= $(card.find('.card-title')).outerHeight();
+    linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
+    cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
+    card.css('transform','translateY(' + (cardHeight - linkHeight - titleHeight - 28) + 'px)');
+}
+
+function showDescr(card) {
+    cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
+    linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
+    titleHeight= $(card.find('.card-title')).outerHeight();
+    card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - linkHeight -titleHeight - 98) + 'px)');
+}
+
+function transformCards() {
+    // Adjust position of work-card titles based on height
+    $('.card.work-card .data').each(function(index) {
+        card = $($('.card.work-card .data')[index]);
+        hideDescr(card);
+    });
+    // On hover: move the card up so description is visible
+    $('.card.work-card .wrapper').on({
+        mouseenter: function() {
+            showDescr($(this).find('.data'));
+        }, mouseleave: function() {
+            hideDescr($(this).find('.data'));
+        }
+    })
+}
+transformCards();
+
+// If we're not at the end of the results, append the "Load More Collections" button
+//if (appendTo.children().length < total) {
+if (oldStart + 8 <= total) {
+    buttonWrapper.append(buttonTemplate);
+    buttonWrapper.find('.load-more-button a').attr('data-start', String(oldStart + 8))
+        .attr('href', ('<%= url %>?start=' + String(oldStart + 8) + '&append_to=' + '<%= append_to %>'))
+        // assets/javascripts/browse_collections.js
+        .click( function(e) { showLoadingText(e); });
+}

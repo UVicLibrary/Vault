@@ -1,5 +1,5 @@
 $(document).on('turbolinks:load', function() {
-    $('#load-more-button a').click(function () { showLoadingText() });
+    $('.load-more-button a').click(function (e) { showLoadingText(e) });
 
     var backToTop = $('#back-to-top');
     $(window).scroll(function() {
@@ -11,17 +11,17 @@ $(document).on('turbolinks:load', function() {
     });
     backToTop.on('click', function(e) {
         e.preventDefault();
-        $('html, body').animate({scrollTop:300}, '300');
+        $('html, body').animate({scrollTop:0}, '300');
     });
 });
 
-function showLoadingText() {
+function showLoadingText(e) {
     var loadingText = [
         "<span class='loading-text'>Loading</span>",
         "<img src='/browse_collections/Spinner-1s-200px.gif' width='60px' />"
     ]
-    $('#load-more-button').css('visibility','hidden');
-    $('.load-more-button-wrapper').prepend(loadingText.join(""));
+    $(e.target).parent().css('visibility','hidden');
+    $(e.target).closest('.load-more-button-wrapper').prepend(loadingText.join(""));
 }
 
 

@@ -2,29 +2,4 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
 <h1 class="browse-header">Browse Digital Collections</h1>
-<div>
-  <span class="sort-by">Sort by:</span>
-  <ul class="browse-sort-list">
-    <li><button class="browse-sort-button active">Title A-Z</button></li>
-  </ul>
-</div>
-<div id="browse-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-  <% @collection_presenters.each do |pres| %>
-    <%= render partial: 'collection_card',
-               locals: { title: pres.title.first, description: pres.description.first,
-                         url: "#{request.base_url}/collections/#{pres.id}", thumbnail: pres.thumbnail_path } %>
-  <% end %>
-</div>
-
-<!--<div>-->
-<!--  <span id="results-count">Showing X of X results</span>-->
-<!--</div>-->
-
-<div class="load-more-button-wrapper col-lg-12 col-md-12 col-sm-12">
-  <button class="btn" id="load-more-button">
-    <%= link_to "+ Load More Collections", main_app.load_more_path(start: 8), method: :get, remote: :true, data: { start: 8, total: @total_count } %>
-  </button>
-</div>
-
-<!-- Back to top button -->
-<a id="back-to-top"><span>Back to Top</span></a>
+<%= render 'browse_collections/content' %>
