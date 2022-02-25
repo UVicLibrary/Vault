@@ -8,10 +8,6 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     object.attribute_names.each do |field|
       if object.controlled_properties.include?(field.to_sym) and object[field].present?
         object[field].each { |val| to_controlled_vocab(field) }
-          #unless val.class == String
-          #  to_controlled_vocab(field)
-          #end
-        #end
       end
     end
 
@@ -29,6 +25,9 @@ class FileSetIndexer < Hyrax::FileSetIndexer
         parent_doc = SolrDocument.find(object.parent.id)
         solr_doc['creator_tesim'] = parent_doc['creator_tesim']
         solr_doc['creator_label_tesim'] = parent_doc['creator_label_tesim']
+      end
+      if object.pdf?
+        solr_doc['thumbnail_path_ss'] = PdfThumbnailPathService.call(object)
       end
     end
   end
@@ -48,4 +47,3 @@ class FileSetIndexer < Hyrax::FileSetIndexer
   end
 
 end
-
