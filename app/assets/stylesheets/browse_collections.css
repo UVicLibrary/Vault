@@ -215,3 +215,8 @@
     background-color: #3376a8;
     color: #fff;
 }
+
+.hide-load-more {
+    visibility: hidden;
+    width: 0;
+}

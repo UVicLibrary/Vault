@@ -20,7 +20,7 @@ function showLoadingText(e) {
         "<span class='loading-text'>Loading</span>",
         "<img src='/browse_collections/Spinner-1s-200px.gif' width='60px' />"
     ]
-    $(e.target).parent().css('visibility','hidden');
+    $(e.target).parent().addClass('hide-load-more');
     $(e.target).closest('.load-more-button-wrapper').prepend(loadingText.join(""));
 }
 
