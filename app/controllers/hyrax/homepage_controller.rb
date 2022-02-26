@@ -34,7 +34,7 @@ class Hyrax::HomepageController < ApplicationController
     @recent_work_presenters = recent_work_presenters.slice(0,8)
     @works_count = @works.count
 
-    @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter).slice(0,8)
+    @collection_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter).slice(0,8)
     @collections_count = count_collections
   end
 

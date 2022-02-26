@@ -7,7 +7,7 @@
           <h3 class="card-title collection-card-title"><%= presenter.title.first %></h3>
           <p class="text">
             <% if presenter.description.first.present? %>
-              <%= presenter.description.first.truncate(110, separator: /\s/) %>
+              <%= sanitize(presenter.description.first.truncate(110, separator: /\s/)) %>
             <% else %>
               No description available.
             <% end %>

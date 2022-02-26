@@ -1,14 +1,15 @@
-<div>
-  <span class="sort-by">Sort by:</span>
-  <ul class="browse-sort-list">
-    <li><button class="browse-sort-button active">Title A-Z</button></li>
-  </ul>
-</div>
+<!-- Disable this until we have more sorting options -->
+<!--<div>-->
+<!--  <span class="sort-by">Sort by:</span>-->
+<!--  <ul class="browse-sort-list">-->
+<!--    <li><button class="browse-sort-button active">Title A-Z</button></li>-->
+<!--  </ul>-->
+<!--</div>-->
 <div id="browse-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
   <% @collection_presenters.each do |pres| %>
     <%= render partial: 'browse_collections/collection_card',
                locals: { title: pres.title.first, description: pres.description.first,
-                         url: "#{request.base_url}/collections/#{pres.id}", thumbnail: pres.thumbnail_path } %>
+                         url: "#{request.base_url}/collections/#{pres.id}", thumbnail: pres.thumbnail_path.gsub('!150,300', '!500,900').gsub('_thumbnail.jpg','_card.jpg') } %>
   <% end %>
 </div>
 

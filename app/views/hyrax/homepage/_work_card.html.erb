@@ -20,7 +20,7 @@
           <h3 class="card-title work-card-title"><%= presenter.title.first.truncate(55, separator: /\s/) %></h3>
           <p class="text">
             <% if presenter.description.first.present? %>
-              <%= presenter.description.first.truncate(95, separator: /\s/) %>
+              <%= sanitize(presenter.description.first.truncate(95, separator: /\s/)) %>
             <% else %>
               No description available.
             <% end %>

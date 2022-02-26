@@ -13,7 +13,7 @@ var appendTo = $('#<%= append_to %>')
             title: pres.title.first,
             description: pres.description.first,
             url: "#{request.base_url}/collections/#{pres.id}",
-            thumbnail: pres.thumbnail_path }) %>").hide().fadeIn(300);
+            thumbnail: pres.thumbnail_path.gsub('!150,300', '!500,900').gsub('_thumbnail.jpg','_card.jpg') }) %>").hide().fadeIn(300);
   $(appendTo).append(toAppend);
 <% end %>
 
