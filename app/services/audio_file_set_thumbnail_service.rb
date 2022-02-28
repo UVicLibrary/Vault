@@ -2,20 +2,22 @@ class AudioFileSetThumbnailService < Hyrax::ThumbnailPathService
   class << self
 
     def call(object)
-      collection = object.parent.member_of_collections
-      if collection.any? and (collection.first.thumbnail.present? or uploaded_thumbnail?(collection.first.id))
-        Hyrax::ThumbnailPathService.call(collection.first)
+      if object.parent
+        collection = object.parent.member_of_collections.first
+      else
+        audio_image
+      end
+
+      if collection.present? && (collection.thumbnail.present? || UploadedCollectionThumbnailPathService.uploaded_thumbnail?(collection))
+        if UploadedCollectionThumbnailPathService.uploaded_thumbnail?(collection)
+          UploadedCollectionThumbnailPathService.call(collection)
+        else
+          IIIFCollectionThumbnailPathService.call(collection)
+        end
       else
         audio_image
       end
     end
-
-    private
-
-      # Check if there is an uploaded thumbnail for a collection
-      def uploaded_thumbnail?(collection_id)
-        File.exist?("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection_id}/#{collection_id}}_thumbnail.jpg")
-      end
 
   end
 end

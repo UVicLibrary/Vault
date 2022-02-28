@@ -12,8 +12,8 @@ module Hyrax
         thumb = fetch_thumbnail(object)
         return unless thumb
         return call(thumb) unless thumb.is_a?(::FileSet)
-        if thumb.audio?
-          audio_image
+        if thumb.audio? || thumb.label.include?(".m4a")
+          AudioFileSetThumbnailService.call(thumb)
         elsif thumbnail?(thumb)
           thumbnail_path(thumb)
         else

@@ -145,7 +145,7 @@ module Hyrax
       end
 
       def uploaded_thumbnail_files
-        Dir["#{Rails.root.join("public/uploaded_collection_thumbnails/#{@collection.id}")}/*"]
+        Dir["#{UploadedCollectionThumbnailPathService.upload_dir(@collection)}/*"]
       end
 
       def after_create
@@ -227,13 +227,7 @@ module Hyrax
       # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
       # checks if an uploaded thumbnail exists in the public folder before indexing the thumbnail path.
       def delete_uploaded_thumbnail
-          if params[:id]
-            dir_name = Rails.root.join("public/uploaded_collection_thumbnails/#{params[:id]}")
-          else
-            dir_name = Rails.root.join("public/uploaded_collection_thumbnails/#{@collection.id}")
-          end
-          FileUtils.rm_rf(Dir["#{dir_name}/*"])
-          # Reindex the collection
+          FileUtils.rm_rf(uploaded_thumbnail_files)
           @collection.update_index
 
           respond_to do |format|
@@ -291,7 +285,7 @@ module Hyrax
       # private
 
         def process_uploaded_thumbnail(uploaded_file)
-          dir_name = "public/uploaded_collection_thumbnails/#{@collection.id}"
+          dir_name = UploadedCollectionThumbnailPathService.upload_dir(@collection)
           saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
           # Create directory if it doesn't already exist
           unless File.directory?(dir_name)
@@ -304,8 +298,8 @@ module Hyrax
           end
           image = MiniMagick::Image.open(saved_file)
           # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
-          feature_card_image = image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
-          thumbnail = image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
+          image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
+          image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
           File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
           File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
         end

@@ -3,6 +3,8 @@ class WorkIndexer < Hyrax::WorkIndexer
   # provide your own metadata and indexing.
   include Hyrax::IndexesBasicMetadata
 
+  include Hyrax::IndexesThumbnails
+
   # Fetch remote labels for based_near. You can remove this if you don't want
   # this behavior
   include Hyrax::IndexesLinkedMetadata
@@ -38,16 +40,6 @@ class WorkIndexer < Hyrax::WorkIndexer
       # dc:relation = title of parent collection if one exists
       if collections = solr_doc['member_of_collections_ssim']
         solr_doc['oai_dc_relation_tesim'] = collections.map { |val| "IsPartOf #{val}" }
-      end
-
-      # Vault considers m4a files to be videos even if they only have an audio track.
-      # This sets the thumbnail path back to the audio thumbnail.
-      if object.thumbnail
-        if object.thumbnail.video? and object.thumbnail.label.include?(".m4a")
-          solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object.thumbnail)
-        elsif object.thumbnail.pdf?
-          solr_doc['thumbnail_path_ss'] = PdfThumbnailPathService.call(object.thumbnail)
-        end
       end
 
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
