@@ -22,21 +22,14 @@ module Hyrax
       solr_document[thumbnail_field] = thumbnail_path
     end
 
-    # Check if there is an uploaded thumbnail for a collection
-    def uploaded_thumbnail?(solr_document_id)
-      File.exist?("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{solr_document_id}/#{solr_document_id}_thumbnail.jpg")
-    end
-
     # Returns the value for the thumbnail path to put into the solr document
     def thumbnail_path
-      if self.object.class == Collection && uploaded_thumbnail?(self.object.id)
+      if self.object.class == Collection && UploadedCollectionThumbnailPathService.uploaded_thumbnail?(self.object)
         UploadedCollectionThumbnailPathService.call(object)
-      elsif self.object.is_a?(::FileSet) and self.object.files.first.present?
-        if self.object.audio? or (self.object.files.first.file_name.first.present? and self.object.files.first.file_name.first.include?(".m4a"))
-            AudioFileSetThumbnailService.call(object)
-        else
-            self.class.thumbnail_path_service.call(object)
-        end
+      elsif self.object.is_a?(::FileSet) && self.object.label && (self.object.audio? or self.object.label.include?(".m4a"))
+        AudioFileSetThumbnailService.call(object)
+      elsif self.object.thumbnail && self.object.thumbnail.pdf?
+        PdfThumbnailPathService.call(object.thumbnail)
       else
         self.class.thumbnail_path_service.call(object)
       end
