@@ -85,7 +85,6 @@ module Ldp::Client::Methods
 
   # Update an LDP resource with TTL by URI
   def put url, body, headers = {}
-    byebug
     ActiveSupport::Notifications.instrument("http.ldp",
                                             url: url, name: "PUT", ldp_client: object_id) do
       resp = http.put do |req|
