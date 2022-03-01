@@ -1,7 +1,7 @@
 <!-------- app/views/hyrax/homepage/_work_card_row.html.erb -------->
 <div class="card-row row">
   <%# Size cards dynamically based on whether there are 6 or 8 featured works %>
-  <% work_presenters.count < 5 ? card_width = 4 : card_width = 12/(work_presenters.count.to_f/2).round %>
+  <% card_width = work_presenters.count > 5 ? 12/(work_presenters.count.to_f/2).round : 4 %>
   <% work_presenters.each do |presenter| %>
     <%= render 'work_card', presenter: presenter, card_width: card_width %>
   <% end %>
