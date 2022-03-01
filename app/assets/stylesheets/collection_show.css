@@ -1,0 +1,50 @@
+.collection-details-wrapper {
+    font-size: 18px;
+    margin-bottom: 0.2em;
+    background-color: #f5f5f5;
+    color: #666;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 10px;
+    padding: 8px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.collection-details-wrapper .collection-details-item span {
+    display: block;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 1;
+    margin-top: 0.5em;
+}
+
+.hyc-metadata div {
+    border: none;
+    display: inline-block;
+    padding: 8px;
+}
+
+.hyc-metadata h4 {
+    margin: 0 0.5em 0.5em;
+    font-size: 1.5em;
+}
+
+.hyc-header {
+    margin-bottom: 1em;
+}
+
+.extra-actions {
+    display: inline-block;
+    margin-bottom: 2em;
+    margin-left: 1.7em;
+}
+
+.public-collection-thumbnail {
+    padding: 0 1em 0 0 !important;
+}
+
+.hyc-description {
+    padding: 0 1em 0 1em;
+}
