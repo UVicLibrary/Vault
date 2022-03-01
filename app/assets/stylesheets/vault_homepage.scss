@@ -112,12 +112,21 @@ sans-serif;
   outline-offset: 0px;
 }
 
-.card.work-card .title {
-  margin-bottom: 0em;
-}
+.card.work-card {
 
-.card.work-card .card-collection-link {
-  margin-top: 0.6em;
+  .data {
+    transform: translateY(calc(45px + 1em));
+    min-height: 42%;
+  }
+
+  .title {
+    margin-bottom: 0em;
+  }
+
+  .card-collection-link {
+    margin-top: 0.6em;
+  }
+
 }
 
 // Base styles
@@ -192,9 +201,9 @@ sans-serif;
     }
   }
   .wrapper {
-    margin-bottom: 2em;
+    margin-bottom: 3em;
     background-color: $white;
-    min-height: 400px;
+    min-height: 421px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 19px 38px rgba($black, 0.1), 0 15px 12px rgba($black, 0.1); // 0 19px 38px rgba($black, 0.3), 0 15px 12px rgba($black, 0.2);
@@ -202,7 +211,7 @@ sans-serif;
       bottom: 0%;
       position: absolute;
       display: inline-block;
-      padding: 0 0 1em 1em;
+      padding: 0 1em 1.15em 1em;
       margin-bottom: -0.1em;
       background-color: #fff;
       width: 100%;

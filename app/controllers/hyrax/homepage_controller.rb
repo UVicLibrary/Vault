@@ -33,7 +33,6 @@ class Hyrax::HomepageController < ApplicationController
     @works_count = @works.count
 
     @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter).slice(0,8)
-    @collections_count = count_collections
   end
 
   def more_recent_collections

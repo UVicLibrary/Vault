@@ -8,12 +8,8 @@ var appendTo = $('#<%= append_to %>')
 <% end %>
 
 <% presenters.each do |pres| %>
-  var toAppend = $("<%= j (render partial: "browse_collections/collection_card",
-          locals: {
-            title: pres.title.first,
-            description: pres.description.first,
-            url: "#{request.base_url}/collections/#{pres.id}",
-            thumbnail: pres.thumbnail_path }) %>").hide().fadeIn(300);
+  var toAppend = $("<%= j (render partial: "hyrax/homepage/collection_card",
+          locals: { presenter: pres, card_width: 3 }) %>").hide().fadeIn(300);
   $(appendTo).append(toAppend);
 <% end %>
 
@@ -24,7 +20,7 @@ var total = button.attr('data-total');
 var oldStart = parseInt(button.attr('data-start'));
 var buttonTemplate = [
     '<button class="btn load-more-button">',
-      '<a data-start="" data-total="' + total + '" data-remote="true" data-method="get" href="<%= url %>?locale=en&amp;start=8">+ Load More</a>',
+      '<a data-start="" data-total="' + total + '" data-remote="true" data-method="get" href="<%= url %>?locale=en&amp;start=8">Load More</a>',
     '</button>'
     ].join('');
 

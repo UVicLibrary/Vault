@@ -17,7 +17,7 @@ module Hyrax
              :contributor_label, :physical_repository_label, :genre_label,
              :geographic_coverage, :genre, :related_url, :identifier,
              :resource_type, :keyword, :geographic_coverage_label,
-             :chronological_coverage,
+             :chronological_coverage, :thumbnail_path,
              to: :solr_document
 
     # @param [SolrDocument] solr_document
