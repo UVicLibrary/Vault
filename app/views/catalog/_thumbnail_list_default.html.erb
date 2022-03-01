@@ -1,12 +1,7 @@
 <div class="col-md-3 col-sm-12">
   <div class="list-thumbnail">
     <% if document["member_ids_ssim"] and document.thumbnail_id.present? %>
-      <% @file_set = FileSet.find(document.thumbnail_id) %>
-      <% if (@file_set.mime_type.include?("pdf") if @file_set.mime_type) && request.base_url.include?('vault') %>
-        <%= link_to(image_tag("#{@file_set.pdf_thumbnail_path}"), "/concern/generic_works/#{document.id}") %>
-      <% else %>
         <%= image_tag(document['thumbnail_path_ss'].gsub("!150","!300")) %>
-      <% end %>
     <% else %>
         <%= render_thumbnail_tag document %>
     <% end %>

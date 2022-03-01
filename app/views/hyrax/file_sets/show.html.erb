@@ -2,7 +2,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12 col-sm-3">
-      <%= image_tag FileSet.find(@presenter.id).pdf_thumbnail_path,
+      <%= image_tag @presenter.solr_document.thumbnail_path,
                     class: "representative-media",
                     alt: "",
                     role: "presentation" %>

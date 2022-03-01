@@ -113,20 +113,6 @@ class FileSet < ActiveFedora::Base
     Hyrax::FileSetForm.required_fields.include?(term)
   end
 
-	def pdf_thumbnail_path
-		gw = GenericWork.where(member_ids_ssim: self.id).first
-		if gw.present? && gw.member_of_collections.first.present?
-			default_path = "/pdf_thumbnails/#{gw.member_of_collections.first.title.first.parameterize.underscore}/#{self.id}-thumb.jpg"
-			if File.exist?("/usr/local/rails/vault/public#{default_path}")
-				default_path
-			else
-				"/pdf_thumbnails/misc/#{self.id}-thumb.jpg"
-			end
-		else # If work does not belong to a collection
-			"/pdf_thumbnails/misc/#{self.id}-thumb.jpg"
-		end
-	end
-
   private
 
     # If any parent objects are pointing at this object as their
