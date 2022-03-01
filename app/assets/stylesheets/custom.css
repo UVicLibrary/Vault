@@ -30,11 +30,6 @@
     text-align: left;
 }
 
-.extra-actions {
-    float: right;
-    display: inline-block;
-}
-
 .work_description {
     white-space: pre-line;
 }

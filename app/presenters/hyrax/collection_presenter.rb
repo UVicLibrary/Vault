@@ -49,8 +49,7 @@ module Hyrax
     # Terms is the list of fields displayed by
     # app/views/collections/_show_descriptions.html.erb
     def self.terms
-      [:total_items, :size, :resource_type, :creator, :contributor, :keyword, :license, :publisher, :date_created, :subject,
-       :language, :identifier, :based_near, :related_url]
+      [:total_viewable_items, :size, :modified_date]
     end
 
     def terms_with_values
@@ -61,8 +60,8 @@ module Hyrax
       case key
       when :size
         size
-      when :total_items
-        total_items
+      when :total_viewable_items
+        total_viewable_items
       else
         solr_document.send key
       end

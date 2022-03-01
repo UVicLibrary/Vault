@@ -18,6 +18,7 @@
  *= require pages
  *= require sign_in
  *= require dashboard_collections
+ *= require collection_show
  *= require vault_homepage
  *= require browse_collections
  *= require_self
