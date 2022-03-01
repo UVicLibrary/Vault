@@ -6,7 +6,7 @@
           <h2 class="browse-card-title card-title collection-card-title"><%= title %></h2>
           <p class="text">
             <% if description.present? %>
-              <%= description.truncate(100, separator: /\s/) %>
+              <%= sanitize(description.truncate(100, separator: /\s/)) %>
             <% else %>
               No description available.
             <% end %>
