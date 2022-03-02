@@ -22,6 +22,9 @@ class CollectionIndexer < Hyrax::CollectionIndexer
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
+      # Index the size of the collection in bytes
+      solr_doc['bytes_lts'] = object.bytes
+
       # Index OAI-PMH fields
       # dc:coverage = geographic coverage + chronological coverage
       if solr_doc['geographic_coverage_label_tesim'] or solr_doc['chronological_coverage_tesim']
