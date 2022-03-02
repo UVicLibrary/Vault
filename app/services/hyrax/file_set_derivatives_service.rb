@@ -4,8 +4,8 @@ module Hyrax
     attr_reader :file_set
     delegate :uri, :mime_type, to: :file_set
 
-    require 'combine_pdf'
-    require 'pdftoimage'
+    # require 'combine_pdf'
+    # require 'pdftoimage'
     require 'csv'
     require 'fileutils'
     require 'pathname'
