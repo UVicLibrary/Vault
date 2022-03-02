@@ -16,7 +16,6 @@ export default class LinkedData {
     // Called when a choice is made
     selected(e) {
         let result = this.element.select2("data")
-        this.element.select2("destroy")
         this.element.val(result.label).attr("readonly", "readonly")
         if (result.id.startsWith("fst")) {
             let uri = 'http://id.worldcat.org/fast/' + result.id.replace('fst','').replace(/^0+/, '')
