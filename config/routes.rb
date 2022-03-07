@@ -60,6 +60,8 @@ Rails.application.routes.draw do
   mount Qa::Engine => '/authorities'
 
   mount Blacklight::Engine => '/'
+  mount BlacklightAdvancedSearch::Engine => '/'
+
   mount Hyrax::Engine, at: '/'
   #mount ToSpotlight::Engine, at: '/to_spotlight'
 

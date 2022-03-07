@@ -1,0 +1,54 @@
+.range_limit.advanced_search input.range_begin,
+.range_limit.advanced_search input.range_end {
+    width: 6em;
+}
+
+.limit-criteria-heading, .query-criteria-heading {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+.range_limit.advanced_search .control-label {
+    margin-right: 14px;
+    padding-right: 14px;
+    font-size: 16px;
+}
+
+.facet-count {
+    padding-right: 0.5em;
+}
+
+.label-and-count label {
+    padding-right: 0px;
+    padding-left: 0.5em;
+}
+
+.advanced-info {
+    color: #0075FF;
+    margin-right: 0.25em;
+}
+
+.query-criteria .btn-group {
+    margin-left: 0.55em;
+}
+
+.facet-field-heading {
+    font-size: 20px;
+}
+
+.advanced-search-field label {
+    font-size: 16px;
+    padding-right: 0.25em;
+}
+
+.query-criteria-heading {
+    line-height: 1.3em;
+    padding-left: 0.6em;
+    margin-bottom: 0.75em;
+}
+
+.sort-buttons label {
+    font-size: 16px;
+    margin-right: 0.5em;
+    margin-left: 1.2em;
+}
