@@ -1,0 +1,38 @@
+<% @page_title = "Advanced Search - Vault" %>
+
+<div class="advanced-search-form col-sm-12">
+
+  <h1 class="advanced page-header">
+    Advanced Search
+    <%= link_to t('blacklight_advanced_search.form.start_over'), blacklight_advanced_search_engine.advanced_search_path, :class =>"btn btn-default pull-right advanced-search-start-over" %>
+  </h1>
+
+  <div class="row">
+    <div class="col-md-9">
+    <%= render "advanced_search_help" %>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="limit-criteria">
+        <h3 class="limit-criteria-heading">Filter by...</h3>
+        <div id="advanced_search_facets" class="limit_input">
+          <% if blacklight_config.try(:advanced_search).try {|h| h[:form_facet_partial] } %>
+            <%= render blacklight_config.advanced_search[:form_facet_partial] %>
+          <% else %>
+            <%= render 'advanced_search_facets' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <%= render 'advanced_search_form' %>
+    </div>
+
+
+  </div>
+
+</div>

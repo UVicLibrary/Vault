@@ -23,8 +23,11 @@ module Blacklight::Catalog
     # get search results from the solr index
     def index
       (@response, @document_list) = search_results(params)
-      #console
+      # Advanced search requests an unknown format by default so we explicity request html
       respond_to do |format|
+        if params['search_field'] == "advanced"
+          request.format = :html
+        end
         format.html { store_preferred_view }
         format.rss  { render :layout => false }
         format.atom { render :layout => false }

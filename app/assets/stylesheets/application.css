@@ -21,5 +21,7 @@
  *= require collection_show
  *= require vault_homepage
  *= require browse_collections
+ *= require blacklight_advanced_search
+ *= require custom_advanced_search
  *= require_self
- */
+*/
