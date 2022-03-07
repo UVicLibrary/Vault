@@ -90,8 +90,9 @@ end
 gem 'blacklight', '~> 6.7'
 gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
+gem 'blacklight_advanced_search'
 
-gem 'hyrax', '~>2.5.1'
+gem 'hyrax', '2.6.0' #'~>2.5.1'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -114,14 +115,6 @@ gem 'riiif', '~> 1.1'
 
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
-
-group :aws, :test do
-  gem 'carrierwave-aws'
-end
-
-group :aws do
-  gem 'active_elastic_job', '~> 2.0'
-end
 
 gem 'sidekiq','~> 5.0.3' # '~> 6.0.0'
 gem 'sidekiq-benchmark'
