@@ -28,10 +28,10 @@
 <%= presenter.attribute_to_html(:genre_label, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:format) %>
 <%= presenter.attribute_to_html(:archival_item_identifier) %>
-<%= presenter.attribute_to_html(:fonds_title) %>
+<%= presenter.attribute_to_html(:fonds_title, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:fonds_creator) %>
 <%= presenter.attribute_to_html(:fonds_description) %>
-<%= presenter.attribute_to_html(:fonds_identifier) %>
+<%= presenter.attribute_to_html(:fonds_identifier, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:is_referenced_by) %>
 <%= presenter.attribute_to_html(:date_digitized) %>
 <%= presenter.attribute_to_html(:transcript) %>
