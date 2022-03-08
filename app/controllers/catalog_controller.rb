@@ -55,17 +55,19 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
 
     # Collection
-    config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
-    config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5
-    config.add_facet_field solr_name("resource_type", :facetable), label: 'Resource Type', limit: 5, helper_method: :resource_type_links
-    config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
-    # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
-    config.add_facet_field "year_range_isim", label: "Year Range", range: true
-    config.add_facet_field solr_name("geographic_coverage_label", :facetable), label: 'Geographic Coverage', limit: 5
-    config.add_facet_field solr_name("subject_label", :facetable), label: 'Subject', limit: 5
-    config.add_facet_field solr_name("language", :facetable), limit: 5
-    config.add_facet_field solr_name("creator_label", :facetable), label: 'Creator', limit: 5
-    config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
+      config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
+      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5
+      config.add_facet_field solr_name("resource_type", :facetable), label: 'Resource Type', limit: 5, helper_method: :resource_type_links
+      config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
+      # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
+      config.add_facet_field "year_range_isim", label: "Year Range", range: true, include_in_advanced_search: false
+      config.add_facet_field solr_name("geographic_coverage_label", :facetable), label: 'Geographic Coverage', limit: 5
+      config.add_facet_field solr_name("subject_label", :facetable), label: 'Subject', limit: 5
+      config.add_facet_field solr_name("language", :facetable), limit: 5
+      config.add_facet_field solr_name("creator_label", :facetable), label: 'Creator', limit: 5
+      config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
+      config.add_facet_field solr_name("fonds_title", :facetable), label: 'Fonds Title', limit: 5, show: false
+      config.add_facet_field solr_name("fonds_identifier", :facetable), label: 'Fonds Identifier', limit: 5, show: false
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
