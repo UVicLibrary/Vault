@@ -21,7 +21,7 @@
   <div class="featured_field featured-item-description">
     <p>
       <% if featured.description.first.present? %>
-        <%= featured.description.first.truncate(100, separator: /\s/) %>
+        <%= sanitize(featured.description.first.truncate(100, separator: /\s/)) %>
       <% else %>
         No description available.
       <% end %>
