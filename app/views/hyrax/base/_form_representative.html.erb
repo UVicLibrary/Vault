@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-md-12">
+    <fieldset id="representative-media">
+      <legend>
+        <%= t("hyrax.base.form_representative.legend_html") %>
+      </legend>
+      <div class="form-group">
+        <span class="help-block"><%= t("hyrax.base.form_representative.help_html") %></span>
+        <%# sort file names alphabetically, ignoring case %>
+        <%= f.select :representative_id, @form.select_files.sort_by { |k,_| k.downcase }.to_h, {}, { class: 'form-control' } %>
+      </div>
+    </fieldset>
+  </div>
+</div>
