@@ -32,15 +32,40 @@
       <% end %>
 
       </header>
-
     </div>
   </div>
 
   <div class="row hyc-body">
 
     <div class="col-md-8 hyc-description">
-      <%= render 'collection_description', presenter: @presenter %> <!-- Includes permalink -->
-      <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
+      <!-- Includes permalink -->
+      <%= render 'collection_description', presenter: @presenter %>
+
+      <div class="col-md-4">
+        <% if can? :edit, @presenter.solr_document %>
+          <div class="extra-actions">
+            <%= link_to "Dashboard view",
+                        hyrax.dashboard_collection_path(@presenter),
+                        title: t('hyrax.collection.actions.edit.desc'),
+                        class: 'btn btn-default',
+                        style: 'margin-right: 0.25em;',
+                        data: { turbolinks: false }%>
+            <%= link_to t('hyrax.collection.actions.edit.label'),
+                        hyrax.edit_dashboard_collection_path(@presenter),
+                        title: t('hyrax.collection.actions.edit.desc'),
+                        class: 'btn btn-primary',
+                        data: { turbolinks: false } %>
+          </div>
+        <% end %>
+
+        <div class="hyc-metadata">
+          <% unless has_collection_search_parameters? || @presenter.total_viewable_items.blank? %>
+            <h4><%= t('hyrax.dashboard.collections.show.metadata_header') %></h4>
+            <%= render 'show_descriptions' %>
+          <% end %>
+        </div>
+
+        <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
           <div class="hyc-blacklight hyc-bl-title">
             <h2>
               <%= t('.parent_collection_header') %> (<%= @presenter.total_parent_collections %>)
@@ -49,31 +74,23 @@
           <div class="hyc-blacklight hyc-bl-results">
             <%= render 'show_parent_collections', presenter: @presenter %>
           </div>
-      <% end %>
+        <% end %>
 
-      <% if can? :edit, @presenter.solr_document %>
-        <div class="extra-actions">
-          <%= link_to "Dashboard view",
-                      hyrax.dashboard_collection_path(@presenter),
-                      title: t('hyrax.collection.actions.edit.desc'),
-                      class: 'btn btn-default',
-                      style: 'margin-right: 0.25em;',
-                      data: { turbolinks: false }%>
-          <%= link_to t('hyrax.collection.actions.edit.label'),
-                      hyrax.edit_dashboard_collection_path(@presenter),
-                      title: t('hyrax.collection.actions.edit.desc'),
-                      class: 'btn btn-primary',
-                      data: { turbolinks: false } %>
-        </div>
-      <% end %>
+        <!-- Subcollections -->
+        <% if @presenter.collection_type_is_nestable? && @subcollection_count > 0 %>
+          <div class="hyc-blacklight hyc-bl-title">
+            <h4><%= t('.subcollection_count') %> (<%= @subcollection_count %>)</h4>
+          </div>
+          <div class="hyc-blacklight hyc-bl-results">
+            <%= render 'subcollection_list', collection: @subcollection_docs %>
+          </div>
+        <% end %>
 
-    <div class="col-md-4 hyc-metadata">
-      <% unless has_collection_search_parameters? || @presenter.total_viewable_items.blank? %>
-          <h4><%= t('hyrax.dashboard.collections.show.metadata_header') %></h4>
-          <%= render 'show_descriptions' %>
-      <% end %>
+      </div>
+
     </div>
-  </div>
+
+
 
   <!-- Search results label -->
   <% if @members_count > 0 || @presenter.subcollection_count > 0 %>
@@ -93,16 +110,6 @@
     </div>
   </div>
 
-  <!-- Subcollections -->
-  <% if @presenter.collection_type_is_nestable? && @subcollection_count > 0 %>
-      <div class="hyc-blacklight hyc-bl-title">
-        <h4><%= t('.subcollection_count') %> (<%= @subcollection_count %>)</h4>
-      </div>
-      <div class="hyc-blacklight hyc-bl-results">
-        <%= render 'subcollection_list', collection: @subcollection_docs %>
-      </div>
-  <% end %>
-
   <!-- Works -->
   <% if @members_count > 0 %>
       <div class="hyc-blacklight hyc-bl-title">
@@ -121,4 +128,5 @@
         <%= render 'paginate' %>
       </div>
   <% end # if @members_count > 0 %>
+</div>
 </div>
