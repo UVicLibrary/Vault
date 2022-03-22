@@ -88,6 +88,12 @@ gem 'blacklight', '~> 6.7'
 gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
 
+# For exporting bagit bags from Vault
+gem 'down'
+gem 'posix-spawn'
+gem 'http_parser.rb'
+gem 'bagit'
+
 gem 'hyrax', '~>2.5.1'
 gem 'rsolr', '~> 2.0'
 
