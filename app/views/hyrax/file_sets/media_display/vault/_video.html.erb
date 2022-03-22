@@ -1,0 +1,6 @@
+<!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
+<script src="<%= request.base_url %>/able_player/build/ableplayer.min.js"></script>
+<video preload="auto" width="750px" data-able-player data-skin="2020" playsinline>
+  <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
+  Your browser does not support the video tag.
+</video><br/>
