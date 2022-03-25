@@ -14,7 +14,7 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     super.tap do |solr_doc|
       solr_doc['hasFormat_ssim'] = object.rendering_ids
       if object.files.first.present?
-        if object.audio? or (object.files.first.file_name.first.present? and object.files.first.file_name.first.include?(".m4a"))
+        if object.audio?  or (object.files.first.file_name.first.include?(".m4a") if object.files.first.file_name.first.present?)
           solr_doc['thumbnail_path_ss'] = AudioFileSetThumbnailService.call(object)
         else
           solr_doc['thumbnail_path_ss'] = self.thumbnail_path_service.call(object)
