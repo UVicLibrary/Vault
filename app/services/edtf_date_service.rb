@@ -75,7 +75,7 @@ class EdtfDateService
             @parsed_date.humanize.gsub('circa','approximately')
           end
         when "EDTF::Century", "EDTF::Decade"
-          if @edtf_string =~ /(X?|x?)/
+          if @edtf_string.include?("?")
             humanized_uncertain_century_or_decade(@parsed_date)
           else
             @parsed_date.humanize.gsub('circa','approximately')
