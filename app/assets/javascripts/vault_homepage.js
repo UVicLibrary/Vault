@@ -30,29 +30,30 @@ $(document).on('turbolinks:load', function() {
         })
     }
 
-    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('#featured-nav button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         transformCards();
     });
 
 
     // Set initial states
     // Changes the header ("Featured ____") to match the tab that is currently active
-    $("h1#featured-header").html($("#featured-nav li.active").text());
-    var buttons = $('#featured-nav button[data-toggle="tab"]');
+    // $("h1#featured-header").html($("#featured-nav li.active").text());
+    var buttons = $('button[data-toggle="tab"]');
     buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
 
-    $('#featured-nav button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
         // Update the header
-        $("h1#featured-header").html(e.target.innerText);
+        var header = $($(this).closest('div').find('h1'));
+        header.html($(this).data('header'));
     });
 
     // Make the tabs keyboard accessible with left and right arrows
-    // Accessibility design pattern: https://www.w3.org/TR/wai-aria-practices-1.1/#tabpanel
-    $('#featured-nav button[data-toggle="tab"]').keydown(function(e) {
+    // Accessibility design pattern: https://www.w3.org/TR/wai-aria-practices-1.2/#tabpanel
+    $('button[data-toggle="tab"]').keydown(function(e) {
         e.preventDefault()
         // Get the index of the current button
-        var buttons = $('#featured-nav button[data-toggle="tab"]');
+        var buttons = $(e.target.closest('ul')).find('button');
         var currentIdx = buttons.index(e.target);
 
         // Move right
@@ -80,31 +81,20 @@ $(document).on('turbolinks:load', function() {
         }
 
         // Shift-tab, go to previous element, go to next element outside buttons
-        if(e.shiftKey && e.keyCode == 9) {
-            console.log('shift tab')
-            $('#search-submit-header').focus()
+        if(e.shiftKey && e.keyCode == 9 && $(this).closest('ul').attr('id') == 'browse-by-nav') {
+            $('.help-link').focus()
+        } else if (e.shiftKey && e.keyCode == 9) { //$(this).closest('ul').attr('id') == 'featured-nav')
+            // detect which tab in "browse by" is currently active
+            // focus on the last element in that tab
+            $('.browse-by-container').find('.tab-pane.active').find('.last-child').focus()
         }
         // tab key pressed, go to next element outside buttons
         if (!e.shiftKey && e.keyCode == 9) {
             console.log('tab only')
-            var tabPanelId = $('#featured-nav li.active button')[0].attributes.href.value;
-            $(tabPanelId).first().find('.plain-link').first().focus()
+            var tabPanelId = $(e.target.closest('ul')).find('li.active button')[0].attributes.href.value;
+            $(tabPanelId).first().find('.homepage-tab-link').first().focus()
         }
 
-    });
-
-
-    // Refresh the collections or works list if user clicks pagination link
-    $("#homepage-works-and-collections").on('click', '.pagination a', function() {
-        var c = "#collections-partial";
-        var w = "#works-partial";
-        if ($(this).closest(c) || $(this).closest(w)) {
-            $(this).closest(':has(tbody)').find('tbody').css('opacity','0.6');
-            $(this).closest('.pagination').html('Loading results...');
-            $.get(this.href, null, null, "script"); // views/hyrax/homepage/index.js.erb
-            return false;
-        }
-        return false;
     });
 
     // Prevent Feature/Unfeature collection button from firing twice

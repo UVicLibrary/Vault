@@ -25,7 +25,7 @@
 //
 //= require hyku/groups/per_page
 //= require hyku/groups/add_member
-//= require vault_home-page
+//= require vault_homepage
 //= require hyrax
 //= require handlebars-v4.0.5
 //= require jquery.flot.pie
