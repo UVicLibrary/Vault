@@ -4,6 +4,7 @@ class BrowseCollectionsController < Hyrax::HomepageController
   self.search_builder_class = BrowseCollectionsSearchBuilder
 
   def index
+    @presenter = presenter_class.new(current_ability, collections)
     builder = self.search_builder_class.new(self).rows(8)
     response = repository.search(builder).response
     @collections_count = response['numFound']
@@ -22,7 +23,7 @@ class BrowseCollectionsController < Hyrax::HomepageController
 
   # Return all collections
   def collections(options = {})
-    builder = self.search_builder_class.new(self).rows(options[:rows])
+    builder = self.search_builder_class.new(self)
     # Override default search to be title A-Z instead of relevance
     sort = options[:sort] ||= builder.default_sort_field
     builder.merge(sort: sort, start: options[:start])
