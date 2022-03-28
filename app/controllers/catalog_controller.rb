@@ -363,6 +363,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('depositor') do |field|
       solr_name = solr_name("depositor", :stored_searchable)
+      field.include_in_advanced_search = false
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
