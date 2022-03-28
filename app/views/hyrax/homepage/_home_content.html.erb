@@ -1,26 +1,31 @@
 <% if request.base_url.include? 'vault' %>
   <div class="welcome-text">
     <p>Welcome to Vault, the digital asset management system used by UVic Libraries to store and provide access to digitized materials both from the rare and unique holdings in Special Collections and University Archives and from UVic Libraries’ project partners.</p>
-    <p>Click on a collection below to get started or use the search bar to search across collections. For additional guidelines on searching Vault, see the <a href="/help">Help section</a>.</p>
+    <p>Click on a collection below to get started or use the search bar to search across collections. For additional guidelines on searching Vault, see the <a href="/help" class="help-link">Help section</a>.</p>
   </div>
+
+  <%= render 'hyrax/homepage/facets/facets' %>
+
+<div class="featured-container">
   <h1 id="featured-header">Featured Collections</h1>
-    <ul id="featured-nav" role="tablist">
-      <li>
-        <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" aria-controls="all-collections" aria-selected="true" tabindex="-1">All Collections</button>
-      </li>
-      <li class="active">
-        <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" aria-controls="featured-collections" aria-selected="true" tabindex="0">Featured Collections</button>
-      </li>
-      <li>
-        <button id="featured-works-tab" href="#featured-works" data-toggle="tab" role="tab" aria-controls="featured-works" aria-selected="false" tabindex="-1">Featured Works</button>
-      </li>
-      <li>
-        <button id="recent-collections-tab" href="#recent-collections" data-toggle="tab" role="tab" aria-controls="recent-collections" aria-selected="false" tabindex="-1">Recent Collections</button>
-      </li>
-      <li>
-        <button id="recent-works-tab" href="#recent-works" data-toggle="tab" role="tab" aria-controls="recent-works" aria-selected="false" tabindex="-1">Recent Works</button>
-      </li>
-    </ul>
+  <ul id="featured-nav" role="tablist">
+    <li>
+      <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" data-header="All Collections" aria-controls="all-collections" aria-selected="true" tabindex="-1">All Collections</button>
+    </li>
+    <li class="active">
+      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0">Featured Collections</button>
+    </li>
+    <li>
+      <button id="featured-works-tab" href="#featured-works" data-toggle="tab" role="tab" data-header="Featured Works" aria-controls="featured-works" aria-selected="false" tabindex="-1">Featured Works</button>
+    </li>
+    <li>
+      <button id="recent-collections-tab" href="#recent-collections" data-toggle="tab" role="tab" data-header="Recent Collections" aria-controls="recent-collections" aria-selected="false" tabindex="-1">Recent Collections</button>
+    </li>
+    <li>
+      <button id="recent-works-tab" href="#recent-works" data-toggle="tab" role="tab" data-header="Recent Works" aria-controls="recent-works" aria-selected="false" tabindex="-1">Recent Works</button>
+    </li>
+  </ul>
+</div>
 
 <!------------------- Card Rows -------------------->
 <div class="tab-content" >

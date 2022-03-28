@@ -25,7 +25,6 @@
 //
 //= require hyku/groups/per_page
 //= require hyku/groups/add_member
-
 //= require hyrax
 //= require handlebars-v4.0.5
 //= require vault_homepage
@@ -35,4 +34,3 @@
 //= require turbolinks
 //= require blacklight_gallery/default
 //= require masonry
-

@@ -6,13 +6,15 @@
   text-decoration: underline;
 }
 
-#featured-nav li {
+.home-content ul[role=tablist] li {
   font-size: 16px;
 }
 
 .welcome-text {
   margin-top: 1em;
   margin-bottom: 2em;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 #featured-researcher {
@@ -42,20 +44,43 @@ footer .navbar-link i {
 }
 
 /* Pill nav bar */
-#featured-nav {
-  margin-bottom: 0 !important;
+.home-content ul[role=tablist] {
+  margin-bottom: 0;
   margin-top: 1.5em;
   border: none;
   padding-left: 0;
   list-style: none;
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-#featured-nav li {
+.home-content ul[role=tablist] li {
   margin-right: 0.3em;
+  margin-left: 0.3em;
 }
 
-#featured-nav li button {
+@media only screen and (max-width: 600px) {
+  #featured-header, #browse-by-header {
+    text-align: center;
+  }
+  .home-content #featured-nav ul[role=tablist] {
+    margin-bottom: 1.5em;
+  }
+  .home-content ul[role=tablist] li {
+    width: 100%;
+  }
+  .home-content ul[role=tablist] li button {
+    width: 100%;
+  }
+  #genre-homepage-facet ul, #year-range-homepage-facet ul {
+    margin-top: 1.5em;
+  }
+  .card {
+    padding-right: 0em;
+  }
+}
+
+.home-content ul[role=tablist] li button {
   border: none;
   border-radius: 6px;
   position: relative;
@@ -65,13 +90,13 @@ footer .navbar-link i {
   color: #005493;
 }
 
-#featured-nav li button:hover, #featured-nav li button:focus {
+.home-content ul[role=tablist] li button:hover, .home-content ul[role=tablist] li button:focus {
   text-decoration: underline;
   background-color: #ccdde9;
   color: #333;
 }
 
-#featured-nav li.active button {
+.home-content ul[role=tablist] li.active button {
   text-decoration: none;
   background-color: #005493 !important;
   color: #fff;
@@ -295,4 +320,56 @@ sans-serif;
   transition: none;
   position: absolute;
   top: 0px;
+}
+
+.homepage-facet-label {
+  margin-bottom: 1em;
+  display: inline-block;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+a.homepage-facet-link {
+  font-size: 16px;
+  min-width: 48px;
+}
+
+#genre-homepage-facet ul, #year-range-homepage-facet ul {
+  padding-left: 0;
+  margin-bottom: 1em;
+}
+
+#genre-homepage-facet ul {
+  margin-top: 2em;
+}
+
+#year-range-homepage-facet ul {
+  margin-top: 1em;
+}
+
+#genre-homepage-facet .col-md-12, #year-range-homepage-facet .col-md-12 {
+  padding-left: 0;
+}
+
+.homepage-year-range-form {
+  display: inline-flex;
+  margin-left: 1em;
+}
+
+.homepage-year-range-form .control-label {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.homepage-year-range-form form {
+  display: inline-flex;
+}
+
+.homepage-year-range-form input[type=text] {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.homepage-year-range-form input[type=submit] {
+  height: fit-content;
 }
