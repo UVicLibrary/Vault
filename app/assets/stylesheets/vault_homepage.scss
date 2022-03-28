@@ -1,3 +1,9 @@
+/* We only need this in docker, which can't load the Open Sans font via a normal @import line. */
+@font-face {
+  font-family: 'Open Sans';
+  src: url('OpenSans-VariableFont_wdth,wght.ttf');
+}
+
 .welcome-text p {
   font-size: 16px;
 }
