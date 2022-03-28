@@ -1,0 +1,17 @@
+<div class="tab-pane active" role="tabpanel" id="genre-homepage-facet"  aria-selected="true">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <ul>
+          <% @genre_facet_values.each do |val| %>
+            <%= render_homepage_facet_value(field_name, val, {label: label_for_homepage_facet(val) }) %>
+          <% end %>
+          <li class="homepage-facet-label">
+            <%= link_to "More »",
+                        main_app.facet_catalog_path(id: field_name), class: "more_facets_link homepage-facet-link last-child" %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

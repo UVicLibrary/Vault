@@ -12,4 +12,50 @@ module VaultHomepageHelper
     tag.p safe_join([t('hyrax.collection.is_part_of'), ': '] + collection_links), class: 'card-collection-link', tabindex: 0
   end
 
+  ##
+  # Standard display of a facet value in a list. Used in both _facets sidebar
+  # partial and catalog/facet expanded list. Will output facet value name as
+  # a link to add that to your restrictions, with count in parens.
+  #
+  # @param [String]: The name of the facet field, e.g. "genre_label_sim"
+  # @param [Blacklight::Solr::Response::Facets::FacetItem] item
+  # @param [Hash] options
+  # @option options [Boolean] :suppress_link display the facet, but don't link to it
+  # @return [String]
+  def render_homepage_facet_value(facet_field, item, options ={})
+    path = path_for_homepage_facet(facet_field, item)
+    options[:label] ? label = options[:label] : label = facet_display_value(facet_field, item)
+    content_tag(:li, class:"homepage-facet-label col-md") do
+      link_to_unless(options[:suppress_link], label, path, class: "homepage-facet-link homepage-tab-link")
+    end
+  end
+
+  ##
+  # Where should this facet link to?
+  # @param [String] the facet field name, e.g. "genre_label_sim"
+  # @param [String] item
+  # @return [String]
+  def path_for_homepage_facet(facet_field, item)
+    facet_config = facet_configuration_for_field(facet_field)
+    if facet_config.url_method
+      send(facet_config.url_method, facet_field, item)
+    else
+      main_app.search_catalog_path(search_state.add_facet_params_and_redirect(facet_field, item))
+    end
+  end
+
+  def label_for_homepage_facet(value)
+    value.value.split(" (").first.titleize
+  end
+
+  def render_year_range_value(hash)
+    # byebug
+    label = hash.keys.first
+    path = hash[label]
+    content_tag(:li, class:"homepage-facet-label col-md") do
+      link_to(label, path, class: "homepage-facet-link homepage-tab-link")
+    end
+  end
+
+
 end

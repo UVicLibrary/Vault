@@ -3,6 +3,7 @@ class Hyrax::HomepageController < ApplicationController
   include Blacklight::SearchContext
   include Blacklight::SearchHelper
   include Blacklight::AccessControls::Catalog
+  include BlacklightRangeLimit::ControllerOverride
 
   require 'will_paginate/array'
 
@@ -10,6 +11,7 @@ class Hyrax::HomepageController < ApplicationController
   # Override of Blacklight::RequestBuilders
   def search_builder_class
     Hyrax::HomepageSearchBuilder
+    # CustomRangeLimitBuilder
   end
 
   class_attribute :presenter_class
@@ -33,6 +35,9 @@ class Hyrax::HomepageController < ApplicationController
     @works_count = @works.count
 
     @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter).slice(0,8)
+
+    @year_range_values = build_year_range_facets(year_range_facets)
+    @genre_facet_values = build_facets(genre_facets)
   end
 
   def more_recent_collections
@@ -102,4 +107,58 @@ class Hyrax::HomepageController < ApplicationController
   def sort_field
     "#{Solrizer.solr_name('date_uploaded', :stored_sortable, type: :date)} desc"
   end
+
+  def genre_facets
+    [ "architectural drawings (visual works)", "diaries", "photographs", "periodicals", "historical maps", "video recordings (physical artifacts)", "sound recordings" ]
+  end
+
+  # An array of EDTF date strings (see EdtfDateService)
+  def year_range_facets
+    %w[ 14XX 15XX 16XX 17XX 18XX 19XX ]
+  end
+
+  def build_facets(arr)
+    # hits: 0 since we don't care about displaying the hit count
+    arr.map { |val| Blacklight::Solr::Response::Facets::FacetItem.new(value: val, hits: 0) }
+  end
+
+  def build_year_range_facets(arr)
+
+    services = arr.map { |century| EdtfDateService.new(century) }
+
+    new_array = []
+    new_array.push(start_range_facet(services.first.year_range.first))
+
+    services.each do |service|
+      value = service.humanized
+      begin_date = service.year_range.first
+      end_date = service.year_range.last
+      renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
+      path = renderer.search_path
+      new_array.push({ value => path })
+    end
+
+    new_array.push(end_range_facet(services.last.year_range.last + 1))
+    new_array
+
+  end
+
+  def start_range_facet(year)
+    value = EdtfDateService.new("../#{year}").humanized
+    begin_date = helpers.range_results_endpoint("year_range_isim",:min).to_i
+    end_date = year
+    renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
+    path = renderer.search_path
+    { value => path }
+  end
+
+  def end_range_facet(year)
+    value = EdtfDateService.new("#{year}/..").humanized
+    begin_date = year
+    end_date = Date.today.year
+    renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
+    path = renderer.search_path
+    { value => path }
+  end
+
 end
