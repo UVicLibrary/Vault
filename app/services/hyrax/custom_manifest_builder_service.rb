@@ -36,24 +36,26 @@ module Hyrax
       hash
     end
 
+    def single_value_field?(field)
+      fields = [:format, :description]
+      fields.include? field
+    end
+
     # @param presenter DisplayImagePresenter, which inherits from Hyku::FileSetPresenter
       def add_file_set_metadata(image, fsp)
         image['resource']['label'] = fsp.title.first
-        (image['resource']['description'] = fsp.description.first if fsp.description )
+        image['resource']['description'] = fsp.description.first if fsp.description
 
         metadata = Hyrax.config.iiif_metadata_fields.each_with_object([]) do |field, array|
             label = field.to_s.humanize.capitalize
-            # Sending the format field returns too few arguments error
-            if field == :format
-                if fsp['format_tesim'].present?
-                  value = sanitize_value(fp['format_tesim'].first)
-                  array.push(label => value)
-                end
-                next
-            end
-            unless fsp.try(field).blank? or field == :description
-                value = sanitize_value(fsp.send(field).first)
+            unless fsp.try(field).blank?
+              if single_value_field?(field)
+                value = sanitize_value(fsp.try(field).first)
                 array.push(label => value)
+              else
+                multival = fsp.send(field).map { |val| sanitize_value(val) }.join("\n")
+                array.push(label => multival)
+              end
             end
         end
         (image['resource']['metadata'] = metadata if metadata.any?)
