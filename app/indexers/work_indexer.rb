@@ -86,7 +86,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
     end
     object[field] =  object[field].map do |val|
-      val.include?("http") ? class_name.new(val.strip) : val
+      val.start_with?("http") ? class_name.new(val.strip) : val
     end
   end
 end
