@@ -263,3 +263,7 @@ body {
     margin-bottom: 95%
   }
 }
+
+.advanced-search-link {
+    padding: 1em;
+}
