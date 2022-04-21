@@ -2,7 +2,7 @@ module KeywordInContextHelper
 
   # Search a solr field for a substring and then show the surrounding words
   def excerpt_search_term(options={})
-    search_term = @current_search_session['query_params']['q']
+    search_term = @current_search_session['query_params']['q'] if (@current_search_session && @current_search_session['query_params'])
     if search_term.nil? # No search term, show the first 3 rows
       'Transcript available<br/>' + truncated_text(options[:value].first)
     else
