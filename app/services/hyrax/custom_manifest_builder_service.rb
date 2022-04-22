@@ -53,7 +53,7 @@ module Hyrax
                 value = sanitize_value(fsp.try(field).first)
                 array.push(label => value)
               else
-                multival = fsp.send(field).map { |val| sanitize_value(val) }.join("\n")
+                multival = fsp.send(field).map { |val| sanitize_value(val) }.join("<br/>")
                 array.push(label => multival)
               end
             end
