@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
 
   force_ssl if: :ssl_configured?
 
+  before_action :set_locale
+
   helper Openseadragon::OpenseadragonHelper
   # Adds a few additional behaviors into the application controller
   include Blacklight::Controller
@@ -28,12 +30,29 @@ class ApplicationController < ActionController::Base
     raise ActionController::RoutingError, 'Not Found'
   end
 
+  ALLOWED_LOCALES = %w( de en es fr it zh ).freeze
+  DEFAULT_LOCALE = 'en'.freeze
+
   #def create_work_presenter
   #   @create_work_presenter ||= Hyrax::SelectTypeListPresenter.new(current_user)
   #end
   #helper_method :create_work_presenter
+  #
+
+  def set_locale
+    I18n.locale = extract_locale_from_headers
+  end
   
   private
+
+    def extract_locale_from_headers
+      browser_locale = request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first
+      if ALLOWED_LOCALES.include?(browser_locale)
+        browser_locale
+      else
+        DEFAULT_LOCALE
+      end
+    end
 
     def require_active_account!
       return unless Settings.multitenancy.enabled
