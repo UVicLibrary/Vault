@@ -46,7 +46,7 @@ class ApplicationController < ActionController::Base
   private
 
     def extract_locale_from_headers
-      browser_locale = request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first
+      browser_locale = request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first if request.env['HTTP_ACCEPT_LANGUAGE']
       if ALLOWED_LOCALES.include?(browser_locale)
         browser_locale
       else
