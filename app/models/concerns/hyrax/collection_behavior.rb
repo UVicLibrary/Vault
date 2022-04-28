@@ -133,7 +133,23 @@ module Hyrax
     # association has been flipped)
     def member_object_ids
       return [] unless id
-      ActiveFedora::Base.search_with_conditions("member_of_collection_ids_ssim:#{id}").map(&:id)
+      # This returns the wrong number of results. We could use ActiveFedora::Base.where
+      # instead, but it is slower than searching Solr for large collections.
+      # ActiveFedora::Base.search_with_conditions("member_of_collection_ids_ssim:#{id}").map(&:id)
+
+      # Using RSolr instead:
+      solr = RSolr.connect url: solr_url
+      response = solr.get 'select', params: { q: "member_of_collection_ids_ssim:#{id}", rows: 10000 }
+      # Returns an array of ids
+      response['response']['docs'].map { |k,v| k['id'] }
+    end
+
+    def solr_url
+      if Settings.multitenancy.enabled
+        Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
+      else
+        Settings.solr.url
+      end
     end
 
     # @api public
