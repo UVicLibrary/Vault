@@ -16,6 +16,17 @@ module Hyrax
         env.curation_concern.date_modified = TimeService.time_in_utc
       end
 
+      def apply_creation_data_to_curation_concern(env)
+        # Previously, the "total viewable items" didn't include admins in the edit group
+        # even if admins could already edit private works deposited by others.
+        # This caused a mismatch between that and the true number of viewable items. This
+        # includes admins explicitly if a work is set to private so that the numbers match.
+        if env.curation_concern.visibility == "restricted"
+          env.curation_concern.edit_groups = (env.curation_concern.edit_groups += ["admin"])
+        end
+        super
+      end
+
       def clean_controlled_properties(env, attributes)
         qa_attributes = {}
         env.curation_concern.controlled_properties.each do |field_symbol|
