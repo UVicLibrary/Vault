@@ -95,7 +95,7 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '~>2.5.1'
+gem 'hyrax', '~>2.6.0' # '~>2.5.1'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -119,13 +119,13 @@ gem 'riiif', '~> 1.1'
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
-group :aws, :test do
-  gem 'carrierwave-aws'
-end
-
-group :aws do
-  gem 'active_elastic_job', '~> 2.0'
-end
+# group :aws, :test do
+#   gem 'carrierwave-aws'
+# end
+#
+# group :aws do
+#   gem 'active_elastic_job', '~> 2.0'
+# end
 
 gem 'sidekiq', '~> 5.0.3' # '~> 6.0.7'
 
