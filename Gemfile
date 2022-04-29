@@ -92,7 +92,7 @@ gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
 gem 'blacklight_advanced_search'
 
-gem 'hyrax', '2.6.0' #'~>2.5.1'
+gem 'hyrax', '2.7.2' #'~>2.5.1'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
