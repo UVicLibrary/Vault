@@ -7,42 +7,53 @@
 
 <%= form_tag search_catalog_path, :class => 'advanced form-horizontal', :method => :get do  %>
 
+  <div class="col-md-4">
+    <div class="limit-criteria">
+      <h3 class="limit-criteria-heading">Filter by...</h3>
+      <div id="advanced_search_facets" class="limit_input">
+        <% if blacklight_config.try(:advanced_search).try {|h| h[:form_facet_partial] } %>
+          <%= render blacklight_config.advanced_search[:form_facet_partial] %>
+        <% else %>
+          <%= render 'advanced_search_facets' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <%= render_hash_as_hidden_fields(advanced_search_context) %>
 
-  <div class="input-criteria">
+  <div class="col-md-8">
+    <div class="input-criteria">
 
-    <div class="query-criteria">
-      <h3 class="query-criteria-heading">
-        Find items that match...
-      </h3>
+      <div class="query-criteria">
+        <h3 class="query-criteria-heading">
+          Find items that match...
+        </h3>
 
-      <div class="form-group">
-        <div class="col-md-10">
-          <%= hidden_field_tag 'op', 'AND' %>
-          <div class="btn-group btn-group" role="group" aria-label="...">
-            <div class="btn-group" role="group">
-              <button id="match_all" type="button" class="btn btn-info" data-value="AND"
-                      title="Search will use boolean AND for multi-field searches.">All Fields</button>
-              <button id="match_any" type="button" class="btn btn-default" data-value="OR"
-                      title="Search will use boolean OR for multi-field searches.">Any Field</button>
+        <div class="form-group">
+          <div class="col-md-10">
+            <%= hidden_field_tag 'op', 'AND' %>
+            <div class="btn-group btn-group" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                <button id="match_all" type="button" class="btn btn-info" data-value="AND"
+                        title="Search will use boolean AND for multi-field searches.">All Fields</button>
+                <button id="match_any" type="button" class="btn btn-default" data-value="OR"
+                        title="Search will use boolean OR for multi-field searches.">Any Field</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="advanced_search">
-        <%= render 'advanced/advanced_search_fields' %>
-      </div>
-    </div>
+        <!-- facets MUST be inside the form so that selected values
+         (checkboxes) are submitted when user hits "Search" -->
+        <div id="advanced_search">
+          <%= render 'advanced/advanced_search_fields' %>
+          <%= render 'advanced_search_submit_btns' %>
+        </div>
 
-
-  </div>
-
-  <hr>
-
-  <div class="sort-submit-buttons clearfix">
-    <%= render 'advanced_search_submit_btns' %>
-  </div>
+      </div><!-- .query-criteria -->
+    </div><!-- .input-criteria -->
+  </div><!-- .col-md-8 -->
 
 <% end %>
 

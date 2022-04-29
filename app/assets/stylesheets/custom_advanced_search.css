@@ -47,8 +47,32 @@
     margin-bottom: 0.75em;
 }
 
-.sort-buttons label {
+#advanced_search .sort-buttons {
+    display: inline-block;
+}
+
+#advanced_search .sort-buttons label {
     font-size: 16px;
     margin-right: 0.5em;
     margin-left: 1.2em;
+}
+
+.advanced-facet-limits .panel-body {
+    overflow-y: auto;
+    max-height: 20em;
+}
+
+#advanced_search .buttons-container {
+    margin-top: 2em;
+    border-top: 2px solid #eee;
+    padding-top: 1.5em;
+}
+
+#advanced_search .submit-buttons {
+    display: inline-block;
+    float: right;
+}
+
+.advanced-search-form .col-md-4 {
+    padding-left: 0;
 }
