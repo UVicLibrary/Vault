@@ -3,7 +3,7 @@
 <% else %>
   <div>
     <audio controls="controls" class="audiojs" controlsList="nodownload" preload="auto" style="max-width:100%;">
-      <source src="<%= hyrax.download_path(file_set, file: 'mp3') %>" type="audio/mpeg" />
+      <source src="<%= hyrax.download_path(file_set) %>" type="audio/mpeg" />
       <%= t('hyrax.file_set.show.downloadable_content.audio_tag_not_supported') %>
     </audio>
   </div>

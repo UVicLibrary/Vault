@@ -3,6 +3,8 @@ module Hyrax
     include Hydra::Controller::DownloadBehavior
     include Hyrax::LocalFileDownloadsControllerBehavior
 
+    skip_before_action :set_locale
+
     def self.default_content_path
       :original_file
     end
