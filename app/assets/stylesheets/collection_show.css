@@ -65,10 +65,12 @@
 
 
 /* Increase contrast for banner text */
-.hyc-title h1 {
+.hyc-banner .hyc-title h1 {
     text-shadow: 2px 2px 2px #000000;
 }
 
-.hyc-banner .hyc-title .label, .hyc-banner .hyc-title td.status span, td.status .hyc-banner .hyc-title span {
-    box-shadow: 1px 2px 3px rgb(0 0 0 / 80%);
+.hyc-banner .hyc-title .label, .hyc-banner .hyc-title td.status span {
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.8);
+    display: inline-block;
+    margin-top: 1em;
 }
