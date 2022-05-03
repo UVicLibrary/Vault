@@ -1,0 +1,50 @@
+<div class="col-md-7 no-padding">
+  <video id="video1" preload="auto" data-able-player data-skin="2020" playsinline width="600"></video>
+</div>
+<div class="col-md-5">
+  <h3 class="playlist-heading">Video Playlist</h3>
+  <!-- an AblePlayer playlist is any <ul> with class="able-playlist" -->
+  <!-- The value of data-player must match the id of the media element -->
+  <!-- see documentation for additional details -->
+  <div id="playlist">
+    <ul class="able-playlist" data-player="video1">
+      <% video_files.each do |file| %>
+        <li data-poster="<%= file.solr_document.thumbnail_path %>">
+          <span class="able-source" data-src="<%= hyrax.download_path(file) %>"></span>
+          <button type="button">
+            <img src="<%= file.solr_document.thumbnail_path %>" alt="">
+            <%= file.title.first %>
+          </button>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<% if Hyrax.config.display_media_download_link? && allow_downloads?(video_files.first) %>
+  <%= link_to "Download selected video",
+              hyrax.download_path(video_files.first),
+              data: { label: video_files.first.id },
+              target: :_blank,
+              id: "file_download" %>
+  <%# Include link to transcript %>
+  <% if parent.member_presenters.any? { |fs| fs.pdf? } %>
+    <% transcript = parent.member_presenters.find { |fs| fs.pdf? } %>
+    &ensp;|&ensp;
+    <%= link_to "Download transcript (PDF)",
+                hyrax.download_path(transcript),
+                data: { turbolinks: false },
+                target: :_blank,
+                id: "transcript_file_download",
+                data: { label: transcript.id } %>
+  <% end %>
+<% end %>
+<script>
+    // Change "Download selected X" link when changing files
+    $(document).on('turbolinks:load', function() {
+        $('.col-sm-12.col-md-11').click(function(e) {
+            e.stopPropagation();
+            var selectedAudio = $('li.able-current').find('.able-source').data('src');
+            $('#file_download').attr('href', selectedAudio);
+        });
+    });
+</script>

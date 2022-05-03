@@ -29,7 +29,7 @@
 <script>
   // Change "Download selected audio" link when changing files
   $(document).on('turbolinks:load', function() {
-      $('.col-sm-12.col-md-10').click(function(e) {
+      $('.col-sm-12.col-md-11').click(function(e) {
         e.stopPropagation();
         var selectedAudio = $('li.able-current').find('.able-source').data('src');
         $('#file_download').attr('href', selectedAudio);

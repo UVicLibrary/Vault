@@ -1,6 +1,32 @@
 <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
 <script src="<%= request.base_url %>/able_player/build/ableplayer.min.js"></script>
-<video preload="auto" width="750px" data-able-player data-skin="2020" playsinline>
-  <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
-  Your browser does not support the video tag.
-</video><br/>
+<% video_files = file_set.parent.file_set_presenters.select { |fsp| fsp.video? } %>
+<% if video_files.count > 1 and work_show_page? %>
+  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files, parent: file_set.parent %>
+<% else %>
+  <video preload="auto" width="650px" data-able-player data-skin="2020" data-transcript-src="transcript" playsinline>
+    <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
+    <track kind="captions" src="<%= request.base_url %>/able_player/transcripts/without_timecodes.vtt" srclang="en" label="English">
+    Your browser does not support the video tag.
+  </video><br/>
+  <% if Hyrax.config.display_media_download_link? && allow_downloads?(file_set) %>
+    <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
+                hyrax.download_path(file_set),
+                data: { label: file_set.id },
+                target: :_blank,
+                id: "file_download" %>
+    <%# Include link to transcript %>
+    <% if file_set.parent.member_presenters.any? { |fs| fs.pdf? } and work_show_page? %>
+      <% transcript = file_set.parent.member_presenters.find { |fs| fs.pdf? } %>
+      &ensp;|&ensp;&ensp;
+      <%= link_to "Download transcript (PDF)",
+                  hyrax.download_path(transcript),
+                  data: { turbolinks: false },
+                  target: :_blank,
+                  id: "transcript_file_download",
+                  data: { label: transcript.id } %>
+    <% end %>
+  <% end %>
+<% end %>
+
+

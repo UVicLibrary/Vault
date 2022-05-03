@@ -1,4 +1,3 @@
-
 <% if request.base_url.include? "vault" %>
   <%= render 'hyrax/file_sets/media_display/vault/video', file_set: file_set %>
   <% else %>
@@ -7,7 +6,7 @@
       <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
       <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
     </video>
-  <% end %>
+
   <% if allow_downloads?(file_set) %>
     <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                 hyrax.download_path(file_set),
@@ -27,3 +26,4 @@
                 id: "transcript_file_download",
                 data: { label: transcript.id } %>
   <% end %>
+<% end %>
