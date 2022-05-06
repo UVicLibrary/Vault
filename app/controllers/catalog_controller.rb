@@ -22,7 +22,6 @@ class CatalogController < ApplicationController
     # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
-    config.advanced_search[:form_solr_parameters] ||= {}
 
     config.view.gallery.partials = %i[index_header index]
     config.view.masonry.partials = [:index]
@@ -35,7 +34,6 @@ class CatalogController < ApplicationController
     # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
-    config.advanced_search[:form_solr_parameters] ||= {}
 
     config.search_builder_class = ::CustomRangeLimitBuilder # Hyrax::CatalogSearchBuilder
 
@@ -63,14 +61,14 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
 
     # Collection
-      config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
-      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 5
+      config.add_facet_field solr_name('member_of_collections', :symbol), limit: 10, label: 'Collections'
+      config.add_facet_field solr_name('genre_label', :facetable), label: 'Genre', limit: 10
       config.add_facet_field solr_name("resource_type", :facetable), label: 'Resource Type', limit: 5, helper_method: :resource_type_links
       config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
       # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
       config.add_facet_field "year_range_isim", label: "Year Range", range: true, include_in_advanced_search: false
-      config.add_facet_field solr_name("geographic_coverage_label", :facetable), label: 'Geographic Coverage', limit: 5
-      config.add_facet_field solr_name("subject_label", :facetable), label: 'Subject', limit: 5
+      config.add_facet_field solr_name("geographic_coverage_label", :facetable), label: 'Geographic Coverage', limit: 10
+      config.add_facet_field solr_name("subject_label", :facetable), label: 'Subject', limit: 10
       config.add_facet_field solr_name("language", :facetable), limit: 5
       config.add_facet_field solr_name("creator_label", :facetable), label: 'Creator', limit: 5
       config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
@@ -266,7 +264,7 @@ class CatalogController < ApplicationController
     config.add_search_field('full text') do |field|
       field.solr_parameters = { "spellcheck.dictionary": "full text" }
       solr_name = "full_text_tsi"
-      field.label = "Full text (PDFs-only)"
+      field.label = "Full text (PDFs only)"
       field.solr_local_parameters = {
           qf: solr_name,
           pf: solr_name
