@@ -235,3 +235,29 @@ div[role=button] svg {
 .able-playlist li.able-current button {
     border-radius: 5px;
 }
+
+.able-playlist[data-player=video1] li:not(.able-current) {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+}
+
+h3.playlist-heading {
+    text-align: center;
+}
+
+.able-playlist li button:active,
+.able-playlist li button:focus,
+.able-playlist li button:hover {
+    text-decoration: underline;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+#file_download {
+    clear: both;
+    display: block;
+    margin-bottom: 2em;
+    margin-top: 0.5em;
+}
