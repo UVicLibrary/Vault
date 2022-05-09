@@ -8,11 +8,11 @@
     maxlength = field_config[:maxlength]
 -%>
 
-<div class="tab-pane fade" role="tabpanel" id="year-range-homepage-facet"  aria-selected="true">
+<div class="tab-pane fade homepage-facet-tab" role="tabpanel" id="year-range-homepage-facet" aria-selected="true">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <ul>
+        <ul class="homepage-facet-list">
           <% @year_range_values.each do |val| %>
             <%= render_year_range_value(val) %>
           <% end %>

@@ -5,12 +5,20 @@
       <button href="#genre-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Genre" aria-controls="genre" aria-selected="true" tabindex="0">Genre</button>
     </li>
     <li>
-      <button href="#year-range-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Time Period" aria-controls="time-period" aria-selected="true" tabindex="-1">Time Period</button>
+      <button href="#year-range-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Time Period" aria-controls="time-period" tabindex="-1">Time Period</button>
+    </li>
+    <li>
+      <button href="#subject-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Subject" aria-controls="subject" tabindex="-1">Subject</button>
+    </li>
+    <li>
+      <button href="#place-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Place" aria-controls="place" tabindex="-1">Place</button>
     </li>
   </ul>
 
   <div class="tab-content" >
     <%= render 'hyrax/homepage/facets/genre_facet', field_name: "genre_label_sim" %>
     <%= render 'hyrax/homepage/facets/year_range_facet', field_name: "year_range_isim" %>
+    <%= render 'hyrax/homepage/facets/subject_facet', field_name: "subject_label_sim" %>
+    <%= render 'hyrax/homepage/facets/geographic_coverage_facet', field_name: "geographic_coverage_label_sim" %>
   </div>
 </div>

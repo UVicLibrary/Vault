@@ -36,8 +36,11 @@ class Hyrax::HomepageController < ApplicationController
 
     @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter).slice(0,8)
 
+    # Homepage facet links
     @year_range_values = build_year_range_facets(year_range_facets)
     @genre_facet_values = build_facets(genre_facets)
+    @subject_facet_values = build_facets(subject_facets)
+    @place_facet_values = build_facets(place_facets)
   end
 
   def more_recent_collections
@@ -109,12 +112,20 @@ class Hyrax::HomepageController < ApplicationController
   end
 
   def genre_facets
-    [ "architectural drawings (visual works)", "diaries", "photographs", "periodicals", "historical maps", "video recordings (physical artifacts)", "sound recordings" ]
+    [  "diaries", "historical maps", "letters (correspondence)", "photographs", "periodicals", "serials (publications)", "sound recordings", "video recordings (physical artifacts)" ]
   end
 
   # An array of EDTF date strings (see EdtfDateService)
   def year_range_facets
     %w[ 14XX 15XX 16XX 17XX 18XX 19XX ]
+  end
+
+  def subject_facets
+    ["Anarchism", "Artists", "Authors", "Families", "Gender identity", "Literature", "Local history", "Military history", "World War (1939-1945)"]
+  end
+
+  def place_facets
+    ["British Columbia--Victoria", "British Columbia--Vancouver Island", "British Columbia", "Canada", "China", "England", "France", "Ireland", "Japan"]
   end
 
   def build_facets(arr)
@@ -140,7 +151,6 @@ class Hyrax::HomepageController < ApplicationController
 
     new_array.push(end_range_facet(services.last.year_range.last + 1))
     new_array
-
   end
 
   def start_range_facet(year)

@@ -48,6 +48,15 @@ module VaultHomepageHelper
     value.value.split(" (").first.titleize
   end
 
+  def label_for_homepage_place_facet(value)
+    # e.g. British Columbia--Victoria => Victoria, British Columbia--Vancouver Island => Vancouver Island
+    if value.label.include?("British Columbia--")
+      value.label.gsub("British Columbia--","")
+    else
+      label_for_homepage_facet(value)
+    end
+  end
+
   def render_year_range_value(hash)
     # byebug
     label = hash.keys.first
