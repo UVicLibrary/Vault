@@ -7,7 +7,7 @@ gem 'omniauth-cas'
 # gem 'pdftoimage'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.1'
+gem 'rails', '~>5.2.4.3' #'~>5.1.1'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -92,7 +92,9 @@ gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
 gem 'blacklight_advanced_search'
 
-gem 'hyrax', '2.7.2' #'~>2.5.1'
+gem 'hydra-access-controls', '~>10.7.0'
+
+gem 'hyrax', '2.8.0' # '2.7.2'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
