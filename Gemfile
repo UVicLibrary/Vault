@@ -7,7 +7,7 @@ gem 'combine_pdf'
 gem 'pdftoimage'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.1'
+gem 'rails', '~>5.2.4.3' #'~>5.1.1'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -95,7 +95,9 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '~> 2.7.2' # '~>2.6.0'
+gem 'hydra-access-controls', '~>10.7.0'
+
+gem 'hyrax', '2.8.0' # '2.7.2'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -144,4 +146,3 @@ gem 'pdfjs_viewer-rails'
 gem 'bootstrap-will_paginate', '1.0.0'
 
 gem 'edtf-humanize'
-
