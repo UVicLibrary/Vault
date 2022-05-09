@@ -72,7 +72,7 @@ footer .navbar-link i {
   .home-content ul[role=tablist] li button {
     width: 100%;
   }
-  #genre-homepage-facet ul, #year-range-homepage-facet ul {
+  .homepage-facet-list ul {
     margin-top: 1.5em;
   }
   .card {
@@ -325,8 +325,8 @@ sans-serif;
 .homepage-facet-label {
   margin-bottom: 1em;
   display: inline-block;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding-left: 0.9em;
+  padding-right: 0.9em;
 }
 
 a.homepage-facet-link {
@@ -334,7 +334,7 @@ a.homepage-facet-link {
   min-width: 48px;
 }
 
-#genre-homepage-facet ul, #year-range-homepage-facet ul {
+.homepage-facet-list {
   padding-left: 0;
   margin-bottom: 1em;
 }
@@ -347,7 +347,16 @@ a.homepage-facet-link {
   margin-top: 1em;
 }
 
-#genre-homepage-facet .col-md-12, #year-range-homepage-facet .col-md-12 {
+#subject-homepage-facet ul {
+  margin-top: 2em;
+}
+
+#place-homepage-facet ul {
+  margin-top: 2em;
+}
+
+
+.homepage-facet-tab .col-md-12 {
   padding-left: 0;
 }
 
