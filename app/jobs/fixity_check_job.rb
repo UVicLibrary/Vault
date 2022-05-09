@@ -8,7 +8,7 @@ class FixityCheckJob < ActiveJob::Base
 		failed = []
 		works.each do |w|
 			w.file_sets.each do |fs|
-				fixity = ActiveFedora::FixityService.new fs.files.first.uri
+				fixity = ActiveFedora::FixityService.new fs.latest_content_version.uri
 				unless fixity.check
 					log_file.puts("#{fs.id} has a possible corruption")
 					failed.push(fs)
