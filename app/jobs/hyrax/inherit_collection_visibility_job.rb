@@ -8,7 +8,11 @@ module Hyrax
   # host = "https://vault.library.uvic.ca"
     def perform(collection_id, user_email, visibility, host) # Need user email for notification when job is finished
       collection = Collection.find(collection_id)
-      works = GenericWork.where(member_of_collection_ids_ssim: collection_id)
+      # Sometimes this job fails if a collection has many items. Selecting
+      # only works that are still private ensures we don't waste time on public
+      # works when retrying a job, at the expense of taking slightly longer if
+      # running for the first time.
+      works = GenericWork.where(member_of_collection_ids_ssim: collection_id).select { |w| w.visbility == "restricted" }
       works.each do |work|
         work.members.each do |member|
           change_visibility(member, visibility)
