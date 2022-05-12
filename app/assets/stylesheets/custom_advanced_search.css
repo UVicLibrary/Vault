@@ -76,3 +76,8 @@
 .advanced-search-form .col-md-4 {
     padding-left: 0;
 }
+
+.more_facets_link {
+    min-width: 48px;
+    display: block;
+}

@@ -65,18 +65,6 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
     end
   end
 
-  # We want certain fields to display all options under the dropdown
-  # on the advanced search page only (advanced/index). So we use this
-  # to overwrite any individual limits set on those fields
-  # in catalog_controller.
-  def add_advanced_facetting_to_solr(solr_parameters)
-    # defined in blacklight-6.x.x/lib/blacklight/solr/search_builder_behavior.rb
-    add_facetting_to_solr(solr_parameters)
-    facet_fields_to_include_in_request.each do |field_name, facet|
-      solr_parameters[:"f.#{facet.field}.facet.limit"] = -1 # -1 in solr means show everything
-    end
-  end
-
 end
 
 

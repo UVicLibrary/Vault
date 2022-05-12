@@ -18,7 +18,7 @@ class BlacklightAdvancedSearch::AdvancedController < CatalogController
       # * IGNORING current advanced search facets (remove add_advanced_search_to_solr filter)
       response, _ = search_results(params) do |search_builder|
         # See app/search_builders/custom_range_limit_builder.rb
-        search_builder.except(:add_advanced_search_to_solr).append(:facets_for_advanced_search_form, :add_advanced_facetting_to_solr)
+        search_builder.except(:add_advanced_search_to_solr).append(:facets_for_advanced_search_form)
       end
       response
     end

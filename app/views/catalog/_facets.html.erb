@@ -18,7 +18,8 @@
     <div id="facet-panel-collapse" class="collapse panel-group">
       <%= render_facet_partials %>
     </div>
-    <%= link_to "Advanced Search", "/advanced", class: "advanced-search-link" %>
-
+    <% if request.base_url.include? "vault" %>
+      <%= link_to "Advanced Search", "/advanced", class: "advanced-search-link", data: { turbolink: false } %>
+    <% end %>
   </div>
 <% end %>
