@@ -1,0 +1,19 @@
+<ul class="facet-values list-unstyled blacklight-advanced-facet-select">
+  <% display_facet.items.each do |item| -%>
+    <li>
+        <span class="facet-checkbox">
+            <%= check_box_tag "f_inclusive[#{solr_field}][]", item.value.to_sym, facet_value_checked?(solr_field, item.value), :id =>  "f_inclusive_#{solr_field}_#{item.value.parameterize}"%>
+        </span>
+
+      <span class="label-and-count">
+            <%= label_tag "f_inclusive_#{solr_field}_#{item.value.parameterize}"  do %>
+                <%= render_facet_value(solr_field, item, :suppress_link => true) %>
+            <% end %>
+        <span>
+    </li>
+  <% end -%>
+  <% unless (defined?(paginator) && paginator.last_page?) || params[:action] == "facet" %>
+      <%= link_to "More »",
+              main_app.advanced_facet_catalog_path(id: field_name), class: "more_facets_link" %>
+  <% end %>
+</ul>

@@ -23,3 +23,31 @@
   </div>
 
 </div>
+<script>
+  // This code is in app/views/advanced/index.html.erb. It's
+  // messy but it ensures the code only runs once on the
+  // advanced search page.
+
+    // When user clicks "More" facets link and modal opens
+    $("body ").on('shown.bs.modal', function (e) {
+        $('.facet-checkbox input').on('change', function () {
+          if(this.checked) {
+
+              // Get the field name from the element so we can
+              // append it to the right search facet form
+              //   e.g. 'f_inclusive[geographic_coverage_label_sim][]'
+              //   => geographic_coverage_label_sim
+              var nameAttr = $(this).attr('name');
+              var regex = /\[(.+)\]\[\]/g;
+              var fieldName = regex.exec(nameAttr)[1];
+              //console.log(fieldName);
+
+              //Clone and append the whole <li> to facet body
+              var facetBodyList = $('#facet-' + fieldName + ' ul.facet-values');
+              var li = $(this).closest('li');
+              li.clone().prependTo(facetBodyList);
+
+          }
+        });
+    });
+</script>

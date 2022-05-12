@@ -62,6 +62,8 @@ Rails.application.routes.draw do
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
 
+  get '/advanced/facet', to: 'advanced#facet', as: 'advanced_facet_catalog'
+
   mount Hyrax::Engine, at: '/'
   #mount ToSpotlight::Engine, at: '/to_spotlight'
 

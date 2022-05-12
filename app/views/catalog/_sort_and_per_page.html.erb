@@ -1,5 +1,7 @@
 <div id="sortAndPerPage" class="clearfix" role="navigation" aria-label="<%= t('blacklight.search.per_page.aria_label')%>">
   <%= render :partial => "paginate_compact", :object => @response if show_pagination? %>
-  <%= link_to "Advanced Search", "/advanced", class: "advanced-search-link" %>
+  <% if request.base_url.include? "vault" %>
+    <%= link_to "Advanced Search", "/advanced", class: "advanced-search-link", data: { turbolink: false } %>
+  <% end %>
   <%= render_results_collection_tools wrapping_class: "search-widgets pull-right" %>
 </div>
