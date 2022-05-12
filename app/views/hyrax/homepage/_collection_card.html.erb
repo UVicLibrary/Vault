@@ -6,11 +6,15 @@
         <div class="content">
           <h3 class="card-title collection-card-title"><%= presenter.title.first %></h3>
           <p class="text">
+            <!-- Sometimes there is a link in the collection description. This breaks
+            the link to the collection unless we wrap the description in an object tag. -->
+            <object>
             <% if presenter.description.first.present? %>
               <%= sanitize(presenter.description.first.truncate(100, separator: /\s/)) %>
             <% else %>
               No description available.
             <% end %>
+            </object>
           </p>
         </div><!-- .content -->
       </div><!-- .data -->
