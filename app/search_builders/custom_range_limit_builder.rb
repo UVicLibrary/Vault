@@ -70,6 +70,7 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
   # to overwrite any individual limits set on those fields
   # in catalog_controller.
   def add_advanced_facetting_to_solr(solr_parameters)
+    solr_parameters["sort"] = "title_ssim asc"
     # defined in blacklight-6.x.x/lib/blacklight/solr/search_builder_behavior.rb
     add_facetting_to_solr(solr_parameters)
     facet_fields_to_include_in_request.each do |field_name, facet|
