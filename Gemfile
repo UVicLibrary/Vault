@@ -95,7 +95,7 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '~>2.6.0' # '~>2.5.1'
+gem 'hyrax', '~> 2.7.2' # '~>2.6.0'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
