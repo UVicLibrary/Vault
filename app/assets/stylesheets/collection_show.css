@@ -63,14 +63,6 @@
     margin-bottom: 2em;
 }
 
-
-/* Increase contrast for banner text */
-.hyc-title h1 {
-    background: rgb(0, 0, 0, 0.5);
-    padding: 0.25em;
-    border-radius: 0.25em;
-}
-
 .hyc-banner .hyc-title .label, .hyc-banner .hyc-title td.status span, td.status .hyc-banner .hyc-title span {
     box-shadow: 1px 2px 3px rgb(0 0 0 / 80%);
 }
