@@ -29,7 +29,7 @@
   // advanced search page.
 
     // When user clicks "More" facets link and modal opens
-    $("body ").on('shown.bs.modal', function (e) {
+    $("body ").on('loaded.blacklight.ajax-modal', function (e) {
         $('.facet-checkbox input').on('change', function () {
           if(this.checked) {
 
@@ -42,10 +42,18 @@
               var fieldName = regex.exec(nameAttr)[1];
               //console.log(fieldName);
 
-              //Clone and append the whole <li> to facet body
+              // Clone and append the whole <li> to facet body
               var facetBodyList = $('#facet-' + fieldName + ' ul.facet-values');
               var li = $(this).closest('li');
-              li.clone().prependTo(facetBodyList);
+
+              // If the value is already on the list, do not append a clone
+               var liValue = li.find('input').attr('value');
+               var values = facetBodyList.find('input').map(function(){
+                return this.value;
+               });
+              if(!Array.from(values).includes(liValue)) {
+                  li.clone().prependTo(facetBodyList);
+              }
 
           }
         });
