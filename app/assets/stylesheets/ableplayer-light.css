@@ -150,7 +150,7 @@ a#transcript_file_download {
 
 .able-alert, .able-tooltip {
     position: absolute;
-    padding: 5px 10px;
+    padding: 0.75em;
     border-color: #fff;
     border-width: 1px;
     color: #fff!important;
@@ -234,21 +234,43 @@ div[role=button] svg {
 
 .able-playlist li.able-current button {
     border-radius: 5px;
+    text-decoration: underline;
+    font-weight: normal;
 }
 
 .able-playlist[data-player=video1] li:not(.able-current) {
     background: #f5f5f5;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
+}
+
+#video-playlist, .able-playlist[data-player=video1] {
+    background-color: #ddd;
+    padding: 0.25em;
+    border-radius: 8px;
+    max-height: 464px;
+    overflow-y: auto;
+}
+
+#video-playlist {
+    position: relative;
+    top: 1em;
+    margin-bottom: 2em; /* This only matters on small screens or mobile */
 }
 
 h3.playlist-heading {
     text-align: center;
+    margin-top: 0.5em;
 }
 
 .able-playlist li button:active,
 .able-playlist li button:focus,
 .able-playlist li button:hover {
     text-decoration: underline;
+}
+
+.able-playlist[data-player=video1] li:hover,
+.able-playlist[data-player=video1] li:focus {
+    background-color: #ffeeb3;
 }
 
 .no-padding {

@@ -1,12 +1,12 @@
 <div class="col-md-7 no-padding">
   <video id="video1" preload="auto" data-able-player data-skin="2020" playsinline width="600"></video>
 </div>
-<div class="col-md-5">
+<div class="col-md-5 no-padding">
+  <div id="video-playlist">
   <h3 class="playlist-heading">Video Playlist</h3>
   <!-- an AblePlayer playlist is any <ul> with class="able-playlist" -->
   <!-- The value of data-player must match the id of the media element -->
   <!-- see documentation for additional details -->
-  <div id="playlist">
     <ul class="able-playlist" data-player="video1">
       <% video_files.each do |file| %>
         <li data-poster="<%= file.solr_document.thumbnail_path %>">
