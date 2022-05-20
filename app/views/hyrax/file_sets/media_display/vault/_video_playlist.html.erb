@@ -2,12 +2,12 @@
   <video id="video1" preload="auto" data-able-player data-skin="2020" playsinline width="600"></video>
 </div>
 <div class="col-md-5 no-padding">
-  <div id="video-playlist">
-  <h3 class="playlist-heading">Video Playlist</h3>
+  <div id="video-playlist-container">
+  <h3 class="playlist-heading">Video Files</h3>
   <!-- an AblePlayer playlist is any <ul> with class="able-playlist" -->
   <!-- The value of data-player must match the id of the media element -->
   <!-- see documentation for additional details -->
-    <ul class="able-playlist" data-player="video1">
+    <ul class="able-playlist" id="video-playlist" data-player="video1">
       <% video_files.each do |file| %>
         <li data-poster="<%= file.solr_document.thumbnail_path %>">
           <span class="able-source" data-src="<%= hyrax.download_path(file) %>"></span>
@@ -18,6 +18,7 @@
         </li>
       <% end %>
     </ul>
+    <div class="able-status-bar"></div>
   </div>
 </div>
 <% if Hyrax.config.display_media_download_link? && allow_downloads?(video_files.first) %>

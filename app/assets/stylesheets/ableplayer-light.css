@@ -2,7 +2,7 @@
 
 .able {
     border-radius: 8px;
-    box-shadow: 0 0 14px #444;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 45%);
 }
 
 .able-vidcap-container {
@@ -228,6 +228,10 @@ div[role=button] svg {
     border: none;
 }
 
+.able-status-bar {
+    background-color: #ddd;
+}
+
 .able-playlist li.able-current, .able-playlist li button:active {
     background-color: #117F97;
 }
@@ -239,22 +243,30 @@ div[role=button] svg {
 }
 
 .able-playlist[data-player=video1] li:not(.able-current) {
-    background: #f5f5f5;
+    background: #ddd;
     /*border: 1px solid #ccc;*/
 }
 
 #video-playlist, .able-playlist[data-player=video1] {
-    background-color: #ddd;
+    background-color: #fff;
     padding: 0.25em;
-    border-radius: 8px;
     max-height: 464px;
     overflow-y: auto;
 }
 
-#video-playlist {
+#video-playlist-container {
     position: relative;
     top: 1em;
     margin-bottom: 2em; /* This only matters on small screens or mobile */
+    box-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+    padding-top: 0.5em;
+    border-radius: 8px;
+    background-color: #f3f3f3;
+}
+
+#video-playlist-container .able-status-bar {
+    background-color: #f3f3f3;
+    border-radius: 8px;
 }
 
 h3.playlist-heading {
