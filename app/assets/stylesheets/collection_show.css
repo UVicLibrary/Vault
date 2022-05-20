@@ -64,7 +64,7 @@
 }
 
 .hyc-banner .hyc-title .label, .hyc-banner .hyc-title td.status span, td.status .hyc-banner .hyc-title span {
-    box-shadow: 1px 2px 3px rgb(0 0 0 / 80%);
+    /*box-shadow: 1px 2px 3px rgb(0 0 0 / 80%);*/
     display: inline-block;
     margin-top: 1em;
 }
