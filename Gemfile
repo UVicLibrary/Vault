@@ -7,7 +7,7 @@ gem 'combine_pdf'
 gem 'pdftoimage'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>5.2.4.3' #'~>5.1.1'
+gem 'rails', '~>5.1.1' # '~>5.2.4.3'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -21,6 +21,8 @@ gem 'coffee-rails', '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
+#gem 'nokogiri','1.12.5'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -33,11 +35,12 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-gem 'active-fedora', '>= 11.1.4'
+gem 'active-fedora', '~> 11.5.6' # '>= 11.1.4' # '12.1.1'
+gem 'solrizer', '>= 3.4'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
-gem 'byebug'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   #gem 'byebug'
