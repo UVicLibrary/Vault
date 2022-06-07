@@ -3,7 +3,7 @@
     <div class="metadata">
       <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
       <% doc_presenter = index_presenter(document) %>
-      <% if(doc_presenter.field_value('has_model_ssim') == 'Collection') %>
+      <% if document['has_model_ssim'].first == 'Collection' %>
         <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
         <div class="col-sm-12" style="padding-left: 0px;">
           <div class="collection-counts-wrapper">
@@ -32,7 +32,7 @@
               <%= render_index_field_label document, field: field_name %>
             </div>
             <div class="col-sm-9">
-              <% value = doc_presenter.field_value field_name %>
+              <% value = doc_presenter.field_value field %>
               <% if truncate_fields.any? { |f| f == field_name } %>
                 <%= value.truncate(275).html_safe %>
               <% else %>
@@ -58,13 +58,13 @@
         <% index_fields(document).each do |field_name, field| -%>
           <% if should_render_index_field? document, field %>
             <dt><%= render_index_field_label document, field: field_name %></dt>
-            <dd><%= doc_presenter.field_value field_name %></dd>
+            <dd><%= doc_presenter.field_value field %></dd>
           <% end %>
         <% end %>
       </dl>
     </div>
   </div>
-  <% if(doc_presenter.field_value('has_model_ssim') == 'Collection') %>
+  <% if document['has_model_ssim'].first == 'Collection' %>
     <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
     <div class="col-md-4">
       <div class="collection-counts-wrapper">
