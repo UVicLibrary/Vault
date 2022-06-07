@@ -12,7 +12,7 @@ module Hyrax
       # only works that are still private ensures we don't waste time on public
       # works when retrying a job, at the expense of taking slightly longer if
       # running for the first time.
-      works = GenericWork.where(member_of_collection_ids_ssim: collection_id).select { |w| w.visbility == "restricted" }
+      works = GenericWork.where(member_of_collection_ids_ssim: collection_id).select { |w| w.visibility == "restricted" }
       works.each do |work|
         work.members.each do |member|
           change_visibility(member, visibility)
