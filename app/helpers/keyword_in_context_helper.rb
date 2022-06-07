@@ -8,9 +8,9 @@ module KeywordInContextHelper
     else
       results = find_word(options[:value].first, search_term)
       if results.any?
-        '<em>Transcript available</em><br/>' + highlight(results.join('<br/>'), search_term, highlighter: '<strong>\1</strong>')
+        '<em>Searchable PDF available</em><br/>' + highlight(results.join('<br/>'), search_term, highlighter: '<strong>\1</strong>')
       else
-        '<em>Transcript available</em><br/>' + truncated_text(options[:value].first)
+        '<em>Searchable PDF available</em><br/>' + truncated_text(options[:value].first)
       end
     end
   end
