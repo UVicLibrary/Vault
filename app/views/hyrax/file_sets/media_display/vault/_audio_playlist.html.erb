@@ -8,6 +8,7 @@
     </li>
   <% end %>
 </ul>
+<div class="download-links-container">
 <% if Hyrax.config.display_media_download_link? && allow_downloads?(audio_files.first) %>
     <%= link_to "Download selected audio",
                 hyrax.download_path(audio_files.first),
@@ -26,6 +27,7 @@
                 data: { label: transcript.id } %>
   <% end %>
 <% end %>
+</div>
 <script>
   // Change "Download selected audio" link when changing files
   $(document).on('turbolinks:load', function() {
