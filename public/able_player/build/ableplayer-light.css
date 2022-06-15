@@ -235,3 +235,7 @@ div[role=button] svg {
 .able-playlist li.able-current button {
     border-radius: 5px;
 }
+
+.playlist-heading {
+    text-align: center;
+}

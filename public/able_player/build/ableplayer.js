@@ -4386,7 +4386,11 @@ var AblePlayerInstances = [];
 						}
 					}
 
-					$controllerSpan.append($newButton);
+					// Override: if we're using plain text transcript, there are no captions available
+					// because there are no timecodes
+					if (control !== 'captions' || typeof($(this.media).data('transcript-text')) == 'undefined') {
+						$controllerSpan.append($newButton);
+					}
 
 					// create variables of buttons that are referenced throughout the AblePlayer object
 					if (control === 'play') {
@@ -8464,10 +8468,9 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 		}
 
 		if (context === 'captions' || context == 'init'){
+				if (this.$ccButton) {
 
-			if (this.$ccButton) {
-
-				captionsCount = this.captions.length;
+					captionsCount = this.captions.length;
 
 				// Button has a different title depending on the number of captions.
 				// If only one caption track, this is "Show captions" and "Hide captions"
@@ -10656,7 +10659,30 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 		$autoScrollLabel = $('<label>', {
 			 'for': 'autoscroll-transcript-checkbox'
 			}).text(this.tt.autoScroll);
-    this.$transcriptToolbar.append($autoScrollLabel,this.$autoScrollTranscriptCheckbox);
+
+		this.$autoscrollContainer = $('<div>',{
+			'class': 'autoscroll-container'
+		});
+
+		this.$closeTranscriptWindow = $('<button>', {
+			'id': 'close-transcript',
+			'title': 'Close transcript window',
+			'aria-label': 'Close transcript window'
+		}).text('X').click({player: this}, function(e) {
+			e.data.player.handleTranscriptToggle();
+		});
+
+		// Do not append autoscroll if it's just a plain text transcript
+		if (typeof($(this.media).data('transcript-text')) == 'undefined') {
+			this.$autoscrollContainer.append($autoScrollLabel, this.$autoScrollTranscriptCheckbox);
+			this.$transcriptToolbar.append(this.$autoscrollContainer, this.$closeTranscriptWindow);
+			var transcriptHeader = $('<h5>', {'id': 'transcript-header'}).text('Interactive Transcript');
+			this.$transcriptToolbar.prepend(transcriptHeader);
+		} else {
+			var transcriptHeader = $('<h5>', {'id': 'plaintext-transcript-header'}).text('Transcript');
+			this.$transcriptToolbar.append(this.$closeTranscriptWindow);
+			this.$transcriptToolbar.prepend(transcriptHeader);
+		}
 
 		// Add field for selecting a transcript language
 		// Only necessary if there is more than one language
@@ -10929,6 +10955,14 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 		var thisObj = this;
 
 		var $main = $('<div class="able-transcript-container"></div>');
+
+		if (!(typeof($(this.media).data('transcript-text')) == 'undefined')) {
+			// The id of the element that contains transcript text
+			var elem = '#' + $(this.media).data('transcript-text');
+			$main.append($(elem).html());
+			return $main;
+		}
+
 		var transcriptTitle;
 
 		// set language for transcript container
@@ -12513,6 +12547,7 @@ console.log('You pushed ESC');
 
 		// add event listeners for resizing
 		$resizeHandle.on('mousedown mouseup touchstart touchend', function(e) {
+			console.log(e.type);
 			e.stopPropagation();
 			if (e.type === 'mousedown' || e.type === 'touchstart') {
   			if (!thisObj.windowMenuClickRegistered) {
@@ -13202,8 +13237,14 @@ console.log('You pushed ESC');
 		this.dragStartHeight = this.$activeWindow.height();
 
 		// add event listeners
-		$(document).on('mousemove touchmove',function(e) {
-			if (thisObj.resizing) {
+		$(document).on('mousemove touchmove mouseup',function(e) {
+			// Fix bug where moving mouse out of resize box does not fire mouseup event
+			// https://stackoverflow.com/questions/9187163/why-one-html-elements-onmouseup-event-is-not-firing-during-drag-and-drop
+			if (e.type == 'mouseup') {
+				//console.log('mouseup');
+				thisObj.endResize(which);
+			}
+			else if (thisObj.resizing) {
 				// calculate new width and height based on changes to mouse position
 				newWidth = thisObj.dragStartWidth + (e.pageX - thisObj.startMouseX);
 				newHeight = thisObj.dragStartHeight + (e.pageY - thisObj.startMouseY);

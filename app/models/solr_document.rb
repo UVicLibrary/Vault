@@ -161,4 +161,8 @@ class SolrDocument
     end
   end
 
+  def full_text
+    self['full_text_tsi']
+  end
+
 end
