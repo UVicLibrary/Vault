@@ -53,35 +53,31 @@ module Hyrax
       end
 
       def create_pdf_derivatives(filename)
-          # filename is supposed to be the full path to the file
-          # but sometimes we get a weird error where it's a path to a directory
-          # so we set filename to be the file in the directory instead
-          if File.directory?(filename)
-            file = Dir["#{filename}/*"].first
-            new_filename = (Dir["#{file}"]).to_s
-          else
-            new_filename = filename
-          end
 
-          puts new_filename
-          first_page = CombinePDF.load(new_filename, allow_optional_content: true).pages[0]
-          new_pdf = CombinePDF.new
-          new_pdf << first_page
-          first_page_path = "/usr/local/rails/vault/working/#{File.basename(new_filename).split(".")[0].gsub("&","_").gsub("'","").gsub(' ','_')}-cover.pdf" # & in a file name causes this to fail
-          new_pdf.save first_page_path
-          # Resize, create and save a thumbnail in assets directory
-          # Find what collection the fileset belongs to and create a folder named after it
-          collection = Collection.find(@file_set.parent.member_of_collection_ids.first)
-          collection_title = collection.title.first.parameterize.underscore
-          # If directory doesn't already exist, create one
-          path_prefix = "/usr/local/rails/vault/public/pdf_thumbnails/#{collection_title}"
-          unless File.directory?(path_prefix)
-            FileUtils.mkdir_p(path_prefix)
-          end
-          target_path = "#{path_prefix}/#{@file_set.id}-thumb.jpg"
-          PDFToImage.open(first_page_path).first.resize("50%").save(target_path) # Change to assets folder named by collection
-          File.delete(first_page_path)
-          extract_full_text(new_filename, uri)
+        # filename is supposed to be the full path to the file
+        # but sometimes we get a weird error where it's a path to a directory
+        # so we set filename to be the file in the directory instead
+        if File.directory?(filename)
+          file = Dir["#{filename}/*"].first
+          new_filename = (Dir["#{file}"]).to_s
+        else
+          new_filename = filename
+        end
+
+        if poppler_installed?
+          create_poppler_thumbnail(new_filename)
+        else
+          Hydra::Derivatives::PdfDerivatives.create(new_filename,
+                                                    outputs: [{
+                                                                  label: :thumbnail,
+                                                                  format: 'jpg',
+                                                                  size: '338x493',
+                                                                  url: derivative_url('thumbnail'),
+                                                                  layer: 0
+                                                              }])
+        end
+
+        extract_full_text(new_filename, uri)
       end
 
       def create_office_document_derivatives(filename)
@@ -131,5 +127,48 @@ module Hyrax
         Hydra::Derivatives::FullTextExtract.create(filename,
                                                    outputs: [{ url: uri, container: "extracted_text" }])
       end
+
+      def poppler_installed?
+        system "pdftocairo -v"
+      end
+
+      # Creates a thumbnail from the first page of a PDF using a combination
+      # of different gems, and saves it in the public folder.
+      def create_poppler_thumbnail(filename)
+        first_page = CombinePDF.load(filename).pages[0]
+        new_pdf = CombinePDF.new
+        new_pdf << first_page
+        new_pdf.save first_page_path(filename)
+        unless File.directory?(thumbnail_dir)
+          FileUtils.mkdir_p(thumbnail_dir)
+        end
+        PDFToImage.open(first_page_path(filename)).first.resize("50%").save(thumbnail_path)
+        File.delete(first_page_path(filename))
+      end
+
+      def first_page_path(filename)
+        # & in a file name causes this to fail
+        Rails.root.join("working","#{File.basename(filename).split(".")[0].gsub("&","_").gsub("'","")}-cover.pdf")
+      end
+
+      # Resize, create and save a thumbnail in assets directory
+      # Find what collection the fileset belongs to and create a folder named after it
+      # Use a "misc" folder if it's not in any collection.
+      # @return [String] The file path to the to-be created thumbnail
+      def thumbnail_path
+        "#{thumbnail_dir}/#{@file_set.id}-thumb.jpg"
+      end
+
+      def thumbnail_dir
+        if @file_set.parent.member_of_collection_ids.present?
+          collection = Collection.find(@file_set.parent.member_of_collection_ids.first)
+          collection_title = collection.title.first.parameterize.underscore
+          # If directory doesn't already exist, create one
+          "./public/pdf_thumbnails/#{collection_title}"
+        else
+          "./public/pdf_thumbnails/misc"
+        end
+      end
+
   end
 end
