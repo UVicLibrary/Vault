@@ -8,5 +8,13 @@
     style="width:100%; height:480px;"
   ></iframe>
 </div>
-<script>
-</script>
+<% if Hyrax.config.display_media_download_link? and allow_downloads?(presenter) %>
+  <% if pdf = presenter.file_set_presenters.find { |fs| fs.pdf? } %>
+  <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
+              hyrax.download_path(pdf),
+              data: { turbolinks: false },
+              target: :_blank,
+              id: "pdf_download",
+              data: { label: pdf.id } %>
+  <% end %>
+<% end %>
