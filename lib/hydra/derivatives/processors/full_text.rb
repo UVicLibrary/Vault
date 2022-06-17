@@ -34,7 +34,7 @@ module Hydra::Derivatives::Processors
     # TODO: this pulls the whole file into memory. We should stream it from Fedora instead
     # @return [String] the result of calling the extract service
     def fetch
-        resp = http_request
+        resp = http_request_or_read_locally
         # If this is a string, then the request failed and we used poppler instead
         if resp.class == String
           { "txt_file" => resp } # Return a hash so we can differentiate it from a resp.body
@@ -49,17 +49,18 @@ module Hydra::Derivatives::Processors
 
     # Send the request to the extract service
     # @return [Net::HttpResponse] the result of calling the extract service
-    def http_request
-      begin
-        Net::HTTP.start(uri.host, uri.port, use_ssl: check_for_ssl, read_timeout: 2000, open_timeout: 2000) do |http|
-          req = Net::HTTP::Post.new(uri.request_uri, request_headers)
-          req.basic_auth uri.user, uri.password unless uri.password.nil?
-          req.body = file_content
-          http.request req
-        end
-      rescue Net::ReadTimeout, EOFError
-        # Use poppler as a fallback if it's installed
-        read_from_local
+    def http_request_or_read_locally
+      text = read_from_local
+      # text over this limit causes connection problems with Solr, which can cause a cascade
+      # of failed uploads elsewhere. Assuming any pdf with this many characters has already been
+      # OCR'ed, let's just use poppler-utils to convert the pdf into a txt file and return the
+      # extracted text.
+      return text if text.length > 1500000
+      Net::HTTP.start(uri.host, uri.port, use_ssl: check_for_ssl, read_timeout: 2000, open_timeout: 2000) do |http|
+        req = Net::HTTP::Post.new(uri.request_uri, request_headers)
+        req.basic_auth uri.user, uri.password unless uri.password.nil?
+        req.body = file_content
+        http.request req
       end
     end
 
@@ -70,7 +71,7 @@ module Hydra::Derivatives::Processors
         `pdftotext #{source_path}`
         File.open("#{source_path.gsub("pdf","txt")}").read.rstrip
       else
-        raise
+        raise "Poppler utils is not installed"
       end
     end
 
