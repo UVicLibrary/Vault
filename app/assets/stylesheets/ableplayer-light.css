@@ -2,7 +2,7 @@
 
 .able {
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
 .able-vidcap-container {
@@ -272,7 +272,7 @@ div[role=button] svg {
     position: relative;
     top: 1em;
     margin-bottom: 2em; /* This only matters on small screens or mobile */
-    box-shadow: 0 2px 8px rgb(0 0 0 / 45%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     padding-top: 0.5em;
     border-radius: 8px;
     background-color: #f3f3f3;
@@ -333,13 +333,13 @@ h4.playlist-heading {
     border-radius: 8px;
     border: 1px solid #ddd;
     height: 410px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .able-transcript {
     height: calc(100% - 20px) !important;
     border-radius: 8px;
-    /*box-shadow: inset 0 -7px 9px -7px rgba(0,0,0,0.25);*/
+    /*box-shadow: inset 0 -7px 9px -7px rgba(0, 0, 0, 0.25);*/
     overflow-y: auto;
 }
 
@@ -399,7 +399,7 @@ label[for=autoscroll-transcript-checkbox] {
     display: inline-block;
     position: absolute;
     top: 0.75em;
-    right: 5.25em;
+    right: 5.5em;
 }
 
 
