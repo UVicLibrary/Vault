@@ -9,9 +9,15 @@ module AvTranscriptsHelper
     "/able_player/transcripts/#{file_set.id}.vtt"
   end
 
-  # file_set is the file set presenter for the video ()that has a transcript)
+  # file_set is the file set presenter for the video that has a transcript
   def vtt_transcript_for(file_set)
-    file_set.parent.member_presenters.find { |fs| fs.title.first.gsub(" - video","") == "#{file_set.title.first} - transcript"  }
+    transcript = file_set.parent.member_presenters.find { |fs| fs.title.first.gsub("transcript","video") == file_set.title.first && fs.pdf?  }
+    # Sometimes we have separate vtt files but only one PDF transcript
+    if transcript.nil?
+      parent_transcript_for(file_set)
+    else
+      transcript
+    end
   end
 
   # Checks to see if there is a work-level (parent-level) transcript for multiple files,
