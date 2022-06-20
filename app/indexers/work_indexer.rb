@@ -51,7 +51,7 @@ class WorkIndexer < Hyrax::WorkIndexer
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index file sets' extracted text for display in search results
-      if full_text_contents = object.file_sets.select { |fs| fs.extracted_text.present? } and full_text_contents.present?
+      if full_text_contents = object.ordered_members.to_a.select { |fs| fs.extracted_text.present? } and full_text_contents.present?
         solr_doc['full_text_tsi'] = full_text_contents.map {|fs| fs.extracted_text.content }.join("")
       end
 
