@@ -10,46 +10,52 @@ export default class Autocomplete {
    * @param {string} url - The url for the autocompete search endpoint
    */
   setup (element, fieldName, url) {
-    switch (fieldName) {
-      case 'work':
-        new Resource(
-          element,
-          url,
-          { excluding: element.data('exclude-work') }
-        )
-        break
-      case 'collection':
-        new Resource(
-          element,
-          url)
-        break
-      case 'based_near':
-        new LinkedData(element, url)
-        break
-      case 'creator':
-        new LinkedData(element, url)
-        break
-      case 'contributor':
-        new LinkedData(element, url)
-        break
-      case 'physical_repository':
-        new LinkedData(element, url)
-        break
-      case 'provider':
-        new LinkedData(element, url)
-        break
-      case 'subject':
-        new LinkedData(element, url)
-        break
-      case 'geographic_coverage':
-      	new LinkedData(element, url)
-      	break
-      case 'genre':
-      	new LinkedData(element, url)
-      	break
-      default:
-        new Default(element, url)
-        break
-    }
+      if(element.data('autocomplete-type') && element.data('autocomplete-type').length > 0) {
+          this.byDataAttribute(element, url)
+      } else {
+          this.byFieldName(element, fieldName, url)
+      }
   }
+
+    byDataAttribute(element, url) {
+        let type = element.data('autocomplete-type')
+        let exclude = element.data('exclude-work')
+        if(type === 'resource' && exclude.length > 0) {
+            new Resource(
+                element,
+                url,
+                { excluding: exclude }
+            )
+        } else if(type === 'resource' ) {
+            new Resource(
+                element,
+                url)
+        } else if(type === 'linked') {
+            new LinkedData(element, url)
+        } else {
+            new Default(element, url)
+        }
+    }
+
+    byFieldName(element, fieldName, url) {
+        switch (fieldName) {
+            case 'work':
+                new Resource(
+                    element,
+                    url,
+                    { excluding: element.data('exclude-work') }
+                )
+                break
+            case 'collection':
+                new Resource(
+                    element,
+                    url)
+                break
+            case 'based_near':
+                new LinkedData(element, url)
+            default:
+                new Default(element, url)
+                break
+        }
+    }
 }

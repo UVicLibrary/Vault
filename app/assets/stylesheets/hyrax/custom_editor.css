@@ -1,4 +1,17 @@
 /* assets/stylesheets/hyrax/custom_editor.css */
-span.controls-add-text-field-text {
+span.controls-add-string {
     text-decoration: underline;
+}
+
+.add-text-field .glyphicon-plus {
+    margin-right: 0.3rem;
+}
+
+/* Override default styles from hydra-editor */
+.multi_value .listing li:first-of-type .remove, .controlled_vocabulary .listing li:first-of-type .remove {
+    display: inherit !important;
+}
+
+.multi_value .listing li:first-of-type, .controlled_vocabulary .listing li:first-of-type {
+    width: 100% !important;
 }

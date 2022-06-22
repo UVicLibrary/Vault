@@ -52,18 +52,34 @@ export default class {
 
       $('[data-autocomplete]').each((function() {
         var elem = $(this)
-        autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
+        let values = elem.closest('div.controlled_vocabulary').data('label-values');
+        if (elem.hasClass('controlled_vocabulary')) {
+            if (values !== undefined) {
+                if (values !== '') {
+                    let result = values.filter(obj => {
+                        return obj.uri === elem.val();
+                    });
+                }
+                // Only initialize autocomplete on the 'new work' page on URIs on the edit page
+                if (values == '' || result.length > 0) {
+                    autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
+                    elem.parents('.multi_value.form-group').manage_fields({
+                        add: function(e, element) {
+                            var elem = $(element)
+                            // Don't mark an added element as readonly even if previous element was
+                            // Enable before initializing, as otherwise LinkedData fields remain disabled
+                            elem.attr('readonly', false)
+                            autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
+                        }
+                    });
+                }
+            }
+        } else {
+            autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
+        }
+
       }))
 
-      $('.multi_value.form-group').manage_fields({
-        add: function(e, element) {
-          var elem = $(element)
-          // Don't mark an added element as readonly even if previous element was
-          // Enable before initializing, as otherwise LinkedData fields remain disabled
-          elem.attr('readonly', false)
-          autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
-        }
-      })
   }
 
   // initialize any controlled vocabulary widgets
