@@ -20,7 +20,7 @@ export default class ControlledVocabulary extends FieldManager {
             inputTypeClass:    '.controlled_vocabulary',
 
             // add html for "add text field" option; the add-text-field class is called by the addTextFieldText function
-            addHtml:           '<button type=\"button\" class=\"btn btn-link add\"><span class=\"glyphicon glyphicon-plus\"></span><span class="controls-add-text"></span></button><button type=\"button\" class=\"btn btn-link add-text-field\"><span class=\"glyphicon glyphicon-plus\"></span><span class="controls-add-text-field-text" "></span></button>',
+            addHtml:           '<button type=\"button\" class=\"btn btn-link add\"><span class=\"glyphicon glyphicon-plus\"></span><span class="controls-add-uri"></span></button><button type=\"button\" class=\"btn btn-link add-text-field\"><span class=\"glyphicon glyphicon-plus\"></span><span class="controls-add-string"></span></button>',
             addText:           'Add a URI',
             addTextFieldText: 'Add text field',
 
@@ -28,12 +28,11 @@ export default class ControlledVocabulary extends FieldManager {
             removeText:         'Remove',
 
             labelControls:      true,
-            addTextSelector: '.controls-add-text-field-text',
+            addTextSelector: '.controls-add-string',
         }
         super(element, $.extend({}, options, $(element).data()))
         this.paramKey = paramKey
         // defines what element to attach the addTextFieldToList function to
-        // this.addTextSelector = '.controls-add-text-field-text'
         this.fieldName = this.element.data('fieldName')
         this.searchUrl = this.element.data('autocompleteUrl')
 
@@ -44,7 +43,7 @@ export default class ControlledVocabulary extends FieldManager {
     _attachEvents() {
         this.element.on('click', this.removeSelector, (e) => this.removeFromList(e))
         this.element.on('click', this.addSelector, (e) => this.addToList(e))
-        this.element.on('click', this.options.addTextSelector, (e) => this.addTextFieldToList(e))
+        this.element.on('click', this.options.addTextSelector, (e) => this.addToList(e))
     }
 
     // Add the "Add another" and "Remove" controls to the DOM
@@ -68,30 +67,29 @@ export default class ControlledVocabulary extends FieldManager {
 
     init() {
         this._addInitialClasses();
-        this._addAriaLiveRegions()
+        this._addAriaLiveRegions();
         this._appendControls();
         this._attachEvents();
         this._addCallbacks();
-        this._convertStringInputs();
+        this._formatStringsAndLabels();
     }
 
     // convert string/text values into the proper template. Add labels to URI fields.
     // Labels and strings are read from a data attribute set in the edit field partial.
-    _convertStringInputs() {
-        let fields = $(this.element.find('.listing').children('li'))
-        var controlledVocab = $(this)[0]
+    _formatStringsAndLabels() {
+        let fields = $(this.element.find('.listing').children('li'));
+        var controlledVocab = $(this)[0];
         // Retrieve the values from data attributes in view partials (views/records/vault/...)
-        let labelValues = fields.first().children('input').first().data('labelValues')
+        let labelValues = this.element.data('label-values');
         fields.each(function(index, field) {
             if (typeof labelValues !== 'undefined' && labelValues.length > 0) {
-                // Remove autocomplete for string values
+                let value = labelValues[index];
                 if (labelValues[index].hasOwnProperty('string')) {
-                    controlledVocab.removeAutocomplete($(field))
-                    $(field).first().children('input').first().val(labelValues[index]['string']);
-                } else { // Display the label
-                    $(field).children('input').eq(1).attr('value', labelValues[index]['uri'])
-                    $(field).find('span.select2-chosen').text(labelValues[index]['label'])
-                    $(field).children('input').first().attr('readonly', true)
+                    $(field).first().children('input').first().val(value['string']);
+                } else { // Display the label for URIs
+                    $(field).children('input').eq(1).attr('value', value['uri'])
+                    $(field).find('span.select2-chosen').text(value['label'])
+                    $(field).children('input').first().attr('readonly', false)
                 }
             }
         });
@@ -102,43 +100,26 @@ export default class ControlledVocabulary extends FieldManager {
         event.stopPropagation(); // Prevents duplicating extra text field
         event.preventDefault();
         let $listing = $(event.target).closest(this.inputTypeClass).find(this.listClass)
-        $(event.target).closest(this.inputTypeClass).find(this.listClass)
-        let $activeField = $listing.children('li').last()
-        $listing.append(this._newField($activeField));
+        let $newField = this.createNewField(event.target);
+        $listing.append($newField);
         // If a field is initialized with no inputs, we have to append add/remove controls
         this._appendControls()
         this._manageFocus()
     }
 
-    addTextFieldToList( event ) {
-        this.addToList(event)
-        let $activeField = this.element.find(this.listClass).children().last()
-        this.removeAutocomplete($activeField)
-        $activeField.on("change", (e) => {
-            $($activeField.children('input')[1]).attr('value', $activeField.children('input')[0].value)
-        })
-    }
-
-    removeAutocomplete( li_element ) {
-        let inputField = li_element.children('input').first()
-        inputField.select2('destroy')
-        inputField.removeAttr('readonly value data-autocomplete-url data-attribute placeholder')
-        inputField.off('change')
-    }
-
     // Overrides FieldManager in order to avoid doing a clone of the existing field
-    createNewField() {
-        let $newField = this._newFieldTemplate()
-        this._addBehaviorsToInput($newField)
+    createNewField(target) {
+        let $newField = this._newFieldTemplate(target);
+        this._addBehaviorsToInput($newField);
         this.element.trigger("managed_field:add", $newField);
-        return $newField
+        return $newField;
     }
 
     // Creates the html element for "Add another" button and "Add text field" button
     createAddHtml(options) {
         var $addHtml  = $(options.addHtml);
-        $addHtml.find('.controls-add-text').html(options.addText + options.label);
-        $addHtml.find('.controls-add-text-field-text').html(options.addTextFieldText + options.label);
+        $addHtml.find('.controls-add-uri').html(options.addText + options.label);
+        $addHtml.find('.controls-add-string').html(options.addTextFieldText + options.label);
         return $addHtml;
     }
 
@@ -152,9 +133,13 @@ export default class ControlledVocabulary extends FieldManager {
         return false
     }
 
-    _newFieldTemplate() {
+    _newFieldTemplate(target) {
         let index = this._maxIndex()
-        let rowTemplate = this._template()
+        if (target.className == 'controls-add-uri') {
+            var rowTemplate = this._template();
+        } else {
+            var rowTemplate = this._textFieldTemplate();
+        }
         let controls = this.controls.clone()//.append(this.remover)
         let row =  $(rowTemplate({ "paramKey": this.paramKey,
             "name": this.fieldName,
@@ -166,8 +151,14 @@ export default class ControlledVocabulary extends FieldManager {
 
     get _source() {
         return "<li class=\"field-wrapper input-group input-append\">" +
-            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[{{name}}_attributes][{{index}}][hidden_label]\" value=\"\" id=\"{{paramKey}}_{{name}}_attributes_{{index}}_hidden_label\" data-attribute=\"{{name}}\" type=\"text\">" +
+            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[{{name}}_attributes][{{index}}][hidden_label]\" value=\"\" id=\"{{paramKey}}_{{name}}_attributes_{{index}}_hidden_label\" data-attribute=\"{{name}}\" data-autocomplete-type=\"linked\" type=\"text\">" +
             "<input name=\"{{paramKey}}[{{name}}_attributes][{{index}}][id]\" value=\"\" id=\"{{paramKey}}_{{name}}_attributes_{{index}}_id\" type=\"hidden\" data-id=\"remote\">" +
+            "<input name=\"{{paramKey}}[{{name}}_attributes][{{index}}][_destroy]\" id=\"{{paramKey}}_{{name}}_attributes_{{index}}__destroy\" value=\"\" data-destroy=\"true\" type=\"hidden\"></li>"
+    }
+
+    get _textSource() {
+        return "<li class=\"field-wrapper input-group input-append\">" +
+            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[{{name}}_attributes][{{index}}][id]\" value=\"\" id=\"{{paramKey}}_{{name}}\" data-attribute=\"{{name}}\" type=\"text\">" +
             "<input name=\"{{paramKey}}[{{name}}_attributes][{{index}}][_destroy]\" id=\"{{paramKey}}_{{name}}_attributes_{{index}}__destroy\" value=\"\" data-destroy=\"true\" type=\"hidden\"></li>"
     }
 
@@ -185,7 +176,9 @@ export default class ControlledVocabulary extends FieldManager {
     _addBehaviorsToInput($newField) {
         let $newInput = $('input.multi-text-field', $newField)
         $newInput.focus()
-        this.addAutocompleteToEditor($newInput)
+        if ($newInput.data('autocomplete-type')) {
+            this.addAutocompleteToEditor($newInput)
+        }
         this.element.trigger("managed_field:add", $newInput)
     }
 
