@@ -41,7 +41,7 @@ module Hyrax::FileSetHelper
   end
 
   def m4a?(file_set)
-    file_set.filename.present? && file_set.filename.include? ".m4a"
+    file_set.filename.present? && file_set.filename.include?(".m4a")
   end
   # rubocop:enable Metrics/MethodLength
 end
