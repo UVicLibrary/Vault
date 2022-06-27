@@ -26,10 +26,11 @@ module Hyrax::FileSetHelper
     'hyrax/file_sets/media_display/' +
         if file_set.image?
           'image'
+        # .m4a files should be categorized as audio
+        elsif file_set.audio? || m4a?(file_set)
+          'audio'
         elsif file_set.video?
           'video'
-        elsif file_set.audio?
-          'audio'
         elsif file_set.pdf?
           'pdf'
         elsif file_set.office_document?
@@ -37,6 +38,10 @@ module Hyrax::FileSetHelper
         else
           'default'
         end
+  end
+
+  def m4a?(file_set)
+    file_set.filename.present? && file_set.filename.include? ".m4a"
   end
   # rubocop:enable Metrics/MethodLength
 end
