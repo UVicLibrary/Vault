@@ -28,6 +28,7 @@
   <br/>
 
   <% if Hyrax.config.display_media_download_link? && allow_downloads?(file_set) %>
+    <div class="download-links-container">
     <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                 hyrax.download_path(file_set),
                 data: { label: file_set.id },
@@ -44,6 +45,7 @@
                   id: "transcript_file_download",
                   data: { label: transcript.id } %>
     <% end %>
+    </div>
   <% end %>
 
 <% end %>
