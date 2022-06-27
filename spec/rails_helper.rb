@@ -1,24 +1,30 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV['RAILS_ENV'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 
 require 'simplecov'
-require 'coveralls'
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
-  [
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
-  ]
-)
-SimpleCov.start('rails')
+# require 'coveralls'
+# SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+#   [
+#     SimpleCov::Formatter::HTMLFormatter,
+#     Coveralls::SimpleCov::Formatter
+#   ]
+# )
+# SimpleCov.start('rails')
 
 require File.expand_path('../config/environment', __dir__)
+
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
+
+puts Rails.env
+
 require 'spec_helper'
 require 'rspec/rails'
 require 'capybara/rails'
 require 'database_cleaner'
 require 'active_fedora/cleaner'
+require 'factory_bot_rails'
+
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -104,7 +110,7 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :feature
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
+    # DatabaseCleaner.clean_with(:truncation)
   end
 
   config.before(:each) do |example|
@@ -112,7 +118,7 @@ RSpec.configure do |config|
     ActiveFedora::Cleaner.clean! if example.metadata[:clean]
 
     if example.metadata[:type] == :feature && Capybara.current_driver != :rack_test
-      DatabaseCleaner.strategy = :truncation
+      # DatabaseCleaner.strategy = :truncation
     else
       DatabaseCleaner.strategy = :transaction
       DatabaseCleaner.start
@@ -121,11 +127,12 @@ RSpec.configure do |config|
 
   config.after(:each, type: :feature) do
     Warden.test_reset!
-    Capybara.reset_sessions!
+    # Capybara.reset_sessions!
     page.driver.reset!
   end
 
   config.after do
     DatabaseCleaner.clean
+    ActiveFedora::Cleaner.clean!
   end
 end

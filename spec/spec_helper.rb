@@ -14,11 +14,13 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'webmock/rspec'
+require 'rspec/rails'
 require 'i18n/debug' if ENV['I18N_DEBUG']
 
 RSpec.configure do |config|
   config.before(:suite) do
-    WebMock.disable_net_connect!(allow_localhost: true, allow: 'hyku-carrierwave-test.s3.amazonaws.com')
+    # WebMock.disable_net_connect!(allow_localhost: true, allow: 'hyku-carrierwave-test.s3.amazonaws.com')
+    WebMock.allow_net_connect!
   end
 
   # rspec-expectations config goes here. You can use an alternate
@@ -57,7 +59,7 @@ RSpec.configure do |config|
   # only run aws tests from CI (or w/ `--tag aws`) and only run it on the main repo, since that
   # is where the valid aws keys live. TRAVIS_PULL_REQUEST_SLUG is "" when the job is a push job
   unless ENV['CI'] &&
-         (ENV['TRAVIS_PULL_REQUEST_SLUG'].match('samvera-labs/hyku') || ENV['TRAVIS_PULL_REQUEST_SLUG'].blank?)
+    (ENV['TRAVIS_PULL_REQUEST_SLUG'].match('samvera-labs/hyku') || ENV['TRAVIS_PULL_REQUEST_SLUG'].blank?)
     config.filter_run_excluding(aws: true)
   end
 
