@@ -56,7 +56,7 @@ export default class {
         if (elem.hasClass('controlled_vocabulary')) {
             if (values !== undefined) {
                 if (values !== '') {
-                    let result = values.filter(obj => {
+                    var result = values.filter(obj => {
                         return obj.uri === elem.val();
                     });
                 }
