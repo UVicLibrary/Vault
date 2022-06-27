@@ -10,6 +10,7 @@
 </ul>
 <div class="download-links-container">
 <% if Hyrax.config.display_media_download_link? && allow_downloads?(audio_files.first) %>
+    <div class="download-links-container">
     <%= link_to "Download selected audio",
                 hyrax.download_path(audio_files.first),
                 data: { label: audio_files.first.id },
@@ -26,6 +27,7 @@
                 id: "transcript_file_download",
                 data: { label: transcript.id } %>
   <% end %>
+    </div>
 <% end %>
 </div>
 <script>
