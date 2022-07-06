@@ -13,7 +13,7 @@
 
     super.tap do |solr_doc|
       solr_doc['hasFormat_ssim'] = object.rendering_ids
-      if object.parent and object.parent.creator.present?
+      if object.parent and object.parent.creator.present? and object.creator.blank?
         parent_doc = SolrDocument.find(object.parent.id)
         solr_doc['creator_tesim'] = parent_doc['creator_tesim']
         solr_doc['creator_label_tesim'] = parent_doc['creator_label_tesim']
