@@ -18,19 +18,8 @@
       </fieldset>
     </div>
 
-    <% if request.base_url.include? "vault" %>
-        <div class="list-group-item">
-          <fieldset>
-            <legend class="downloadable" >Downloadable</legend>
-            <% if params[:action] == "new" %>
-              <% checked_status = true %>
-            <% else %>
-              <% checked_status = ActiveModel::Type::Boolean.new.cast(f.object.downloadable) %>
-            <% end %>
-            <%= f.check_box :downloadable, {default: true, checked: checked_status }, 'true', 'false' %>
-            Public users can download files.
-          </fieldset>
-        </div>
+    <% form_progress_sections_for(form: f.object).each do |section| %>
+      <%= render "form_progress_#{section}", f: f %>
     <% end %>
 
     <div class="set-access-controls list-group-item">
