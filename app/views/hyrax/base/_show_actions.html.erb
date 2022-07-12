@@ -3,10 +3,10 @@
     <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
       <%= link_to "Feature", hyrax.featured_work_path(presenter, format: :json),
                   data: { behavior: 'feature' },
-                  class: presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default'  %>
+                  class: presenter.display_feature_link? ? 'btn btn-default' : 'btn btn-default collapse'  %>
       <%= link_to "Unfeature", hyrax.featured_work_path(presenter, format: :json),
                   data: { behavior: 'unfeature' },
-                  class: presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default' %>
+                  class: presenter.display_unfeature_link? ? 'btn btn-default' : 'btn btn-default collapse' %>
     <% elsif current_ability.can?(:edit, presenter.solr_document) %>
       <%= render_featured_help_message(presenter) %>
     <% end %>
