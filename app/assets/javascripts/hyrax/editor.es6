@@ -34,7 +34,7 @@ export default class {
       $('.panel-footer').toggleClass('hidden');
     });
   }
-  
+
   // Used when you have a linked data field that can have terms from multiple
   // authorities.
   authoritySelect() {
@@ -54,26 +54,23 @@ export default class {
         var elem = $(this)
         let values = elem.closest('div.controlled_vocabulary').data('label-values');
         if (elem.hasClass('controlled_vocabulary')) {
-            if (values !== undefined) {
-                if (values !== '') {
-                    var result = values.filter(obj => {
-                        return obj.uri === elem.val();
-                    });
-                }
                 // Only initialize autocomplete on the 'new work' page on URIs on the edit page
-                if (values == '' || result.length > 0) {
-                    autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
-                    elem.parents('.multi_value.form-group').manage_fields({
-                        add: function(e, element) {
-                            var elem = $(element)
-                            // Don't mark an added element as readonly even if previous element was
-                            // Enable before initializing, as otherwise LinkedData fields remain disabled
-                            elem.attr('readonly', false)
-                            autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
-                        }
-                    });
+                if (values !== undefined) {
+                    let idx = elem.parents("ul").children().index(elem.parent('li'))
+                    if ( values == '' || 'uri' in values[idx]) {
+                        autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
+                        // elem.parents('.multi_value.form-group').manage_fields({
+                        elem.parents('.multi_value.form-group').manage_fields({
+                            add: function(e, element) {
+                                var elem = $(element)
+                                // Don't mark an added element as readonly even if previous element was
+                                // Enable before initializing, as otherwise LinkedData fields remain disabled
+                                elem.attr('readonly', false)
+                                autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
+                            }
+                        });
+                    }
                 }
-            }
         } else {
             autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
         }
@@ -131,5 +128,3 @@ export default class {
       this.element.find('#savewidget').fixedsticky()
   }
 }
-
-
