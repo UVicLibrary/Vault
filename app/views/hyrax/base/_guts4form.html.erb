@@ -1,5 +1,5 @@
 <% # we will yield to content_for for each tab, e.g. :files_tab %>
-<% tabs ||= %w[metadata files relationships] # default tab order %>
+<% tabs = form_tabs_for(form: f.object) # default tab order %>
 <div class="row">
   <div class="col-xs-12 col-sm-8">
     <div class="panel panel-default tabs" role="main">
@@ -26,7 +26,7 @@
 
       <!-- Tab panes -->
       <div class="tab-content">
-        <% (tabs - ['share']).each_with_index do | tab, i | %>
+        <% (tabs).each_with_index do | tab, i | %>
           <% if i == 0 %>
             <div role="tabpanel" class="tab-pane active" id="<%= tab %>">
           <% else %>
@@ -39,12 +39,6 @@
           </div>
           </div>
         <% end %>
-
-        <div role="tabpanel" class="tab-pane" id="share" data-param-key="<%= f.object.model_name.param_key %>">
-          <div class="form-tab-content">
-            <%= render "form_share", f: f %>
-          </div>
-        </div>
         </div>
       </div>
     </div>
