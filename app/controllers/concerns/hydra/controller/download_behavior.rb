@@ -60,16 +60,12 @@ module Hydra
 
       # Handle the HTTP show request
       def send_content
-
         response.headers['Accept-Ranges'] = 'bytes'
-        # response.headers['Content-Length'] ||= file.size.to_s
-
         if request.head?
           content_head
-        elsif request.headers['HTTP_RANGE']#(request.headers['HTTP_RANGE'] or file.mime_type.include?("pdf"))
+        elsif request.headers['HTTP_RANGE']
           send_range
         else
-          #response.headers['Content-Length'] ||= file.size.to_s
           send_file_contents
         end
       end
@@ -106,8 +102,8 @@ module Hydra
       end
 
       def send_file_contents
-      	response.headers['Access-Control-Expose-Headers'] = 'Content-Range, Accept-Ranges, Content-Length, Content-Encoding'
-      	response.headers['Content-Range'] = "0-#{file.size-1}/#{file.size}"
+        response.headers['Access-Control-Expose-Headers'] = 'Content-Range, Accept-Ranges, Content-Length, Content-Encoding'
+        response.headers['Content-Range'] = "0-#{file.size-1}/#{file.size}"
         self.status = 200
         prepare_file_headers
         stream_body file.stream
@@ -117,16 +113,11 @@ module Hydra
         send_file_headers! content_options
         response.headers['Content-Type'] = file.mime_type
         response.headers['Content-Length'] ||= file.size.to_s
-        headers['Content-Length'] ||= file.size.to_s
         # Prevent Rack::ETag from calculating a digest over body
         response.headers['Last-Modified'] = asset.modified_date.utc.strftime("%a, %d %b %Y %T GMT")
         self.content_type = file.mime_type
         response.headers['Custom-Header'] = "#{file.size}"
-
-        # response.headers['Access-Control-Allow-Origin'] = "*"
-        # response.headers['Access-Control-Allow-Headers'] = 'range'
-        # response.headers['Access-Control-Expose-Headers'] = 'Content-Range, Accept-Ranges, Content-Length, Content-Encoding'
-        # response.headers['Access-Control-Allow-Methods'] = 'GET'
+        response.headers['Content-Encoding'] = "identity"
       end
 
       private
