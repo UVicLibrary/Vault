@@ -21,6 +21,8 @@ gem 'coffee-rails', '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
+# gem 'hydra-core', '~> 10.5.0'
+
 #gem 'nokogiri','1.12.5'
 
 # Use jquery as the JavaScript library
@@ -61,12 +63,12 @@ group :development, :test do
 end
 
 group :test do
-  gem 'capybara'
+  # gem 'capybara'
   gem 'chromedriver-helper'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   # rack-test >= 0.71 does not work with older Capybara versions (< 2.17). See #214 for more details
-  gem 'rack-test', '0.7.0'
+  # gem 'rack-test', '0.7.0'
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'webmock'
@@ -141,7 +143,7 @@ gem 'secure_headers'
 
 gem 'honeybadger', '~> 3.0'
 
-gem 'pdfjs_viewer-rails'
+gem 'pdfjs_viewer-rails', '~> 0.2.0'
 
 # https://github.com/mislav/will_paginate
 # gem 'will_paginate', '3.1.5'
