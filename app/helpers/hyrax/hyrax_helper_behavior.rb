@@ -11,6 +11,9 @@ module Hyrax
     include Hyrax::CollectionsHelper
     include Hyrax::ChartsHelper
     include Hyrax::DashboardHelperBehavior
+    include Hyrax::IiifHelper
+    include Hyrax::WorkFormHelper
+    include VaultWorkFormHelper
 
     # Which translations are available for the user to select
     # @return [Hash<String,String>] locale abbreviations as keys and flags as values
