@@ -10,15 +10,16 @@ module Hyrax::DisplaysImage
   # @return [IIIFManifest::DisplayImage] the display image required by the manifest builder.
   def display_image
     return nil unless solr_document.image? and current_ability.can?(:read, solr_document)
+    return nil unless latest_file_id
     # Changed "original_file" id to the latest file id that is
     # ideally indexed to file set for faster performance. Fedora is a fallback.
     #  Fixes error where Riiif holds onto earlier versions of an image.
     #  See https://github.com/samvera/hyrax/pull/3165 and
     # https://github.com/samvera/hyrax/pull/3764/commits/bb730aaf3367877ec2662e975aaa6208c7c60c7b#
-    url = display_image_url(hostname)
-    IIIFManifest::DisplayImage.new(url,
-                                   width: 640,
-                                   height: 480,
+    url =
+    IIIFManifest::DisplayImage.new(display_image_url(hostname),
+                                   width: width,
+                                   height: height,
                                    iiif_endpoint: iiif_endpoint(latest_file_id))
   end
 
