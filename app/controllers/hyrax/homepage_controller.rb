@@ -112,7 +112,7 @@ class Hyrax::HomepageController < ApplicationController
   end
 
   def sort_field
-    "#{Solrizer.solr_name('date_uploaded', :stored_sortable, type: :date)} desc"
+    "date_uploaded_dtsi desc"
   end
 
   def genre_facets
