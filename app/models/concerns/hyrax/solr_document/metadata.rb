@@ -44,60 +44,60 @@ module Hyrax
       end
 
       included do
-        attribute :identifier, Solr::Array, solr_name('identifier')
-        attribute :creator, Solr::Array, solr_name('creator')
-        attribute :creator_label, Solr::Array, solr_name('creator_label')
-        attribute :based_near, Solr::Array, solr_name('based_near')
-        attribute :based_near_label, Solr::Array, solr_name('based_near_label')
-        attribute :related_url, Solr::Array, solr_name('related_url')
-        attribute :resource_type, Solr::Array, solr_name('resource_type')
+        attribute :identifier, Solr::Array, "identifier_tesim"
+        attribute :creator, Solr::Array, "creator_tesim"
+        attribute :creator_label, Solr::Array, "creator_label_tesim"
+        attribute :based_near, Solr::Array, "based_near_tesim"
+        attribute :based_near_label, Solr::Array, "based_near_label_tesim"
+        attribute :related_url, Solr::Array, "related_url_tesim"
+        attribute :resource_type, Solr::Array, "resource_type_tesim"
         attribute :edit_groups, Solr::Array, ::Ability.edit_group_field
         attribute :edit_people, Solr::Array, ::Ability.edit_user_field
         attribute :read_groups, Solr::Array, ::Ability.read_group_field
         attribute :collection_ids, Solr::Array, 'collection_ids_tesim'
-        attribute :admin_set, Solr::Array, solr_name('admin_set')
+        attribute :admin_set, Solr::Array, "admin_set_tesim"
         attribute :member_ids, Solr::Array, "member_ids_ssim"
-        attribute :member_of_collection_ids, Solr::Array, solr_name('member_of_collection_ids', :symbol)
-        attribute :description, Solr::Array, solr_name('description')
-        attribute :title, Solr::Array, solr_name('title')
-        attribute :contributor, Solr::Array, solr_name('contributor')
-        attribute :contributor_label, Solr::Array, solr_name('contributor_label')
-        attribute :subject, Solr::Array, solr_name('subject')
-        attribute :subject_label, Solr::Array, solr_name('subject_label')
-        attribute :publisher, Solr::Array, solr_name('publisher')
-        attribute :provider, Solr::Array, solr_name('provider')
-        attribute :provider_label, Solr::Array, solr_name('provider_label')
-        attribute :language, Solr::Array, solr_name('language')
-        attribute :keyword, Solr::Array, solr_name('keyword')
-        attribute :license, Solr::Array, solr_name('license')
-        attribute :source, Solr::Array, solr_name('source')
-        attribute :date_created, Solr::Array, solr_name('date_created')
-        attribute :rights_statement, Solr::Array, solr_name('rights_statement')
-        attribute :physical_repository, Solr::Array, solr_name('physical_repository')
-        attribute :physical_repository_label, Solr::Array, solr_name('physical_repository_label')
-        attribute :geographic_coverage, Solr::Array, solr_name('geographic_coverage')
-        attribute :geographic_coverage_label, Solr::Array, solr_name('geographic_coverage_label')
-        attribute :genre, Solr::Array, solr_name('genre')
-        attribute :genre_label, Solr::Array, solr_name('genre_label')
-        attribute :year, Solr::Array, solr_name('year')
-        
+        attribute :member_of_collection_ids, Solr::Array, "member_of_collection_ids_ssim"
+        attribute :description, Solr::Array, "description_tesim"
+        attribute :title, Solr::Array, "title_tesim"
+        attribute :contributor, Solr::Array, "contributor_tesim"
+        attribute :contributor_label, Solr::Array, "contributor_label_tesim"
+        attribute :subject, Solr::Array, "subject_tesim"
+        attribute :subject_label, Solr::Array, "subject_label_tesim"
+        attribute :publisher, Solr::Array, "publisher_tesim"
+        attribute :provider, Solr::Array, "provider_tesim"
+        attribute :provider_label, Solr::Array, "provider_label_tesim"
+        attribute :language, Solr::Array, "language_tesim"
+        attribute :keyword, Solr::Array, "keyword_tesim"
+        attribute :license, Solr::Array, "license_tesim"
+        attribute :source, Solr::Array, "source_tesim"
+        attribute :date_created, Solr::Array, "date_created_tesim"
+        attribute :rights_statement, Solr::Array, "rights_statement_tesim"
+        attribute :physical_repository, Solr::Array, "physical_repository_tesim"
+        attribute :physical_repository_label, Solr::Array, "physical_repository_label_tesim"
+        attribute :geographic_coverage, Solr::Array, "geographic_coverage_tesim"
+        attribute :geographic_coverage_label, Solr::Array, "geographic_coverage_label_tesim"
+        attribute :genre, Solr::Array, "genre_tesim"
+        attribute :genre_label, Solr::Array, "genre_label_tesim"
+        attribute :year, Solr::Array, "year_tesim"
 
-        attribute :mime_type, Solr::String, solr_name('mime_type', :stored_sortable)
-        attribute :workflow_state, Solr::String, solr_name('workflow_state_name', :symbol)
-        attribute :human_readable_type, Solr::String, solr_name('human_readable_type', :stored_searchable)
-        attribute :representative_id, Solr::String, solr_name('hasRelatedMediaFragment', :symbol)
+
+        attribute :mime_type, Solr::String, "mime_type_ssi"
+        attribute :workflow_state, Solr::String, "workflow_state_name_ssim"
+        attribute :human_readable_type, Solr::String, "human_readable_type_tesim"
+        attribute :representative_id, Solr::String, "hasRelatedMediaFragment_ssim"
         # extract the term name from the rendering_predicate (it might be after the final / or #)
-        attribute :rendering_ids, Solr::Array, solr_name(Hyrax.config.rendering_predicate.value.split(/#|\/|,/).last, :symbol)
-        attribute :thumbnail_id, Solr::String, solr_name('hasRelatedImage', :symbol)
+        attribute :rendering_ids, Solr::Array, Hyrax.config.rendering_predicate.value.split(/#|\/|,/).last + "_ssim"
+        attribute :thumbnail_id, Solr::String, "hasRelatedImage_ssim"
         attribute :thumbnail_path, Solr::String, CatalogController.blacklight_config.index.thumbnail_field
-        attribute :label, Solr::String, solr_name('label')
-        attribute :file_format, Solr::String, solr_name('file_format')
-        attribute :suppressed?, Solr::String, solr_name('suppressed', Solrizer::Descriptor.new(:boolean, :stored, :indexed))
+        attribute :label, Solr::String, "label_tesim"
+        attribute :file_format, Solr::String, "file_format_tesim"
+        attribute :suppressed?, Solr::String, "suppressed_bsi"
         attribute :current_file_version, Solr::String, "current_file_version_ssi"
-        attribute :date_modified, Solr::Date, solr_name('date_modified', :stored_sortable, type: :date)
-        attribute :date_uploaded, Solr::Date, solr_name('date_uploaded', :stored_sortable, type: :date)
-        attribute :create_date, Solr::Date, solr_name('system_create', :stored_sortable, type: :date)
-        attribute :modified_date, Solr::Date, solr_name('system_modified', :stored_sortable, type: :date)
+        attribute :date_modified, Solr::Date, "date_modified_dtsi"
+        attribute :date_uploaded, Solr::Date, "date_uploaded_dtsi"
+        attribute :create_date, Solr::Date, "system_create_dtsi"
+        attribute :modified_date, Solr::Date, "system_modified_dtsi"
         attribute :embargo_release_date, Solr::Date, Hydra.config.permissions.embargo.release_date
         attribute :lease_expiration_date, Solr::Date, Hydra.config.permissions.lease.expiration_date
       end
