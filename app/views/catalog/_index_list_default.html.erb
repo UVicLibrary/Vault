@@ -3,7 +3,7 @@
     <div class="metadata">
       <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
       <% doc_presenter = index_presenter(document) %>
-      <% if document['has_model_ssim'].first == 'Collection' %>
+      <% if document.collection? %>
         <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
         <div class="col-sm-12" style="padding-left: 0px;">
           <div class="collection-counts-wrapper">
@@ -64,7 +64,7 @@
       </dl>
     </div>
   </div>
-  <% if document['has_model_ssim'].first == 'Collection' %>
+  <% if document.collection? %>
     <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
     <div class="col-md-4">
       <div class="collection-counts-wrapper">
