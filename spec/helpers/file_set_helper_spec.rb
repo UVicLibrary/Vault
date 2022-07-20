@@ -72,4 +72,41 @@ RSpec.describe Hyrax::FileSetHelper do
       it { is_expected.to eq 'hyrax/file_sets/media_display/default' }
     end
   end
+
+  describe '#allow_downloads?' do
+
+    let(:parent_work) { GenericWork.new(downloadable: true) }
+    let(:file_set) { FileSet.new }
+    subject { helper.allow_downloads?(file_set) }
+
+    before do
+      allow(file_set).to receive(:parent).and_return(parent_work)
+      allow(file_set).to receive(:id).and_return("foo")
+      allow(helper).to receive(:can?).with(:edit, "foo").and_return(true)
+    end
+
+    context 'when parent is downloadable' do
+      it { is_expected.to eq true }
+    end
+
+    context 'when parent is not downloadable' do
+      before do
+        parent_work.downloadable = false
+      end
+
+      context 'and user can edit' do
+        it { is_expected.to eq true }
+      end
+
+      context 'and user cannot edit' do
+        before do
+          allow(helper).to receive(:can?).with(:edit, "foo").and_return(false)
+        end
+        it { is_expected.to eq false }
+      end
+
+    end
+
+  end
+
 end

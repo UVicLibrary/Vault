@@ -10,12 +10,15 @@ module Hyrax
     end
 
     def universal_viewer_base_url(work_presenter)
-        class_name = work_presenter.model_name.name.constantize
-        if class_name.find(work_presenter.id).downloadable? or can?(:edit, work_presenter.id)
-          "#{request&.base_url}/uv/uv.html"
-        else
-          "#{request&.base_url}/uv/uv-no-download.html"
-        end
+      if class_name(work_presenter).find(work_presenter.id).downloadable? or can?(:edit, work_presenter.id)
+        "#{request&.base_url}/uv/uv.html"
+      else
+        "#{request&.base_url}/uv/uv-no-download.html"
+      end
+    end
+
+    def class_name(work_presenter)
+      work_presenter.model_name.name.constantize
     end
 
     def universal_viewer_config_url(work_presenter)

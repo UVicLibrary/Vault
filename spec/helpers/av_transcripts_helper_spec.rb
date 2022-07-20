@@ -1,4 +1,4 @@
-RSpec.describe VideoTranscriptsHelper, type: :helper do
+RSpec.describe AvTranscriptsHelper, type: :helper do
 
   describe "#has_vtt?(file_set)" do
 
