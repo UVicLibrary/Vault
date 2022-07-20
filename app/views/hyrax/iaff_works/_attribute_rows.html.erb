@@ -38,6 +38,7 @@
 <%= presenter.attribute_to_html(:transcript) %>
 <%= presenter.attribute_to_html(:technical_note) %>
 <%= presenter.attribute_to_html(:year) %>
+<%= presenter.attribute_to_html(:license, render_as: :license, html_dl: true) %>
 Permalink
 <% permalink = "#{request.base_url}/concern/iaff_works/#{presenter.id}" %>
 <ul class="tabular">
