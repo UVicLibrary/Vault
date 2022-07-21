@@ -1,29 +1,23 @@
-<% if request.base_url.include? "vault" %>
-  <%= render 'hyrax/file_sets/media_display/vault/video', file_set: file_set %>
-  <% else %>
+<% if Hyrax.config.display_media_download_link? %>
+  <div>
+    <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
     <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
       <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
       <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
-      <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
+      Your browser does not support the video tag.
     </video>
-
-  <% if allow_downloads?(file_set) %>
     <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                 hyrax.download_path(file_set),
                 data: { label: file_set.id },
                 target: :_blank,
                 id: "file_download" %>
-  <% end %>
-
-  <%# Include link to transcript %>
-  <% if file_set.respond_to?(:parent) && file_set.parent.member_presenters.any? { |fs| fs.pdf? } %>
-    <% transcript = file_set.parent.member_presenters.find { |fs| fs.pdf? } %>
-    &ensp;|&ensp;
-    <%= link_to "Download transcript (PDF)",
-                hyrax.download_path(transcript),
-                data: { turbolinks: false },
-                target: :_blank,
-                id: "transcript_file_download",
-                data: { label: transcript.id } %>
-  <% end %>
+  </div>
+<% else %>
+  <div>
+    <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
+      <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
+      <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
 <% end %>
