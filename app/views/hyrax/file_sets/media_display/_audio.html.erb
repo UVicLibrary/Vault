@@ -7,11 +7,11 @@
       <%= t('hyrax.file_set.show.downloadable_content.audio_tag_not_supported') %>
     </audio>
   </div>
-<% end %>
-<% if Hyrax.config.display_media_download_link? %>
-  <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
-              hyrax.download_path(file_set),
-              data: { label: file_set.id },
-              target: :_blank,
-              id: "file_download" %>
+  <% if Hyrax.config.display_media_download_link? %>
+    <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
+                hyrax.download_path(file_set),
+                data: { label: file_set.id },
+                target: :_blank,
+                id: "file_download" %>
+  <% end %>
 <% end %>
