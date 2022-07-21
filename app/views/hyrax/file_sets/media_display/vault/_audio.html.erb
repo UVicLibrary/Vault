@@ -1,9 +1,8 @@
   <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
   <script src="<%= request.base_url %>/able_player/build/ableplayer.min.js"></script>
-  <% if Hyrax.config.display_media_download_link? and allow_downloads?(file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-    <% audio_files = file_set.parent.file_set_presenters.select { |fsp| fsp.audio? } %>
+    <% audio_files = file_set.parent.member_presenters.select { |fsp| fsp.audio? } %>
     <% if audio_files.count > 1 and work_show_page? %>
         <%= render 'hyrax/file_sets/media_display/vault/audio_playlist', audio_files: audio_files, parent: file_set.parent %>
     <% else %>
@@ -32,4 +31,3 @@
         <% end %>
     <% end %>
     </div>
-<% end %>
