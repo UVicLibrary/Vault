@@ -36,7 +36,7 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_audio.html.erb', type: :vie
     end
 
     it "draws the view with the link" do
-      expect(subject).to have_selector("audio")
+      expect(subject).to have_selector("audio[data-able-player]")
       expect(subject).to have_css('a', text: 'Download audio')
     end
 
@@ -52,7 +52,7 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_audio.html.erb', type: :vie
       end
 
       it "draws the view without the link" do
-        expect(subject).to have_selector("audio")
+        expect(subject).to have_selector("audio[data-able-player]")
         expect(subject).not_to have_css('a', text: 'Download audio')
       end
     end
