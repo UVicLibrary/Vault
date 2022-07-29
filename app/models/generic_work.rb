@@ -114,7 +114,8 @@ class GenericWork < ActiveFedora::Base
   
   
   # This indexer uses IIIF thumbnails:
-  self.indexer = WorkIndexer
+  # self.indexer = WorkIndexer
+  self.indexer = GenericWorkIndexer
   self.human_readable_type = 'Work'
   
   #def date_created=(value)

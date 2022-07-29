@@ -14,12 +14,13 @@ class PdfThumbnailPathService < Hyrax::WorkThumbnailPathService
 
       return default_image unless thumb
       return call(thumb) unless thumb.file_set?
-      collection = object.parent.member_of_collections
-      collection_name = object.parent.member_of_collections.first.title.first.parameterize.underscore if collection.any?
-      if collection_name && File.exist?("#{public_path}#{pdf_path(collection_name, object.id)}")
-        pdf_path(collection_name, object.id)
-      elsif File.exist?("#{public_path}#{pdf_path(collection_name, object.id)}")
-        misc_path(object.id)
+
+      if in_collection?(thumb) && File.exist?("#{public_path}#{coll_path(collection_title(thumb), thumb.id)}")
+        coll_path(collection_title(thumb), thumb.id)
+      elsif in_collection?(thumb)
+        default_image
+      elsif File.exist?("#{public_path}#{misc_path(thumb.id)}")
+        misc_path(thumb.id)
       else
         default_image
       end
@@ -27,7 +28,16 @@ class PdfThumbnailPathService < Hyrax::WorkThumbnailPathService
 
   private
 
-    def pdf_path(collection_title, file_set_id)
+    def in_collection?(file_set)
+      return false unless file_set.parent
+      file_set.parent.member_of_collections.any? ? true : false
+    end
+
+    def collection_title(file_set)
+      file_set.parent.member_of_collections.first.title.first.parameterize.underscore
+    end
+
+    def coll_path(collection_title, file_set_id)
       "/pdf_thumbnails/#{collection_title}/#{file_set_id}-thumb.jpg"
     end
 

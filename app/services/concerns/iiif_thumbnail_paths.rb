@@ -15,7 +15,9 @@ module IIIFThumbnailPaths
     # @private
     def iiif_thumbnail_path(file_set, size)
       file = file_set.original_file
+
       return unless file
+
       # Use latest version
       if file_set.latest_content_version
         path = file_set.latest_content_version.label != "version1" ? "#{file.id}/fcr:versions/#{file_set.latest_content_version.label}" : file.id
