@@ -61,14 +61,15 @@ group :development, :test do
 end
 
 group :test do
-  # gem 'capybara'
-  # gem 'chromedriver-helper'
+  gem 'capybara'
+  gem 'chromedriver-helper'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   # rack-test >= 0.71 does not work with older Capybara versions (< 2.17). See #214 for more details
   gem 'rack-test', '0.7.0'
   gem 'rails-controller-testing'
-  # gem 'selenium-webdriver'
+  gem 'rspec-activemodel-mocks'
+  gem 'selenium-webdriver'
   gem 'webmock'
 end
 
@@ -94,7 +95,7 @@ gem 'blacklight_advanced_search'
 
 gem 'hydra-access-controls', '~>10.7.0'
 
-gem 'hyrax', '2.8.0' # '2.7.2'
+gem 'hyrax', '2.9.6' # '2.7.2'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
