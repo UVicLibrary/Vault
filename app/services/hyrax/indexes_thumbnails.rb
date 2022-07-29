@@ -26,7 +26,7 @@ module Hyrax
     def thumbnail_path
       if self.object.class == Collection && UploadedCollectionThumbnailPathService.uploaded_thumbnail?(self.object)
         UploadedCollectionThumbnailPathService.call(object)
-      elsif self.object.is_a?(::FileSet) && self.object.label && (self.object.audio? or self.object.label.include?(".m4a"))
+      elsif self.object.is_a?(::FileSet) && self.object.label && (self.object.audio? or m4a_file?(self.object))
         AudioFileSetThumbnailService.call(object)
       elsif self.object.thumbnail && self.object.thumbnail.pdf?
         PdfThumbnailPathService.call(object.thumbnail)
@@ -34,5 +34,10 @@ module Hyrax
         self.class.thumbnail_path_service.call(object)
       end
     end
+
+    def m4a_file?(object)
+      object.label && object.label.include?(".m4a")
+    end
+
   end
 end

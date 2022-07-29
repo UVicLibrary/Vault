@@ -15,9 +15,15 @@ module IIIFThumbnailPaths
     # @private
     def iiif_thumbnail_path(file_set, size)
       file = file_set.original_file
+
       return unless file
+
       # Use latest version
-      path = file_set.latest_content_version.label != "version1" ? "#{file.id}/fcr:versions/#{file_set.latest_content_version.label}" : file.id
+      if file_set.latest_content_version
+        path = file_set.latest_content_version.label != "version1" ? "#{file.id}/fcr:versions/#{file_set.latest_content_version.label}" : file.id
+      else
+        path = file.id
+      end
       Riiif::Engine.routes.url_helpers.image_path(
         path,
         size: size
