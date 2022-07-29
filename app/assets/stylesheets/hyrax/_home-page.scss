@@ -22,13 +22,13 @@
     width: 100%;
   }
 
-  #edge {
+  /*#edge {
     width: 50%;
     height: 100%;
     position: absolute;
     right: 0;
     top: 0;
-  }
+  }*/
 
   @media only screen and (min-width: 991px ) {
     .site-title-container {
@@ -41,7 +41,7 @@
       height: 50%;
     }
     .navbar {
-      background-image: linear-gradient(#002754,#005493);
+      //background-image: linear-gradient(#002754,#005493);
 
       .active > a {
         &,
@@ -89,7 +89,7 @@
   }
 
   .navbar {
-    background-color: rgba(0, 0, 0, 0.4);//$navbar-transparent-bg;
+    //background-color: rgba(0, 0, 0, 0.4);//$navbar-transparent-bg;
     margin-bottom: 0;
     color: #fff;
 

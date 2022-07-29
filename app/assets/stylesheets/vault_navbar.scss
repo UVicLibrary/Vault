@@ -1,0 +1,120 @@
+.adv-search {
+  display: block;
+  color: white;
+  font-size: 14px;
+  padding-left: 15%;
+  padding-top: 6px;
+}
+
+.input-group {
+  padding-left: 15%;
+  padding-right: 15%;
+}
+
+.vault_nav {
+  height: 60px;
+  padding-top: 4px;
+
+  #navbar-right-different {
+    font-size: 20px !important;
+  }
+
+  .col-md-3 {
+    width: 32%;
+  }
+
+  .col-md-5 {
+    width: 34%;
+  }
+
+  .col-md-7 {
+    width: 32%;
+  }
+
+  #vault_logo {
+    max-width: 235px;
+    font-size: 22px;
+  }
+
+  #wordmark {
+    height: 18px;
+    margin-top: -3px;
+  }
+
+  #search_button {
+    margin-top: 9px;
+  }
+
+  .glyphicon-log-in {
+    margin-left: -5px;
+    margin-top: -3px;
+  }
+
+  .row {
+    margin-left: 15%;
+    margin-right: 15%;
+    padding-right: 20px;
+  }
+
+  @media only screen and (max-width: 1250px ) {
+    .row {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  @media only screen and (max-width: 840px ) {
+    a {
+      font-size: 20px;
+    }
+    body {
+      margin-bottom: 55%
+    }
+  }
+
+  @media only screen and (max-width: 768px ) {
+    .col-md-5 {
+      display: none;
+    }
+    .col-md-7 {
+      display: none;
+    }
+  }
+
+  //mobile view max-size 767px
+  @media only screen and (max-width: 767px ) {
+    .navbar-collapse {
+      width: 103%;
+      margin-top: 55px;
+    }
+    a {
+      font-size: 14px;
+    }
+    .row {
+      margin-left: -15px;
+      margin-right: 0px;
+      padding-right: 0px;
+    }
+  }
+
+  @media only screen and (max-width: 600px ) {
+    body {
+      margin-bottom: 75%
+    }
+    #paginate_sml {
+      display: flex;
+    }
+    #paginate_lrg {
+      display: none;
+    }
+  }
+
+  @media only screen and (max-width: 500px ) {
+    body {
+      margin-bottom: 95%
+    }
+    .advanced-search-link {
+      padding: 1em;
+    }
+  }
+}
