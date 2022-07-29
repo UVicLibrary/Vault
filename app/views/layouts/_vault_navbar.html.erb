@@ -1,0 +1,82 @@
+<%# Convert a hex colour to rgba to lighten the search bar background without using a hard-coded value %>
+<% appearance = Hyrax::Forms::Admin::Appearance.new %>
+<% rgb = appearance.header_background_color.match(/^#(..)(..)(..)$/).captures.map(&:hex) %>
+<% opacity = "0.8" %>
+<div class="expanded-search-container" style="background-color: <%= "rgba(#{rgb.join(", ")}, #{opacity})" %>">
+  <div class="container">
+    <div class="row">
+      <div class="collapse <%= 'in' if (request.base_url.include?("vault") && request.original_url.include?("/catalog")) %>" id="search-top-navbar-collapse" >
+        <div class="flex-wrapper">
+          <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
+            <%= render_hash_as_hidden_fields(search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
+            <%= hidden_field_tag :search_field, 'all_fields' %>
+            <div class="form-group">
+              <div class="input-group">
+                <%= text_field_tag :q, current_search_parameters , class: "q form-control", id: "search-field-header", placeholder: t("hyrax.search.form.q.placeholder") %>
+
+                <div class="input-group-btn">
+                  <button type="submit" class="btn btn-primary" id="search-submit-header">
+                    <%= t('hyrax.search.button.html') %>
+                  </button>
+                </div><!-- /.input-group-btn -->
+              </div><!-- /.input-group -->
+            </div><!-- /.form-group -->
+          <% end %>
+          <a href="/advanced" class="adv-search">Advanced Search</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--search form-->
+<nav class="vault_nav navbar navbar-inverse navbar-static-top" role="navigation">
+  <div class="container"><!-- fluid -->
+    <div class="row">
+
+    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-collapse" aria-expanded="false">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <!--logo-->
+    <a id="vault_logo" class="navbar-brand" href="<%= hyrax.root_path %>" data-no-turbolink="true">
+      <div class="col-md-3 col-sm-3">
+        <span>Vault</span>
+      </div>
+      <div class="col-md-5 col-sm-5">
+        <span class="institution_name"><%= image_tag('/uvic-wordmark-colour_white.svg', id: "wordmark") %></span>
+      </div>
+      <div class="col-md-7 col-sm-7">
+        <span>Libraries</span>
+      </div>
+    </a>
+
+    <!-- controls -->
+    <!-- Brand and toggle get grouped for better mobile display -->
+      <div id="navbar-right-different">
+      <div class="collapse navbar-collapse" id="top-navbar-collapse" style="background-color: <%= appearance.header_background_color %>">
+        <% if admin_host? %>
+          <%= render '/admin_util_links' %>
+        <% else %>
+          <%= render '/user_util_links' %>
+        <% end %>
+        <div id="search_button" class="nav navbar-nav navbar-right">
+          <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="false" style="background-color: <%= appearance.header_background_color %>; border-color: <%= appearance.header_background_color %>">
+            <i class="glyphicon glyphicon-search"></i>
+            <span class="caret"></span>
+          </button>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li <%= 'class=active' if current_page?(hyrax.about_path) %>>
+            <%= link_to t(:'hyrax.controls.about'), hyrax.about_path, aria: current_page?(hyrax.about_path) ? {current: 'page'} : nil %></li>
+          <li <%= 'class=active' if current_page?(hyrax.contact_path) %>>
+            <%= link_to t(:'hyrax.controls.contact'), hyrax.contact_path, aria: current_page?(hyrax.contact_path) ? {current: 'page'} : nil %></li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+</nav>
+

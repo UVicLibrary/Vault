@@ -1,25 +1,17 @@
 <% content_for(:navbar) do %>
   <div class="image-masthead">
-    <% if request.base_url.include? 'vault' %>
-      <div class="background-container" style="background-image: linear-gradient(#002754,#005493); filter:none;">
-      </div>
-      <div id="background-logo-container">
-        <%= image_tag "logo-with-shield.png" %>
-      </div>
-      <div id="edge" style="background: url(<%= asset_path 'header-inside-bg.png' %>) right top no-repeat;">
-      </div>
-    <% else %>
+    <% if !request.base_url.include? 'vault' %>
       <div class="background-container" style="background-image: url('<%= banner_image %>')"></div>
       <span class="background-container-gradient"></span>
-    <% end %>
 
-    <div class="container site-title-container">
-      <div class="site-title h1" style="text-align: center;">
-        <%= render "hyrax/homepage/marketing" if controller_name == 'homepage' %>
+      <div class="container site-title-container">
+        <div class="site-title h1" style="text-align: center;">
+          <%= render "hyrax/homepage/marketing" if controller_name == 'homepage' %>
+        </div>
       </div>
-    </div>
 
-    <%= render '/controls' %>
+      <%= render '/controls' %>
+    <% end %>
   </div>
 <% end %>
 

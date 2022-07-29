@@ -7,7 +7,11 @@
 
   <body class="dashboard">
     <a href="#skip_to_content" class="sr-only">Skip to Content</a>
-    <%= render '/masthead' %>
+    <% if request.base_url.include? 'vault' %>
+      <%= render '/layouts/vault_navbar' %>
+    <% else %>
+      <%= render '/masthead' %>
+    <% end %>
     <%= content_for(:navbar) %>
     <div id="content-wrapper" role="main">
       <a name="skip_to_content"></a>

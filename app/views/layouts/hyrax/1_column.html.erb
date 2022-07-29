@@ -1,0 +1,7 @@
+<% content_for(:navbar) do %>
+  <% if !request.base_url.include? 'vault' %>
+    <%= render '/controls' %>
+  <% end %>
+<% end %>
+
+<%= render template: 'layouts/hyrax' %>
