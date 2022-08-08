@@ -1,10 +1,13 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 
 gem 'omniauth-cas'
 
+
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
 gem 'combine_pdf'
 gem 'pdftoimage'
+gem 'iconv', '~> 1.0.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~>5.1.1' # '~>5.2.4.3'
@@ -102,7 +105,7 @@ gem 'bagit'
 
 gem 'hydra-access-controls', '~>10.7.0'
 
-gem 'hyrax', '2.8.0' # '2.7.2'
+gem 'hyrax', '2.9.6' # '2.7.2'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
