@@ -1,22 +1,46 @@
-.adv-search {
-  display: block;
-  color: white;
-  font-size: 14px;
-  padding-left: 15%;
-  padding-top: 6px;
+.expanded-search-container {
+
+  .flex-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #search-form-header {
+    width: 80%;
+    display: inline-block;
+    margin-bottom: 0.5em;
+  }
+
+  .adv-search {
+    display: inline-block;
+    color: white;
+    font-size: 14px;
+    margin-left: 22px;
+    padding-bottom: 0.75em;
+    width: 12%;
+  }
+
+  #search-field-header {
+    font-size: 18px;
+  }
 }
 
-.input-group {
-  padding-left: 15%;
-  padding-right: 15%;
+#search-top-navbar-collapse {
+  padding: 15px 15px 0px 15px;
 }
+
+//.input-group {
+//  padding-left: 15%;
+//  padding-right: 15%;
+//}
 
 .vault_nav {
   height: 60px;
   padding-top: 4px;
 
   #navbar-right-different {
-    font-size: 20px !important;
+    font-size: 18px !important;
   }
 
   .col-md-3 {
@@ -45,18 +69,18 @@
     margin-top: 9px;
   }
 
+  #search_button .caret {
+    transform: rotate(180deg);
+  }
+
   .glyphicon-log-in {
     margin-left: -5px;
     margin-top: -3px;
   }
 
-  .row {
-    margin-left: 15%;
-    margin-right: 15%;
-    padding-right: 20px;
-  }
 
   @media only screen and (max-width: 1250px ) {
+
     .row {
       margin-left: 5px;
       margin-right: 5px;
@@ -117,4 +141,11 @@
       padding: 1em;
     }
   }
+
+  @media (min-width: 768px) {
+    #vault_logo {
+      margin-left: -30px;
+    }
+  }
+
 }
