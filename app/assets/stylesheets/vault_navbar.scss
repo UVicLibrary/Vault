@@ -1,5 +1,7 @@
 .expanded-search-container {
 
+  box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
+
   .flex-wrapper {
     display: flex;
     justify-content: center;
@@ -24,6 +26,12 @@
   #search-field-header {
     font-size: 18px;
   }
+
+  #search-submit-header {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+  }
+
 }
 
 #search-top-navbar-collapse {
@@ -36,8 +44,27 @@
 //}
 
 .vault_nav {
-  height: 60px;
-  padding-top: 4px;
+  //height: 60px;
+  //padding-top: 4px;
+
+  .navbar-nav {
+    margin: 0px -15px;
+  }
+
+  .navbar-nav .active > a {
+    background-color: #337ab7;
+  }
+
+  #user_utility_links>li>a:hover, #user_utility_links>li>a:focus {
+    background-color: rgba(0,0,0,0.4) !important;
+    text-decoration: underline;
+  }
+
+  .navbar-nav>li #search_button>button:hover,
+  .navbar-nav>li #search_button>button:focus {
+    background-color: rgba(0,0,0,0.4) !important;
+    border-color: #fff !important;
+  }
 
   #navbar-right-different {
     font-size: 18px !important;
@@ -67,6 +94,8 @@
 
   #search_button {
     margin-top: 9px;
+    margin-left: 3px;
+    margin-right: 3px;
   }
 
   #search_button .caret {
@@ -103,6 +132,10 @@
     .col-md-7 {
       display: none;
     }
+    .navbar-nav>li>a {
+      padding-left: 30px;
+    }
+
   }
 
   //mobile view max-size 767px
@@ -118,6 +151,9 @@
       margin-left: -15px;
       margin-right: 0px;
       padding-right: 0px;
+    }
+    .vault_nav #search-button {
+      padding-left: 15px;
     }
   }
 
@@ -143,8 +179,8 @@
   }
 
   @media (min-width: 768px) {
-    #vault_logo {
-      margin-left: -30px;
+    .navbar-right {
+      margin-right: 15px;
     }
   }
 

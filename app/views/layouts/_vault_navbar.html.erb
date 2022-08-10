@@ -1,8 +1,6 @@
 <%# Convert a hex colour to rgba to lighten the search bar background without using a hard-coded value %>
 <% appearance = Hyrax::Forms::Admin::Appearance.new %>
-<% rgb = appearance.header_background_color.match(/^#(..)(..)(..)$/).captures.map(&:hex) %>
-<% opacity = "0.8" %>
-<div class="expanded-search-container" style="background-color: <%= "rgba(#{rgb.join(", ")}, #{opacity})" %>">
+<div class="expanded-search-container" style="background-color: <%= appearance.header_background_color %>">
   <div class="container">
     <div class="row">
       <div class="collapse <%= 'in' if (request.base_url.include?("vault") && request.original_url.include?("/catalog")) %>" id="search-top-navbar-collapse" >
@@ -46,7 +44,7 @@
         <span>Vault</span>
       </div>
       <div class="col-md-5 col-sm-5">
-        <span class="institution_name"><%= image_tag('/uvic-wordmark-colour_white.svg', id: "wordmark") %></span>
+        <span class="institution_name"><%= image_tag('uvic-wordmark-colour_white.svg', id: "wordmark") %></span>
       </div>
       <div class="col-md-7 col-sm-7">
         <span>Libraries</span>
@@ -62,18 +60,8 @@
         <% else %>
           <%= render '/user_util_links' %>
         <% end %>
-        <div id="search_button" class="nav navbar-nav navbar-right">
-          <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="false" style="background-color: <%= appearance.header_background_color %>; border-color: <%= appearance.header_background_color %>">
-            <i class="glyphicon glyphicon-search"></i>
-            <span class="caret"></span>
-          </button>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-          <li <%= 'class=active' if current_page?(hyrax.about_path) %>>
-            <%= link_to t(:'hyrax.controls.about'), hyrax.about_path, aria: current_page?(hyrax.about_path) ? {current: 'page'} : nil %></li>
-          <li <%= 'class=active' if current_page?(hyrax.contact_path) %>>
-            <%= link_to t(:'hyrax.controls.contact'), hyrax.contact_path, aria: current_page?(hyrax.contact_path) ? {current: 'page'} : nil %></li>
-        </ul>
+<!--        <ul class="nav navbar-nav navbar-right">-->
+<!--        </ul>-->
       </div>
     </div>
     </div>

@@ -1,3 +1,24 @@
+#sidebar {
+    padding-left: 0px;
+}
+
+#pdf_download {
+    margin-bottom: 1em;
+    display: inline-block;
+}
+
+.facet-values.list-unstyled {
+    width: auto;
+}
+
+span.facet-count {
+    width: auto !important;
+}
+
+.catalog img {
+    margin-bottom: 3em;
+}
+
 .feature-collection-message, .feature-work-message {
     display: inline-block;
 }

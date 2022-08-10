@@ -1,4 +1,19 @@
+<% appearance = Hyrax::Forms::Admin::Appearance.new %>
 <ul id="user_utility_links" class="nav navbar-nav navbar-right">
+  <% if request.base_url.include? "vault" %>
+    <li <%= 'class=active' if current_page?(hyrax.about_path) %>>
+      <%= link_to t(:'hyrax.controls.about'), hyrax.about_path, aria: current_page?(hyrax.about_path) ? {current: 'page'} : nil %></li>
+    <li <%= 'class=active' if current_page?(hyrax.contact_path) %>>
+      <%= link_to t(:'hyrax.controls.contact'), hyrax.contact_path, aria: current_page?(hyrax.contact_path) ? {current: 'page'} : nil %></li>
+    <li>
+      <div id="search_button" class="nav navbar-nav navbar-right">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="false" style="background-color: <%= appearance.header_background_color %>; border-color: <%= appearance.header_background_color %>">
+          <i class="glyphicon glyphicon-search"></i>
+          <span class="caret"></span>
+        </button>
+      </div>
+    </li>
+  <% end %>
   <%= render 'shared/locale_picker' if available_translations.size > 1 %>
   <% if user_signed_in? %>
     <li>
