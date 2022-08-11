@@ -1,0 +1,20 @@
+<%# Add a data attribute with all the labels for this field. We will use
+these to display text fields for strings and autocomplete fields for URIs.
+See assets/javascripts/hyrax/editor/controlled_vocabulary.es6 %>
+<%# Example: [{"string":"Test provider"},{"label":"Tiffany and Company"}] %>
+<% json = @all_labels["#{key}_label"].to_json if @all_labels %>
+<%= f.input key,
+            as: :controlled_vocabulary,
+            placeholder: 'Search for a location',
+            input_html: {
+                class: 'form-control',
+                data: { 'autocomplete-url' => "/authorities/search/geonames",
+                        'autocomplete-type' => "linked",
+                        'autocomplete' => key
+                }
+            },
+            ### Required for the ControlledVocabulary javascript:
+            wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/geonames",
+                                    'label-values' => "#{json}",
+                                    'field-name' => key }},
+            required: f.object.required?(key) %>
