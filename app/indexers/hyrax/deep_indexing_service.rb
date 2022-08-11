@@ -83,10 +83,10 @@ module Hyrax
       end
 
       # Fix Geonames
-      if solr_field_key == "based_near"
-        item = Qa::Authorities::Geonames.new.find(val.first.gsub("http://sws.geonames.org/",'').split('/').first)
-        val = [val, {label: "#{[item['name'], item['adminName1'], item['countryName']].compact.join(', ') + '$'}"}]
-      end
+      # if solr_field_key == "based_near"
+      #   item = Qa::Authorities::Geonames.new.find(val.first.gsub("http://sws.geonames.org/",'').split('/').first)
+      #   val = [val, {label: "#{[item['name'], item['adminName1'], item['countryName']].compact.join(', ') + '$'}"}]
+      # end
 
       create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
                                                               val.first,
