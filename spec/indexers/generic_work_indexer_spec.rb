@@ -4,7 +4,6 @@ RSpec.describe GenericWorkIndexer do
   # TODO: file_set_ids returns an empty set unless you persist the work
   let(:user) { create(:user) }
   let(:service) { described_class.new(work) }
-  # let(:work) { create(:generic_work) }
   let(:work) { create(:generic_work, creator: ["http://id.worldcat.org/fast/549011"],
                       geographic_coverage: ["http://id.worldcat.org/fast/1243522"],
                       chronological_coverage: ["1943/1945"],
@@ -157,7 +156,7 @@ RDFXML
 
     it "indexes id and label" do
       expect(solr_document.fetch('based_near_sim')).to eq ["http://sws.geonames.org/5037649/"]
-      expect(solr_document.fetch('based_near_label_sim')).to eq ["Minneapolis"]
+      expect(solr_document.fetch('based_near_label_sim')).to eq ["Minneapolis, Minnesota, United States"]
     end
   end
 
