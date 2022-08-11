@@ -1,3 +1,9 @@
+@media only screen and (max-width: 768px) {
+    #content-wrapper {
+        width: 100%;
+    }
+}
+
 .collection-details-wrapper {
     font-size: 18px;
     margin-bottom: 2em;
@@ -65,4 +71,9 @@
 
 .hyc-banner .hyc-title .label, .hyc-banner .hyc-title td.status span, td.status .hyc-banner .hyc-title span {
     box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.8);
+}
+
+.hyc-bl-results {
+    width: 100%;
+    overflow-x: auto;
 }
