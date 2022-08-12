@@ -6,7 +6,7 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
   include IndexesVaultThumbnails
 
   # For ingest into main UVic library catalog
-  include IndexesWorkOAIFields
+  include IndexesOAIFields
 
   # Fetch remote labels for based_near. You can remove this if you don't want
   # this behavior

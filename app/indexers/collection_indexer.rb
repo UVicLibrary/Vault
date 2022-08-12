@@ -7,8 +7,11 @@ class CollectionIndexer < Hyrax::CollectionIndexer
   # this behavior
   include Hyrax::IndexesLinkedMetadata
 
+  include IndexesOAIFields
+
   # Use thumbnails served by RIIIF
-  self.thumbnail_path_service = IIIFCollectionThumbnailPathService
+  # self.thumbnail_path_service = IIIFCollectionThumbnailPathService
+  self.thumbnail_path_service = CollectionThumbnailPathService
 
   def generate_solr_document
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
@@ -25,24 +28,10 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       # Index the size of the collection in bytes
       solr_doc['bytes_lts'] = object.bytes
 
-      # Index OAI-PMH fields
-      # dc:coverage = geographic coverage + chronological coverage
-      if solr_doc['geographic_coverage_label_tesim'] or solr_doc['chronological_coverage_tesim']
-        geographic_label = solr_doc['geographic_coverage_label_tesim']
-        chronological_label = solr_doc['chronological_coverage_tesim']
-        solr_doc['oai_dc_coverage_tesim'] = [geographic_label, chronological_label].reject { |val| val.nil? }.flatten
+      # Allow public users to discover items with institution visibility
+      if object.visibility == "authenticated"
+        solr_doc["discover_access_group_ssim"] = "public"
       end
-      # dc:type = human readable label for resource type (e.g. StillImage)
-      if resource_type = solr_doc['resource_type_tesim']
-        solr_doc['oai_dc_type_tesim'] = resource_type.map { |val| Hyrax::ResourceTypesService.label(val).gsub(' ','') }
-      end
-      # dc:relation = titles of parent or child collections if any exist
-      if object.parent_collections or object.child_collections
-        parents = object.parent_collections.map { |c| "IsPartOf #{c.title.first}" }
-        children = object.child_collections.map { |c| "HasPart #{c.title.first}" }
-        solr_doc['oai_dc_relation_tesim'] = parents + children
-      end
-
     end
   end
 
