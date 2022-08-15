@@ -18,18 +18,6 @@
       <%= render partial: 'member', collection: members %>
       </tbody>
     </table>
-    <div class="row">
-      <% if presenter.total_pages > 1 %>
-        <div class="row record-padding col-md-9">
-          <%= paginate array_of_ids, outer_window: 2, theme: 'blacklight', param_name: :page, route_set: main_app %>
-        </div><!-- /pager -->
-      <% end %>
-    </tr>
-    </thead>
-    <tbody>
-    <%= render partial: 'member', collection: members %>
-    </tbody>
-  </table>
   <div class="row">
     <% if presenter.total_pages > 1 %>
       <div class="row record-padding col-md-9">
