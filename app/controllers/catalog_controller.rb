@@ -78,6 +78,7 @@ class CatalogController < ApplicationController
       config.add_facet_field solr_name("contributor_label", :facetable), label: 'Contributor', limit: 5
       config.add_facet_field solr_name("fonds_title", :facetable), label: 'Fonds Title', limit: 5, show: false
       config.add_facet_field solr_name("fonds_identifier", :facetable), label: 'Fonds Identifier', limit: 5, show: false
+      config.add_facet_field solr_name("physical_repository_label", :facetable), label: 'Physical Repository', limit: 5, show: false
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request

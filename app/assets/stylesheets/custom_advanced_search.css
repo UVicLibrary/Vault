@@ -81,3 +81,27 @@
     min-width: 48px;
     display: block;
 }
+
+.form-group.phys-repo-container {
+    padding-left: 15px;
+    margin-left: 0;
+}
+
+#physical-repo-label {
+    margin-bottom: 0px;
+    margin-left: 0.25em;
+}
+
+/* mobile view max-size 767px */
+@media only screen and (max-width: 767px ) {
+    .query-criteria-heading,
+    .query-criteria .form-group,
+    .query-criteria .col-md-10 {
+        padding-left: 0px;
+        margin-left: -15px;
+    }
+
+    .form-group.phys-repo-container {
+        margin-left: 0px;
+    }
+}
