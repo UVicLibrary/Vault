@@ -7,12 +7,12 @@ gem 'omniauth-cas'
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
 gem 'combine_pdf'
 gem 'pdftoimage'
-gem 'iconv', '~> 1.0.5'
+gem 'iconv' , '~> 1.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>5.1.1' # '~>5.2.4.3'
+gem 'rails', '~>5.1.1'
 # Use sqlite3 as the database for Active Record
-gem 'pg'
+gem 'pg', '~> 1.3.5'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
@@ -38,7 +38,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
 
 gem 'active-fedora', '~> 11.5.6' # '>= 11.1.4' # '12.1.1'
 gem 'solrizer', '>= 3.4'
@@ -106,7 +106,7 @@ gem 'bagit'
 gem 'hydra-access-controls', '~>10.7.0'
 
 gem 'hyrax', '2.9.6' # '2.7.2'
-gem 'rsolr', '~> 2.0'
+gem 'rsolr', '2.2.1' #'~> 2.0'
 
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
