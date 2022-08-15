@@ -139,7 +139,7 @@ module Hyrax
 
       # Using RSolr instead:
       solr = RSolr.connect url: solr_url
-      response = solr.get 'select', params: { q: "member_of_collection_ids_ssim:#{id}", rows: 10000 }
+      response = solr.get 'select', params: { q: "member_of_collection_ids_ssim:#{id}", fl: "id", rows: 10000 }
       # Returns an array of ids
       response['response']['docs'].map { |k,v| k['id'] }
     end
