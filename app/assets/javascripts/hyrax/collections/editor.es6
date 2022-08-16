@@ -51,21 +51,33 @@ export default class {
     }
 
     // Autocomplete fields for the work edit form (based_near, subject, language, child works)
+    // Only add autocomplete if value is a URI and not a string
     autocomplete() {
         var autocomplete = new Autocomplete()
 
-        $('[data-autocomplete]').each((function() {
+        $('[data-autocomplete]').each(function () {
             var elem = $(this)
-            autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
-        }))
+            let values = elem.closest('div.controlled_vocabulary').data('label-values');
+            if (elem.hasClass('controlled_vocabulary')) {
+                // Only initialize autocomplete on the 'new work' page on URIs on the edit page
+                if (values !== undefined) {
+                    let idx = elem.parents("ul").children().index(elem.parent('li'))
+                    if (values == '' || 'uri' in values[idx]) {
+                        autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
+                        elem.parents('.multi_value.form-group').manage_fields({
+                            add: function (e, element) {
+                                var elem = $(element)
+                                // Don't mark an added element as readonly even if previous element was
+                                // Enable before initializing, as otherwise LinkedData fields remain disabled
+                                elem.attr('readonly', false)
+                                autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
+                            }
+                        });
+                    }
+                } else {
+                    autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'));
+                }
 
-        $('.multi_value.form-group').manage_fields({
-            add: function(e, element) {
-                var elem = $(element)
-                // Don't mark an added element as readonly even if previous element was
-                // Enable before initializing, as otherwise LinkedData fields remain disabled
-                elem.attr('readonly', false)
-                autocomplete.setup(elem, elem.data('autocomplete'), elem.data('autocompleteUrl'))
             }
         })
     }
