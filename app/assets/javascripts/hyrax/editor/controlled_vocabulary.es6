@@ -86,6 +86,7 @@ export default class ControlledVocabulary extends FieldManager {
                 let value = labelValues[index];
                 if (labelValues[index].hasOwnProperty('string')) {
                     $(field).first().children('input').first().val(value['string']);
+                    $(field).first().children('input').first().attr('readonly', false)
                 } else { // Display the label for URIs
                     $(field).children('input').eq(1).attr('value', value['uri'])
                     $(field).find('span.select2-chosen').text(value['label'])
