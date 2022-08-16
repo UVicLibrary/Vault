@@ -265,3 +265,35 @@ body {
 html {
     overflow-x: hidden;
 }
+
+#paginate_sml {
+    display: none;
+}
+
+@media only screen and (max-width: 840px ) {
+  body {
+    margin-bottom: 55%
+  }
+}
+
+@media only screen and (max-width: 600px ) {
+  body {
+    margin-bottom: 75%
+  }
+  #paginate_sml {
+    display: flex;
+  }
+  #paginate_lrg {
+      display: none;
+  }
+}
+
+@media only screen and (max-width: 500px ) {
+  body {
+    margin-bottom: 110%
+  }
+}
+
+.advanced-search-link {
+    padding: 1em;
+}
