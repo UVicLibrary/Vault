@@ -25,9 +25,10 @@
 //
 //= require hyku/groups/per_page
 //= require hyku/groups/add_member
+//= require vault_homepage
+//= require navbar
 //= require hyrax
 //= require handlebars-v4.0.5
-//= require vault_homepage
 //= require jquery.flot.pie
 //= require flot_graph
 //= require statistics_tab_manager
