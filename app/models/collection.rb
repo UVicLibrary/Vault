@@ -14,15 +14,16 @@ class Collection < ActiveFedora::Base
   
   property :physical_repository, predicate: ::RDF::Vocab::PROV.atLocation
   
-  # property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial
   property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial, class_name: Hyrax::ControlledVocabularies::GeographicCoverage
   
   property :genre, predicate: ::RDF::Vocab::SCHEMA.genre, class_name: Hyrax::ControlledVocabularies::Genre
 
   property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year') do |index|
-	index.as :stored_searchable, :facetable
+	  index.as :stored_searchable, :facetable
   end
-  
+
+  property :in_scua, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#in_scua'), multiple: false
+
   include Hyrax::BasicMetadata
   
   self.indexer = CollectionIndexer

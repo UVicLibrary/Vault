@@ -32,6 +32,8 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       if object.visibility == "authenticated"
         solr_doc["discover_access_group_ssim"] = "public"
       end
+
+      solr_doc['in_scua_bsi'] = object.in_scua
     end
   end
 
