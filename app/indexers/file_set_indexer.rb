@@ -1,6 +1,6 @@
  class FileSetIndexer < Hyrax::FileSetIndexer
   include Hyrax::IndexesLinkedMetadata
-  self.thumbnail_path_service = IIIFWorkThumbnailPathService
+  self.thumbnail_path_service = VaultThumbnailPathService
 
   def generate_solr_document
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
@@ -13,13 +13,12 @@
 
     super.tap do |solr_doc|
       solr_doc['hasFormat_ssim'] = object.rendering_ids
+      # File sets should inherit the creators of their parents. Otherwise, the default "creator"
+      # is indexed as the depositor instead of the work's creator.
       if object.parent and object.parent.creator.present?
         parent_doc = SolrDocument.find(object.parent.id)
         solr_doc['creator_tesim'] = parent_doc['creator_tesim']
         solr_doc['creator_label_tesim'] = parent_doc['creator_label_tesim']
-      end
-      if object.pdf?
-        solr_doc['thumbnail_path_ss'] = PdfThumbnailPathService.call(object)
       end
     end
   end
