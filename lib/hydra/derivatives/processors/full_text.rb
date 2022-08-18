@@ -55,7 +55,7 @@ module Hydra::Derivatives::Processors
       # of failed uploads elsewhere. Assuming any pdf with this many characters has already been
       # OCR'ed, let's just use poppler-utils to convert the pdf into a txt file and return the
       # extracted text.
-      return text if text.length > 1500000
+      return text if text.length > 1000000
       Net::HTTP.start(uri.host, uri.port, use_ssl: check_for_ssl, read_timeout: 2000, open_timeout: 2000) do |http|
         req = Net::HTTP::Post.new(uri.request_uri, request_headers)
         req.basic_auth uri.user, uri.password unless uri.password.nil?
@@ -68,8 +68,8 @@ module Hydra::Derivatives::Processors
     # @return [String] The extracted text
     def read_from_local
       if system "pdftocairo -v"
-        `pdftotext #{source_path}`
-        File.open("#{source_path.gsub("pdf","txt")}").read.rstrip
+        `pdftotext #{source_path} /cache/tmp/#{File.basename(source_path, '.pdf')}.txt`
+        File.open("/cache/tmp/#{File.basename(source_path, '.pdf')}.txt").read.rstrip
       else
         raise "Poppler utils is not installed"
       end
