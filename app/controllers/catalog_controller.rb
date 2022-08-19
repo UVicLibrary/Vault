@@ -65,22 +65,22 @@ class CatalogController < ApplicationController
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
-    
+
     # Collection
-      config.add_facet_field "member_of_collections_ssim", limit: 5, label: 'Collections'
-      config.add_facet_field "genre_label_sim", label: 'Genre', limit: 5
+      config.add_facet_field "member_of_collections_ssim", limit: 10, label: 'Collections'
+      config.add_facet_field "genre_label_sim", label: 'Genre', limit: 10
       config.add_facet_field "resource_type_sim", label: 'Resource Type', limit: 5, helper_method: :resource_type_links
       config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
       # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
       config.add_facet_field "year_range_isim", label: "Year Range", range: true, include_in_advanced_search: false
-      config.add_facet_field "geographic_coverage_label_sim", label: 'Geographic Coverage', limit: 5
+      config.add_facet_field "geographic_coverage_label_sim", label: 'Geographic Coverage', limit: 10
       config.add_facet_field "subject_label_sim", label: 'Subject', limit: 5
       config.add_facet_field "language_sim", limit: 5
       config.add_facet_field "creator_label_sim", label: 'Creator', limit: 5
       config.add_facet_field "contributor_label_sim", label: 'Contributor', limit: 5
       config.add_facet_field "fonds_title_sim", label: 'Fonds Title', limit: 5, show: false
       config.add_facet_field "fonds_identifier_sim", label: 'Fonds Identifier', limit: 5, show: false
-      config.add_facet_field "physical_repository_sim", label: 'Physical Repository', limit: 5, show: false
+      config.add_facet_field "physical_repository_label_sim", label: 'Physical Repository', limit: 5
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request

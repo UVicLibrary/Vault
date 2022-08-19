@@ -51,113 +51,116 @@ class SolrDocument
   def subject
       fetch('subject_tesim', [])
   end
-  
+
   def alternative_title
       fetch('alternative_title_tesim', [])
   end
-  
+
   def edition
       fetch('edition_tesim', [])
   end
-    
+
   def geographic_coverage
       fetch('geographic_coverage_tesim', [])
   end
-    
+
   def coordinates
       fetch('coordinates_tesim', [])
   end
-    
+
   def chronological_coverage
       edtf_date('chronological_coverage')
   end
-    
+
   def extent
       fetch('extent_tesim', [])
   end
-    
+
   def additional_physical_characteristics
       fetch('additional_physical_characteristics_tesim', [])
   end
-    
+
   def has_format
       fetch('has_format_tesim', [])
   end
-    
+
   def physical_repository
       fetch('physical_repository_tesim', [])
   end
-    
+
   def collection
       fetch('collection_tesim', [])
   end
-    
+
   def provenance
       fetch('provenance_tesim', [])
   end
-    
+
   def provider
       fetch('provider_tesim', [])
   end
-    
+
   def sponsor
       fetch('sponsor_tesim', [])
   end
-    
+
   def genre
       fetch('genre_tesim', [])
   end
-    
+
   def format
       fetch('format_tesim', [])
   end
-    
+
   def archival_item_identifier
       fetch('archival_item_identifier_tesim', [])
   end
-    
+
   def fonds_title
       fetch('fonds_title_tesim', [])
   end
-    
+
   def fonds_creator
       fetch('fonds_creator_tesim', [])
   end
-    
+
   def fonds_description
       fetch('fonds_description_tesim', [])
   end
-    
+
   def fonds_identifier
       fetch('fonds_identifier_tesim', [])
   end
-    
+
   def is_referenced_by
       fetch('is_referenced_by_tesim', [])
   end
-    
+
   def date_digitized
       edtf_date('date_digitized')
   end
-  
+
   def date_created
       edtf_date('date_created')
   end
-    
+
   def transcript
       fetch('transcript_tesim', [])
   end
-    
+
   def technical_note
       fetch('technical_note_tesim', [])
   end
-    
+
   def year
       fetch('year_tesim', [])
   end
-  
+
   def edtf_date(field_name)
       date_string = fetch(field_name + 'tesim', [])
+      if Settings.multitenancy.enabled?
+        return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
+      end
       Array(date_string).each_with_object([]) do |date, array|
         array.push(EdtfDateService.new(date).humanized)
       end
