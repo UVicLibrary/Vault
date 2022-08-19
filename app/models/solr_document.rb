@@ -158,7 +158,7 @@ class SolrDocument
   end
 
   def edtf_date(field_name)
-    date_string = fetch(Solrizer.solr_name(field_name), [])
+    date_string = fetch(field_name + 'tesim', [])
     return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
     Array(date_string).each_with_object([]) do |date, array|
       array.push(EdtfDateService.new(date).humanized)
