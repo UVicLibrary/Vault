@@ -8,7 +8,7 @@ class BrowseCollectionsController < Hyrax::HomepageController
     builder = self.search_builder_class.new(self).rows(8)
     response = repository.search(builder).response
     @collections_count = response['numFound']
-    @collection_presenters = build_presenters(response['docs'], Hyrax::CollectionPresenter)
+    @collection_card_presenters = build_presenters(response['docs'], Hyrax::CollectionPresenter)
   end
 
   def load_more

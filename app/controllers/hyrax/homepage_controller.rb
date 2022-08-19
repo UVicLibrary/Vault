@@ -34,7 +34,8 @@ class Hyrax::HomepageController < ApplicationController
     @recent_work_presenters = recent_work_presenters.slice(0,8)
     @works_count = @works.count
 
-    @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter).slice(0,8)
+    @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter)
+    @collection_card_presenters = @collection_presenters.slice(0,8)
 
     # Homepage facet links
     @year_range_values = build_year_range_facets(year_range_facets)

@@ -7,7 +7,7 @@
 <!--</div>-->
 
 <div id="browse-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-  <% @collection_presenters.each do |presenter| %>
+  <% @collection_card_presenters.each do |presenter| %>
     <%= render partial: 'hyrax/homepage/collection_card',
                locals: { presenter: presenter, card_width: 3 } %>
   <% end %>

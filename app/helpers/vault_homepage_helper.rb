@@ -1,18 +1,33 @@
 module VaultHomepageHelper
 
+  # Render the collections that the current SolrDocument is in
+  # @param []SolrDocument]: the document for a GenericWork
+  # @return [HTML]: a <p> tag with collection links
   def render_card_collection_links(solr_doc)
     collection_list = Hyrax::CollectionMemberService.run(solr_doc, controller.current_ability)
     return if collection_list.empty?
-    links = collection_list.map { |collection| link_to collection.title_or_label, hyrax.collection_path(collection.id) }
-    collection_links = []
+    links = collection_list.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), data: { turbolinks: false }) }
+    array_of_links = []
     links.each_with_index do |link, n|
-      collection_links << link
-      collection_links << ', ' unless links[n + 1].nil?
+      array_of_links << link
+      array_of_links << ', ' unless links[n + 1].nil?
     end
-    tag.p safe_join([t('hyrax.collection.is_part_of'), ': '] + collection_links), class: 'card-collection-link', tabindex: 0
+    tag.p safe_join([t('hyrax.collection.is_part_of'), ': '] + array_of_links), class: 'card-collection-link', tabindex: 0
   end
 
-  ##
+  # Renders a text list of collection titles with links
+  # @param [Array]: an array of Hyrax::CollectionPresenters
+  # @return [HTML]: markup for collection links separated by line breaks
+  def render_collection_list(presenters)
+    safe_join(collection_links(presenters.sort_by(&:title)), sanitize('<br/>'))
+  end
+
+  # @param [Array]: an array of Hyrax::CollectionPresenters
+  # @return [Array]: an array of links
+  def collection_links(presenters)
+    presenters.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), data: { turbolinks: false }) }
+  end
+
   # Standard display of a facet value in a list. Used in both _facets sidebar
   # partial and catalog/facet expanded list. Will output facet value name as
   # a link to add that to your restrictions, with count in parens.
@@ -26,11 +41,10 @@ module VaultHomepageHelper
     path = path_for_homepage_facet(facet_field, item)
     options[:label] ? label = options[:label] : label = facet_display_value(facet_field, item)
     content_tag(:li, class:"homepage-facet-label col-md") do
-      link_to_unless(options[:suppress_link], label, path, class: "homepage-facet-link homepage-tab-link")
+      link_to_unless(options[:suppress_link], label, path, class: "homepage-facet-link homepage-tab-link", data: { turbolinks: false })
     end
   end
-
-  ##
+  
   # Where should this facet link to?
   # @param [String] the facet field name, e.g. "genre_label_sim"
   # @param [String] item
@@ -62,7 +76,7 @@ module VaultHomepageHelper
     label = hash.keys.first
     path = hash[label]
     content_tag(:li, class:"homepage-facet-label col-md") do
-      link_to(label, path, class: "homepage-facet-link homepage-tab-link")
+      link_to(label, path, class: "homepage-facet-link homepage-tab-link", data: { turbolinks: false })
     end
   end
 

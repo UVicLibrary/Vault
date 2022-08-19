@@ -7,7 +7,9 @@
   <%= render 'hyrax/homepage/facets/facets' %>
 
 <div class="featured-container">
-  <h1 id="featured-header">Featured Collections</h1>
+  <h1 id="featured-header" class="fade-in-text">Featured Collections</h1>
+  <button type="button" class="btn btn-default list-collections-button collapse" href="#list-collections" data-toggle="tab" tab-index="-1" data-header="All Collections">List All</button>
+  <button type="button" class="btn btn-default all-collections-button collapse" href="#all-collections" data-toggle="tab" tab-index="-1"  data-header="All Collections">Card View</button>
   <ul id="featured-nav" role="tablist">
     <li>
       <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" data-header="All Collections" aria-controls="all-collections" aria-selected="true" tabindex="-1">All Collections</button>
@@ -34,6 +36,13 @@
   <div class="tab-pane fade" role="tabpanel" id="all-collections"  aria-selected="true">
     <div class="container-fluid card-container browse-home">
       <%= render 'browse_collections/content'  %>
+    </div><!-- .container -->
+  </div><!-- .tab-pane -->
+
+  <!---------------------------- List View for all collections -------------------->
+  <div class="tab-pane fade" role="tabpanel" id="list-collections"  aria-selected="true">
+    <div class="container-fluid card-container browse-home">
+      <%= render_collection_list(@collection_presenters) %>
     </div><!-- .container -->
   </div><!-- .tab-pane -->
 
