@@ -1,3 +1,38 @@
+/* Fade effect for header */
+.fade-in-text {
+  animation: fadeIn 0.15s;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+#featured-header {
+  display: inline-flex;
+}
+
+.list-collections-button, .all-collections-button {
+  color: #005493;
+  background-color: transparent;
+  background-image: none;
+  border-color: #005493;
+  line-height: 1.4;
+  margin-left: 1em;
+  margin-bottom: 1.25em;
+}
+
+.list-collections-button:hover, .all-collections-button:hover {
+  background-color: #005493;
+  color: #fff;
+}
+
+#list-collections a {
+  margin-top: 0.5em;
+  display: inline-block;
+  font-size: 16px;
+}
+
 .welcome-text p {
   font-size: 16px;
 }
@@ -41,6 +76,7 @@ footer .navbar-link i {
 
 .card-container {
   margin-bottom: 4em;
+  padding-top: 1em;
 }
 
 /* Pill nav bar */
@@ -127,7 +163,7 @@ sans-serif;
 
 .card-row {
   max-width: auto;
-  margin: 2.5em auto 0;
+  margin: 1.5em auto 0;
   animation-name: fadeout;
   animation-duration: 2s;
 }
