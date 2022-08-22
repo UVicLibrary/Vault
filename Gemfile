@@ -137,7 +137,7 @@ gem 'draper'
 #   gem 'active_elastic_job', '~> 2.0'
 # end
 
-gem 'sidekiq', '~> 5.0.3' # '~> 6.0.7'
+gem 'sidekiq', '~> 6.0.7' # '~> 5.0.3'
 
 gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.5.3/gems/cdm_migrator-3.2.1'
 gem 'to_spotlight', '~> 0.2.7'
