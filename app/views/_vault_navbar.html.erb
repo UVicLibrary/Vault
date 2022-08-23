@@ -3,14 +3,18 @@
 <div class="expanded-search-container" style="background-color: <%= appearance.header_background_color %>">
   <div class="container">
     <div class="row">
-      <div class="collapse <%= 'in' if (request.base_url.include?("vault") && request.original_url.include?("/catalog")) %>" id="search-top-navbar-collapse" >
+      <div class="collapse <%= 'in' if search_or_homepage? %>" id="search-top-navbar-collapse" >
         <div class="flex-wrapper">
           <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
             <%= render_hash_as_hidden_fields(search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
             <%= hidden_field_tag :search_field, 'all_fields' %>
             <div class="form-group">
               <div class="input-group">
-                <%= text_field_tag :q, current_search_parameters , class: "q form-control", id: "search-field-header", placeholder: t("hyrax.search.form.q.placeholder") %>
+                <label class="visually-hidden" for="search-field-header">
+                  <%= t("hyrax.search.form.q.label", application_name: application_name) %>
+                </label>
+                <%= text_field_tag :q, current_search_parameters , class: "q form-control typeahead", id: "search-field-header",
+                                   placeholder: t("hyrax.search.form.q.placeholder"), role: "combobox" %>
 
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-primary" id="search-submit-header">
@@ -39,7 +43,7 @@
     </button>
 
     <!--logo-->
-    <a id="vault_logo" class="navbar-brand" href="<%= hyrax.root_path %>" data-no-turbolink="true">
+    <a id="vault_logo" class="navbar-brand" href="<%= hyrax.root_path %>" data-turbolinks="false">
       <div class="col-md-3 col-sm-3">
         <span>Vault</span>
       </div>
@@ -54,14 +58,21 @@
     <!-- controls -->
     <!-- Brand and toggle get grouped for better mobile display -->
       <div id="navbar-right-different">
+        <div id="search_button">
+          <label class="visually-hidden" for="expand-search-button">
+            <%= t("hyrax.search.form.q.label", application_name: "Vault") %>
+          </label>
+          <button type="button" id="expand-search-button" class="btn btn-primary" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="false" style="background-color: <%= appearance.header_background_color %>; border-color: <%= appearance.header_background_color %>">
+            <i class="glyphicon glyphicon-search"></i>
+            <span class="caret"></span>
+          </button>
+        </div>
       <div class="collapse navbar-collapse" id="top-navbar-collapse" style="background-color: <%= appearance.header_background_color %>">
         <% if admin_host? %>
           <%= render '/admin_util_links' %>
         <% else %>
-          <%= render '/user_util_links' %>
+          <%= render '/user_util_links', appearance: appearance %>
         <% end %>
-<!--        <ul class="nav navbar-nav navbar-right">-->
-<!--        </ul>-->
       </div>
     </div>
     </div>
