@@ -1,5 +1,10 @@
 module VaultHomepageHelper
 
+  def search_or_homepage?
+    request.base_url.include?("vault") &&
+        (current_page?(root_path) || request.path.include?("catalog"))
+  end
+
   # Render the collections that the current SolrDocument is in
   # @param []SolrDocument]: the document for a GenericWork
   # @return [HTML]: a <p> tag with collection links

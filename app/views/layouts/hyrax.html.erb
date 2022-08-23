@@ -10,7 +10,7 @@
   <%= link_to "Skip to Content", "#skip-to-content" %>
 </div>
 <% if request.base_url.include? 'vault' %>
-  <%= render '/layouts/vault_navbar' %>
+  <%= render '/vault_navbar' %>
 <% else %>
   <%= render '/masthead' %>
 <% end %>

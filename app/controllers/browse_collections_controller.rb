@@ -18,6 +18,13 @@ class BrowseCollectionsController < Hyrax::HomepageController
     end
   end
 
+  def autocomplete
+    json = collections.each_with_object([]) do |coll, arr|
+      arr.push({ title: coll.title_or_label, link: hyrax.collection_path(coll.id), id: coll.id })
+    end.to_json
+    render json: json
+  end
+
   private
 
   # Return all collections
@@ -25,7 +32,8 @@ class BrowseCollectionsController < Hyrax::HomepageController
     builder = self.search_builder_class.new(self).rows(options[:rows])
     # Override default search to be title A-Z instead of relevance
     sort = options[:sort] ||= builder.default_sort_field
-    builder.merge(sort: sort, start: options[:start])
+    rows = options[:rows] ||= count_collections
+    builder.merge(sort: sort, start: options[:start], rows: rows)
     response = repository.search(builder)
     response.documents
   rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest

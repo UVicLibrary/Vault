@@ -1,3 +1,20 @@
+// For twitter typeahead
+.navbar-static-top {
+  z-index: 50 !important;
+}
+
+// For invisible help/label text meant for screen readers
+// See https://www.a11yproject.com/posts/how-to-hide-content/
+.visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .expanded-search-container {
 
   box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
@@ -12,6 +29,33 @@
     width: 80%;
     display: inline-block;
     margin-bottom: 0.5em;
+
+    /* Twitter typeahead (autocomplete) styles */
+    .tt-suggestion {
+      width: 100%;
+      display: block;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .tt-suggestion:hover, .tt-suggestion:focus, .tt-suggestion.tt-cursor {
+      background-color: #337ab7; // #0C71CA;
+      color: #fff;
+    }
+
+    .twitter-typeahead {
+      border-color: transparent;
+      box-shadow: none;
+      opacity: 1;
+      background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255);
+      border-radius: 5px;
+    }
+
+    .tt-menu.tt-open {
+      margin-top: 0;
+      padding: 0;
+    }
+
   }
 
   .adv-search {
@@ -24,12 +68,35 @@
   }
 
   #search-field-header {
+    height: 34px;
     font-size: 18px;
+  }
+
+  #search-field-header:focus {
+    -webkit-box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 8px rgba(102, 175, 233, 0.6);
   }
 
   #search-submit-header {
     background-color: #337ab7;
     border-color: #2e6da4;
+  }
+
+  //mobile view max-size 767px
+  @media only screen and (max-width: 767px ) {
+    .flex-wrapper {
+      display: block;
+    }
+
+    #search-form-header {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    .adv-search {
+      width: 35%;
+      float: right;
+    }
   }
 
 }
@@ -38,17 +105,21 @@
   padding: 15px 15px 0px 15px;
 }
 
-//.input-group {
-//  padding-left: 15%;
-//  padding-right: 15%;
-//}
+.vault_nav::after {
+  content: none;
+}
 
 .vault_nav {
-  //height: 60px;
-  //padding-top: 4px;
+
+  .container::after, .row::after, .collapse.navbar-collapse::after,
+  .nav::after, .navbar::after {
+    content: none;
+  }
 
   .navbar-nav {
-    margin: 0px -15px;
+    //margin: 0px -15px;
+    margin: 0;
+    padding-right: 15px;
   }
 
   .navbar-nav .active > a {
@@ -68,6 +139,10 @@
 
   #navbar-right-different {
     font-size: 18px !important;
+    width: auto;
+    justify-content: left;
+    display: inline-flex;
+    float: right;
   }
 
   .col-md-3 {
@@ -83,30 +158,39 @@
   }
 
   #vault_logo {
-    max-width: 235px;
+    max-width: 245px;
     font-size: 22px;
   }
 
   #wordmark {
     height: 18px;
-    margin-top: -3px;
+    margin-top: -5.05px;
   }
 
-  #search_button {
-    margin-top: 9px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
+  //#search_button {
+  //  margin-top: 9px;
+  //  margin-left: 3px;
+  //  margin-right: 3px;
+  //}
 
   #search_button .caret {
     transform: rotate(180deg);
+  }
+
+  button[data-target="#search-top-navbar-collapse"] {
+    line-height: 2.4;
+    border-radius: 0;
+
+    .glyphicon-search {
+      margin-top: 10px;
+      display: inline-block;
+    }
   }
 
   .glyphicon-log-in {
     margin-left: -5px;
     margin-top: -3px;
   }
-
 
   @media only screen and (max-width: 1250px ) {
 
@@ -140,33 +224,34 @@
 
   //mobile view max-size 767px
   @media only screen and (max-width: 767px ) {
+
     .navbar-collapse {
-      width: 103%;
-      margin-top: 55px;
+      width: 104%;
+      padding: 0;
+      //margin-top: 55px;
     }
+
     a {
       font-size: 14px;
     }
+
     .row {
       margin-left: -15px;
       margin-right: 0px;
       padding-right: 0px;
     }
-    .vault_nav #search-button {
-      padding-left: 15px;
-    }
-  }
 
-  @media only screen and (max-width: 600px ) {
-    body {
-      margin-bottom: 75%
+    div#search_button {
+      //padding-left: 15px;
+      float: right;
+      margin-right: 10px;
+      padding-right: 0;
     }
-    #paginate_sml {
-      display: flex;
+
+    #navbar-right-different {
+      display: contents;
     }
-    #paginate_lrg {
-      display: none;
-    }
+
   }
 
   @media only screen and (max-width: 500px ) {
@@ -175,12 +260,6 @@
     }
     .advanced-search-link {
       padding: 1em;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .navbar-right {
-      margin-right: 15px;
     }
   }
 
