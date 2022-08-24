@@ -19,10 +19,10 @@
 }
 
 .login-button {
-    background-color: #4198d9;
+    background-color: #337AB7;
     color: white;
     font-style: normal;
-    border-color: #4198d9;
+    border-color: #2e6da4;
 }
 
 .login-button:hover, .login-button:active {
