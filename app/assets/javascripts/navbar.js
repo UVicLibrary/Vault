@@ -12,17 +12,19 @@ $(document).on('turbolinks:load', function() {
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             local: response
         });
-        $('#search-field-header').typeahead({
-        minLength: 3,
-        hint: false
-        }, {
+        $('#search-field-header').typeahead(
+            {
+                minLength: 3,
+                hint: false
+            },
+            {
             displayKey: 'title',
-            source: collections,
-            templates: {
-              suggestion: function(data) {
-                  return '<a id="' + data.id + '" role="option" href="' + data.link + '">' + data.title + '</a>'
-              }
-          }
+            source: collections
+            }
+        );
+        // When a selection is made, redirect to the collection page
+        $('.typeahead').bind('typeahead:select', function(event,suggestion) {
+            window.location.href = suggestion.link;
         });
         // Modifications for accessibility. Adapted from:
         // https://www.w3.org/TR/wai-aria-practices-1.2/examples/combobox/combobox-autocomplete-both.html
@@ -36,7 +38,7 @@ $(document).on('turbolinks:load', function() {
         $('.typeahead').bind('typeahead:close', function() {
             $(this).attr('aria-expanded', false);
         });
-        $('.typeahead').bind('typeahead:cursorchange', function(e, suggestion) {
+        $('.typeahead').bind('typeahead:cursorchange', function(event, suggestion) {
             $('.expanded-search-container a[role=option]').removeAttr('aria-selected aria-activedescendant');
             selected = $(document.getElementById(suggestion['id']));
             selected.attr('aria-selected', true);
