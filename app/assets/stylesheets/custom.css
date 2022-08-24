@@ -270,12 +270,6 @@ body {
   }
 }
 
-@media only screen and (max-width: 500px ) {
-  body {
-    margin-bottom: 110%
-  }
-}
-
 .advanced-search-link {
     padding: 1em;
 }
