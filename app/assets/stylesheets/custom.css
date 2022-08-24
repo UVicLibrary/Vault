@@ -240,18 +240,13 @@ form #content_block_researcher_title {
   color: inherit;
 }
 
-#footer-logo { /* image is in view file */
-  height: 125px;
-  width: 125px;
-  background-size: contain !important;
-  margin-top: 2%;
-}
-
+/* 
 .site-footer {
   left: 0;
   position: relative;
   flex-shrink: 0;
-}
+} */
+
 
 body {
   margin-bottom: 0;
