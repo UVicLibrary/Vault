@@ -264,3 +264,22 @@
   }
 
 }
+
+// Dashboard view styles
+body.dashboard {
+
+  .vault_nav .container {
+    width: 100%;
+    padding-left: 1%;
+  }
+
+  .expanded-search-container .adv-search {
+    width: fit-content;
+    width: -moz-fit-content;
+  }
+}
+
+body.dashboard.vault-dashboard {
+    padding-top: 0;
+    background-color: transparent;
+}
