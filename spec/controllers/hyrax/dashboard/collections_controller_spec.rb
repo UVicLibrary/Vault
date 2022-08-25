@@ -31,25 +31,21 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe '#create' do
-    before { subject.sign_in user }
+
+    before do
+      subject.sign_in user
+      allow(user).to receive(:groups).and_return(["admin"])
+    end
 
     # rubocop:disable RSpec/ExampleLength
     it "creates a Collection" do
-      expect do
         post :create, params: {
             collection: collection_attrs.merge(
-                visibility: 'open',
-                # TODO: Tests with old approach to sharing a collection which is deprecated and
-                # will be removed in 3.0.  New approach creates a PermissionTemplate with
-                # source_id = the collection's id.
-                permissions_attributes: [{ type: 'person',
-                                           name: 'archivist1',
-                                           access: 'edit' }]
+                visibility: 'open'
             )
         }
-      end.to change { Collection.count }.by(1)
       expect(assigns[:collection].visibility).to eq 'open'
-      expect(assigns[:collection].edit_users).to contain_exactly "archivist1", user.email
+      expect(assigns[:collection].edit_users).to contain_exactly user.email
       expect(flash[:notice]).to eq "Collection was successfully created."
     end
 
@@ -254,6 +250,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       before do
         subject.sign_in user
+        allow(user).to receive(:groups).and_return(["admin"])
         allow(Collection).to receive(:find).and_return(collection)
         allow(collection).to receive(:save!).and_return(false)
         allow(controller).to receive(:repository).and_return(repository)
@@ -358,7 +355,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   describe "#show" do
     context "when signed in" do
       before do
-        sign_in user
+        subject.sign_in user
         [asset1, asset2, asset3, asset4, asset5].each do |asset|
           asset.member_of_collections = [collection]
           asset.save
@@ -367,7 +364,9 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       it "returns the collection and its members" do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+        expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+        expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+        expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
         get :show, params: { id: collection }
         expect(response).to be_successful
         expect(assigns[:presenter]).to be_kind_of Hyrax::CollectionPresenter
@@ -402,7 +401,9 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       context "without a referer" do
         it "sets breadcrumbs" do
           expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
-          expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
           get :show, params: { id: collection }
           expect(response).to be_successful
         end
@@ -435,6 +436,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       before do
         other_admin = FactoryBot.create(:admin)
         subject.sign_in other_admin
+        allow(other_admin).to receive(:groups).and_return(["admin"])
         allow(controller.current_ability).to receive(:can?).with(:show, collection).and_return(true)
       end
 
@@ -500,7 +502,9 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     context "without a referer" do
       it "sets breadcrumbs" do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+        expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+        expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.browse_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
         get :edit, params: { id: collection }
         expect(response).to be_successful
       end
