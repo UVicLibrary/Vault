@@ -145,7 +145,7 @@ module Hyrax
       end
 
       def uploaded_thumbnail_files
-        Dir["#{UploadedCollectionThumbnailPathService.upload_dir(@collection)}/*"]
+        Dir["#{::CollectionThumbnailPathService.upload_dir(@collection)}/*"]
       end
 
       def after_create
@@ -285,7 +285,7 @@ module Hyrax
       # private
 
         def process_uploaded_thumbnail(uploaded_file)
-          dir_name = UploadedCollectionThumbnailPathService.upload_dir(@collection)
+          dir_name = ::CollectionThumbnailPathService.upload_dir(@collection)
           saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
           # Create directory if it doesn't already exist
           unless File.directory?(dir_name)
