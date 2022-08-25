@@ -17,9 +17,8 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
 puts Rails.env
-
-require 'spec_helper'
 require 'rspec/rails'
+require 'spec_helper'
 require 'capybara/rails'
 require 'database_cleaner'
 require 'active_fedora/cleaner'

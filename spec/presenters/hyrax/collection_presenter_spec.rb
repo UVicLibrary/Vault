@@ -3,10 +3,9 @@ RSpec.describe Hyrax::CollectionPresenter do
     subject { described_class.terms }
 
     it do
-      is_expected.to eq [:total_items, :size, :resource_type, :creator,
-                         :contributor, :keyword, :license, :publisher,
-                         :date_created, :subject, :language, :identifier,
-                         :based_near, :related_url]
+      is_expected.to eq [:total_viewable_items,
+                         :size,
+                         :modified_date]
     end
   end
 
@@ -17,7 +16,7 @@ RSpec.describe Hyrax::CollectionPresenter do
           based_near: ['Over there'],
           title: ['A clever title'],
           keyword: ['neologism'],
-          resource_type: ['Collection'],
+          resource_type: ['http://purl.org/dc/dcmitype/Collection'],
           related_url: ['http://example.com/'],
           date_created: ['some date'])
   end
@@ -70,20 +69,22 @@ RSpec.describe Hyrax::CollectionPresenter do
   describe "#resource_type" do
     subject { presenter.resource_type }
 
-    it { is_expected.to eq ['Collection'] }
+    it { is_expected.to eq ['http://purl.org/dc/dcmitype/Collection'] }
   end
 
   describe "#terms_with_values" do
     subject { presenter.terms_with_values }
+    let(:user) { create(:user) }
+
+    before do
+      allow(ability).to receive(:user_groups).and_return(['public'])
+      allow(ability).to receive(:current_user).and_return(user)
+    end
 
     it do
-      is_expected.to eq [:total_items,
+      is_expected.to eq [:total_viewable_items,
                          :size,
-                         :resource_type,
-                         :keyword,
-                         :date_created,
-                         :based_near,
-                         :related_url]
+                         :modified_date]
     end
   end
 
@@ -124,9 +125,8 @@ RSpec.describe Hyrax::CollectionPresenter do
   end
 
   describe '#size' do
-    it 'returns a hard-coded string and issues a deprecation warning' do
-      expect(Deprecation).to receive(:warn).once
-      expect(presenter.size).to eq('unknown')
+    it 'returns a hard-coded string' do
+      expect(presenter.size).to eq('0 Bytes')
     end
   end
 
@@ -450,4 +450,162 @@ RSpec.describe Hyrax::CollectionPresenter do
       end
     end
   end
+
+  describe '#user_can_feature_collections?' do
+
+    context 'when user can create featured collections' do
+      before do
+        allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true)
+      end
+      it 'returns true' do
+        expect(presenter.user_can_feature_collections?).to be true
+      end
+    end
+
+    context "when user can't create featured collections" do
+      before do
+        allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(false)
+      end
+      it 'returns false' do
+        expect(presenter.user_can_feature_collections?).to be false
+      end
+    end
+  end
+
+  describe '#collection_featurable?' do
+
+    context "when user can create featured collections" do
+      let(:solr_doc) { SolrDocument.new(collection.to_solr) }
+
+      before do
+        allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true)
+      end
+
+      context "and solr document is public" do
+        before do
+          allow(solr_doc).to receive(:public?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(presenter.collection_featurable?).to be true
+        end
+      end
+
+      context "and solr document is private" do
+        before do
+          allow(solr_doc).to receive(:public?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(presenter.collection_featurable?).to be false
+        end
+      end
+    end
+
+    context "when user can't create featured collections" do
+
+      before do
+        allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(false)
+      end
+
+      it "returns false" do
+        expect(presenter.collection_featurable?).to be false
+      end
+    end
+  end
+
+  describe '#display_feature_link?' do
+    before do
+      allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true)
+    end
+
+    context "when a featured collection can be added and collection is not featured" do
+      let(:solr_doc) { SolrDocument.new(collection.to_solr) }
+
+      before do
+        allow(solr_doc).to receive(:public?).and_return(true)
+      end
+      it 'returns true' do
+        expect(presenter.display_feature_link?).to be true
+      end
+    end
+
+    context "when the collection is not featurable" do
+      before do
+        allow(presenter).to receive(:collection_featurable?).and_return(false)
+      end
+      it 'returns false' do
+        expect(presenter.display_feature_link?).to be false
+      end
+    end
+
+    context "when another collection cannot be featured" do
+      before do
+        allow(FeaturedCollection).to receive(:can_create_another?).and_return(false)
+      end
+      it 'returns false' do
+        expect(presenter.display_feature_link?).to be false
+      end
+    end
+
+    context 'when collection is already featured' do
+      before do
+        FeaturedCollection.create(collection_id: collection.id)
+      end
+      it 'returns false' do
+        expect(presenter.display_feature_link?).to be false
+      end
+    end
+  end
+
+  describe '#display_unfeature_link?' do
+
+    context 'when collection is not featured' do
+      before do
+        allow(presenter).to receive(:collection_featurable?).and_return(true)
+      end
+      it 'returns false' do
+        expect(presenter.display_unfeature_link?).to be false
+      end
+    end
+
+    context 'when collection is already featured' do
+      before do
+        allow(presenter).to receive(:collection_featurable?).and_return(true)
+        FeaturedCollection.create(collection_id: collection.id)
+      end
+      it 'returns true' do
+        expect(presenter.display_unfeature_link?).to be true
+      end
+    end
+
+    context 'when collection is not featurable' do
+      before do
+        allow(presenter).to receive(:collection_featurable?).and_return(false)
+      end
+      it 'returns false' do
+        expect(presenter.display_unfeature_link?).to be false
+      end
+    end
+  end
+
+  describe '#featured?' do
+
+    context "when the collection isn't featured" do
+      it 'returns false' do
+        expect(presenter.featured?).to be false
+      end
+    end
+
+    context 'when the collection is featured' do
+      before do
+        FeaturedCollection.create(collection_id: collection.id)
+      end
+
+      it 'returns true' do
+        expect(presenter.featured?).to be true
+      end
+    end
+  end
+
 end

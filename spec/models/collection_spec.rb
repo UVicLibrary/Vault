@@ -6,8 +6,7 @@ RSpec.describe Collection, type: :model do
   end
 
   describe '#bytes' do
-    it 'returns a hard-coded integer and issues a deprecation warning' do
-      expect(Deprecation).to receive(:warn).once
+    it 'returns a hard-coded integer' do
       expect(collection.bytes).to eq(0)
     end
   end

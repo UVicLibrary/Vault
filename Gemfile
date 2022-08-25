@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem 'omniauth-cas'
 
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
-# gem 'combine_pdf'
-# gem 'pdftoimage'
+gem 'combine_pdf'
+gem 'pdftoimage'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~>5.2.4.3' #'~>5.1.1'
@@ -55,6 +55,9 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.50', '<= 0.52.1'
   gem 'rubocop-rspec', '~> 1.22', '<= 1.22.2'
+
+  gem 'shoulda-matchers', require: false
+  gem 'shoulda-callback-matchers', require: false
 
   gem 'rails-perftest'
   gem 'ruby-prof'

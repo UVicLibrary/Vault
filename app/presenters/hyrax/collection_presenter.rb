@@ -48,6 +48,8 @@ module Hyrax
 
     # Terms is the list of fields displayed by
     # app/views/collections/_show_descriptions.html.erb
+    # In base hyrax, this gets expanded to include more terms. However, we already display the extra
+    # terms in _attribute_rows rather than _show_descriptions
     def self.terms
       [:total_viewable_items, :size, :modified_date]
     end
