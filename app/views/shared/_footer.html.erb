@@ -1,11 +1,10 @@
 <% if request.base_url.include? "vault" %>
-  <footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content;">
+  <% appearance = Hyrax::Forms::Admin::Appearance.new %>
+  <footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content; background-color: <%= appearance.header_background_color %>">
     <div class="container-fluid">
       <div class="row" >
         <div class="col-xs-4 col-lg-2 col-md-2 col-sm-4 footer-logo-container">
           <a class="footer-link" id="logo-link" href="https://www.uvic.ca/library/" target="_blank">
-<!--            <div id="footer-logo" style="background: url(<%#= asset_path 'lib-logo-white.png' %>) center center no-repeat;">-->
-<!--            </div>-->
             <img id="footer-logo" alt="UVic Libraries logo" src="<%= asset_path 'lib-logo-white.png' %>" />
           </a>
         </div>
