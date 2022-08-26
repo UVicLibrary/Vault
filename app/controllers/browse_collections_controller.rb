@@ -29,7 +29,7 @@ class BrowseCollectionsController < Hyrax::HomepageController
 
   # Return all collections
   def collections(options = {})
-    builder = self.search_builder_class.new(self).rows(options[:rows])
+    builder = self.search_builder_class.new(self)
     # Override default search to be title A-Z instead of relevance
     sort = options[:sort] ||= builder.default_sort_field
     rows = options[:rows] ||= count_collections
