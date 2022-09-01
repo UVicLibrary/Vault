@@ -9,9 +9,14 @@ module Hyrax
   class SolrService
     COMMIT_PARAMS = { softCommit: true }.freeze
 
+    ##
+    # @!attribute [r] use_valkyrie
+    #   @private
     attr_reader :use_valkyrie
 
-    def initialize(use_valkyrie: false) # use_valkyrie: Hyrax.config.query_index_from_valkyrie
+    delegate :commit, to: :connection
+
+    def initialize(use_valkyrie: Hyrax.config.query_index_from_valkyrie)
       @old_service = ActiveFedora::SolrService
       @use_valkyrie = use_valkyrie
     end
@@ -32,22 +37,27 @@ module Hyrax
                                    'Use `Hyrax.config.solr_select_path` instead'
       end
 
-      delegate :add, :commit, :count, :delete, :get, :instance, :post, :query, :delete_by_query, :search_by_id, to: :new
+      delegate :add, :commit, :count, :delete, :get, :instance, :ping, :post, :query, :delete_by_query, :search_by_id, to: :new
     end
 
     # Wraps rsolr get
     # @return [Hash] the hash straight form rsolr
     def get(query = nil, **args)
       # Make Hyrax.config.solr_select_path the default SOLR path
-      solr_path = args.delete(:path) || Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url#"http://perdita.library.uvic.ca:8983/solr/25e3429b-34de-4bbc-aa3e-167cc6ddde64"  # Hyrax.config.solr_select_path
-      args = args.merge(q: query) unless query.blank?
+      solr_path = args.delete(:path) || Hyrax.config.solr_select_path
+      args = args.merge(q: query) if query.present?
 
-      if use_valkyrie
-        valkyrie_index.connection.get(solr_path, params: args)
-      else
-        args = args.merge(qt: 'standard') unless query.blank?
-        self.class.instance.conn.get(solr_path, params: args)
-      end
+      args = args.merge(qt: 'standard') unless query.blank? || use_valkyrie
+      connection.get(solr_path, params: args)
+    end
+
+    ##
+    # Sends a ping request to solr
+    #
+    # @return [Boolean] `true` if the ping is successful
+    def ping
+      response = connection.get('admin/ping')
+      response['status'] == "OK"
     end
 
     # Wraps rsolr post
@@ -55,14 +65,10 @@ module Hyrax
     def post(query = nil, **args)
       # Make Hyrax.config.solr_select_path the default SOLR path
       solr_path = args.delete(:path) || Hyrax.config.solr_select_path
-      args = args.merge(q: query) unless query.blank?
+      args = args.merge(q: query) if query.present?
 
-      if use_valkyrie
-        valkyrie_index.connection.post(solr_path, data: args)
-      else
-        args = args.merge(qt: 'standard') unless query.blank?
-        self.class.instance.conn.post(solr_path, data: args)
-      end
+      args = args.merge(qt: 'standard') unless query.blank? || use_valkyrie
+      connection.post(solr_path, data: args)
     end
 
     # Wraps get by default
@@ -84,43 +90,20 @@ module Hyrax
       end
     end
 
-    # Wraps rsolr :commit
-    def commit
-      if use_valkyrie
-        valkyrie_index.connection.commit
-      else
-        self.class.instance.conn.commit
-      end
-    end
-
     # Wraps rsolr :delete_by_query
     def delete_by_query(query, **args)
-      if use_valkyrie
-        valkyrie_index.connection.delete_by_query(query, params: args)
-      else
-        self.class.instance.conn.delete_by_query(query, params: args)
-      end
+      connection.delete_by_query(query, params: args)
     end
 
     # Wraps rsolr delete
     def delete(id)
-      if use_valkyrie
-        valkyrie_index.connection.delete_by_id(id, params: COMMIT_PARAMS)
-      else
-        self.class.instance.conn.delete_by_id(id, params: COMMIT_PARAMS)
-      end
+      connection.delete_by_id(id, params: COMMIT_PARAMS)
     end
 
     # Wraps rsolr add
     # @return [Hash] the hash straight form rsolr
     def add(solr_doc, commit: true)
-      params = { softCommit: commit }
-
-      if use_valkyrie
-        valkyrie_index.connection.add(solr_doc, params: params)
-      else
-        self.class.instance.conn.add(solr_doc, params: params)
-      end
+      connection.add(solr_doc, params: { softCommit: commit })
     end
 
     # Wraps rsolr count
@@ -141,16 +124,31 @@ module Hyrax
 
     private
 
-      def valkyrie_index
-        Valkyrie::IndexingAdapter.find(:solr_index)
-      end
+    ##
+    # @private
+    # Return the valkyrie solr index.
+    #
+    # Since this module depends closely on RSolr internals and makes use
+    # of `#connection`, it will always need to connect to a Solr index. Other
+    # valkyrie indexers used here would, at minimum, need to provide a
+    # functioning `rsolr` connection.
+    def valkyrie_index
+      Valkyrie::IndexingAdapter.find(:solr_index)
+    end
 
-      def rows_warning
-        "Calling Hyrax::SolrService.get without passing an explicit value for ':rows' is not recommended. You will end up with Solr's default (usually set to 10)\nCalled by #{caller[0]}"
-      end
+    ##
+    # @api private
+    def connection
+      return self.class.instance.conn unless use_valkyrie
+      valkyrie_index.connection
+    end
 
-      def rsolr_call_warning
-        "Calls to Hyrax::SolrService.instance are deprecated and support will be removed from Hyrax 4.0. Use methods in Hyrax::SolrService instead."
-      end
+    def rows_warning
+      "Calling Hyrax::SolrService.get without passing an explicit value for ':rows' is not recommended. You will end up with Solr's default (usually set to 10)\nCalled by #{caller[0]}"
+    end
+
+    def rsolr_call_warning
+      "Calls to Hyrax::SolrService.instance are deprecated and support will be removed from Hyrax 4.0. Use methods in Hyrax::SolrService instead."
+    end
   end
 end
