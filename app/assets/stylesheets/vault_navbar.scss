@@ -117,9 +117,7 @@
   }
 
   .navbar-nav {
-    //margin: 0px -15px;
     margin: 0;
-    padding-right: 15px;
   }
 
   .navbar-nav .active > a {
@@ -235,6 +233,10 @@
       font-size: 14px;
     }
 
+    .vault_nav #user_utility_links>li a, .vault_nav .open .dropdown-menu>li>a {
+      color: #fff;
+    }
+
     .row {
       margin-left: -15px;
       margin-right: 0px;
@@ -281,5 +283,4 @@ body.dashboard {
 
 body.dashboard.vault-dashboard {
     padding-top: 0;
-    background-color: transparent;
 }

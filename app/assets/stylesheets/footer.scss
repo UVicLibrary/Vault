@@ -13,7 +13,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 5%;
+  //margin-left: 5%;
   padding-left: 5%;
 }
 
@@ -51,6 +51,10 @@
 .unstyled-list {
   list-style-type: none;
   padding-left: 0;
+}
+
+.navbar-inverse.site-footer {
+  border: none;
 }
 
 //mobile view max-size 767px
