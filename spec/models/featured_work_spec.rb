@@ -28,7 +28,7 @@ RSpec.describe FeaturedWork, type: :model do
     end
     context "when six exist" do
       before do
-        6.times do |n|
+        8.times do |n|
           described_class.create(work_id: n.to_s)
         end
       end
