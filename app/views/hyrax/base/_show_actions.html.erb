@@ -12,7 +12,7 @@
     <% end %>
 
     <% if Hyrax.config.analytics? %>
-      <%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default' %>
+      <%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default', data: { turbolinks: false } %>
     <% end %>
   </div>
 
