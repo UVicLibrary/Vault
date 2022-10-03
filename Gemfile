@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 gem 'omniauth-cas'
-
+gem 'signet', '0.17.0'
 
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
 gem 'combine_pdf'
@@ -139,6 +139,7 @@ gem 'draper'
 # end
 
 gem 'sidekiq', '~> 6.0.7' # '~> 5.0.3'
+gem 'sidekiq-cron'
 
 gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.5.3/gems/cdm_migrator-3.2.1'
 gem 'to_spotlight', '~> 0.2.7'
