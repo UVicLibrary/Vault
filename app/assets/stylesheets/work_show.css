@@ -1,6 +1,8 @@
-.items-container {
-    width: 100%;
-    overflow-x: scroll;
+@media only screen and (max-width: 767px ) {
+    .items-container {
+        width: 100%;
+        overflow-x: scroll;
+    }
 }
 
 /*From https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/*/
