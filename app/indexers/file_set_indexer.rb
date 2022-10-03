@@ -1,6 +1,8 @@
 class FileSetIndexer < Hyrax::FileSetIndexer
   include Hyrax::IndexesLinkedMetadata
   self.thumbnail_path_service = VaultThumbnailPathService
+  # Custom Vault thumbnail indexing
+  include IndexesVaultThumbnails
 
   def generate_solr_document
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
