@@ -40,5 +40,9 @@
         CollectionThumbnailPathService.call(collection)
       end
 
+      def thumbnail?(object)
+        File.exist?(thumbnail_filepath(object)) || object.pdf?
+      end
+
     end
   end
