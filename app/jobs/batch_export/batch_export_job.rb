@@ -1,7 +1,7 @@
 class BatchExportJob < ActiveJob::Base
   require 'down/wget'
   require 'bagit'
-  require_relative 'export_file_set_metadata'
+  require_relative 'export_file_set_and_work_metadata'
 
   # Exports files as bags (.7z files with file, file set, and work metadata) that get
   # moved to long-term preservation storage in case of a major earthquake or other natural
