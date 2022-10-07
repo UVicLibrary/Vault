@@ -240,13 +240,13 @@ form #content_block_researcher_title {
   color: inherit;
 }
 
-/* 
-.site-footer {
-  left: 0;
-  position: relative;
-  flex-shrink: 0;
-} */
+.fullscrn_pagination {
+    display: flex;
+}
 
+.mblview_pagination {
+    display: none;
+}
 
 body {
   margin-bottom: 17%;
@@ -261,10 +261,6 @@ html {
     overflow-x: hidden;
 }
 
-#paginate_sml {
-    display: none;
-}
-
 @media only screen and (max-width: 840px ) {
   body {
     margin-bottom: 55%
@@ -275,12 +271,12 @@ html {
   body {
     margin-bottom: 75%
   }
-  #paginate_sml {
-    display: flex;
-  }
-  #paginate_lrg {
-      display: none;
-  }
+    .fullscrn_pagination {
+        display: none;
+    }
+    .mblview_pagination {
+        display: flex;
+    }
 }
 
 .advanced-search-link {
