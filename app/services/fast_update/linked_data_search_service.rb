@@ -1,29 +1,13 @@
-module FastReconcile
+module FastUpdate
   class LinkedDataSearchService < Hyrax::SolrService
-    # Searches Solr for documents that contain a specific label or uri in all
-    # controlled property fields
+    # Searches Solr for documents that contain a specific uri or human-readable label
+    # in all controlled property fields
 
     def initialize(label, uri, use_valkyrie: Hyrax.config.query_index_from_valkyrie)
       @label = label
       @uri = uri
       @old_service = ActiveFedora::SolrService
       @use_valkyrie = use_valkyrie
-    end
-
-    # Sometimes FAST adds new headings that we have indexed in our system as string values.
-    # Once the new headings are added, we need to convert those old strings/labels into uris.
-    # This method searches for documents that need conversion.
-    # For example, a document with
-    # { "creator_tesim" => ["Tiffany and Company"],
-    #       "creator_label_tesim" => ["Tiffany and Company"] }
-    # instead of
-    # { "creator_tesim" => ["http://id.worldcat.org/fast/549011"],
-    #       "creator_label_tesim" => ["Tiffany and Company"] }
-    # @return [Array<Hash>] the response documents
-    def search_for_new_headings
-      search_for_label.select do |document|
-        controlled_properties.any? { |field| needs_conversion?(document, field) }
-      end
     end
 
     # Sometimes FAST changes the human-readable label for a uri, so we need to search for
@@ -48,15 +32,7 @@ module FastReconcile
       connection.get(uri_query, rows: rows)['response']['docs']
     end
 
-    private
-
-    # @param [Hash] document from a solr response
-    # @param [Symbol] the field name for a controlled property field, e.g. :based_near
-    def needs_conversion?(document, field)
-      label_field = label_field(field)
-      return false unless document.has_key?(label_field) && document.fetch(label_field).include?(@label)
-      document.fetch(label_field) == document.fetch("#{field}_tesim")
-    end
+    protected
 
     # @param [Hash] document from a solr response
     # @param [Symbol] the field name for a controlled property field, e.g. :based_near
