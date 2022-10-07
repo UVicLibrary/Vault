@@ -240,16 +240,18 @@ form #content_block_researcher_title {
   color: inherit;
 }
 
+.fullscrn_pagination {
+    display: flex;
+}
 
+.mblview_pagination {
+    display: none;
+}
 
 body {
   margin-bottom: 25%;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 14px;
-}
-
-#paginate_sml {
-    display: none;
 }
 
 @media only screen and (max-width: 840px ) {
@@ -262,12 +264,12 @@ body {
   body {
     margin-bottom: 75%
   }
-  #paginate_sml {
-    display: flex;
-  }
-  #paginate_lrg {
-      display: none;
-  }
+    .fullscrn_pagination {
+        display: none;
+    }
+    .mblview_pagination {
+        display: flex;
+    }
 }
 
 .advanced-search-link {

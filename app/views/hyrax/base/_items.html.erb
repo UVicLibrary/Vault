@@ -27,7 +27,8 @@
 <div class="row">
   <% if presenter.total_pages > 1 %>
     <div class="row record-padding col-md-9">
-      <%= paginate array_of_ids, outer_window: 2, theme: 'blacklight', param_name: :page, route_set: main_app %>
+      <div class="fullscrn_pagination"><%= paginate array_of_ids, outer_window: 1, theme: 'blacklight', param_name: :page, route_set: main_app %></div>
+      <div class="mblview_pagination"><%= paginate array_of_ids, window: 1, outer_window: 1, theme: 'blacklight', param_name: :page, route_set: main_app %></div>
     </div><!-- /pager -->
   <% end %>
 </div>
