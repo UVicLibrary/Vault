@@ -240,6 +240,10 @@ form #content_block_researcher_title {
   color: inherit;
 }
 
+.pagination {
+    padding-left: 15px;
+}
+
 .fullscrn_pagination {
     display: flex;
 }
