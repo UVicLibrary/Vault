@@ -44,7 +44,9 @@ class SolrDocument
       source: 'physical_repository_label_tesim',
       subject: 'subject_label_tesim',
       title: 'title_tesim',
-      type: 'oai_dc_type_tesim'
+      type: 'oai_dc_type_tesim',
+      thumbnail_path: 'thumbnail_path_ss', # These last 2 fields are made available for the OAI <Identifier> tag
+      model: 'has_model_ssim'              # in blacklight_oai_provider (for import into Alma/Primo main catalog)
   )
 
   def subject
