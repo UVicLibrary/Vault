@@ -47,7 +47,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  #
 
+  config.action_mailer.default_options = { from: 'no-reply@uvic.ca' }
   config.action_mailer.default_url_options = { host: "localhost:3001" }
 
   # Use an evented file watcher to asynchronously detect changes in source code,
