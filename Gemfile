@@ -104,7 +104,7 @@ gem 'rsolr', '~> 2.0'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
-gem 'devise_invitable', '~> 1.6'
+gem 'devise_invitable', '~> 2.0.6'
 
 gem 'apartment'
 gem 'config', '~> 1.5', '>= 1.5.1'
