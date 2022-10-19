@@ -6,6 +6,7 @@ module Hyrax
     extend ActiveSupport::Concern
     include Blacklight::Base
     include Blacklight::AccessControls::Catalog
+    include AuthorizeByIpAddress
 
     included do
       with_themed_layout :decide_layout
@@ -36,7 +37,9 @@ module Hyrax
 
     class_methods do
       def curation_concern_type=(curation_concern_type)
-        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:file_manager, :inspect_work, :manifest]
+        # Show is an exception because we will authorize based on IP first for certain works, then
+        # run other authorization checks later
+        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:file_manager, :inspect_work, :manifest, :show]
 
         # Load the fedora resource to get the etag.
         # No need to authorize for the file manager, because it does authorization via the presenter.
@@ -46,6 +49,7 @@ module Hyrax
         # We don't want the breadcrumb action to occur until after the concern has
         # been loaded and authorized
         before_action :save_permissions, only: :update
+        before_action :authorize_by_ip, only: :show
       end
 
       def curation_concern_type
@@ -88,8 +92,11 @@ module Hyrax
         wants.html { presenter && parent_presenter }
         wants.json do
           # load @curation_concern manually because it's skipped for html
-          # @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-          @curation_concern = ActiveFedora::Base.find(params[:id])
+          # TO DO: make this Valkyrie-compatible. See this file in hyrax 3.0.1 or later.
+          @curation_concern = _curation_concern_type.find(params[:id]) unless curation_concern
+          unless curation_concern.visibility == "authenticated" && ip_on_campus?
+            authorize! :show, @curation_concern
+          end
           render :show, status: :ok
         end
         additional_response_formats(wants)
