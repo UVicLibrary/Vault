@@ -10,6 +10,6 @@ module AuthorizeByIpAddress
   def ip_on_campus?
     user_ip = IPAddr.new(request.remote_ip)
     allowed_ips = Settings.allowed_ip_ranges.map { |ip| IPAddr.new(ip) }
-    allowed_ips.include?(user_ip)
+    allowed_ips.any? { |ip_range| ip_range.include?(user_ip) }
   end
 end
