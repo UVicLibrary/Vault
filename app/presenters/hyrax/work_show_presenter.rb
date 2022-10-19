@@ -2,6 +2,7 @@ module Hyrax
   class WorkShowPresenter
     include ModelProxy
     include PresentsAttributes
+    include AuthorizeByIpAddress
 
     attr_accessor :solr_document, :current_ability, :request
 
@@ -282,7 +283,12 @@ module Hyrax
       def authorized_item_ids
         @member_item_list_ids ||= begin
           items = ordered_ids
-          items.delete_if { |m| !current_ability.can?(:read, m) } if Flipflop.hide_private_items?
+          if Flipflop.hide_private_items?
+            items.delete_if do |item|
+              fsp = file_set_presenters.find { |fsp| fsp.id == item }
+              !authorized_by_ip?(fsp) and !current_ability.can?(:read, item)
+            end
+          end
           items
         end
       end

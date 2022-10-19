@@ -1,11 +1,11 @@
 require 'iiif_manifest'
-# require 'iiif/presentation'
 
 module Hyrax
   module WorksControllerBehavior
     extend ActiveSupport::Concern
     include Blacklight::Base
     include Blacklight::AccessControls::Catalog
+    include AuthorizeByIpAddress
 
     included do
       with_themed_layout :decide_layout
@@ -36,7 +36,9 @@ module Hyrax
 
     class_methods do
       def curation_concern_type=(curation_concern_type)
-        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:file_manager, :inspect_work, :manifest]
+        # Show is an exception because we will authorize based on IP first for certain works, then
+        # run other authorization checks later
+        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:file_manager, :inspect_work, :manifest, :show]
 
         # Load the fedora resource to get the etag.
         # No need to authorize for the file manager, because it does authorization via the presenter.
@@ -83,13 +85,19 @@ module Hyrax
     # @raise CanCan::AccessDenied if the document is not found or the user doesn't have access to it.
     def show
       @user_collections = user_collections
+      curation_concern = search_result_document(id: params[:id])
 
       respond_to do |wants|
-        wants.html { presenter && parent_presenter }
+        wants.html {
+          authorize_by_ip(curation_concern)
+          presenter && parent_presenter
+        }
         wants.json do
-          # load @curation_concern manually because it's skipped for html
-          # @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-          @curation_concern = ActiveFedora::Base.find(params[:id])
+          authorize_by_ip(curation_concern)
+          # load @curation_concern manually because it's skipped for html.
+          # This needs to be a GenericWork object, not a Solr document.
+          # TO DO: make this Valkyrie-compatible. See this file in hyrax 3.0.1 or later.
+          @curation_concern = _curation_concern_type.find(params[:id])
           render :show, status: :ok
         end
         additional_response_formats(wants)
@@ -217,7 +225,8 @@ module Hyrax
     end
 
     def presenter
-      @presenter ||= show_presenter.new(curation_concern_from_search_results, current_ability, request)
+      curation_concern = curation_concern_from_search_results
+      @presenter ||= show_presenter.new(curation_concern, current_ability, request)
     end
 
     def parent_presenter
