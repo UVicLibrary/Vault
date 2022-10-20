@@ -6,13 +6,34 @@ Rails.application.config.to_prepare do
     private
 
     def identifier_for(record)
-      case record['has_model_ssim'].first
-      when "Collection"
-        sub_url = "collections/#{record.id}"
-      when "GenericWork"
-        sub_url = "concern/generic_works/#{record.id}"
+      "#{provider.prefix}:#{record.id}"
+    end
+
+    def data_for(record)
+      @builder.metadata do
+        # The Alma/Primo catalog importer needs an extra identifier field with links to object and thumbnail in Vault
+        extra_id_tag = "<dc:identifier>#{link_to_object(record)}|#{link_to_thumbnail(record)}</dc:identifier>"
+        # Insert the extra xml before the closing <\/oai_dc:dc> tag to make valid markup
+        @builder.target! << provider.format(requested_format).encode(provider.model, record).gsub(/<\/oai_dc:dc>/, extra_id_tag + '\0')
       end
-      "https://vault.library.uvic.ca/#{sub_url}|https://vault.library.uvic.ca#{record.thumbnail_path}"
+    end
+
+    def host_for_tenant
+      Account.find_by(tenant: Apartment::Tenant.current)&.cname || "vault.#{Account.admin_host}"
+    end
+
+    def link_to_object(record)
+      case record['has_model_ssim'].first
+      when "GenericWork"
+        sub_url = "concern/generic_works"
+      when "Collection"
+        sub_url = "collections"
+      end
+      "https://#{host_for_tenant}/#{sub_url}/#{record.id}"
+    end
+
+    def link_to_thumbnail(record)
+      "https://#{host_for_tenant}#{record.thumbnail_path}"
     end
   end
 
