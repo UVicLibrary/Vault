@@ -1,10 +1,20 @@
 module AuthorizeByIpAddress
-  # Allow public users who are on campus (detected using IP address) to access UVic-only works
-  def authorize_by_ip
-    curation_concern = curation_concern_from_search_results
-    unless curation_concern.visibility == "authenticated" && ip_on_campus?
+
+  # Allow public users who are on campus (detected using IP address) to access UVic-only works.
+  # For all other users, run the usual authorization checks.
+  # @param [SolrDocument]
+  def authorize_by_ip(curation_concern)
+    unless authorized_by_ip?(curation_concern)
       authorize! :show, curation_concern
     end
+  end
+
+  def authorized_by_ip?(doc_or_presenter)
+    visibility(doc_or_presenter) == "authenticated" && ip_on_campus?
+  end
+
+  def visibility(doc_or_presenter)
+    doc_or_presenter.respond_to?(:visibility) ? doc_or_presenter.visibility : doc_or_presenter['visibility_ssi']
   end
 
   def ip_on_campus?

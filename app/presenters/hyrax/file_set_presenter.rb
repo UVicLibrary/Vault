@@ -28,7 +28,7 @@ module Hyrax
     delegate :title, :label, :description, :creator, :contributor, :subject,
     				 :provider_label, :creator_label, :subject_label, :contributor_label,
     				 :physical_repository_label, :genre_label, :geographic_coverage_label,
-             :publisher, :language, :date_uploaded,
+             :publisher, :language, :date_uploaded, :visibility,
              :embargo_release_date, :lease_expiration_date,
              :depositor, :keyword, :title_or_label, :keyword,
              :date_created, :date_modified, :itemtype,
@@ -36,7 +36,7 @@ module Hyrax
              to: :solr_document
 
     def single_use_links
-      @single_use_links ||= SingleUseLink.where(item_id: id).map { |link| link_presenter_class.new(link) }
+      @single_use_links ||= SingleUseLink.where(itemId: id).map { |link| link_presenter_class.new(link) }
     end
 
     # The title of the webpage that shows this FileSet.
@@ -89,7 +89,7 @@ module Hyrax
     end
 
     def user_can_perform_any_action?
-      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || ::FileSet.find(self.id).parent.downloadable?
+      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || parent.downloadable?
     end
 
     private
@@ -99,9 +99,14 @@ module Hyrax
       end
 
       def fetch_parent_presenter
-        ids = ActiveFedora::SolrService.query("{!field f=member_ids_ssim}#{id}",
-                                              fl: ActiveFedora.id_field)
-                                       .map { |x| x.fetch(ActiveFedora.id_field) }
+        ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field)
+                  .map { |x| x.fetch(Hyrax.config.id_field) }
+        Hyrax.logger.warn("Couldn't find a parent work for FileSet: #{id}.") if ids.empty?
+        ids.each do |id|
+          doc = ::SolrDocument.find(id)
+          next if current_ability.can?(:edit, doc)
+          raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
+        end
         Hyrax::PresenterFactory.build_for(ids: ids,
                                           presenter_class: WorkShowPresenter,
                                           presenter_args: current_ability).first

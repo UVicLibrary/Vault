@@ -1,5 +1,4 @@
 require 'iiif_manifest'
-# require 'iiif/presentation'
 
 module Hyrax
   module WorksControllerBehavior
@@ -49,7 +48,6 @@ module Hyrax
         # We don't want the breadcrumb action to occur until after the concern has
         # been loaded and authorized
         before_action :save_permissions, only: :update
-        before_action :authorize_by_ip, only: :show
       end
 
       def curation_concern_type
@@ -87,16 +85,19 @@ module Hyrax
     # @raise CanCan::AccessDenied if the document is not found or the user doesn't have access to it.
     def show
       @user_collections = user_collections
+      curation_concern = search_result_document(id: params[:id])
 
       respond_to do |wants|
-        wants.html { presenter && parent_presenter }
+        wants.html {
+          authorize_by_ip(curation_concern)
+          presenter && parent_presenter
+        }
         wants.json do
-          # load @curation_concern manually because it's skipped for html
+          authorize_by_ip(curation_concern)
+          # load @curation_concern manually because it's skipped for html.
+          # This needs to be a GenericWork object, not a Solr document.
           # TO DO: make this Valkyrie-compatible. See this file in hyrax 3.0.1 or later.
-          @curation_concern = _curation_concern_type.find(params[:id]) unless curation_concern
-          unless curation_concern.visibility == "authenticated" && ip_on_campus?
-            authorize! :show, @curation_concern
-          end
+          @curation_concern = _curation_concern_type.find(params[:id])
           render :show, status: :ok
         end
         additional_response_formats(wants)
@@ -224,7 +225,11 @@ module Hyrax
     end
 
     def presenter
-      @presenter ||= show_presenter.new(curation_concern_from_search_results, current_ability, request)
+      curation_concern = curation_concern_from_search_results
+      if authorized_by_ip?(curation_concern)
+        current_ability.can(:read, curation_concern)
+      end
+      @presenter ||= show_presenter.new(curation_concern, current_ability, request)
     end
 
     def parent_presenter

@@ -3,6 +3,7 @@ module Hyrax
     include Blacklight::Base
     include Blacklight::AccessControls::Catalog
     include Hyrax::Breadcrumbs
+    include AuthorizeByIpAddress
 
     before_action :authenticate_user!, except: [:show, :citation, :stats]
     load_and_authorize_resource class: ::FileSet, except: :show
@@ -155,9 +156,8 @@ module Hyrax
 
       def presenter
         @presenter ||= begin
-          _, document_list = search_results(params)
-          curation_concern = document_list.first
-          raise CanCan::AccessDenied unless curation_concern
+          curation_concern = ::SolrDocument.find(params[:id])
+          authorize_by_ip(curation_concern)
           show_presenter.new(curation_concern, current_ability, request)
         end
       end
