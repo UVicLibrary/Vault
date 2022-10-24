@@ -226,9 +226,6 @@ module Hyrax
 
     def presenter
       curation_concern = curation_concern_from_search_results
-      if authorized_by_ip?(curation_concern)
-        current_ability.can(:read, curation_concern)
-      end
       @presenter ||= show_presenter.new(curation_concern, current_ability, request)
     end
 

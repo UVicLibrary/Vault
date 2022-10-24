@@ -4,7 +4,9 @@ module AuthorizeByIpAddress
   # For all other users, run the usual authorization checks.
   # @param [SolrDocument]
   def authorize_by_ip(curation_concern)
-    unless authorized_by_ip?(curation_concern)
+    if authorized_by_ip?(curation_concern)
+      current_ability.can(:read, curation_concern)
+    else
       authorize! :show, curation_concern
     end
   end
