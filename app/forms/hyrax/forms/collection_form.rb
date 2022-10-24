@@ -7,8 +7,7 @@ module Hyrax
       # Used by the search builder
       attr_reader :scope
 
-      # Add :in_scua to this delegate statement
-      delegate :id, :depositor, :permissions, :human_readable_type, :member_ids, :nestable?, to: :model
+      delegate :id, :depositor, :permissions, :human_readable_type, :member_ids, :nestable?, :in_scua, to: :model
 
       class_attribute :membership_service_class
 
@@ -21,8 +20,7 @@ module Hyrax
 
       delegate :blacklight_config, to: Hyrax::CollectionsController
 
-      # Add in_scua to this array so it's available on the form object
-      self.terms = [:resource_type, :title, :creator, :contributor, :description,
+      self.terms = [:in_scua, :resource_type, :title, :creator, :contributor, :description,
                     :keyword, :license, :publisher, :date_created, :subject, :language,
                     :representative_id, :thumbnail_id, :identifier, :based_near,
                     :related_url, :visibility, :genre, :geographic_coverage, :collection_type_gid]
@@ -64,6 +62,7 @@ module Hyrax
       def secondary_terms
         # Add in_scua to this array so it's available on the form object
         [
+         :in_scua,
          :creator,
          :contributor,
          :keyword,
@@ -77,7 +76,8 @@ module Hyrax
          :identifier,
          :based_near,
          :related_url,
-         :resource_type]
+         :resource_type
+         ]
       end
 
       def banner_info

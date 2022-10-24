@@ -33,8 +33,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
         solr_doc["discover_access_group_ssim"] = "public"
       end
 
-      # Add in_scua here
-      # solr_doc['in_scua_bsi'] =
+      solr_doc['in_scua_bsi'] = object.in_scua
     end
   end
 
