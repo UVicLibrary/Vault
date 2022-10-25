@@ -2,6 +2,7 @@ module Hyrax
   class WorkShowPresenter
     include ModelProxy
     include PresentsAttributes
+    # app/controllers/authorize_by_ip_address.rb
     include AuthorizeByIpAddress
 
     attr_accessor :solr_document, :current_ability, :request

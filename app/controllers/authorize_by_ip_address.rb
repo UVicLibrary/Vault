@@ -12,15 +12,19 @@ module AuthorizeByIpAddress
   end
 
   def authorized_by_ip?(doc_or_presenter)
-    visibility(doc_or_presenter) == "authenticated" && ip_on_campus?
+    visibility_of(doc_or_presenter) == "authenticated" && ip_on_campus?
   end
 
-  def visibility(doc_or_presenter)
+  def visibility_of(doc_or_presenter)
     doc_or_presenter.respond_to?(:visibility) ? doc_or_presenter.visibility : doc_or_presenter['visibility_ssi']
   end
 
+  def ip_address
+    self.class == FullMetadataIiifManifestPresenter ? self.ip_address : request.remote_ip
+  end
+
   def ip_on_campus?
-    user_ip = IPAddr.new(request.remote_ip)
+    user_ip = IPAddr.new(ip_address)
     allowed_ips = Settings.allowed_ip_ranges.map { |ip| IPAddr.new(ip) }
     allowed_ips.any? { |ip_range| ip_range.include?(user_ip) }
   end

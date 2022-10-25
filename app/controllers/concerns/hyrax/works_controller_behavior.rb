@@ -209,9 +209,10 @@ module Hyrax
     end
 
     def iiif_manifest_presenter
-      Hyrax::CustomIiifManifestPresenter.new(search_result_document(id: params[:id])).tap do |p|
+      FullMetadataIiifManifestPresenter.new(search_result_document(id: params[:id])).tap do |p|
         p.hostname = request.base_url
         p.ability = current_ability
+        p.ip_address = request.remote_ip
       end
     end
 

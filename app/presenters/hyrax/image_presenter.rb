@@ -3,6 +3,6 @@
 module Hyrax
   class ImagePresenter < Hyrax::WorkShowPresenter
     # We do not use this generated ImagePresenter. Instead we use the
-    # ManifestEnabledWorkShowPresenter
+    # Hyrax::WorkShowPresenter
   end
 end
