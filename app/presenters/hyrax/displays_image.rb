@@ -16,8 +16,7 @@ module Hyrax::DisplaysImage
     #  Fixes error where Riiif holds onto earlier versions of an image.
     #  See https://github.com/samvera/hyrax/pull/3165 and
     # https://github.com/samvera/hyrax/pull/3764/commits/bb730aaf3367877ec2662e975aaa6208c7c60c7b#
-    url =
-    IIIFManifest::DisplayImage.new(display_image_url(hostname),
+    IIIFManifest::DisplayImage.new(display_image_url(request.base_url),
                                    width: width,
                                    height: height,
                                    iiif_endpoint: iiif_endpoint(latest_file_id))
@@ -30,22 +29,24 @@ module Hyrax::DisplaysImage
         latest_file_id,
         base_url,
         Hyrax.config.iiif_image_size_default,
+        # TO DO: Add support for png transparency
         #format: image_format(alpha_channels)
         format: 'jpg'
     )
   end
 
-  def base_image_url(file_id)
-    Riiif::Engine.routes.url_helpers.info_url(file_id, host: hostname).sub(%r{/info\.json\Z}, '')
-  end
-
   def iiif_endpoint(latest_file_id)
-    IIIFManifest::IIIFEndpoint.new(base_image_url(latest_file_id), profile: "http://iiif.io/api/image/2/level2.json")
+    return unless Hyrax.config.iiif_image_server?
+    IIIFManifest::IIIFEndpoint.new(
+        # "#{_base_url}/images/#{ActionDispatch::Journey::Router::Utils.escape_segment(_file_id)}"
+        Hyrax.config.iiif_info_url_builder.call(latest_file_id, hostname),
+        profile: Hyrax.config.iiif_image_compliance_level_uri
+    )
   end
 
   def unindexed_current_file_version
     # Rails.logger.warn "Indexed current_file_version for #{id} not found, falling back to Fedora."
-    ActiveFedora::File.uri_to_id(ActiveFedora::Base.find(id).current_content_version_uri)
+    Hyrax::VersioningService.versioned_file_id object.original_file
   end
 
   def latest_file_id

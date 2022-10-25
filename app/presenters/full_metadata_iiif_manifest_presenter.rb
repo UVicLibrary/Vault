@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-module Hyrax
   ##
   # This presenter wraps objects in the interface required by `IIIFManifiest`.
   # It will accept either a Work-like resource or a SolrDocument.
@@ -17,7 +16,7 @@ module Hyrax
   #   This has been modified to show all Hyrax.config.iiif_manifest_fields (only required fields are the default)
   #
   # @see https://www.rubydoc.info/gems/iiif_manifest
-  class CustomIiifManifestPresenter < IiifManifestPresenter
+  class FullMetadataIiifManifestPresenter < Hyrax::IiifManifestPresenter
     delegate_all
 
     ##
@@ -26,12 +25,16 @@ module Hyrax
     # @!attribute [w] hostname
     #   @return [String]
     attr_writer :ability, :hostname
+    attr_accessor :ip_address
+
+    # app/controllers/authorize_by_ip_address.rb
+    include AuthorizeByIpAddress
 
     class << self
       ##
       # @param [Hyrax::Resource, SolrDocument]
       def for(model)
-        klass = model.file_set? ? DisplayImagePresenter : CustomIiifManifestPresenter
+        klass = model.file_set? ? DisplayImagePresenter : FullMetadataIiifManifestPresenter
         klass.new(model)
       end
     end
@@ -53,19 +56,6 @@ module Hyrax
       end
     end
 
-    # This is optional and not including it seems to speed the viewer up by a few seconds
-    #def sequence_rendering
-    #  ordered_member_ids.map do |file_set_id|
-    #    fsp = file_set_presenters.find { |p| p.id == file_set_id }
-    #    next unless fsp
-    #
-    #    { '@id' => Hyrax::Engine.routes.url_helpers.download_url(fsp.id, host: hostname),
-    #      'format' => fsp.mime_type.present? ? fsp.mime_type : I18n.t("hyrax.manifest.unknown_mime_text"),
-    #      'label' => (model.title.first if model.title.present? || '')
-    #    }
-    #  end.flatten
-    #end
-
     ##
     # @note cache member presenters to avoid querying repeatedly; we expect this
     #   presenter to live only as long as the request.
@@ -76,8 +66,9 @@ module Hyrax
     # @return [Array<IiifManifestPresenter>]
     def member_presenters
       @member_presenters_cache ||= Factory.build_for(ids: ordered_member_ids, presenter_class: self.class).map do |presenter|
-        next unless ability.can?(:read, presenter.model)
-
+        presenter.ip_address = @ip_address
+        # app/controllers/authorize_by_ip_address.rb
+        next unless ability.can?(:read, presenter.model) or authorized_by_ip?(presenter.model)
         presenter.hostname = hostname
         presenter.ability  = ability
         presenter
@@ -86,7 +77,6 @@ module Hyrax
 
     class DisplayImagePresenter < Draper::Decorator
       delegate_all
-
       include Hyrax::DisplaysImage
 
       ##
@@ -95,6 +85,7 @@ module Hyrax
       # @!attribute [w] hostname
       #   @return [String]
       attr_writer :ability, :hostname
+      attr_accessor :ip_address
 
 
       ##
@@ -107,8 +98,7 @@ module Hyrax
 
         IIIFManifest::DisplayImage
             .new(display_image_url(@hostname),
-                 format: 'jpg',
-                 #format: image_format(alpha_channels),
+                 format: 'jpg', # image_format(alpha_channels)
                  width: width,
                  height: height,
                  iiif_endpoint: iiif_endpoint(latest_file_id))
@@ -147,20 +137,16 @@ module Hyrax
       end
 
       def ordered_member_ids
-        #solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
-        solr = RSolr.connect url: Settings.solr.url
-        response = solr.get 'select', params: {
-            q: "proxy_in_ssi:#{self.id}",
-            rows: 10_000,
-            fl: "ordered_targets_ssim"
-        }
-        response['response']['docs'].first['ordered_targets_ssim']
+          proxy_field = 'proxy_in_ssi'
+          target_field = 'ordered_targets_ssim'
+          Hyrax::SolrService
+              .query("#{proxy_field}:#{self.id}", rows: 10_000, fl: target_field)
+              .flat_map { |x| x.fetch(target_field, nil) }
+              .compact
+        end
       end
 
       # Get the metadata value(s). Returns a string "foo" instead of ["foo"]
       def get_metadata_value(field)
         model.try(field).first
       end
-
-  end
-end

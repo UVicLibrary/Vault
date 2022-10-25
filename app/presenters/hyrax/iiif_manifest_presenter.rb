@@ -204,7 +204,7 @@ module Hyrax
                  #format: image_format(alpha_channels),
                  width: width,
                  height: height,
-                 iiif_endpoint: iiif_endpoint(latest_file_id, base_url: hostname))
+                 iiif_endpoint: iiif_endpoint(latest_file_id))
       end
 
       def hostname

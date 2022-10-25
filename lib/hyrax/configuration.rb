@@ -428,7 +428,7 @@ module Hyrax
     #
     # @return [#call] lambda/proc that generates a URL to image info
     def iiif_info_url_builder
-      @iiif_info_url_builder ||= ->(_file_id, _base_url) { '' }
+      @iiif_info_url_builder ||= ->(_file_id, _base_url) { "#{_base_url}/images/#{ActionDispatch::Journey::Router::Utils.escape_segment(_file_id)}" } #''
     end
     attr_writer :iiif_info_url_builder
 
