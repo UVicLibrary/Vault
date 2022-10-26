@@ -253,27 +253,17 @@ form #content_block_researcher_title {
 }
 
 body {
-  margin-bottom: 25%;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 14px;
 }
 
-@media only screen and (max-width: 840px ) {
-  body {
-    margin-bottom: 55%
-  }
-}
-
 @media only screen and (max-width: 600px ) {
-  body {
-    margin-bottom: 75%
+  .fullscrn_pagination {
+    display: none;
   }
-    .fullscrn_pagination {
-        display: none;
-    }
-    .mblview_pagination {
-        display: flex;
-    }
+  .mblview_pagination {
+    display: flex;
+  }
 }
 
 .advanced-search-link {
