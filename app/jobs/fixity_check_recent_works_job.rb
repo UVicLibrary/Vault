@@ -1,6 +1,6 @@
 class FixityCheckRecentWorksJob < ActiveJob::Base
 
-  # Enqueue fixity checks for works created 3-6 months ago. This job runs every 3 months.
+  # Enqueue fixity checks for works created 2-5 months ago. This job runs every 3 months.
 
   # @param [Date] start_date a DateTime object
   # @param [Date] end_date a DateTime object
@@ -13,12 +13,12 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
 
     # @return a DateTime object
     def start_date
-      (Date.today.beginning_of_month - 6.months).midnight.strftime("%FT%H:%M:%SZ")
+      (Date.today.beginning_of_month - 5.months).midnight.strftime("%FT%H:%M:%SZ")
     end
 
     # @return a DateTime object
     def end_date
-      (Date.today.beginning_of_month - 3.months).midnight.strftime("%FT%H:%M:%SZ")
+      (Date.today.beginning_of_month - 2.months).midnight.strftime("%FT%H:%M:%SZ")
     end
 
     # @return [Array < GenericWork >] array of works to pass to fixity check
