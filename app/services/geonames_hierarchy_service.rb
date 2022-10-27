@@ -19,9 +19,9 @@ class GeonamesHierarchyService
       # Index "Vancouver Island" if place is on Vancouver Island
       if within?("8630140") # The Geonames id for Vancouver Island
         # Call reject to omit empty strings
-        [name, "Vancouver Island", province, country, continent].reject(&:blank?).uniq
+        [name, "Vancouver Island", admin_region, country, continent].reject(&:blank?).uniq
       else
-        [name, province, country, continent].reject(&:blank?).uniq
+        [name, admin_region, country, continent].reject(&:blank?).uniq
       end
     end
 
@@ -31,7 +31,7 @@ class GeonamesHierarchyService
     end
 
     # @return [String] The administrative region (e.g. province/territory in Canada, state in USA)
-    def province
+    def admin_region
       @item['adminName1']
     end
 

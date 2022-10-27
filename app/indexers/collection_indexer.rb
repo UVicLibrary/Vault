@@ -34,6 +34,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       end
 
       solr_doc['in_scua_bsi'] = object.in_scua
+      solr_doc['location_sort_tesim'] = object.based_near.map { |val| GeonamesHierarchyService.call(val.id) }.flatten.uniq
     end
   end
 
