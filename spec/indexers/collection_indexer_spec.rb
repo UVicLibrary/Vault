@@ -5,7 +5,8 @@ RSpec.describe CollectionIndexer do
   let(:service) { described_class.new(collection) }
   let(:collection) { build(:collection_lw, creator: ["http://id.worldcat.org/fast/549011"],
                            geographic_coverage: ["http://id.worldcat.org/fast/1243522"],
-                           resource_type:["http://purl.org/dc/dcmitype/StillImage"]) }
+                           resource_type:["http://purl.org/dc/dcmitype/StillImage"],
+                           based_near: ["http://sws.geonames.org/6174041/","http://sws.geonames.org/1814991"]) }
 
   it 'indexes a title field for sorting alphabetically' do
     expect(solr_document['title_sort_ssi']).to eq collection.title.first
@@ -15,6 +16,11 @@ RSpec.describe CollectionIndexer do
     expect(solr_document['oai_dc_coverage_tesim']).to eq(['United States--Pacific Coast'])
     expect(solr_document['oai_dc_type_tesim']).to eq(["StillImage"])
     expect(solr_document['oai_dc_relation_tesim']).to eq([])
+  end
+
+  it 'indexes the geonames hierarchy in a location sort field' do
+    expect(solr_document['location_sort_tesim']).to match_array(
+            ["Victoria","Vancouver Island", "British Columbia", "North America", "Canada", "China","Asia"])
   end
 
   context 'with a thumbnail' do
