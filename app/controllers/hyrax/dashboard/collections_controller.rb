@@ -210,6 +210,9 @@ module Hyrax
           process_logo_input
         end
         process_uploaded_thumbnail(params[:collection][:thumbnail_upload]) if params[:collection][:thumbnail_upload] # Save the image in the proper dimensions to public folder
+        if params[:collection][:in_scua]
+          params[:collection][:in_scua] = ActiveModel::Type::Boolean.new.cast(params[:collection][:in_scua])
+        end
         process_member_changes
         @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
         # @collection.attributes = controlled_properties
