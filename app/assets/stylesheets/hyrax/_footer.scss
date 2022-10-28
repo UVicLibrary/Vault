@@ -5,7 +5,8 @@ html {
 }
 
 body {
-  margin-bottom: 25%;
+  // margin is being overwritten only in prod by 133px
+  margin-bottom: 2.25 * $footer-height + $footer-top-margin !important;
 
   &.dashboard {
     margin-bottom: 0;
