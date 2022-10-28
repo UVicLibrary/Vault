@@ -38,19 +38,14 @@ module Hyrax
         { type: mime_type_for(file), disposition: 'inline' }
       end
 
-      # Customize the :read ability in your Ability class, or override this method.
-      # Hydra::Ability#download_permissions can't be used in this case because it assumes
-      # that files are in a LDP basic container, and thus, included in the asset's uri.
+    # Customize the :read ability in your Ability class, or override this method.
+    # Hydra::Ability#download_permissions can't be used in this case because it assumes
+    # that files are in a LDP basic container, and thus, included in the asset's uri.
       def authorize_download!
         authorize! :download, params[asset_param_key]
       rescue CanCan::AccessDenied
         unauthorized_image = Rails.root.join("app", "assets", "images", "unauthorized.png")
-        if File.exist? unauthorized_image
-          send_file unauthorized_image, status: :unauthorized
-        else
-          Deprecation.warn(self, "redirect_to default_image is deprecated and will be removed from Hyrax 3.0 (copy unauthorized.png image to directory assets/images instead)")
-          redirect_to default_image
-        end
+        send_file unauthorized_image, status: :unauthorized
       end
 
       def default_image
@@ -87,7 +82,7 @@ module Hyrax
       def dereference_file(file_reference)
         return false if file_reference.nil?
         association = asset.association(file_reference.to_sym)
-        association if association && association.is_a?(ActiveFedora::Associations::SingularAssociation)
+        association if association&.is_a?(ActiveFedora::Associations::SingularAssociation)
       end
   end
 end
