@@ -126,7 +126,7 @@
                     //$('.iiif-metadata-component').empty();
                     var selected = $('.thumbs').find('.selected'); // the current thumbnail
 
-                    if (typeof selected !== 'undefined') {
+                    if (typeof selected[0] !== 'undefined') {
                         var index = parseInt(selected.attr('id').replace('thumb',''));
                     } else { // There are no thumbnails because there is only 1 image
                         var index = 0;
@@ -140,14 +140,22 @@
                     // Append the metadata for the first item/file set
                     var items = $('<div class="items"></div>');
                     items.append(generateItem('Title', title));
-                    if (typeof description !== 'undefined') {
+                    if (description !== null) {
                         items.append(generateItem('Description', description));
                     }
                     if (typeof metadata !== 'undefined') {
                         for (var i = 0; i < metadata.length; i++) {
                             var obj = metadata[i];
                             for (var key in obj) {
-                                items.append(generateItem(key.toString(), obj[key]));
+                                var uri_fields = ["Based near", "Creator", "Contributor", "Physical repository", "Provider", "Subject", "Geographic coverage", "Genre"];
+                                var label_fields = ["Based near label", "Creator label", "Contributor label", "Physical repository label", "Provider label", "Subject label", "Geographic coverage label", "Genre label"];
+                                if (uri_fields.includes(key) || key === "") {
+                                    continue;
+                                } else if (label_fields.includes(key)) {
+                                    items.append(generateItem(key.toString().replace(" label",""), obj[key]));
+                                } else {
+                                    items.append(generateItem(key.toString(), obj[key]));
+                                }
                             }
                         }
                     }
