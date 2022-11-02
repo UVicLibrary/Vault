@@ -8,10 +8,6 @@ module Hyrax
             type.coerce(self[field])
           end
         end
-
-        def solr_name(*args)
-          Solrizer.solr_name(*args)
-        end
       end
 
       module Solr
