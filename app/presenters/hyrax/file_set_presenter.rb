@@ -89,7 +89,11 @@ module Hyrax
     end
 
     def user_can_perform_any_action?
-      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || parent.downloadable?
+      if request.base_url.include? "vault"
+        current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || parent.downloadable?
+      else
+        current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || current_ability.can?(:download, id)
+      end
     end
 
     private
