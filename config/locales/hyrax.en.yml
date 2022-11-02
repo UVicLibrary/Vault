@@ -1,5 +1,9 @@
 ---
 en:
+  activefedora:
+    models:
+      image: 'Image'
+      work: 'Work'
   hyrax:
     account_name: Account Id
     directory:
