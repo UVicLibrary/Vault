@@ -108,8 +108,21 @@ module Hyrax
           raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
         end
         Hyrax::PresenterFactory.build_for(ids: ids,
-                                          presenter_class: WorkShowPresenter,
+                                          presenter_class: presenter_class,
                                           presenter_args: current_ability).first
+      end
+
+      def presenter_class
+        if Settings.multitenancy.enabled?
+          case Account.find_by(tenant: Apartment::Tenant.current).cname
+          when "iaff"
+            Hyrax::IaffWorkPresenter
+          else # "vault"
+            VaultWorkShowPresenter
+          end
+        else
+          VaultWorkShowPresenter
+        end
       end
   end
 end

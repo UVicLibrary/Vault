@@ -59,7 +59,7 @@ RSpec.describe Hyrax::FileSetPresenter do
   describe "#user_can_perform_any_action?" do
     subject { presenter.user_can_perform_any_action? }
     let(:current_ability) { ability }
-    let(:parent_presenter) { Hyrax::WorkShowPresenter.new(SolrDocument.new, ability) }
+    let(:parent_presenter) { VaultWorkShowPresenter.new(SolrDocument.new, ability) }
 
     # it 'is deprecated' do
     #   expect(Deprecation).to receive(:warn)
