@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyrax
   class FileSetPresenter
     include ModelProxy
@@ -26,17 +27,19 @@ module Hyrax
 
     # Metadata Methods
     delegate :title, :label, :description, :creator, :contributor, :subject,
-    				 :provider_label, :creator_label, :subject_label, :contributor_label,
-    				 :physical_repository_label, :genre_label, :geographic_coverage_label,
-             :publisher, :language, :date_uploaded, :visibility,
+             :publisher, :language, :date_uploaded,
              :embargo_release_date, :lease_expiration_date,
              :depositor, :keyword, :title_or_label, :keyword,
              :date_created, :date_modified, :itemtype,
-             :current_file_version,
+             :original_file_id,
              to: :solr_document
 
+    def workflow
+      nil
+    end
+
     def single_use_links
-      @single_use_links ||= SingleUseLink.where(itemId: id).map { |link| link_presenter_class.new(link) }
+      @single_use_links ||= SingleUseLink.where(item_id: id).map { |link| link_presenter_class.new(link) }
     end
 
     # The title of the webpage that shows this FileSet.
@@ -84,12 +87,15 @@ module Hyrax
       Hyrax::FixityStatusPresenter.new(id).render_file_set_status
     end
 
+    ##
+    # @return [WorkShowPresenter, nil] +nil+ if no parent can be found
     def parent
       @parent_presenter ||= fetch_parent_presenter
     end
 
     def user_can_perform_any_action?
-      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || parent.downloadable?
+      Deprecation.warn("We're removing Hyrax::FileSetPresenter.user_can_perform_any_action? in Hyrax 4.0.0; Instead use can? in view contexts.")
+      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || current_ability.can?(:download, id)
     end
 
     private

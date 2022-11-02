@@ -16,7 +16,21 @@ module Hyrax
     copy_blacklight_config_from(::CatalogController)
 
     class_attribute :show_presenter, :form_class
-    self.show_presenter = Hyrax::FileSetPresenter
+
+    # self.show_presenter = Hyrax::FileSetPresenter
+
+    # Tenant-specific file set presenters
+    if Settings.multitenancy.enabled?
+      case Account.find_by(tenant: Apartment::Tenant.current).cname
+      when "iaff"
+        self.show_presenter = Hyrax::FileSetPresenter
+      when "vault"
+        self.show_presenter = VaultFileSetPresenter
+      end
+    else
+      self.show_presenter = VaultFileSetPresenter
+    end
+
     self.form_class = Hyrax::Forms::FileSetForm
 
     # A little bit of explanation, CanCan(Can) sets the @file_set via the .load_and_authorize_resource

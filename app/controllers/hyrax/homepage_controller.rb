@@ -73,7 +73,7 @@ class Hyrax::HomepageController < ApplicationController
 
   def recent_work_presenters
     (response, works) = search_results(q: '', sort: sort_field, rows: 56)
-    build_presenters(works, Hyrax::WorkShowPresenter)
+    build_presenters(works, VaultWorkShowPresenter)
   end
 
   def build_presenters(documents, presenter_class)

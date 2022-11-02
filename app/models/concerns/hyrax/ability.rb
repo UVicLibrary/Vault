@@ -136,6 +136,7 @@ module Hyrax
       can :read, :admin_dashboard
       can :update, ContentBlock
       can :edit, ::SolrDocument
+      can :edit, Hyrax::SolrDocument::OrderedMembers
     end
 
     def stats_abilities

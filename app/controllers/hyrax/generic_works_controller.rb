@@ -5,6 +5,7 @@ module Hyrax
     include Hyrax::BreadcrumbsForWorks
 
     self.curation_concern_type = GenericWork
+    self.show_presenter = VaultWorkShowPresenter
 
     def additional_response_formats(format)
       format.endnote do

@@ -49,7 +49,7 @@
       metadata_fields.each_with_object([]) do |field_name, array|
         unless get_metadata_value(field_name).blank?
           array << {
-              'label' => field_name.to_s.humanize, #.capitalize.gsub(' label','')
+              'label' => field_name.to_s.humanize,
               'value' => get_metadata_value(field_name)
           }
         end
@@ -112,6 +112,10 @@
       # @return [Boolean] false
       def work?
         false
+      end
+
+      def solr_document
+        model
       end
     end
 

@@ -5,6 +5,8 @@ require 'iiif_manifest'
 module Hyrax::DisplaysImage
   extend ActiveSupport::Concern
 
+  delegate :current_file_version, to: :solr_document
+
   # Creates a display image only where FileSet is an image.
   #
   # @return [IIIFManifest::DisplayImage] the display image required by the manifest builder.
@@ -56,4 +58,5 @@ module Hyrax::DisplaysImage
   def hostname
     @request.base_url || request.base_url
   end
+
 end
