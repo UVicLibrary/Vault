@@ -5,13 +5,10 @@ class Hyrax::HomepageController < ApplicationController
   include Blacklight::AccessControls::Catalog
   include BlacklightRangeLimit::ControllerOverride
 
-  require 'will_paginate/array'
-
   # The search builder for finding recent documents
   # Override of Blacklight::RequestBuilders
   def search_builder_class
     Hyrax::HomepageSearchBuilder
-    # CustomRangeLimitBuilder
   end
 
   class_attribute :presenter_class
@@ -21,6 +18,8 @@ class Hyrax::HomepageController < ApplicationController
   helper Hyrax::ContentBlockHelper
 
   def index
+    # Homepage facet links are configured via VaultHomepageHelper
+
     @presenter = presenter_class.new(current_ability, collections)
     @featured_researcher = ContentBlock.for(:researcher)
     @marketing_text = ContentBlock.for(:marketing)
@@ -36,12 +35,6 @@ class Hyrax::HomepageController < ApplicationController
 
     @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter)
     @collection_card_presenters = @collection_presenters.slice(0,8)
-
-    # Homepage facet links
-    @year_range_values = build_year_range_facets(year_range_facets)
-    @genre_facet_values = build_facets(genre_facets)
-    @subject_facet_values = build_facets(subject_facets)
-    @place_facet_values = build_facets(place_facets)
   end
 
   def more_recent_collections
@@ -110,66 +103,6 @@ class Hyrax::HomepageController < ApplicationController
 
   def sort_field
     "date_uploaded_dtsi desc"
-  end
-
-  def genre_facets
-    [  "diaries", "historical maps", "letters (correspondence)", "photographs", "periodicals", "serials (publications)", "sound recordings", "video recordings (physical artifacts)" ]
-  end
-
-  # An array of EDTF date strings (see EdtfDateService)
-  def year_range_facets
-    %w[ 14XX 15XX 16XX 17XX 18XX 19XX ]
-  end
-
-  def subject_facets
-    ["Anarchism", "Artists", "Authors", "Families", "Gender identity", "Literature", "Local history", "Military history", "World War (1939-1945)"]
-  end
-
-  def place_facets
-    ["British Columbia--Victoria", "British Columbia--Vancouver Island", "British Columbia", "Canada", "China", "England", "France", "Ireland", "Japan"]
-  end
-
-  def build_facets(arr)
-    # hits: 0 since we don't care about displaying the hit count
-    arr.map { |val| Blacklight::Solr::Response::Facets::FacetItem.new(value: val, hits: 0) }
-  end
-
-  def build_year_range_facets(arr)
-
-    services = arr.map { |century| EdtfDateService.new(century) }
-
-    new_array = []
-    new_array.push(start_range_facet(services.first.year_range.first))
-
-    services.each do |service|
-      value = service.humanized
-      begin_date = service.year_range.first
-      end_date = service.year_range.last
-      renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
-      path = renderer.search_path
-      new_array.push({ value => path })
-    end
-
-    new_array.push(end_range_facet(services.last.year_range.last + 1))
-    new_array
-  end
-
-  def start_range_facet(year)
-    value = EdtfDateService.new("../#{year}").humanized
-    begin_date = helpers.range_results_endpoint("year_range_isim",:min).to_i
-    end_date = year
-    renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
-    path = renderer.search_path
-    { value => path }
-  end
-
-  def end_range_facet(year)
-    value = EdtfDateService.new("#{year}/..").humanized
-    begin_date = year
-    end_date = Date.today.year
-    renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
-    path = renderer.search_path
-    { value => path }
   end
 
 end
