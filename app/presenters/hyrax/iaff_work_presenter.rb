@@ -1,7 +1,12 @@
 # Generated via
 #  `rails generate hyrax:work IaffWork`
 module Hyrax
-  class IaffWorkPresenter < Hyrax::WorkShowPresenter
+  class IaffWorkPresenter < Hyku::WorkShowPresenter
+
+    delegate :alternative_title, :geographic_coverage, :coordinates, :chronological_coverage, :extent,
+             :additional_physical_characteristics, :has_format, :physical_repository, :provenance,
+             :provider, :sponsor, :genre, :format, :is_referenced_by, :date_digitized, :transcript,
+             :technical_note, :year, to: :solr_document
 
     # @return FileSetPresenter presenter for the representative FileSets
     # Fix bug where Hyrax couldn't find member presenters for some works

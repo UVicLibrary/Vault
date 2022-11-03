@@ -59,12 +59,7 @@ RSpec.describe Hyrax::FileSetPresenter do
   describe "#user_can_perform_any_action?" do
     subject { presenter.user_can_perform_any_action? }
     let(:current_ability) { ability }
-    let(:parent_presenter) { VaultWorkShowPresenter.new(SolrDocument.new, ability) }
-
-    # it 'is deprecated' do
-    #   expect(Deprecation).to receive(:warn)
-    #   subject
-    # end
+    let(:parent_presenter) { Hyrax::WorkShowPresenter.new(SolrDocument.new, ability) }
 
     before do
       allow(presenter).to receive(:parent).and_return(parent_presenter)
@@ -74,18 +69,22 @@ RSpec.describe Hyrax::FileSetPresenter do
       before do
         expect(current_ability).to receive(:can?).with(:edit, presenter.id).and_return false
         expect(current_ability).to receive(:can?).with(:destroy, presenter.id).and_return false
-        # expect(current_ability).to receive(:can?).with(:download, presenter.id).and_return true
-        allow(parent_presenter).to receive(:downloadable?).and_return true
+        expect(current_ability).to receive(:can?).with(:download, presenter.id).and_return true
       end
 
       it { is_expected.to be true }
+
+      it 'is deprecated' do
+        expect(Deprecation).to receive(:warn)
+        subject
+      end
+
     end
     context 'when user cannot perform any action' do
       before do
         expect(current_ability).to receive(:can?).with(:edit, presenter.id).and_return false
         expect(current_ability).to receive(:can?).with(:destroy, presenter.id).and_return false
-        # expect(current_ability).to receive(:can?).with(:download, presenter.id).and_return false
-        allow(parent_presenter).to receive(:downloadable?).and_return false
+        expect(current_ability).to receive(:can?).with(:download, presenter.id).and_return false
       end
 
       it { is_expected.to be false }

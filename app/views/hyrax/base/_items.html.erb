@@ -9,8 +9,15 @@
         <th><%= t('.title') %></th>
         <th><%= t('.date_uploaded') %></th>
         <th><%= t('.visibility') %></th>
-        <% if can?(:edit, presenter.id) or presenter.downloadable? or request.base_url.exclude? "vault" %><%# only show the actions column if the user can perform any actions %>
-          <th><%= t('.actions') %></th>
+        <%# only show the actions column if the user can perform any actions %>
+        <% if request.base_url.include? "vault" %>
+          <% if can?(:edit, presenter.id) || can?(:destroy, presenter.id) || presenter.downloadable? %>
+            <th><%= t('.actions') %></th>
+          <% end %>
+        <% else %>
+          <% if can?(:edit, presenter.id) || can?(:destroy, presenter.id) || can?(:download, presenter.id) %>
+            <th><%= t('.actions') %></th>
+          <% end %>
         <% end %>
       </tr>
       </thead>

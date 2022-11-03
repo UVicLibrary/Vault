@@ -2,7 +2,19 @@
 
 module Hyku
   class WorkShowPresenter < Hyrax::WorkShowPresenter
-    Hyrax::MemberPresenterFactory.file_presenter_class = Hyrax::FileSetPresenter
+    # Hyrax::MemberPresenterFactory.file_presenter_class = Hyrax::FileSetPresenter
+
+    # modify this attribute to use an alternate presenter class for the files
+    if Settings.multitenancy.enabled?
+      case Account.find_by(tenant: Apartment::Tenant.current).cname
+      when "iaff"
+        Hyrax::MemberPresenterFactory.file_presenter_class = FileSetPresenter
+      when "vault"
+        Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+      end
+    else
+      Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+    end
 
     delegate :extent, to: :solr_document
 

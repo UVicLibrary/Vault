@@ -41,5 +41,16 @@ module Hyrax
   def rendering_ids
     to_param
   end
+
+    private
+
+    # @return [Array<FileSetPresenter>] presenters for the file sets in order of the ids
+    def file_presenters
+      @file_sets ||=
+          Hyrax::PresenterFactory.build_for(ids: model.member_ids,
+                                            presenter_class: VaultFileSetPresenter,
+                                            presenter_args: current_ability)
+    end
+
   end
 end
