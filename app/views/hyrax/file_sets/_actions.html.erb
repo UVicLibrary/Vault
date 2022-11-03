@@ -1,4 +1,9 @@
-<% if file_set and file_set.user_can_perform_any_action? %><%# if false, there are no actions so no point rendering %>
+<% if request.base_url.include? "vault" %>
+  <% user_can_perform_any_action = (can?(:edit, file_set.id) || can?(:destroy, file_set.id) || file_set.parent.downloadable?) %>
+<% else %>
+  <% user_can_perform_any_action = (can?(:edit, file_set.id) || can?(:destroy, file_set.id) || can?(:download, file_set.id)) %>
+<% end %>
+<% if file_set and user_can_perform_any_action %><%# if false, there are no actions so no point rendering %>
     <div class="btn-group">
 
       <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" id="dropdownMenu_<%= file_set.id %>" aria-haspopup="true" aria-expanded="false">
