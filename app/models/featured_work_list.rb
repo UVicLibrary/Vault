@@ -45,11 +45,24 @@ class FeaturedWorkList
       ability = nil
       @works ||= FeaturedWork.all
       Hyrax::PresenterFactory.build_for(ids: @works.pluck(:work_id),
-                                        presenter_class: Hyrax::WorkShowPresenter,
+                                        presenter_class: presenter_class,
                                         presenter_args: ability)
     end
 
     def work_with_id(id)
       @works.find { |w| w.work_id == id }
+    end
+
+    def presenter_class
+      if Settings.multitenancy.enabled?
+        case Account.find_by(tenant: Apartment::Tenant.current)
+        when "vault"
+          VaultWorkShowPresenter
+        else
+          Hyrax::WorkShowPresenter
+        end
+      else
+        VaultWorkShowPresenter
+      end
     end
 end
