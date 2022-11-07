@@ -119,9 +119,12 @@ Rails.application.routes.draw do
   end
 
   mount Riiif::Engine => '/images', as: 'riiif'
+
   require 'sidekiq/web'
+  require 'sidekiq/cron/web'
   authenticate :user, lambda { |u| u.ability.admin? } do
     mount Sidekiq::Web => '/sidekiq'
   end
+  
   mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 end
