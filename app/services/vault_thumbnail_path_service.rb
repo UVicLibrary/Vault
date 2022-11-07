@@ -24,7 +24,7 @@
       # Returns the value for the thumbnail path to put into the solr document
       def thumbnail_path(object)
         if object.pdf?
-          PdfThumbnailPathService.call(object.thumbnail)
+          PdfThumbnailPathService.call(object)
         else
           IIIFWorkThumbnailPathService.call(object)
         end
