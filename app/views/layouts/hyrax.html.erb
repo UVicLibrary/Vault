@@ -6,6 +6,12 @@
 </head>
 
 <body>
+<% if request.base_url.include?("vault") && (controller_name == 'homepage' || controller_name == 'catalog') && action_name == 'index' %>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TDGQKDL"
+                    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+<% end %>
 <div class="skip-to-content">
   <%= link_to "Skip to Content", "#skip-to-content" %>
 </div>
