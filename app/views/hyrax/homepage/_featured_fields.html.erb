@@ -1,6 +1,6 @@
 <div>
   <div class="featured-item-title">
-    <% if featured.class == Hyrax::WorkShowPresenter %>
+    <% if featured.class.to_s.include? "Work" %>
       <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
       <h3>
         <%= link_to [main_app, featured] do %>
