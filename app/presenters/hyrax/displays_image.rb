@@ -48,7 +48,7 @@ module Hyrax::DisplaysImage
 
   def unindexed_current_file_version
     # Rails.logger.warn "Indexed current_file_version for #{id} not found, falling back to Fedora."
-    Hyrax::VersioningService.versioned_file_id object.original_file
+    Hyrax::VersioningService.versioned_file_id FileSet.find(object.id).original_file
   end
 
   def latest_file_id
