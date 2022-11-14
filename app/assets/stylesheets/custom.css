@@ -1,3 +1,8 @@
+.main-content.maximized { /* stops dropdown from being displayed as a scroll box */
+    position: unset; /* or relative */
+    overflow: hidden
+}
+
 #sidebar {
     padding-left: 0px;
 }
