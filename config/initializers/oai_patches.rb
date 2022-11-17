@@ -11,10 +11,11 @@ Rails.application.config.to_prepare do
 
     def data_for(record)
       @builder.metadata do
-        # The Alma/Primo catalog importer needs an extra identifier field with links to object and thumbnail in Vault
-        extra_id_tag = "<dc:identifier>#{link_to_object(record)}|#{link_to_thumbnail(record)}</dc:identifier>"
+        # The Alma/Primo catalog importer needs extra identifier fields with links to object and thumbnail in Vault
+        link_tag = "<dc:identifier>#{link_to_object(record)}</dc:identifier>"
+        thumbnail_tag = "<dc:identifier>#{link_to_thumbnail(record)}</dc:identifier>"
         # Insert the extra xml before the closing <\/oai_dc:dc> tag to make valid markup
-        @builder.target! << provider.format(requested_format).encode(provider.model, record).gsub(/<\/oai_dc:dc>/, extra_id_tag + '\0')
+        @builder.target! << provider.format(requested_format).encode(provider.model, record).gsub(/<\/oai_dc:dc>/, link_tag + thumbnail_tag + '\0')
       end
     end
 
