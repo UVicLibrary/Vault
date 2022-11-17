@@ -1,8 +1,8 @@
 module Hyrax
   module Adapters
     module NestingIndexAdapter
-      FULL_REINDEX = "full".freeze
-      LIMITED_REINDEX = "limited".freeze
+      FULL_REINDEX = "full"
+      LIMITED_REINDEX = "limited"
 
       # @!group Providing interface for a Samvera::NestingIndexer::Adapter
       # @api public
@@ -21,7 +21,8 @@ module Hyrax
       def self.find_preservation_parent_ids_for(id:)
         # Not everything is guaranteed to have library_collection_ids
         # If it doesn't have it, what do we do?
-        fedora_object = ActiveFedora::Base.uncached do
+        # fedora_object = ActiveFedora::Base.uncached do
+        fedora_object = Hyrax::Base.uncached do
           fedora_object = ActiveFedora::Base.find(id)
         end
 
@@ -47,7 +48,8 @@ module Hyrax
       # rubocop:disable Lint/UnusedMethodArgument
       def self.each_perservation_document_id_and_parent_ids(&block)
         ActiveFedora::Base.descendant_uris(ActiveFedora.fedora.base_uri, exclude_uri: true).each do |uri|
-          id = ActiveFedora::Base.uri_to_id(uri)
+          # id = ActiveFedora::Base.uri_to_id(uri)
+          id = Hyrax.config.translate_uri_to_id.call(uri)
           object = ActiveFedora::Base.find(id)
           parent_ids = object.try(:member_of_collection_ids) || []
 
@@ -57,7 +59,7 @@ module Hyrax
             yield(id, parent_ids) if parent_ids.empty?
           else
             Rails.logger.info "Re-indexing via to_solr ... #{id}"
-            ActiveFedora::SolrService.add(object.to_solr, commit: true)
+            Hyrax::SolrService.add(object.to_solr, commit: true)
           end
         end
       end
@@ -70,7 +72,7 @@ module Hyrax
       # @param nesting_document [Samvera::NestingIndexer::Documents::IndexDocument]
       # @return Hash - the attributes written to the indexing layer
       def self.write_nesting_document_to_index_layer(nesting_document:)
-        solr_doc = ActiveFedora::Base.uncached do
+        solr_doc = Hyrax::Base.uncached do
           ActiveFedora::Base.find(nesting_document.id).to_solr # What is the current state of the solr document
         end
 
@@ -97,7 +99,7 @@ module Hyrax
         solr_doc[solr_field_name_for_storing_parent_ids] = parent_ids
         solr_doc[solr_field_name_for_storing_pathnames] = pathnames
         solr_doc[solr_field_name_for_deepest_nested_depth] = depth
-        ActiveFedora::SolrService.add(solr_doc, commit: true)
+        Hyrax::SolrService.add(solr_doc, commit: true)
         solr_doc
       end
 
@@ -131,8 +133,9 @@ module Hyrax
 
       # @api private
       def self.find_solr_document_by(id:)
-        query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([id])
-        document = ActiveFedora::SolrService.query(query, rows: 1).first
+        # query = ActiveFedora::SolrQueryBuilder.construct_query_for_ids([id])
+        query = Hyrax::SolrQueryService.new.with_ids(ids: [id]).build
+        document = Hyrax::SolrService.query(query, rows: 1).first
         document = ActiveFedora::Base.find(id).to_solr if document.nil?
         raise "Unable to find SolrDocument with ID=#{id}" if document.nil?
         document
@@ -157,12 +160,13 @@ module Hyrax
       # @todo What is the appropriate suffix to apply to the solr_field_name?
       def self.raw_child_solr_documents_of(parent_document:)
         # query Solr for all of the documents included as a member_of_collection parent. Or up to 10000 of them.
-        child_query = ActiveFedora::SolrQueryBuilder.construct_query(member_of_collection_ids_ssim: parent_document.id)
+        # child_query = ActiveFedora::SolrQueryBuilder.construct_query(member_of_collection_ids_ssim: parent_document.id)
+        child_query = Hyrax::SolrQueryService.new.with_field_pairs(field_pairs: [["member_of_collection_ids_ssim", parent_document.id]]).build
         # Limit the Solr query to only the fields we need to reindex parent/child relationships
         field_list = [solr_field_name_for_storing_pathnames,
                       solr_field_name_for_storing_ancestors,
                       solr_field_name_for_storing_parent_ids, "id"].join(",")
-        ActiveFedora::SolrService.query(child_query, rows: 10_000.to_i, fl: field_list)
+        Hyrax::SolrService.query(child_query, rows: 10_000.to_i, fl: field_list)
       end
       private_class_method :raw_child_solr_documents_of
 
