@@ -7,23 +7,22 @@
 <div class="participants" class="tab-pane">
     <div class="panel-body">
 
-      <section class="section-add-sharing">
+      <section class="section-add-sharing clearfix">
         <p>Change who can edit or deposit works into this collection. <%= t('.note') %></p>
         <h3>Add Groups or Users</h3><%#= t('.add_sharing') %>
 
         <!-- Add group form -->
-        <div class="form-add-sharing-wrapper" data-id="<%= @form.id %>">
+        <div class="sharing-row-form clearfix" data-id="<%= @form.id %>">
           <%= simple_form_for @form.permission_template,
                               url: [hyrax, :dashboard, @form, :permission_template],
                               html: { id: 'group-participants-form' } do |f| %>
-            <div class="clearfix spacer">
               <%= f.fields_for 'access_grants_attributes',
                                f.object.access_grants.build(agent_type: 'group'),
                                index: 0 do |builder| %>
 
                 <div class="form-inline add-sharing-form">
-                  <label class="col-md-2 col-xs-4 control-label"><%= t('.add_group') %>:</label>
-                  <div class="col-md-10 col-xs-8 form-group">
+                  <div class="form-group">
+                    <label><%= t('.add_group') %>:</label>
                     <%= builder.hidden_field :agent_type %>
                     <%= builder.select :agent_id,
                                        group_options,
@@ -39,23 +38,21 @@
                   </div>
                 </div>
               <% end %>
-            </div>
           <% end %>
         </div>
         <!-- Add user form -->
-        <div class="form-add-sharing-wrapper" data-id="<%= @form.id %>">
+        <div class="sharing-row-form clearfix" data-id="<%= @form.id %>">
           <%= simple_form_for @form.permission_template,
                               url: [hyrax, :dashboard, @form, :permission_template],
                               html: { id: 'user-participants-form-2' } do |f| %>
-            <div class="clearfix spacer">
 
               <%= f.fields_for 'access_grants_attributes',
                                f.object.access_grants.build(agent_type: 'user'),
                                index: 1 do |builder| %>
 
-                <div class="form-inline add-users">
-                  <label class="col-md-2 col-xs-4 control-label"><%= t('.add_user') %>:</label>
-                  <div class="col-md-10 col-xs-8 form-group">
+                <div class="form-inline">
+                  <div class="form-group">
+                    <label><%= t('.add_user') %>:</label>
                     <%= builder.hidden_field :agent_type %>
                     <%= builder.text_field :agent_id,
                                            placeholder: "Search for a user..." %>
@@ -69,7 +66,6 @@
                   </div>
                 </div>
               <% end %>
-            </div>
           <% end %>
         </div>
 

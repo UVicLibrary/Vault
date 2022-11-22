@@ -19,7 +19,7 @@
 </div>
 
 <% if request.base_url.include? "vault" %>
-  <section class="section-download-ability" style="margin-bottom: 3em;">
+  <section class="section-download-ability">
     <h3>Downloads</h3>
     <p>Turning this on will allow public users to download all files in this collection. Users who can edit files in a collection will still be able to download even if downloads are otherwise not allowed.</p>
     <p>Currently, <strong><%= @collection.count_downloadable[0] %></strong> out of <%= @collection.count_downloadable[1] %> works in this collection are downloadable.<p>
@@ -35,22 +35,21 @@
 <% end %>
 
 <div id="participants" class="participants" class="tab-pane">
-      <section class="section-add-sharing">
+      <section class="section-add-sharing clearfix">
         <h3 class="collection-sharing-heading">Add Groups or Users</h3>
         <p>Regardless of the visibility settings of this collection, you can share this collection with specific groups and users.</p>
         <!-- Add group form -->
-        <div class="form-add-sharing-wrapper" data-id="<%= @form.id %>">
+        <div class="sharing-row-form clearfix" data-id="<%= @form.id %>">
           <%= simple_form_for @form.permission_template,
                               url: [hyrax, :dashboard, @form, :permission_template],
                               html: { id: 'group-participants-form' } do |f| %>
-            <div class="clearfix spacer">
               <%= f.fields_for 'access_grants_attributes',
                                f.object.access_grants.build(agent_type: 'group'),
                                index: 0 do |builder| %>
 
                 <div class="form-inline add-sharing-form">
-                  <label class="col-md-2 col-xs-4 control-label"><%= t('.add_group') %>:</label>
-                  <div class="col-md-10 col-xs-8 form-group">
+                  <div class="form-group">
+                    <label><%= t('.add_group') %>:</label>
                     <%= builder.hidden_field :agent_type %>
                     <%= builder.select :agent_id,
                                        group_options,
@@ -66,24 +65,21 @@
                   </div>
                 </div>
               <% end %>
-            </div>
           <% end %>
         </div>
 
         <!-- Add user form -->
-        <div class="form-add-sharing-wrapper" data-id="<%= @form.id %>">
+        <div class="sharing-row-form" data-id="<%= @form.id %>">
           <%= simple_form_for @form.permission_template,
                               url: [hyrax, :dashboard, @form, :permission_template],
                               html: { id: 'user-participants-form' } do |f| %>
-            <div class="clearfix spacer">
-
               <%= f.fields_for 'access_grants_attributes',
                                f.object.access_grants.build(agent_type: 'user'),
                                index: 0 do |builder| %>
 
                 <div class="form-inline add-users">
-                  <label class="col-md-2 col-xs-4 control-label"><%= t('.add_user') %>:</label>
-                  <div class="col-md-10 col-xs-8 form-group">
+                  <div class="form-group">
+                    <label class="control-label"><%= t('.add_user') %>:</label>
                     <%= builder.hidden_field :agent_type %>
                     <%= builder.text_field :agent_id,
                                            placeholder: "Search for a user..." %>
@@ -97,13 +93,11 @@
                   </div>
                 </div>
               <% end %>
-            </div>
           <% end %>
         </div>
 
         <p class="help-block"><%= t('hyrax.admin.admin_sets.form.note') %></p>
       </section>
-    <%#= link_to "Test" %>
 </div>
 
 <div class="collection-sharing-wrapper">
