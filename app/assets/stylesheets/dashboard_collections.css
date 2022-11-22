@@ -42,3 +42,17 @@ span.feature-collection-error {
 #make-private-button:hover {
     background-color: #ffa6a3;
 }
+
+/*.edit-sharing-tab */
+
+.section-add-sharing .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.sharing-row-form:first-of-type {
+    margin-top: 2rem;
+}
+
+.sharing-row-form select {
+    margin-right: 1rem;
+}
