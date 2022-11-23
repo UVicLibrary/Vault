@@ -36,12 +36,12 @@ class SchedulePeriodicJobsWorker
   # them as an array of datetime objects
     def calculate_times(year, months)
       months.map do |month|
-        datetime = DateTime.new(year, month, -1, HOUR, 0, 0, "PST")
+        datetime = DateTime.new(year, month, 1, HOUR, 0, 0, "PST")
         # If the last day of the month is a Friday, use that date
         if datetime.strftime("%A").downcase == WEEKDAY.to_s
           datetime
         else # Otherwise, find the previous Friday
-          datetime.prev_occurring(WEEKDAY)
+          datetime.next_occurring(WEEKDAY)
         end
       end
     end
