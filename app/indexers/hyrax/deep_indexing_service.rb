@@ -82,10 +82,16 @@ module Hyrax
         val = [val.id, { label: "#{val.rdf_label.first}$#{val.id}" }]
       end
 
+      # Patch for location/based near field where the label doesn't get indexed
       # Include both the province and country in the label
-      if solr_field_key == "based_near"
-        item = Qa::Authorities::Geonames.new.find(val.first.gsub(/https?:\/\/sws.geonames.org\//,'').split('/').first)
-        val[1][:label] = "#{[item['name'], item['adminName1'], item['countryName']].compact.join(', ') + '$' + val.first}"
+      if solr_field_key == "based_near" && val.present?
+        item = Qa::Authorities::Geonames.new.find(val.first.split('/').last)
+        if item.nil?
+          puts "Can't find a location with id #{val.first.split('/').last}"
+        else
+          label = "#{[item['name'], item['adminName1'], item['countryName']].compact.join(', ') + '$' + val.first}"
+          val = [val.first, { label: "#{label}$#{val.first}" }]
+        end
       end
 
       create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
