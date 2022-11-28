@@ -42,11 +42,9 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
         object.date_created.each do |date|
           service = EdtfDateService.new(date)
           (solr_doc['year_sort_dtsim']||= []) << service.solr_date_range
-          (solr_doc['year_sort_dtsi']||= []) << service.first_solr_date
           (solr_doc['year_range_isim']||=[]) << service.year_range
         end
         solr_doc['year_sort_dtsim'] = solr_doc['year_sort_dtsim'].flatten.uniq.sort
-        solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
         solr_doc['year_range_isim'] = solr_doc['year_range_isim'].flatten.uniq.sort
       end
 
