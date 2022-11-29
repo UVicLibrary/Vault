@@ -180,6 +180,7 @@ module Hyrax
       return @available_parents if @available_parents.present?
       collection = Collection.find(id)
       colls = Hyrax::Collections::NestedCollectionQueryService.available_parent_collections(child: collection, scope: scope, limit_to_id: nil)
+      colls = colls.sort_by{ |coll| coll["title_sort_ssi"]} # Sort results alphabetically
       @available_parents = colls.map do |col|
         { "id" => col.id, "title_first" => col.title.first }
       end
