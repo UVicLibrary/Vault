@@ -157,7 +157,7 @@ class SolrDocument
   end
 
   def edtf_date(field_name)
-      date_string = fetch(field_name + 'tesim', [])
+      date_string = fetch(field_name + '_tesim', [])
       if Settings.multitenancy.enabled?
         return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
       end

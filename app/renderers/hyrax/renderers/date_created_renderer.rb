@@ -1,6 +1,6 @@
 module Hyrax
   module Renderers
-    class DateCreatedRenderer < AttributeRenderer
+    class DateCreatedRenderer < FacetedAttributeRenderer
 
       # Converted into a year range rather than a text search.
 
