@@ -1,6 +1,5 @@
-.main-content.maximized { /* stops dropdown from being displayed as a scroll box */
-    position: unset; /* or relative */
-    overflow: hidden
+.vault-dashboard #content-wrapper {
+    min-height: 50vh;
 }
 
 #sidebar {
