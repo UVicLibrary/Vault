@@ -158,12 +158,13 @@ class SolrDocument
   end
 
   def edtf_date(field_name)
-    date_string = fetch(field_name + 'tesim', [])
-    return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
-    Array(date_string).each_with_object([]) do |date, array|
-      array.push(EdtfDateService.new(date).humanized)
-    end
-
+      date_string = fetch(field_name + '_tesim', [])
+      if Settings.multitenancy.enabled?
+        return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
+      end
+      Array(date_string).each_with_object([]) do |date, array|
+        array.push(EdtfDateService.new(date).humanized)
+      end
   end
 
   def full_text

@@ -1,6 +1,6 @@
 module Hyrax
   module Renderers
-    class DateCreatedRenderer < AttributeRenderer
+    class DateCreatedRenderer < FacetedAttributeRenderer
 
       # Draw the table row for the attribute. Render values in chronological/alphabetical order
       def render
