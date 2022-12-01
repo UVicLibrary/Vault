@@ -1,8 +1,8 @@
-FROM ruby:2.5.3
+FROM ruby:2.6.8
 RUN apt-get update -qq && \
     apt-get install nano && \
     apt-get install lsof && \
-    apt-get install poppler-utils && \
+    apt-get install poppler-utils -y && \
     apt-get install -y build-essential libpq-dev nodejs npm libreoffice imagemagick unzip ghostscript && \
     rm -rf /var/lib/apt/lists/*
 # If changes are made to fits version or location,
@@ -10,18 +10,18 @@ RUN apt-get update -qq && \
 #RUN mkdir -p /opt/fits && \
 #    curl -fSL -o /opt/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip && \
 #    cd /opt && unzip fits-1.0.5.zip && chmod +X fits-1.0.5/fits.sh
-RUN mkdir -p /opt/fits-1.5.0 && \
-    wget https://github.com/harvard-lts/fits/releases/download/1.5.0/fits-1.5.0.zip -O fits.zip && \
-    unzip fits.zip && \
-    rm fits.zip && \
-    chmod a+x /opt/fits-1.5.0/fits.sh
+#RUN mkdir -p /opt/fits-1.5.0 && \
+#    wget https://github.com/harvard-lts/fits/releases/download/1.5.0/fits-1.5.0.zip -O fits.zip && \
+#    unzip fits.zip && \
+#    rm fits.zip && \
+#    chmod a+x /opt/fits-1.5.0/fits.sh
 
 RUN mkdir /data
 WORKDIR /data
 ADD Gemfile /data/Gemfile
 ADD Gemfile.lock /data/Gemfile.lock
-RUN rails db:migrate
 RUN bundle install
+RUN rails db:migrate
 ADD . /data
 # Configure Active Fedora to use the right core
 # RUN sed 's/hydra-development/vault_dev/g' /usr/local/bundle/gems/active-fedora-11.5.2/config/solr.yml

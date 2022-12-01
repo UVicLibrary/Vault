@@ -7,7 +7,7 @@ gem 'combine_pdf'
 gem 'pdftoimage'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>5.2.4.3' #'~>5.1.1'
+gem 'rails', '~>5.2.4.6'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -33,7 +33,7 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-gem 'active-fedora', '>= 11.1.4'
+gem 'active-fedora', '~> 13.1' #, '>= 11.1.4'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -76,12 +76,9 @@ group :test do
   gem 'webmock'
 end
 
-# Access an IRB console on exception pages or by using <%= console %> in views
-#   gem 'web-console', '>= 3.3.0'
-
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '>= 3.3.0'
+  gem 'web-console'
 
   gem 'listen', '>= 3.0.5', '< 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -96,18 +93,19 @@ gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
 gem 'blacklight_advanced_search'
 
-gem 'hydra-access-controls', '~>10.7.0'
+# This has been updated to 11.0.7 in Hyrax 3
+# gem 'hydra-access-controls', '~>10.7.0'
 
-gem 'hyrax', '2.9.6' # '2.7.2'
+gem 'hyrax', '3.0.2' #'2.9.6'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
-gem 'devise_invitable', '~> 2.0.6'
+gem 'devise_invitable', '~> 1.6' #, '~> 2.0.6'
 
 gem 'apartment'
-gem 'config', '~> 1.5', '>= 1.5.1'
+gem 'config', '~> 2.2', '>= 2.2.1'
 gem 'is_it_working'
 gem 'rolify'
 
@@ -140,4 +138,3 @@ gem 'pdfjs_viewer-rails'
 gem 'bootstrap-will_paginate', '1.0.0'
 
 gem 'edtf-humanize'
-
