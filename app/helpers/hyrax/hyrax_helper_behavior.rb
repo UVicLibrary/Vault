@@ -2,6 +2,7 @@ module Hyrax
   module HyraxHelperBehavior
     include Hyrax::CitationsBehavior
     include ERB::Util # provides html_escape
+    include Hyrax::ContactFormHelper
     include Hyrax::TitleHelper
     include Hyrax::FileSetHelper
     include Hyrax::AbilityHelper
@@ -12,8 +13,19 @@ module Hyrax
     include Hyrax::ChartsHelper
     include Hyrax::DashboardHelperBehavior
     include Hyrax::IiifHelper
+    include Hyrax::MembershipHelper
+    include Hyrax::PermissionLevelsHelper
     include Hyrax::WorkFormHelper
+    include Hyrax::WorkflowsHelper
     include VaultWorkFormHelper
+
+    ##
+    # @return [Array<String>] the list of all user groups
+    def available_user_groups(ability:)
+      return ::User.group_service.role_names if ability.admin?
+
+      ability.user_groups
+    end
 
     # Which translations are available for the user to select
     # @return [Hash<String,String>] locale abbreviations as keys and flags as values
@@ -58,11 +70,10 @@ module Hyrax
               'aria-label' => mailbox.label(params[:locale]),
               class: 'notify-number') do
         capture do
-          concat content_tag(:span, '', class: 'fa fa-bell')
+          concat tag.span('', class: 'fa fa-bell')
           concat "\n"
-          concat content_tag(:span,
-                             unread_notifications,
-                             class: count_classes_for(unread_notifications))
+          concat tag.span(unread_notifications,
+                          class: count_classes_for(unread_notifications))
         end
       end
     end
@@ -103,7 +114,11 @@ module Hyrax
     # @see Blacklight::SearchState#initialize
     def link_to_field(name, value, label = nil, facet_hash = {})
       label ||= value
-      params = { search_field: name, q: "\"#{value}\"" }
+      params = {}
+      if name.present?
+        params[:search_field] = name
+        params[:q] = "\"#{value}\""
+      end
       state = search_state_with_facets(params, facet_hash)
       link_to(label, main_app.search_catalog_path(state))
     end
@@ -197,7 +212,18 @@ module Hyrax
              end
       return user_or_key if user.nil?
       text = user.respond_to?(:name) ? user.name : user_or_key
-      link_to text, Hyrax::Engine.routes.url_helpers.user_path(user)
+      user_path_params = [user]
+
+      # Oh the antics, because in some cases (stares at
+      # jobs/content_deposit_event_job_spec.rb) the controller is nil,
+      # which means calling params will raise a NoMethodError.  I also
+      # suppose it's possible that the controller won't have a set
+      # params. These precautions should help with that.  I'd love to
+      # use params[:locale] in this case, but the & try syntax doesn't
+      # work with that.  So you get this lovely bit of logic.
+      locale = controller&.params&.fetch(:locale, nil) || controller&.params&.fetch('locale', nil)
+      user_path_params << { locale: locale } if locale
+      link_to text, Hyrax::Engine.routes.url_helpers.user_path(*user_path_params)
     end
 
     # A Blacklight index field helper_method
@@ -257,7 +283,7 @@ module Hyrax
 
     # Used by the gallery view
     def collection_thumbnail(_document, _image_options = {}, _url_options = {})
-      content_tag(:span, "", class: [Hyrax::ModelIcon.css_class_for(Collection), "collection-icon-search"])
+      tag.span("", class: [Hyrax::ModelIcon.css_class_for(::Collection), "collection-icon-search"])
     end
 
     def collection_title_by_id(id)
@@ -275,13 +301,9 @@ module Hyrax
       end
 
       def count_classes_for(unread_count)
-        'count label '.tap do |classes|
-          classes << if unread_count.zero?
-                       'invisible label-default'
-                     else
-                       'label-danger'
-                     end
-        end
+        classes = unread_count.zero? ? 'invisible label-default' : 'label-danger'
+
+        "count label #{classes}"
       end
 
       def search_action_for_dashboard
@@ -303,18 +325,29 @@ module Hyrax
       end
       # rubocop:enable Metrics/MethodLength
 
-      # @param [ActionController::Parameters] params first argument for Blacklight::SearchState.new
-      # @param [Hash] facet
-      # @note Ignores all but the first facet.  Probably a bug.
-      def search_state_with_facets(params, facet = {})
-        state = Blacklight::SearchState.new(params, CatalogController.blacklight_config)
-        return state.params if facet.none?
-        state.add_facet_params(facet.keys.first.to_s + "sim",
-                               facet.values.first)
-      end
+    # @param [ActionController::Parameters] params first argument for Blacklight::SearchState.new
+    # @param [Hash] facet(s)
+    # @return [Hash]
+    #
+    # @note Assumes one facet is passed in. If a second facet is passed, then it must be the depositor
+    # facet used by the Profile page.
+    def search_state_with_facets(params, facet = {})
+      state = Blacklight::SearchState.new(params, CatalogController.blacklight_config)
+      return state.params if facet.none?
 
-      def institution
-        Institution
-      end
+      # facet should contain one or two values. If it has two values,
+      # the second is assumed to be the depositor facet.
+      facet_type = state.add_facet_params(facet.keys.first.to_s + "_sim", facet.values.first)
+      return facet_type if facet.length == 1
+
+      facet_depositor = state.add_facet_params(facet.keys[1].to_s + "_ssim", facet.values[1])
+      facet_all = Hash.new {}
+      facet_all["f"] = facet_type["f"].merge(facet_depositor["f"])
+      facet_all
+    end
+
+    def institution
+      Institution
+    end
   end
 end
