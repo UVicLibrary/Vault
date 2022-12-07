@@ -27,7 +27,7 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
              :technical_note, :year, to: :solr_document
 
     def single_use_links
-      @single_use_links ||= SingleUseLink.where(itemId: id).map { |link| link_presenter_class.new(link) }
+      @single_use_links ||= SingleUseLink.where(item_id: id).map { |link| link_presenter_class.new(link) }
     end
 
     def user_can_perform_any_action?
