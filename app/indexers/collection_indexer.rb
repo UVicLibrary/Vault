@@ -22,7 +22,13 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       end
     end
 
-    super.tap do |solr_doc|
+    # This is any ugly patch to stop something (Active Fedora?) sometimes stuffing the Geonames' rdfs:seeAlso
+    # attribute into the document's related_url field
+    if object.related_url.any? { |val| val.include? "ActiveTriples" or "dbpedia" }
+      object.related_url = object.related_url.reject { |val| val.include? "ActiveTriples" or "dbpedia" }
+    end
+
+      super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index the size of the collection in bytes
