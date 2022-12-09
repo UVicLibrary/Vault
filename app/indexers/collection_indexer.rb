@@ -26,6 +26,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
     # attribute into the document's related_url field
     if object.related_url.any? { |val| val.include? "ActiveTriples" or "dbpedia" }
       object.related_url = object.related_url.reject { |val| val.include? "ActiveTriples" or "dbpedia" }
+      object.save!
     end
 
       super.tap do |solr_doc|
