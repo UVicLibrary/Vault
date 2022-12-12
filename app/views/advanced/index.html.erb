@@ -30,32 +30,54 @@
 
     // When user clicks "More" facets link and modal opens
     $("body ").on('loaded.blacklight.ajax-modal', function (e) {
+        // Get a list of input elements from the corresponding facet panel in the sidebar
+        var facetList = getFacetList($(e.target).find('input').first());
+        // If there are boxes that have already been checked, check the ones that appear
+        // in the modal by matching the id
+        var ids = Array.from(facetList.find('input:checked').map(function() { return this.id }))
+        var modalElements = $(e.target).find('input').filter(function() {
+            if (ids.includes(this.id)) {
+                return this;
+            }
+        });
+        $(modalElements).each(function() { this.checked = true; });
+
+        // When a user checks an input in the modal...
         $('.facet-checkbox input').on('change', function () {
           if(this.checked) {
-
-              // Get the field name from the element so we can
-              // append it to the right search facet form
-              //   e.g. 'f_inclusive[geographic_coverage_label_sim][]'
-              //   => geographic_coverage_label_sim
-              var nameAttr = $(this).attr('name');
-              var regex = /\[(.+)\]\[\]/g;
-              var fieldName = regex.exec(nameAttr)[1];
-              //console.log(fieldName);
-
-              // Clone and append the whole <li> to facet body
-              var facetBodyList = $('#facet-' + fieldName + ' ul.facet-values');
-              var li = $(this).closest('li');
-
-              // If the value is already on the list, do not append a clone
-               var liValue = li.find('input').attr('value');
-               var values = facetBodyList.find('input').map(function(){
-                return this.value;
-               });
-              if(!Array.from(values).includes(liValue)) {
-                  li.clone().prependTo(facetBodyList);
-              }
-
+            let selected = [$(this).closest('li').find('input').attr('id')];
+            let facetList = getFacetList(this);
+            let matches = findMatches(selected, facetList);
+            // ...and an input with the same id is in the facet panel, check the matching input
+            if (matches.length > 0) {
+                matches[0].checked = true;
+            // ...and no matching element exists, clone the whole li element and prepend it
+            // into the facet panel. This is the only way it will be included in the search when
+            // the whole form is submitted.
+            } else {
+                $(this).closest('li').clone().prependTo(facetList);
+            }
           }
         });
     });
+
+    function getFacetList(input) {
+        // Get the field name from the element so we can
+        // append it to the right search facet form
+        //   e.g. 'f_inclusive[geographic_coverage_label_sim][]'
+        //   => geographic_coverage_label_sim
+        let regex = /\[(.+)\]\[\]/g;
+        let fieldName = regex.exec($(input).attr('name'))[1];
+
+        return $('#facet-' + fieldName + ' ul.facet-values');
+    }
+
+    // This returns the matching input elements in the facet side panel (based on the id)
+    function findMatches(ids, facetList) {
+        return facetList.find('input').filter(function() {
+            if (ids.includes(this.id)) {
+                return this;
+            }
+        });
+    }
 </script>
