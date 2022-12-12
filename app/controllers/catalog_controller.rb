@@ -70,7 +70,6 @@ class CatalogController < ApplicationController
       config.add_facet_field "member_of_collections_ssim", limit: 10, label: 'Collections'
       config.add_facet_field "genre_label_sim", label: 'Genre', limit: 10
       config.add_facet_field "resource_type_sim", label: 'Resource Type', limit: 5, helper_method: :resource_type_links
-      config.add_facet_field 'year_sort_dtsim', label: 'Year', limit: 10, sort: 'index', helper_method: :render_year_sort # http://jessiekeck.com/customizing-blacklight/facets/
       # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
       config.add_facet_field "year_range_isim", label: "Year Range", range: true, include_in_advanced_search: false
       config.add_facet_field "geographic_coverage_label_sim", label: 'Geographic Coverage', limit: 10
