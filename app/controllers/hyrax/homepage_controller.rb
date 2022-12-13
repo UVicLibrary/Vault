@@ -5,36 +5,32 @@ class Hyrax::HomepageController < ApplicationController
   include Blacklight::AccessControls::Catalog
   include BlacklightRangeLimit::ControllerOverride
 
-  # The search builder for finding recent documents
-  # Override of Blacklight::RequestBuilders
-  def search_builder_class
-    Hyrax::HomepageSearchBuilder
-  end
-
   class_attribute :presenter_class
   self.presenter_class = Hyrax::HomepagePresenter
-
   layout 'homepage'
   helper Hyrax::ContentBlockHelper
 
   def index
     # Homepage facet links are configured via VaultHomepageHelper
-
     @presenter = presenter_class.new(current_ability, collections)
     @featured_researcher = ContentBlock.for(:researcher)
     @marketing_text = ContentBlock.for(:marketing)
+    @featured_work_list = FeaturedWorkList.new
     @announcement_text = ContentBlock.for(:announcement)
 
-    @featured_collection_list = FeaturedCollectionList.new
-    @featured_work_list = FeaturedWorkList.new
+    if request.base_url.include? "vault"
+      @featured_collection_list = FeaturedCollectionList.new
 
-    @recent_collection_presenters = recent_collection_presenters.slice(0,8)
-    (@response, @works) = works_by_date_desc # Returns an array of 3 things. [0] is the solr response, [1] is an array of SolrDocuments
-    @recent_work_presenters = recent_work_presenters.slice(0,8)
-    @works_count = @works.count
+      @recent_collection_presenters = recent_collection_presenters.slice(0,8)
+      (@response, @works) = works_by_date_desc # Returns an array of 3 things. [0] is the solr response, [1] is an array of SolrDocuments
+      @recent_work_presenters = recent_work_presenters.slice(0,8)
+      @works_count = @works.count
 
-    @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter)
-    @collection_card_presenters = @collection_presenters.slice(0,8)
+      @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter)
+      @collection_card_presenters = @collection_presenters.slice(0,8)
+    else
+      recent
+    end
   end
 
   def more_recent_collections
@@ -82,10 +78,9 @@ class Hyrax::HomepageController < ApplicationController
 
   # Return all collections
   def collections(rows: count_collections)
-    builder = Hyrax::CollectionSearchBuilder.new(self)
-                                            .rows(rows)
-    response = repository.search(builder)
-    response.documents
+    Hyrax::CollectionsService.new(self).search_results do |builder|
+      builder.rows(rows)
+    end
   rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
     []
   end
@@ -96,13 +91,19 @@ class Hyrax::HomepageController < ApplicationController
 
   def recent
     # grab any recent documents
-    (_, @recent_documents) = search_results(q: '', sort: sort_field, rows: 4)
+    (_, @recent_documents) = search_service.search_results do |builder|
+      builder.rows(4)
+      builder.merge(sort: sort_field)
+    end
   rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
     @recent_documents = []
+  end
+
+  def search_service
+    Hyrax::SearchService.new(config: blacklight_config, user_params: { q: '' }, scope: self, search_builder_class: Hyrax::HomepageSearchBuilder)
   end
 
   def sort_field
     "date_uploaded_dtsi desc"
   end
-
 end
