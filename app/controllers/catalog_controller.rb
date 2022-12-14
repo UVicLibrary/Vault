@@ -67,7 +67,6 @@ class CatalogController < ApplicationController
     # Collection
       config.add_facet_field "member_of_collections_ssim", limit: 10, label: 'Collections'
       config.add_facet_field "genre_label_sim", label: 'Genre', limit: 10
-      config.add_facet_field "resource_type_sim", label: 'Resource Type', limit: 5, helper_method: :resource_type_links
       # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
       config.add_facet_field "year_range_isim", label: "Year Range", range: true, include_in_advanced_search: false
       config.add_facet_field "geographic_coverage_label_sim", label: 'Geographic Coverage', limit: 10
@@ -78,6 +77,7 @@ class CatalogController < ApplicationController
       config.add_facet_field "fonds_title_sim", label: 'Fonds Title', limit: 5, show: false
       config.add_facet_field "fonds_identifier_sim", label: 'Fonds Identifier', limit: 5, show: false
       config.add_facet_field "physical_repository_label_sim", label: 'Physical Repository', limit: 5
+      config.add_facet_field "resource_type_sim", label: 'Resource Type', limit: 5, helper_method: :resource_type_links
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
