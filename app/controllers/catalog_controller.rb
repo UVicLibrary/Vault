@@ -118,7 +118,7 @@ class CatalogController < ApplicationController
     config.add_index_field "physical_repository_label_tesim", itemprop: "Physical Repository", label: "Physical Repository"
     config.add_index_field "collection_tesim", itemprop: "Collection", label: "Collection"
     config.add_index_field "provenance_tesim", itemprop: "Provenance", label: "Provenance"
-    config.add_index_field "provider_tesim", itemprop: "Provider", label: "Provider"
+    config.add_index_field "provider_label_tesim", itemprop: "Provider", label: "Provider"
     config.add_index_field "sponsor_tesim", itemprop: "Sponsor", label: "Sponsor"
     config.add_index_field "genre_label_tesim", itemprop: "Genre", label: "Genre"
     config.add_index_field "archival_item_identifier_tesim", itemprop:"Archival Item Identifier", label: "Archival Item Identifier"
