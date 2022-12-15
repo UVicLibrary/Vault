@@ -156,13 +156,21 @@ class SolrDocument
       fetch('year_tesim', [])
   end
 
+  # @return [Array <String>] An array of humanized EDTF dates for display.
+  # @param [String] The name of the field (without the _tesim)
+  # TO DO: Move this logic into an app/renderer with the option to facet
   def edtf_date(field_name)
       date_string = fetch(field_name + '_tesim', [])
       if Settings.multitenancy.enabled?
         return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
       end
       Array(date_string).each_with_object([]) do |date, array|
-        array.push(EdtfDateService.new(date).humanized)
+        begin
+          service = EdtfDateService.new(date)
+          array.push(service.humanized)
+        rescue EdtfDateService::InvalidEdtfDateError
+          array.push(date)
+        end
       end
   end
 

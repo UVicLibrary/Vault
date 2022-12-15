@@ -78,7 +78,7 @@ class GenericWork < ActiveFedora::Base
 	index.as :stored_searchable, :facetable
   end
   
-  property :date_digitized, predicate: ::RDF::Vocab::DC.date, multiple: false do |index|
+  property :date_digitized, predicate: ::RDF::Vocab::DC.date do |index|
 	index.as :stored_searchable, :facetable
   end
   
