@@ -141,7 +141,7 @@ gem 'draper'
 gem 'sidekiq', '~> 6.0.7' # '~> 5.0.3'
 gem 'sidekiq-cron'
 
-gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.5.3/gems/cdm_migrator-3.2.1'
+gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.6.8/gems/cdm_migrator-3.2.1'
 gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
