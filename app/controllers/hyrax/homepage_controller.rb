@@ -59,6 +59,7 @@ class Hyrax::HomepageController < ApplicationController
 
   def recent_work_presenters
     (response, works) = search_results(q: '', sort: sort_field, rows: 56)
+    works = works.select{|w| w["has_model_ssim"] == ["GenericWork"]}
     build_presenters(works, VaultWorkShowPresenter)
   end
 
