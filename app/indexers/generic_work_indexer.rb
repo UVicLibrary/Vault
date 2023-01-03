@@ -45,6 +45,7 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
           (solr_doc['year_range_isim']||=[]) << service.year_range
         end
         solr_doc['year_sort_dtsim'] = solr_doc['year_sort_dtsim'].flatten.uniq.sort
+        solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
         solr_doc['year_range_isim'] = solr_doc['year_range_isim'].flatten.uniq.sort
       end
 
