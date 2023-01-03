@@ -4,13 +4,20 @@ source 'https://rubygems.org'
 gem 'omniauth-cas'
 gem 'signet', '0.17.0'
 
+# Pin psych to avoid "Unknown alias: default (Psych::BadAlias)" error
+# https://stackoverflow.com/questions/71191685/visit-psych-nodes-alias-unknown-alias-default-psychbadalias
+gem 'psych', '< 4'
+
+# Pin tinymce-rails to avoid uglifier gem error
+gem 'tinymce-rails', '4.9.11'
+
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
 gem 'combine_pdf'
 gem 'pdftoimage'
 gem 'iconv' , '~> 1.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.6' # '~>5.2.4.6'
+gem 'rails', '5.2.6'
 # Use sqlite3 as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Use Puma as the app server
@@ -40,7 +47,7 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
-gem 'active-fedora', '~> 12.1.1'
+gem 'active-fedora', '~> 13.1'  # '~> 12.1.1'
 gem 'solrizer', '>= 3.4'
 
 # Use Capistrano for deployment
@@ -103,19 +110,19 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hydra-access-controls', '~>10.7.0'
+# gem 'hydra-access-controls', '~>10.7.0'
 gem 'hydra-derivatives', '~> 3.5'
 
-gem 'hyrax', '2.9.6' # '2.7.2'
+gem 'hyrax', '3.0.2' # '2.9.6'
 gem 'rsolr', '2.2.1' #'~> 2.0'
 
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
-gem 'devise_invitable' #, '~> 1.6'
+gem 'devise_invitable' , '~> 1.6' # '~> 2.0.6'
 
 gem 'apartment'
-gem 'config', '~> 1.5', '>= 1.5.1'
+gem 'config', '~> 2.2' #, '~> 1.5'
 gem 'is_it_working'
 gem 'rolify'
 
@@ -130,15 +137,7 @@ gem 'riiif', '~> 1.1'
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
-# group :aws, :test do
-#   gem 'carrierwave-aws'
-# end
-#
-# group :aws do
-#   gem 'active_elastic_job', '~> 2.0'
-# end
-
-gem 'sidekiq', '~> 6.0.7' # '~> 5.0.3'
+gem 'sidekiq', '~> 6.0.7'
 gem 'sidekiq-cron'
 
 gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.6.8/gems/cdm_migrator-3.2.1'
