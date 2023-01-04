@@ -1,11 +1,12 @@
 module Hyrax
   module Actors
     # Actions are decoupled from controller logic so that they may be called from a controller or a background job.
-    class FileSetActor
+    class FileSetActor # rubocop:disable Metrics/ClassLength
       include Lockable
-      attr_reader :file_set, :user, :attributes
+      attr_reader :file_set, :user, :attributes, :use_valkyrie
 
-      def initialize(file_set, user)
+      def initialize(file_set, user, use_valkyrie: Hyrax.config.query_index_from_valkyrie)
+        @use_valkyrie = use_valkyrie
         @file_set = file_set
         @user = user
       end
@@ -21,7 +22,8 @@ module Hyrax
         # If the file set doesn't have a title or label assigned, set a default.
         file_set.label ||= label_for(file)
         file_set.title = [file_set.label] if file_set.title.blank?
-        return false unless file_set.save # Need to save to get an id
+        @file_set = perform_save(file_set)
+        return false unless file_set
         if from_url
           # If ingesting from URL, don't spawn an IngestJob; instead
           # reach into the FileActor and run the ingest with the file instance in
@@ -58,7 +60,6 @@ module Hyrax
         now = TimeService.time_in_utc
         file_set.date_uploaded = now
         file_set.date_modified = now
-        #file_set.creator = [user.user_key]
         if assign_visibility?(file_set_params)
           env = Actors::Environment.new(file_set, ability, file_set_params)
           CurationConcern.file_set_create_actor.create(env)
@@ -66,36 +67,58 @@ module Hyrax
         yield(file_set) if block_given?
       end
 
-      # Adds a FileSet to the work using ore:Aggregations.
       # Locks to ensure that only one process is operating on the list at a time.
       def attach_to_work(work, file_set_params = {})
         acquire_lock_for(work.id) do
           # Ensure we have an up-to-date copy of the members association, so that we append to the end of the list.
-          work.reload unless work.new_record?
-          file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
-          if file_set.creator.blank? or file_set.creator == work.depositor # Only set the file set's creator to the work creator if there isn't one provided
-            file_set.creator = work.creator unless work.creator.blank?
+          if valkyrie_object?(work)
+            attach_to_valkyrie_work(work, file_set_params)
+          else
+            attach_to_af_work(work, file_set_params)
           end
-          file_set.save
-          file_set.update_index
-          work.ordered_members << file_set
-          work.representative = file_set if work.representative_id.blank?
-          work.thumbnail = file_set if work.thumbnail_id.blank?
-          # Save the work so the association between the work and the file_set is persisted (head_id)
-          # NOTE: the work may not be valid, in which case this save doesn't do anything.
-          work.save
-          Hyrax.config.callback.run(:after_create_fileset, file_set, user)
+          Hyrax.config.callback.run(:after_create_fileset, file_set, user, warn: false)
         end
       end
       alias attach_file_to_work attach_to_work
       deprecation_deprecate attach_file_to_work: "use attach_to_work instead"
+
+      def attach_to_valkyrie_work(work, file_set_params)
+        work = Hyrax.query_service.find_by(id: work.id) unless work.new_record
+        file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
+        fs = Hyrax.persister.save(resource: file_set)
+        Hyrax.publisher.publish('object.metadata.updated', object: fs, user: user)
+        work.member_ids << fs.id
+        work.representative_id = fs.id if work.representative_id.blank?
+        work.thumbnail_id = fs.id if work.thumbnail_id.blank?
+        # Save the work so the association between the work and the file_set is persisted (head_id)
+        # NOTE: the work may not be valid, in which case this save doesn't do anything.
+        Hyrax.persister.save(resource: work)
+        Hyrax.publisher.publish('object.metadata.updated', object: work, user: user)
+      end
+
+      # Adds a FileSet to the work using ore:Aggregations.
+      def attach_to_af_work(work, file_set_params)
+        work.reload unless work.new_record?
+        file_set.visibility = work.visibility unless assign_visibility?(file_set_params)
+        if file_set.creator.blank? or file_set.creator == work.depositor # Only set the file set's creator to the work creator if there isn't one provided
+          file_set.creator = work.creator unless work.creator.blank?
+        end
+        file_set.save
+        file_set.update_index
+        work.ordered_members << file_set
+        work.representative = file_set if work.representative_id.blank?
+        work.thumbnail = file_set if work.thumbnail_id.blank?
+        # Save the work so the association between the work and the file_set is persisted (head_id)
+        # NOTE: the work may not be valid, in which case this save doesn't do anything.
+        work.save
+      end
 
       # @param [String] revision_id the revision to revert to
       # @param [Symbol, #to_sym] relation
       # @return [Boolean] true on success, false otherwise
       def revert_content(revision_id, relation = :original_file)
         return false unless build_file_actor(relation).revert_to(revision_id)
-        Hyrax.config.callback.run(:after_revert_content, file_set, user, revision_id)
+        Hyrax.config.callback.run(:after_revert_content, file_set, user, revision_id, warn: false)
         true
       end
 
@@ -107,7 +130,7 @@ module Hyrax
       def destroy
         unlink_from_work
         file_set.destroy
-        Hyrax.config.callback.run(:after_destroy, file_set.id, user)
+        Hyrax.config.callback.run(:after_destroy, file_set.id, user, warn: false)
       end
 
       class_attribute :file_actor_class
@@ -120,7 +143,8 @@ module Hyrax
       end
 
       def build_file_actor(relation)
-        file_actor_class.new(file_set, relation, user)
+        fs = use_valkyrie ? file_set.valkyrie_resource : file_set
+        file_actor_class.new(fs, relation, user, use_valkyrie: use_valkyrie)
       end
 
       # uses create! because object must be persisted to serialize for jobs
@@ -134,7 +158,7 @@ module Hyrax
       # @note This is only useful for labeling the file_set, because of the recourse to import_url
       def label_for(file)
         if file.is_a?(Hyrax::UploadedFile) # filename not present for uncached remote file!
-          file.uploader.filename.present? ? file.uploader.filename : File.basename(URI.parse(file.file_url).path)
+          file.uploader.filename.presence || File.basename(Addressable::URI.unencode(file.file_url))
         elsif file.respond_to?(:original_name) # e.g. Hydra::Derivatives::IoDecorator
           file.original_name
         elsif file_set.import_url.present?
@@ -174,6 +198,31 @@ module Hyrax
           work.rendering_ids = work.rendering_ids - [file_set.id]
         end
         work.save!
+      end
+
+      # switches between using valkyrie to save or active fedora to save
+      def perform_save(object)
+        obj_to_save = object_to_act_on(object)
+        if valkyrie_object?(obj_to_save)
+          saved_resource = Hyrax.persister.save(resource: obj_to_save)
+          # return the same type of object that was passed in
+          saved_object_to_return = valkyrie_object?(object) ? saved_resource : Wings::ActiveFedoraConverter.new(resource: saved_resource).convert
+        else
+          obj_to_save.save
+          saved_object_to_return = obj_to_save
+        end
+        saved_object_to_return
+      end
+
+      # if passed a resource or if use_valkyrie==true, object to act on is the valkyrie resource
+      def object_to_act_on(object)
+        return object if valkyrie_object?(object)
+        use_valkyrie ? object.valkyrie_resource : object
+      end
+
+      # determine if the object is a valkyrie resource
+      def valkyrie_object?(object)
+        object.is_a? Valkyrie::Resource
       end
       # rubocop:enable Metrics/AbcSize
       # rubocop:enable Metrics/CyclomaticComplexity
