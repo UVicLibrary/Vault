@@ -7,8 +7,7 @@ module Hyrax
   #   ActiveFedora::SolrQueryBuilder.
   class SolrQueryService < ::SearchBuilder # rubocop:disable Metrics/ClassLength
     class_attribute :query_service
-    # self.query_service = Hyrax.query_service
-    # This is causing errors (it's for Valkyrie, which we aren't using), so we comment it out for now.
+    self.query_service = Hyrax.query_service
 
     attr_reader :query, :solr_service
 
