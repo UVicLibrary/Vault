@@ -167,11 +167,7 @@ dl.document-metadata.dl-horizontal.dl-invert {
     text-transform: capitalize;
 }
 
-.public-collection-thumbnail {
-  float: left;
-  padding: 0 0.5em !important;
-  margin-right: 0.5em;
-}
+
 
 .collection-title-row-content.flex-container .button-wrapper:not(:last-child) {
   margin-bottom: 2%;
