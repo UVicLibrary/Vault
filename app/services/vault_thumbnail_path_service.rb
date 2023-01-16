@@ -46,14 +46,10 @@
       # @return true if there a file on disk for this object, otherwise false
       # @param [FileSet] thumb - the object that is the thumbnail
       def thumbnail?(thumb)
-        # If it's an image, we return true because we don't use the default derivatives filepath.
-        # We use IIIF thumbnails instead.
-        return true unless pdf?(thumb) or video?(thumb)
-        if pdf?(thumb)
-          File.exist?(PdfThumbnailPathService.call(thumb))
-        else
-          File.exist?(thumbnail_filepath(thumb))
-        end
+        # Only videos use the default derivatives path. Images use IIIF thumbnails and
+        # PdfThumbnailPathService does its own check for File.exist?
+        return true unless video?(thumb)
+        File.exist?(thumbnail_filepath(thumb))
       end
 
       def pdf?(thumb)
