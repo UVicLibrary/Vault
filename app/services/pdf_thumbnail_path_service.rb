@@ -8,12 +8,13 @@ class PdfThumbnailPathService < Hyrax::WorkThumbnailPathService
     # @param [file set] object - to get the thumbnail for
     # @return [String] a path to the thumbnail
     def call(object)
-      return default_image if object.try(:thumbnail_id).blank?
-
+      return default_image unless object.thumbnail_id
       thumb = fetch_thumbnail(object)
 
       return default_image unless thumb
       return call(thumb) unless thumb.file_set?
+
+      thumb = ::FileSet.find(thumb.id.to_s)
 
       if in_collection?(thumb) && File.exist?("#{public_path}#{coll_path(collection_title(thumb), thumb.id)}")
         coll_path(collection_title(thumb), thumb.id)
