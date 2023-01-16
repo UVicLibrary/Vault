@@ -5,6 +5,15 @@
     }
 }
 
+.show-actions {
+    margin-bottom: 2rem;
+}
+
+.feature-work-message {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
 /*From https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/*/
 .wrap-long-urls {
 
