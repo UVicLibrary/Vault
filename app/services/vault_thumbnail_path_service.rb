@@ -5,12 +5,11 @@
       # @return [String] a path to the thumbnail
       def call(object)
         return default_image unless object.thumbnail_id
-
         thumb = fetch_thumbnail(object)
         return unless thumb
-        return call(thumb) unless thumb.is_a?(::FileSet)
+        return call(thumb) unless thumb.file_set?
 
-        if thumb.audio? || m4a_file?(thumb)
+        if audio?(thumb) || m4a_file?(thumb)
           audio_thumbnail_path(thumb)
         elsif thumbnail?(thumb)
           thumbnail_path(thumb)
@@ -23,8 +22,11 @@
 
       # Returns the value for the thumbnail path to put into the solr document
       def thumbnail_path(object)
-        if object.pdf?
+        if pdf?(object)
           PdfThumbnailPathService.call(object)
+        elsif video?(object)
+          Hyrax::Engine.routes.url_helpers.download_path(object.id,
+                                                         file: 'thumbnail')
         else
           IIIFWorkThumbnailPathService.call(object)
         end
@@ -35,13 +37,33 @@
       end
 
       def audio_thumbnail_path(object)
+        object = ::FileSet.find(object.id.to_s)
         return audio_image unless (object.parent && object.parent.member_of_collections.any?)
         collection = object.parent.member_of_collections.first
         CollectionThumbnailPathService.call(collection)
       end
 
-      def thumbnail?(object)
-        File.exist?(thumbnail_filepath(object)) || object.pdf?
+      # @return true if there a file on disk for this object, otherwise false
+      # @param [FileSet] thumb - the object that is the thumbnail
+      def thumbnail?(thumb)
+        # If it's an image, we return true because we don't use the default derivatives filepath.
+        # We use IIIF thumbnails instead.
+        return true unless pdf?(thumb) or video?(thumb)
+        if pdf?(thumb)
+          File.exist?(PdfThumbnailPathService.call(thumb))
+        else
+          File.exist?(thumbnail_filepath(thumb))
+        end
+      end
+
+      def pdf?(thumb)
+        service = thumb.respond_to?(:pdf?) ? thumb : Hyrax::FileSetTypeService.new(file_set: thumb)
+        service.pdf?
+      end
+
+      def video?(thumb)
+        service = thumb.respond_to?(:video?) ? thumb : Hyrax::FileSetTypeService.new(file_set: thumb)
+        service.video?
       end
 
     end

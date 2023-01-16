@@ -8,21 +8,19 @@ module IIIFThumbnailPaths
     # @return the IIIF url for the thumbnail if it's an image, otherwise gives
     #         the thumbnail download path
     def thumbnail_path(file_set, size = '!150,300'.freeze)
-      return super(file_set) unless file_set.image?
       iiif_thumbnail_path(file_set, size)
     end
 
     # @private
     def iiif_thumbnail_path(file_set, size)
-      file = file_set.original_file
 
-      return unless file
+      af_file_set = ::FileSet.find(file_set.id.to_s)
 
       # Use latest version
-      if file_set.latest_content_version
-        path = file_set.latest_content_version.label != "version1" ? "#{file.id}/fcr:versions/#{file_set.latest_content_version.label}" : file.id
+      if af_file_set.latest_content_version && af_file_set.latest_content_version.label != "version1"
+        path = "#{file.id}/fcr:versions/#{file_set.latest_content_version.label}"
       else
-        path = file.id
+        path = file_set.original_file_id
       end
       Riiif::Engine.routes.url_helpers.image_path(
         path,
@@ -33,10 +31,10 @@ module IIIFThumbnailPaths
     # @param [FileSet] thumbnail the object that is the thumbnail
     # @return [boolean] true when a thumbnail (either generated or a common asset)
     #                   is expected to be available on the file system
-    def thumbnail?(thumbnail)
-      return true if thumbnail.image? || thumbnail.pdf? || thumbnail.office_document? ||
-                     thumbnail.audio? || thumbnail.video?
-      super(thumbnail)
-    end
+    # def thumbnail?(thumbnail)
+    #   return true if thumbnail.image? || thumbnail.pdf? || thumbnail.office_document? ||
+    #                  thumbnail.audio? || thumbnail.video?
+    #   super(thumbnail)
+    # end
   end
 end
