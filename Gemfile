@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'simple_xlsx_reader'
+
 gem 'omniauth-cas'
 
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
