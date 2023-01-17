@@ -2,6 +2,7 @@ module FastUpdate
   class LinkedDataSearchService < Hyrax::SolrService
     # Searches Solr for documents that contain a specific uri or human-readable label
     # in all controlled property fields
+    # This is a parent class for StringConversionService and UriConversionService
 
     def initialize(label, uri, use_valkyrie: Hyrax.config.query_index_from_valkyrie)
       @label = label
@@ -20,16 +21,37 @@ module FastUpdate
       end
     end
 
+    # Sometimes FAST adds new headings that we have indexed in our system as string values.
+    # Once the new headings are added, we need to convert those old strings/labels into uris.
+    # This method searches for documents that need conversion, for example, a document with
+    # { "creator_tesim" => ["Tiffany and Company"],
+    #       "creator_label_tesim" => ["Tiffany and Company"] }
+    # instead of
+    # { "creator_tesim" => ["http://id.worldcat.org/fast/549011"],
+    #       "creator_label_tesim" => ["Tiffany and Company"] }
+    # @return [Array<Hash>] the response documents
+    def search_for_new_headings
+      search_for_label.select do |document|
+        controlled_properties.any? { |field| needs_conversion?(document, field) }
+      end
+    end
+
     # Search solr for documents with a specific human-readable label
     # @return [Array<Hash>] the response documents
     def search_for_label
-      connection.get(label_query, rows: rows)['response']['docs']
+      # We sort because we want GenericWorks before FileSets since file sets inherit the creator
+      # of their parent. If we change file sets before works, the file set's creator will be overwritten
+      # by the work's creator. (This is custom behavior, not Hyrax.)
+      connection.get(label_query, rows: rows, sort: sort_field)['response']['docs']
     end
 
     # Search solr for documents with a specific uri
     # @return [Array<Hash>] the response documents
     def search_for_uri
-      connection.get(uri_query, rows: rows)['response']['docs']
+      # We sort because we want GenericWorks before FileSets since file sets inherit the creator
+      # of their parent. If we change file sets before works, the file set's creator will be overwritten
+      # by the work's creator. (This is custom behavior, not Hyrax.)
+      connection.get(uri_query, rows: rows, sort: sort_field)['response']['docs']
     end
 
     protected
@@ -40,6 +62,14 @@ module FastUpdate
       uri_field = "#{field}_tesim"
       return false unless document.has_key?(uri_field) && document.fetch(uri_field).include?(@uri)
       document.fetch(label_field(field)) != @label
+    end
+
+    # @param [Hash] document from a solr response
+    # @param [Symbol] the field name for a controlled property field, e.g. :based_near
+    def needs_conversion?(document, field)
+      label_field = label_field(field)
+      return false unless document.has_key?(label_field) && document.fetch(label_field).include?(@label)
+      document.fetch("#{field}_tesim").include?(@label)
     end
 
     # @return [Array <Array>] Each nested array has 2 strings inside:
@@ -85,6 +115,10 @@ module FastUpdate
 
     def rows
       12000
+    end
+
+    def sort_field
+      'has_model_ssim desc'
     end
 
     def controlled_properties

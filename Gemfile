@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
 
+gem 'simple_xlsx_reader'
+
 gem 'omniauth-cas'
 gem 'signet', '0.17.0'
 
