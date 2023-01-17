@@ -6,7 +6,6 @@
 Blacklight.onLoad(function() {
     var clickedTab;
     $('.nav-safety-confirm').on('click', function(evt) {
-        debugger
         clickedTab = $(this).attr('href');
         var dirtyData = $('#nav-safety-modal[dirtyData=true]');
         if (dirtyData.length > 0) {
