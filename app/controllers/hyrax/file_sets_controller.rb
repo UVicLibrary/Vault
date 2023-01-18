@@ -14,6 +14,10 @@ module Hyrax
 
     helper_method :curation_concern
     copy_blacklight_config_from(::CatalogController)
+    # Define collection specific filter facets.
+    configure_blacklight do |config|
+      config.search_builder_class = Hyrax::FileSetSearchBuilder
+    end
 
     class_attribute :show_presenter, :form_class
 
@@ -50,9 +54,11 @@ module Hyrax
 
     # GET /concern/parent/:parent_id/file_sets/:id
     def show
+      presenter
+      guard_for_workflow_restriction_on!(parent: presenter.parent)
       respond_to do |wants|
-        wants.html { presenter }
-        wants.json { presenter }
+        wants.html
+        wants.json
         additional_response_formats(wants)
       end
     end
@@ -61,7 +67,7 @@ module Hyrax
     def destroy
       parent = curation_concern.parent
       actor.destroy
-      redirect_to [main_app, parent], notice: 'The file has been deleted.'
+      redirect_to [main_app, parent], notice: view_context.t('hyrax.file_sets.asset_deleted_flash.message')
     end
 
     # PATCH /concern/file_sets/:id
@@ -87,106 +93,172 @@ module Hyrax
 
     private
 
-      # this is provided so that implementing application can override this behavior and map params to different attributes
-      def update_metadata
-        file_attributes = form_class.model_attributes(attributes)
-        actor.update_metadata(file_attributes)
-      end
+    # this is provided so that implementing application can override this behavior and map params to different attributes
+    def update_metadata
+      file_attributes = form_class.model_attributes(attributes)
+      actor.update_metadata(file_attributes)
+    end
 
-      def attempt_update
-        if wants_to_revert?
-          actor.revert_content(params[:revision])
-        elsif params.key?(:file_set)
-          if params[:file_set].key?(:files)
-            actor.update_content(uploaded_file_from_path)
-          else
-            update_metadata
-          end
+    def attempt_update
+      if wants_to_revert?
+        actor.revert_content(params[:revision])
+      elsif params.key?(:file_set)
+        if params[:file_set].key?(:files)
+          actor.update_content(uploaded_file_from_path)
+        else
+          update_metadata
+        end
+      elsif params.key?(:files_files) # version file already uploaded with ref id in :files_files array
+        uploaded_files = Array(Hyrax::UploadedFile.find(params[:files_files]))
+        actor.update_content(uploaded_files.first)
+        update_metadata
+      end
+    end
+
+    def uploaded_file_from_path
+      uploaded_file = CarrierWave::SanitizedFile.new(params[:file_set][:files].first)
+      Hyrax::UploadedFile.create(user_id: current_user.id, file: uploaded_file)
+    end
+
+    def after_update_response
+      respond_to do |wants|
+        wants.html do
+          link_to_file = view_context.link_to(curation_concern, [main_app, curation_concern])
+          redirect_to [main_app, curation_concern], notice: view_context.t('hyrax.file_sets.asset_updated_flash.message', link_to_file: link_to_file)
+        end
+        wants.json do
+          @presenter = show_presenter.new(curation_concern, current_ability)
+          render :show, status: :ok, location: polymorphic_path([main_app, curation_concern])
         end
       end
+    end
 
-      def uploaded_file_from_path
-        uploaded_file = CarrierWave::SanitizedFile.new(params[:file_set][:files].first)
-        Hyrax::UploadedFile.create(user_id: current_user.id, file: uploaded_file)
+    def after_update_failure_response
+      respond_to do |wants|
+        wants.html do
+          initialize_edit_form
+          flash[:error] = "There was a problem processing your request."
+          render 'edit', status: :unprocessable_entity
+        end
+        wants.json { render_json_response(response_type: :unprocessable_entity, options: { errors: curation_concern.errors }) }
       end
+    end
 
-      def after_update_response
-        respond_to do |wants|
-          wants.html do
-            redirect_to [main_app, curation_concern], notice: "The file #{view_context.link_to(curation_concern, [main_app, curation_concern])} has been updated."
-          end
-          wants.json do
-            @presenter = show_presenter.new(curation_concern, current_ability)
-            render :show, status: :ok, location: polymorphic_path([main_app, curation_concern])
-          end
+    def add_breadcrumb_for_controller
+      add_breadcrumb I18n.t('hyrax.dashboard.my.works'), hyrax.my_works_path
+    end
+
+    def add_breadcrumb_for_action
+      case action_name
+      when 'edit'
+        add_breadcrumb I18n.t("hyrax.file_set.browse_view"), main_app.hyrax_file_set_path(params["id"])
+      when 'show'
+        add_breadcrumb presenter.parent.to_s, main_app.polymorphic_path(presenter.parent) if presenter.parent.present?
+        add_breadcrumb presenter.to_s, main_app.polymorphic_path(presenter)
+      end
+    end
+
+    def initialize_edit_form
+      @form = self.form_class.new(curation_concern) #new Hyrax::FileSetForm
+      @parent = @file_set.in_objects.first
+      original = @file_set.original_file
+      @version_list = Hyrax::VersionListPresenter.new(original ? original.versions.all : [])
+      @groups = current_user.groups
+    end
+
+    include WorkflowsHelper # Provides #workflow_restriction?, and yes I mean include not helper; helper exposes the module methods
+    # @param parent [Hyrax::WorkShowPresenter, GenericWork, #suppressed?] an
+    #        object on which we check if the current can take action.
+    #
+    # @return true if we did not encounter any workflow restrictions
+    # @raise WorkflowAuthorizationException if we encountered some workflow_restriction
+    def guard_for_workflow_restriction_on!(parent:)
+      return true unless workflow_restriction?(parent, ability: current_ability)
+      raise WorkflowAuthorizationException
+    end
+
+    def actor
+      @actor ||= Hyrax::Actors::FileSetActor.new(@file_set, current_user)
+    end
+
+    def attributes
+      params.fetch(:file_set, {}).except(:files).permit!.dup # use a copy of the hash so that original params stays untouched when interpret_visibility modifies things
+    end
+
+    def presenter
+      @presenter ||= begin
+        curation_concern = ::SolrDocument.find(params[:id])
+        authorize_by_ip(curation_concern)
+        presenter = show_presenter.new(curation_concern, current_ability, request)
+        raise WorkflowAuthorizationException if presenter.parent.blank?
+        presenter
+      end
+    end
+
+    def curation_concern_document
+      # Query Solr for the collection.
+      # run the solr query to find the collection members
+      response, _docs = single_item_search_service.search_results
+      curation_concern = response.documents.first
+      raise CanCan::AccessDenied unless curation_concern
+      curation_concern
+    end
+
+    def single_item_search_service
+      Hyrax::SearchService.new(config: blacklight_config, user_params: params.except(:q, :page), scope: self, search_builder_class: search_builder_class)
+    end
+
+    def wants_to_revert?
+      params.key?(:revision) && params[:revision] != curation_concern.latest_content_version.label
+    end
+
+    # Override this method to add additional response formats to your local app
+    def additional_response_formats(_); end
+
+    # This allows us to use the unauthorized and form_permission template in hyrax/base,
+    # while prefering our local paths. Thus we are unable to just override `self.local_prefixes`
+    def _prefixes
+      @_prefixes ||= super + ['hyrax/base']
+    end
+
+    def decide_layout
+      layout = case action_name
+               when 'show'
+                 '1_column'
+               else
+                 'dashboard'
+               end
+      File.join(theme, layout)
+    end
+
+    # rubocop:disable Metrics/MethodLength
+    def render_unavailable
+      message = I18n.t("hyrax.workflow.unauthorized_parent")
+      respond_to do |wants|
+        wants.html do
+          unavailable_presenter
+          flash[:notice] = message
+          render 'unavailable', status: :unauthorized
+        end
+        wants.json do
+          render plain: message, status: :unauthorized
+        end
+        additional_response_formats(wants)
+        wants.ttl do
+          render plain: message, status: :unauthorized
+        end
+        wants.jsonld do
+          render plain: message, status: :unauthorized
+        end
+        wants.nt do
+          render plain: message, status: :unauthorized
         end
       end
+    end
+    # rubocop:enable Metrics/MethodLength
 
-      def after_update_failure_response
-        respond_to do |wants|
-          wants.html do
-            initialize_edit_form
-            flash[:error] = "There was a problem processing your request."
-            render 'edit', status: :unprocessable_entity
-          end
-          wants.json { render_json_response(response_type: :unprocessable_entity, options: { errors: curation_concern.errors }) }
-        end
-      end
-
-      def add_breadcrumb_for_controller
-        add_breadcrumb I18n.t('hyrax.dashboard.my.works'), hyrax.my_works_path
-      end
-
-      def add_breadcrumb_for_action
-        case action_name
-        when 'edit'.freeze
-          add_breadcrumb I18n.t("hyrax.file_set.browse_view"), main_app.hyrax_file_set_path(params["id"])
-        when 'show'.freeze
-          add_breadcrumb presenter.parent.to_s, main_app.polymorphic_path(presenter.parent)
-          add_breadcrumb presenter.to_s, main_app.polymorphic_path(presenter)
-        end
-      end
-
-      # Override of Blacklight::RequestBuilders
-      def search_builder_class
-        Hyrax::FileSetSearchBuilder
-      end
-
-      def initialize_edit_form
-        @form = self.form_class.new(curation_concern) #new Hyrax::FileSetForm
-        @parent = @file_set.in_objects.first
-        original = @file_set.original_file
-        @version_list = Hyrax::VersionListPresenter.new(original ? original.versions.all : [])
-        @groups = current_user.groups
-      end
-
-      def actor
-        @actor ||= Hyrax::Actors::FileSetActor.new(@file_set, current_user)
-      end
-
-      def attributes
-        params.fetch(:file_set, {}).except(:files).permit!.dup # use a copy of the hash so that original params stays untouched when interpret_visibility modifies things
-      end
-
-      def presenter
-        @presenter ||= begin
-          curation_concern = ::SolrDocument.find(params[:id])
-          authorize_by_ip(curation_concern)
-          show_presenter.new(curation_concern, current_ability, request)
-        end
-      end
-
-      def wants_to_revert?
-        params.key?(:revision) && params[:revision] != curation_concern.latest_content_version.label
-      end
-
-      # Override this method to add additional response formats to your local app
-      def additional_response_formats(_); end
-
-      # This allows us to use the unauthorized and form_permission template in hyrax/base,
-      # while prefering our local paths. Thus we are unable to just override `self.local_prefixes`
-      def _prefixes
-        @_prefixes ||= super + ['hyrax/base']
-      end
+    def unavailable_presenter
+      @presenter ||= show_presenter.new(::SolrDocument.find(params[:id]), current_ability, request)
+    end
   end
 end
