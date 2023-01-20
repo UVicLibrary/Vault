@@ -125,7 +125,7 @@ class Hyrax::HomepageController < ApplicationController
   end
 
   def subject_facets
-    ["Anarchism", "Artists", "Authors", "Families", "Immigrants", "Literature", "Local history", "Military history", "World War (1939-1945)"]
+    ["Artists", "Authors", "Families", "Immigrants", "Indigenous peoples", "Literature", "Local history", "Military history", "Transgender"]
   end
 
   def place_facets
