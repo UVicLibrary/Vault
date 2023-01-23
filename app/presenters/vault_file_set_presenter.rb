@@ -35,6 +35,27 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
       current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || parent.downloadable?
     end
 
+    # IIIF metadata for inclusion in the manifest
+    #  Called by the `iiif_manifest` gem to add metadata
+    #
+    # @return [Array] array of metadata hashes
+    def manifest_metadata
+      metadata = []
+      iiif_metadata_fields.each do |field|
+        # This line catches empty strings in the creator field [""]
+        next if Array.wrap(solr_document.public_send(field)).blank?
+        # Use .public_send because .send raises ArgumentError due to namespace collision
+        # https://bugs.ruby-lang.org/issues/12136
+        metadata << {
+            'label' => "#{field.to_s.capitalize.gsub('_', ' ')}",
+            'value' => Array.wrap(solr_document.public_send(field))
+        }
+      end
+      metadata
+    end
+
+
+
     private
 
       def fetch_parent_presenter
@@ -50,4 +71,5 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
                                           presenter_class: VaultWorkShowPresenter,
                                           presenter_args: current_ability).first
       end
+
 end

@@ -10,18 +10,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     # modify this attribute to use an alternate presenter class for the collections
     self.collection_presenter_class = Hyrax::CollectionPresenter
 
-    # The fields to display in the IIIF viewer
-    self.iiif_metadata_fields = [:creator_label, :creator, :contributor_label, :contributor, :subject_label, :subject,
-                                 :publisher, :language, :identifier, :keyword, :date_created, :based_near_label,
-                                 :related_url, :resource_type, :source, :rights_statement, :license, :extent,
-                                 :alternative_title, :edition, :geographic_coverage_label, :geographic_coverage,
-                                 :coordinates, :chronological_coverage, :additional_physical_characteristics,
-                                 :has_format, :physical_repository_label, :physical_repository, :collection,
-                                 :provenance, :provider_label, :provider, :sponsor, :genre_label, :genre, :format,
-                                 :archival_item_identifier, :fonds_title, :fonds_creator, :fonds_description,
-                                 :fonds_identifier, :is_referenced_by, :date_digitized, :transcript, :technical_note,
-                                 :year]
-
         # Methods used by blacklight helpers
     # delegate :has?, :first, :fetch, :export_formats, :export_as, to: :solr_document
 
@@ -74,7 +62,7 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     # @return [Array] array of metadata hashes
     def manifest_metadata
       metadata = []
-      self.iiif_metadata_fields.each do |field|
+      Hyrax.config.iiif_metadata_fields.each do |field|
           # This line catches empty strings in the creator field [""]
           next if Array.wrap(solr_document.public_send(field)).blank?
           # Use .public_send because .send raises ArgumentError due to namespace collision
