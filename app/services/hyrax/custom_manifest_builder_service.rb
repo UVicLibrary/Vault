@@ -48,7 +48,7 @@ module Hyrax
 
         metadata = Hyrax.config.iiif_metadata_fields.each_with_object([]) do |field, array|
             label = field.to_s.humanize.capitalize
-            unless fsp.try(field).blank?
+            unless fsp.try(field).all?("") || fsp.try(field).blank?
               if single_value_field?(field)
                 value = sanitize_value(fsp.try(field).first)
                 array.push(label => value)
