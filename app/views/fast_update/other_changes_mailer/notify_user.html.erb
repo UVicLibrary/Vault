@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+
+  <body>
+    <p>Hello,</p>
+    <p>FASTUpdater found the following subject headings that need your attention:</p>
+    <% @changes.each do |change| %>
+      <p>
+        <%= change[:type] %>:<br/>
+        URI: <%= change[:uri] %>&nbsp;&nbsp;&nbsp;Label: <%= change[:label] %><br/>
+        <% if change.has_key? :suggestions %>
+        Suggestions:<br/>
+          <ul>
+            <% change[:suggestions].each do |hash| %>
+              <li>URI: <%= hash[:uri] %>&nbsp;&nbsp;&nbsp;Label: <%= hash[:label] %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </p>
+    <% end %>
+  <p> Please search the repository for items with these headings, or contact your friendly neighbourhoood developer.</p>
+  </body>
+</html>
