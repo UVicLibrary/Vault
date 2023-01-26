@@ -1,0 +1,16 @@
+Hello,
+
+FASTUpdater found the following subject headings that need your attention:
+
+<% @changes.each do |change| %>
+  URI: <%= change[:uri] %>    Label: <%= change[:label] %>
+  <% if change.has_key? "suggestions" %>
+    Suggestions:
+      <% change[:suggestions].each do |hash| %>
+        URI: <%= hash[:uri] %>   Label: <%= hash[:label] %>
+      <% end %>
+
+  <% end %>
+
+  Please search the repository for items with these headings, or contact your friendly neighbourhoood developer.
+<% end %>

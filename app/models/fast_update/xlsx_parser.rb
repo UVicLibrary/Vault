@@ -66,11 +66,17 @@ module FastUpdate
     attr_accessor :type, :uri, :label, :fast_id, :suggestions
 
     def initialize(options={})
+      @options = options
       self.type = options[:type]
       self.uri = options[:uri]
       self.label = options[:label]
       self.fast_id = options[:fast_id]
       self.suggestions = options[:suggestions]
     end
+
+    def attributes
+      @options
+    end
+
   end
 end
