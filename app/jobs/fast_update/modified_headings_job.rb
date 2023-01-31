@@ -6,7 +6,7 @@ module FastUpdate
         service = service_class.new(change[:label], change[:uri])
         puts service.search_for_modified_headings
         if results = service.search_for_modified_headings
-          results.each { |document| ActiveFedora::Base.find(document.id).update_index }
+          results.each { |document| ActiveFedora::Base.find(document['id']).update_index }
         end
       end
     end
