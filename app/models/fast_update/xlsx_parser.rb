@@ -27,7 +27,7 @@ module FastUpdate
       end
     end
 
-    # private
+    private
 
     # @return [String] The label for a FAST uri
     def label_for(uri)
