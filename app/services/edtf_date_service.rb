@@ -15,188 +15,222 @@ class EdtfDateService
 
   require 'edtf'
 
-  def initialize(edtf_string)
-    @edtf_string = edtf_string
-    @parsed_date = parse_date(edtf_string)
-  end
-
-  # Return date in solr format
-  def solr_date_range
-    if ([EDTF::Interval, EDTF::Decade, EDTF::Century, EDTF::Season].include?(@parsed_date.class)) or season_interval?(@edtf_string)
-      @parsed_date.map{|d| d.strftime("%FT%TZ")}
-    elsif @parsed_date.class == Date
-      Array.wrap(@parsed_date.strftime("%FT%TZ"))
+    def initialize(date_string)
+      # We treat unspecified decades (199X) and unspecified centuries (19XX) the same as
+      # EDTF::Decade (199x) and EDTF::Century (19XX) respectively
+      @date_string = date_string.downcase
+      @parsed_date = parse_date(@date_string)
     end
-  end
 
-  # Returns first solr date
-  def first_solr_date
-    solr_date_range.first if solr_date_range
-  end
-
-  def year_range
-    case @parsed_date.class.name
-    when "Date"
-      Array.wrap(@parsed_date.year.to_i)
-    when "String"
-      nil
-    else
-      @parsed_date.map { |d| d.year.to_i }.uniq
+    # Return date in solr format
+    def solr_date_range
+      if [EDTF::Interval, EDTF::Decade, EDTF::Century, EDTF::Season].include?(@parsed_date.class)
+        if @parsed_date.class == EDTF::Interval && @parsed_date.open?
+          Array.wrap(@parsed_date.from.strftime("%FT%TZ"))
+        else
+          @parsed_date.map{|d| d.strftime("%FT%TZ")}
+        end
+      elsif @parsed_date.class == Date
+        Array.wrap(@parsed_date.strftime("%FT%TZ"))
+      end
     end
-  end
 
-  def first_year
-    year_range.first if year_range
-  end
+    # Returns first solr date
+    def first_solr_date
+      solr_date_range.first if solr_date_range
+    end
 
-
-  # Returns human-readable date (string). See edtf-humanize:
-  # https://github.com/duke-libraries/edtf-humanize
-  def humanized
-    # Open-ended date intervals
-    if @edtf_string.include?("/..")
-      "Post #{@parsed_date.humanize.capitalize}"
-    elsif @edtf_string.include?("../")
-      "Before #{@parsed_date.humanize.capitalize}"
-    else
-      case @parsed_date.class.name
-      when "EDTF::Season"
-        humanized_season(@parsed_date)
-      when "EDTF::Interval"
-        if season_interval?(@edtf_string)
-          humanized_season_interval(@edtf_string)
-        elsif century_or_decade_interval?(@edtf_string)
-          humanized_century_or_decade_interval(@edtf_string)
-        elsif approx_and_uncertain?(@edtf_string)
-          humanized_approx_and_uncertain_interval
-        else
-          @parsed_date.humanize.gsub('circa','approximately')
-        end
-      when "EDTF::Century", "EDTF::Decade"
-        if @edtf_string.include?("?")
-          humanized_uncertain_century_or_decade(@parsed_date)
-        else
-          @parsed_date.humanize.gsub('circa','approximately')
-        end
-      when "String" # "unknown" or "no date"
-        @parsed_date
-      when "Date"
-        if approx_and_uncertain?(@edtf_string)
-          humanized_approx_and_uncertain_date(@parsed_date.humanize)
-        else
-          @parsed_date.humanize.gsub('circa','approximately')
-        end
+    def year_range
+      # For open-ended intervals such as "1900/.."
+      if @parsed_date.class == EDTF::Interval && @parsed_date.open?
+        Array.wrap(@parsed_date.from.year.to_i)
       else
-        @parsed_date.humanize.gsub('circa','approximately')
+        case @parsed_date.class.name
+        when "Date"
+          Array.wrap(@parsed_date.year.to_i)
+        when "String"
+          nil
+        else
+          @parsed_date.map { |d| d.year.to_i }.uniq
+        end
       end
     end
-end
 
-  class InvalidEdtfDateError < StandardError; end
-
-  def self.error_classes
-    [InvalidEdtfDateError]
-  end
-
-  private
-
-  def approx_and_uncertain?(date_string)
-    date_string.include?('%')
-  end
-
-  def humanized_approx_and_uncertain_date(parsed_date)
-    parsed_date.humanize.gsub('circa','approximately') << '?'
-  end
-
-  def humanized_uncertain_century_or_decade(parsed_date)
-    parsed_date.humanize.gsub('circa','approximately') << '?'
-  end
-
-  def humanized_approx_and_uncertain_interval
-    strings = @parsed_date.humanize.split("to ").map do |string|
-      string = string.strip
-      humanized_approx_and_uncertain_date(string)
+    def first_year
+      year_range.first if year_range
     end
-    strings.join(" to ")
-  end
 
-  def season?(date_string)
-    Date.edtf(date_string).class == EDTF::Season
-  end
-
-  def century?(date_string)
-    Date.edtf(date_string).class == EDTF::Century
-  end
-
-  def decade?(date_string)
-    Date.edtf(date_string).class == EDTF::Decade
-  end
-
-  def season_interval?(date_string)
-    season?(date_string.split("/").first) and season?(date_string.split("/").second)
-  end
-
-  def century_or_decade_interval?(date_string)
-    first_date = date_string.split("/").first
-    last_date = date_string.split("/").second
-    (century?(first_date) and century?(last_date)) ||
-        (decade?(first_date) and decade?(last_date))
-  end
-
-  def century_interval?(date_string)
-    century?(date_string.split("/").first) and century?(date_string.split("/").second)
-  end
-
-  def decade_interval?(date_string)
-    decade?(date_string.split("/").first) and decade?(date_string.split("/").second)
-  end
-
-  def parse_date(date_string)
-    date_string = date_string.gsub('%','~')
-    if date_string == "unknown" or date_string == "no date"
-      date_string
-    elsif date_string.include? "/.." # This is an open-ended interval such as "1867/.. "
-      # Only index the first date
-      Date.edtf(date_string.split("/").first)
-    elsif date_string.include? "../"
-      Date.edtf(date_string.split("/").last)
-    elsif season_interval?(date_string) or century_interval?(date_string) or decade_interval?(date_string)
-      # edtf can't parse season or century intervals, so we create an interval using the first season's
-      # first date and the last season's last date
-      first_date = Date.edtf(date_string.split("/").first)
-      last_date = Date.edtf(date_string.split("/").last)
-      EDTF::Interval.new(first_date.first, last_date.last)
-    elsif Date.edtf(date_string).nil? # Invalid date
-      if date_string.include? "#"
-        raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" Date includes #, please use X or another alternative.")
+    # Returns human-readable date (string). See edtf-humanize:
+    # https://github.com/duke-libraries/edtf-humanize
+    def humanized
+      # Open-ended date intervals
+      if "#{@date_string}".include?("../")
+        result = "Before #{@parsed_date.humanize.capitalize}"
       else
-        raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" If date is unknown, use \"unknown\" or \"no date\"")
+        case @parsed_date.class.name
+        when "EDTF::Interval"
+          if season_interval?|| century_interval? || decade_interval?
+            from = apply_humanized_approximate_or_uncertain(Date.edtf(@date_string.split('/')[0]), @date_string.split('/')[0].last)
+            to = apply_humanized_approximate_or_uncertain(Date.edtf(@date_string.split('/')[1]), @date_string.split('/')[1].last)
+            result = "#{from}#{I18n.t('edtf.terms.interval_connector_day')}#{to}"
+          else
+            result = @parsed_date.humanize
+          end
+        when "EDTF::Century", "EDTF::Decade","EDTF::Season"
+          result = apply_humanized_approximate_or_uncertain(@parsed_date, @date_string.last)
+        when "String" # "unknown" or "no date"
+          result = @parsed_date
+        when "Date"
+          result = @parsed_date.humanize
+        end
       end
-    else
-      # modify date so that the interval encompasses the years on the last interval date
-      temp_date = date_string.gsub('/..','').gsub('%','?').gsub(/\/$/,'')
-      date = temp_date.include?("/") ? temp_date.gsub(/([0-9]+X+\/)([0-9]+)(X+)/){"#{$1}"+"#{$2.to_i+1}"+"#{$3}"}.gsub("X","u") : temp_date
-      if match = date[/\d{3}u/] # edtf can't parse single u in year (e.g. 192u), so we replace it
-        date.gsub!(match, match.gsub("u","0"))
-      end
-      Date.edtf(date)
+      delete_prefix(result)
     end
-  end
 
-  def humanized_season(season)
-    season.humanize.split(" ").map(&:capitalize).join(", ")
-  end
+    class InvalidEdtfDateError < StandardError; end
 
-  def humanized_season_interval(date_string)
-    first_season = Date.edtf(date_string.split("/").first)
-    last_season = Date.edtf(date_string.split("/").last)
-    "#{humanized_season(first_season)} to #{humanized_season(last_season)}"
-  end
+    def self.error_classes
+      [InvalidEdtfDateError]
+    end
 
-  def humanized_century_or_decade_interval(date_string)
-    first_date = Date.edtf(date_string.split("/").first)
-    last_date = Date.edtf(date_string.split("/").last)
-    "#{first_date.humanize} to #{last_date.humanize}"
-  end
+    private
+
+      def parse_date(date_string)
+        date_string = date_string.gsub('/..','/open')
+        if date_string == "unknown" or date_string == "no date"
+          date_string
+        elsif date_string.include? "../"
+          last_date = date_string.split("/").last
+          if before_1000?(last_date)
+            parse_date_before_1000(last_date)
+          else
+            Date.edtf(last_date)
+          end
+        elsif before_1000?(date_string)
+          if date_string.include?('/') # Interval
+            first_date = parse_date_before_1000(date_string.split("/").first)
+            last_date = date_string.split("/").last
+            if before_1000?(last_date)
+              last_date = parse_date_before_1000(last_date)
+            elsif last_date == "open"
+              last_date = last_date.to_sym
+            else
+              last_date = Date.edtf(last_date)
+            end
+            EDTF::Interval.new(first_date, last_date)
+          elsif date_string.end_with?('xx'||'XX') # century
+            EDTF::Century.new(date_string.gsub('xx','00').to_i)
+          elsif date_string.end_with?('x'||'XX') # decade
+            EDTF::Decade.new(date_string.gsub('x','0').to_i)
+          else
+            parse_date_before_1000(date_string)
+          end
+        elsif season_interval? || century_interval? || decade_interval?
+          # Remove all uncertainty and approximation markers when parsing these kinds of dates
+          # since edtf-ruby can't parse them and add them back in during .humanize
+          date_string = strip_markers(date_string)
+          first_date = Date.edtf(date_string.split("/").first)
+          last_date = Date.edtf(date_string.split("/").last)
+          EDTF::Interval.new(first_date.first, last_date.last)
+        elsif Date.edtf(date_string).nil? # Invalid date
+          if date_string.include? "#"
+            raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" Date includes #, please use X or another alternative.")
+          else
+            raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" If date is unknown, use \"unknown\" or \"no date\"")
+          end
+        else
+          Date.edtf(date_string)
+        end
+      end
+
+      # Delete the 0 at the front of a pre-1000 date, e.g. 0900 -> 900
+      def delete_prefix(string)
+        return string unless years = string.scan(/0\d{3}/)
+        string_dup = string.dup
+        years.to_a.each { |match| string_dup.gsub!(match, match.delete_prefix('0')) }
+        string_dup
+      end
+
+      # Remove all uncertainty and approximation markers
+      def strip_markers(date_string)
+        markers = ['%','?','~']
+        markers.each do |marker|
+          date_string.gsub!(marker,'')
+        end
+        date_string
+      end
+
+      def season_interval?
+        @date_string.include?('/') && @date_string.split('/').all? { |date| Date.edtf(date).class == EDTF::Season }
+      end
+
+      def century_interval?
+        @date_string.include?('/') && @date_string.split('/').all? { |date| Date.edtf(date).class == EDTF::Century }
+      end
+
+      def decade_interval?
+        @date_string.include?('/') && @date_string.split('/').all? { |date| Date.edtf(date).class == EDTF::Decade }
+      end
+
+      def before_1000?(date_string)
+        /^\d{3}\b(-|\/)?|^\d{1}(X|x){2}$|^\d{2}(X|x){1}$/.match?(date_string)
+      end
+
+      # @return [Date] - the parsed date object for a single date before 1000
+      # @param date_string [String] - the string to parse
+      def parse_date_before_1000(date_string)
+        # Ruby's default library can parse this if it's in format YYY-MM-DD (day precision)
+        # but not YYY-MM (month precision) or YYY (year precision)
+        if /\d{3}-\d{2}-\d{2}/.match?(date_string) # YYY-MM-DD
+          date = Date.edtf(Date.parse(date_string).edtf)
+        elsif /\d{3}-\d{2}$/.match?(date_string) # YYY-MM
+          # Regex to parse the year and month
+          year = date_string.match(/\d{3}/)[0].to_i
+          month = date_string.match(/\d{2}$/)[0].to_i
+          temp_date = Date.new(year, month)
+          # Set month precision for edtf
+          temp_date.month_precision!
+          date = Date.edtf(temp_date.edtf)
+        elsif /\d{3}$/.match?(date_string) # YYY
+          temp_date = Date.new(date_string.to_i)
+          temp_date.year_precision!
+          date = Date.edtf(temp_date.edtf)
+        end
+        apply_approximate_or_uncertain(date, date_string.last)
+        date
+      end
+
+      # Make dates before 1000 approximate or uncertain if appropropriate. Without
+      # this, #humanize won't produce the expected result.
+      # @param date [Date] - the datetime object to make approximate/uncertain
+      # @param character [String] - the last character of a date string
+      def apply_approximate_or_uncertain(date, character)
+        case character
+        when "~" # approximate
+          date.approximate!
+        when "?" # uncertain
+          date.uncertain!
+        when "%" # approximate and uncertain
+          date.approximate!
+          date.uncertain!
+        end
+      end
+
+      # @return [String] - the human-readable string for an EDTF object that
+      # doesn't respond to #approximate! or #uncertain!)
+      # @param date [Date, EDTF::Century, EDTF::Decade, EDTF::Season] something that responds to #humanize
+      # @param character [String] - the last character of a date string
+      def apply_humanized_approximate_or_uncertain(date, character)
+        case character
+        when "~" # approximate
+          I18n.t('edtf.terms.approximate_date_prefix_year') + date.humanize
+        when "?" # uncertain
+          date.humanize + I18n.t('edtf.terms.uncertain_date_suffix')
+        when "%" # approximate and uncertain
+          I18n.t('edtf.terms.approximate_date_prefix_year') + date.humanize + I18n.t('edtf.terms.uncertain_date_suffix')
+        else
+          date.humanize
+        end
+      end
 
 end

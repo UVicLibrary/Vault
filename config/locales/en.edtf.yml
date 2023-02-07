@@ -1,0 +1,15 @@
+en:
+  edtf:
+    terms:
+      approximate_date_prefix_day: "approximately "
+      approximate_date_prefix_month: "approximately "
+      approximate_date_prefix_year: "approximately "
+      open_end_interval_with_day: "Post %{date}"
+      open_end_interval_with_month: "Post %{date}"
+      open_end_interval_with_year: "Post %{date}"
+  date:
+    seasons:
+      autumn: "Autumn,"
+      winter: "Winter,"
+      spring: "Spring,"
+      summer: "Summer,"
