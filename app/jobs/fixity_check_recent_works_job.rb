@@ -6,7 +6,7 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
   # @param [Date] end_date a DateTime object
   def perform(start_date = six_months_ago, end_date = three_months_ago)
     # Run fixity checks
-    FixityCheckJob.perform_later(get_works(start_date, end_date))
+    FixityCheckJob.perform_later(get_work_ids(start_date, end_date))
   end
 
   private
@@ -22,7 +22,7 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
     end
 
     # @return [Array < GenericWork >] array of works to pass to fixity check
-    def get_works(start_date, end_date)
+    def get_work_ids(start_date, end_date)
       if Settings.multitenancy.enabled?
        # Get all works uploaded between the start date and end date
         solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
@@ -36,6 +36,6 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
           rows: 5000,
           fl: "id"
       }
-      response['response']['docs'].map { |k,_| GenericWork.find(k['id']) }
+      response['response']['docs'].map { |doc| doc['id'] }
     end
 end
