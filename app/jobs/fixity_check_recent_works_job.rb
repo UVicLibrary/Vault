@@ -31,7 +31,8 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
       end
       response = solr.get 'select', params: {
           q: "*:*",
-          fq: ["has_model_ssim:GenericWork","system_create_dtsi:[#{start_date} TO #{end_date}}"],
+          # Restrict this to non-private works because those are test objects
+          fq: ["has_model_ssim:GenericWork","system_create_dtsi:[#{start_date} TO #{end_date}}", "-visibility_ssi:restricted"],
           rows: 5000,
           fl: "id"
       }
