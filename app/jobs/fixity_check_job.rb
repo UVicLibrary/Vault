@@ -1,20 +1,22 @@
 class FixityCheckJob < ActiveJob::Base
 
-	def perform(works)
+	def perform(work_ids)
 		filename = DateTime.now.strftime('%Y%m%d%H%M%S')
 		log_file = File.new("/usr/local/rails/vault/log/fixity/#{filename}.log", 'w')
 		log_file.puts("Starting Fixity Checking")
 		# Create a list of failed file sets for emailer
 		failed = []
-		works.each do |w|
-			w.file_sets.each do |fs|
+		work_ids.each do |id|
+			GenericWork.find(id).file_sets.each do |fs|
 				puts fs.id
 				# If a file set passed a fixity check within the last month, no need to check again.
 				next if passed_recent_check?(fs)
 				begin
 					fixity = ActiveFedora::FixityService.new fs.latest_content_version.uri
 				rescue NoMethodError => error
-					raise "File set with id #{fs.id} has no files attached"
+					log_file.puts "#{fs.id} has no files attached"
+					failed.push(fs)
+					next
 				end
 				unless fixity.check
 					log_file.puts("#{fs.id} has a possible corruption")

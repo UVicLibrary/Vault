@@ -5,7 +5,7 @@
   </head>
   <body>
     <p>Hello,</p>
-    <p>The following files failed fixity checks:</p>
+    <p>The following files failed fixity checks or were missing files:</p>
     <% @file_sets.each do |fs| %>
       <% host = "#{Account.find_by(tenant: Apartment::Tenant.current).cname}" %>
       <p><%= fs.title.first %>: <%= link_to "Page for file", "https://#{host}/concern/parent/#{fs.parent_id}/file_sets/#{fs.id}" %> &#9; <%= link_to "Download link", "http://#{host}/downloads/#{fs.id}" %></p>
