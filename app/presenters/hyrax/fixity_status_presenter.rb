@@ -27,11 +27,11 @@ module Hyrax
           if @file_set.last_fixity_check.present?
             if File.exist?(log_path) && File.read(log_path).include?(@file_set_id)
               content_tag("span", "FAILED", class: "label label-danger") + ' ' + "on #{humanize_datetime(@file_set.last_fixity_check)}"
+            elsif File.exist?(log_path)
+              content_tag("span", "passed", class: "label label-success") + ' ' + "on #{humanize_datetime(@file_set.last_fixity_check)}"
             else
-              content_tag("span", "UNKNOWN", class: "label label-warning") + ' ' + "Fixity checks have been run but Hyrax cannot find the status."
+              content_tag("span", "unknown", class: "label label-warning") + ' ' + "Fixity checks have been run but Hyrax cannot find the status."
             end
-          elsif @file_set.last_fixity_check.present?
-            content_tag("span", "passed", class: "label label-success") + ' ' + "on #{humanize_datetime(@file_set.last_fixity_check)}"
           else
             "Fixity checks have not yet been run on this object"
           end
