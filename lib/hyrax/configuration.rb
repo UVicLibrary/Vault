@@ -570,7 +570,7 @@ module Hyrax
     #   @see Hyrax::RightsStatementService for implementation details
     attr_writer :rights_statement_service_class
     def rights_statement_service_class
-      if Settings.multitenancy.enabled? && Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("iaff")
+      if Settings.multitenancy.enabled && Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("iaff")
         IaffRightsStatementService
       else
         @rights_statement_service_class ||= Hyrax::RightsStatementService
