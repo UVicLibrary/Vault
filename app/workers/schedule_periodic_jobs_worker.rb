@@ -47,11 +47,11 @@ class SchedulePeriodicJobsWorker
     end
 
     def schedule_fixity(datetime)
-      schedule_job(FixityCheckRecentWorksJob, datetime)
+      schedule_job(FixityCheckRecentWorksJob, datetime) unless datetime.past?
     end
 
     def schedule_batch_export(datetime)
-      schedule_job(BatchExportJob, datetime)
+      schedule_job(BatchExportJob, datetime) unless datetime.past?
     end
 
     # Enqueues a specific job on a specific date/time
