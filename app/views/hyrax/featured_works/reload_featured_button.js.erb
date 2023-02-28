@@ -1,0 +1,18 @@
+// Change state of button when Featuring or Unfeaturing
+<% if action_name == "create" %>
+    document.getElementById("featured_work_button").innerHTML = ("<a data-behavior=\"unfeature\" class=\"btn btn-default\" href=\"#work\" >Unfeature</a>");
+    <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
+    <%= link_to "Unfeature", hyrax.featured_work_path(presenter, format: :js),
+              id: 'unfeatured_work_button',
+              data: { behavior: 'unfeature' },
+              class: presenter.display_unfeature_link? ? 'btn btn-default' : 'btn btn-default collapse' %>
+    <% end %>
+<% elsif action_name == "destroy" %>
+    document.getElementById("unfeatured_work_button").innerHTML = ("<a data-behavior=\"feature\" class=\"btn btn-default\" href=\"#work\" >Feature</a>");
+    <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
+    <%= link_to "Feature", hyrax.featured_work_path(presenter, format: :js),
+              id: 'featured_work_button',
+              data: { behavior: 'feature' },
+              class: presenter.display_feature_link? ? 'btn btn-default' : 'btn btn-default collapse'  %>
+    <% end %>
+<% end %>

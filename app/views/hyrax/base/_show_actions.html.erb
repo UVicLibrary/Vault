@@ -1,10 +1,12 @@
 <div class="row show-actions button-row-top-two-column">
   <div class="col-sm-6 text-left">
     <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
-      <%= link_to "Feature", hyrax.featured_work_path(presenter, format: :json),
+      <%= link_to "Feature", hyrax.featured_work_path(presenter, format: :js),
+                  id: 'featured_work_button',
                   data: { behavior: 'feature' },
                   class: presenter.display_feature_link? ? 'btn btn-default' : 'btn btn-default collapse'  %>
-      <%= link_to "Unfeature", hyrax.featured_work_path(presenter, format: :json),
+      <%= link_to "Unfeature", hyrax.featured_work_path(presenter, format: :js),
+                  id: 'unfeatured_work_button',
                   data: { behavior: 'unfeature' },
                   class: presenter.display_unfeature_link? ? 'btn btn-default' : 'btn btn-default collapse' %>
     <% elsif current_ability.can?(:edit, presenter.solr_document) %>
