@@ -69,7 +69,7 @@ Rails.application.routes.draw do
 
   Hyrax::Engine.routes do
     resources :featured_collection_lists
-    resources :featured_collections
+    resource :featured_collection, only: [:create, :destroy]
   end
 
   concern :searchable, Blacklight::Routes::Searchable.new
