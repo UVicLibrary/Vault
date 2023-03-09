@@ -19,7 +19,7 @@ module IIIFThumbnailPaths
 
       # Use latest version
       if af_file_set.latest_content_version && af_file_set.latest_content_version.label != "version1"
-        path = "#{af_file_set.original_file.id}/fcr:versions/#{file_set.latest_content_version.label}"
+        path = "#{af_file_set.original_file.id}/fcr:versions/#{af_file_set.latest_content_version.label}"
       elsif af_file_set
         path = af_file_set.original_file.id
       else
