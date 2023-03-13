@@ -1,16 +1,19 @@
 module FastUpdate
   class UriConversionService < LinkedDataSearchService
 
-    # Searches the repository for items with a specific uri (#search_for_uri), with the option
-    # to limit the search to items within a particular collection
+    # Searches the repository for items with a specific uri (#search_for_uri) with the option
+    # to limit the search to items within a particular collection, then removes or replaces it with
+    # another.
 
     # @param [String] old uri
     # @param [Array <String>] new_uris ["http.id.worldcat.org/XXXXXX","http.id.worldcat.org/XXXXXX"]
+    # @param [String] What to do with the old_uri, either ""
     # @param [Collection] optional, the collection to limit search results to
-    def initialize(old_uri, new_uris, collection = nil, use_valkyrie: Hyrax.config.query_index_from_valkyrie)
+    def initialize(old_uri, new_uris, collection = nil, action:, use_valkyrie: Hyrax.config.query_index_from_valkyrie)
       @old_uri = old_uri
       @new_uris = new_uris
       @collection = collection
+      @action = action
       @old_service = ActiveFedora::SolrService
       @use_valkyrie = use_valkyrie
     end
@@ -19,7 +22,7 @@ module FastUpdate
     def call(document)
       object = ActiveFedora::Base.find(document.fetch('id'))
       fields_for_conversion(document).each do |field|
-        convert_to_new_uris(object, field)
+        replace_or_delete_uris(object, field)
       end
       object.save!
     end
@@ -46,11 +49,15 @@ module FastUpdate
       end
     end
 
+    def search_for_works
+      self.superclass.send(:search_for_uri)
+    end
+
     private
 
     # @param [Collection, Work, or FileSet]
     # @param [Symbol] field (e.g. :provider) to change
-    def convert_to_new_uris(object, field)
+    def replace_or_delete_uris(object, field)
       if field.to_s == "based_near"
         class_name = "Hyrax::ControlledVocabularies::Location".constantize
       else
@@ -58,10 +65,17 @@ module FastUpdate
       end
       # Remove the old uri
       old_values = object.send(field).clone.reject { |vocab| (vocab.id == @old_uri) if (!vocab.is_a? String) }
-      # Add the new uri(s)
-      new_values = old_values + (@new_uris.map { |uri| class_name.new(uri) })
-      # Set the new values on the object
-      object.send("#{field}=", new_values)
+      if @action == "replace"
+        # Add the new uri(s)
+        new_values = old_values + (@new_uris.map { |uri| class_name.new(uri) })
+        # Set the new values on the object
+        object.send("#{field}=", new_values)
+      elsif @action == "delete"
+        # Set the new values on the object
+        object.send("#{field}=", old_values)
+      else
+        raise "Action not recognized. Must be replace or delete."
+      end
       object.save!
     end
 

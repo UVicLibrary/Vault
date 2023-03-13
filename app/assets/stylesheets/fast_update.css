@@ -1,0 +1,118 @@
+#new_fast_update_change {
+    margin-top: 2rem;
+}
+
+#new_fast_update_change .collection_radio_buttons {
+    margin-left: 0.5rem;
+    vertical-align: -webkit-baseline-middle;
+}
+
+.fast-update-form-group, div[role=radiogroup] {
+    height: 3rem;
+}
+
+.fast-update-form-group span:first-of-type > label {
+    margin-right: 1em;
+}
+
+.fast-update-form-group .collection_radio_buttons {
+    margin-right: 0rem;
+}
+
+#fast-update-search-preview {
+    margin-right: 1rem;
+}
+
+.fast-update-table {
+    margin-top: 2rem;
+}
+
+.fast-update-table .media-body {
+    vertical-align: middle;
+}
+
+.fast-update-table thead, .fast-update-table thead th {
+    background-color: #286090; /* #50504db5 */
+    color: #fff;
+    font-weight: normal;
+}
+
+.fast-update-search-results-tab tbody td:nth-child(odd) {
+    white-space: nowrap;
+}
+
+.fast-update-table-container .facet-values li {
+    display: flex;
+}
+
+.fast-update-table-container .constraint-value {
+    display: inline-block;
+    max-width: 21em;
+}
+
+.fast-update-table-container #member_of_collections_ssim-dropdown-options {
+    /*padding-left: 1.25em;*/
+    padding-left: 1em;
+}
+.dashboard .fast-update-table-container .list-filters .facet-label {
+    width: 100%;
+}
+
+.fast-update-table-container {
+    background-color: #fff;
+    border: 1px solid #dedede;
+    border-top: none;
+}
+
+#fast-update-tabs {
+    margin-top: 5rem;
+    padding-left: 0rem;
+}
+
+.fast-update-container {
+    width: 100%;
+}
+
+.label-count-display {
+    display: inline-block;
+    margin-right: 2em;
+}
+
+.dashboard .fast-update-table-container span.constraints-label {
+    margin-right: 3em;
+}
+
+.label-count-display span {
+    font-weight: bold;
+}
+
+.dashboard .fast-update-table-container span.constraints-label,
+.dashboard .fast-update-table-container span.list-filters-label {
+    margin-right: 1em;
+    font-size: inherit;
+}
+
+.dashboard .fast-update-table-container span.label-count-display {
+    margin-top: 0.45em;
+}
+
+.fast-update-table-container #appliedParams {
+    display: inline-block;
+}
+
+.dashboard .list-filters.row {
+    margin: 20px 0px 0px 0px;
+}
+
+.fast-update-listing {
+    padding-left: 0em;
+}
+
+#fast-update-search-results-tab h2 {
+    margin-bottom: 2rem;
+}
+
+.new-label-cell-span {
+    display: block;
+    margin-bottom: 1em;
+}

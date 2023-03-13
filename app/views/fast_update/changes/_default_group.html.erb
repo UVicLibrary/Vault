@@ -1,0 +1,17 @@
+<fieldset>
+  <table class="table table-striped fast-update-table table-responsive">
+    <caption class="sr-only">search results for (Insert label here)</caption>
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Collection</th>
+      <th>Fields containing URI</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% docs.each_with_index do |document, counter| %>
+      <%= render 'list_works', document: document, counter: counter, presenter: Hyrax::WorkShowPresenter.new(document, current_ability), uri: uri %>
+    <% end %>
+    </tbody>
+  </table>
+</fieldset>

@@ -1,5 +1,5 @@
 <div class="card work-card col-lg-<%= card_width %> col-md-<%= card_width %> col-sm-<%= card_width %> col-xs-12">
-  <div class="wrapper" style="background: url(<%= presenter.thumbnail_path.gsub '!150,300', '!500,900' %>); background-size: cover; background-position: center;">
+  <div class="wrapper" style="background: url(<%= presenter.thumbnail_path.gsub('!150,300', '!500,900') if presenter.thumbnail_path %>); background-size: cover; background-position: center;">
     <%= link_to [main_app, presenter], class: "plain-link work-card-link homepage-tab-link" do %>
       <div class="data">
         <div class="content">

@@ -1,0 +1,9 @@
+var documents = $(document.getElementById("documents"));
+documents.empty();
+<% if @response.docs.any? %>
+  documents.append("<%= j (render partial: 'search_results', locals: { docs: @response.docs, uri: uri, label: label }) %>")
+<% else %>
+  documents.append("<span>Couldn't find any works with this URI.</span>")
+<% end %>
+// Toggle tabs
+$('a[href="#fast-update-search-results-tab"]').click();

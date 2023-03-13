@@ -29,5 +29,6 @@
  *= require vault_navbar
  *= require footer
  *= require work_show
+ *= require fast_update
  *= require_self
 */
