@@ -1,0 +1,44 @@
+<table class="table table-striped fast-update-table table-responsive" >
+  <thead class="table-primary">
+  <tr>
+    <th scope="col">Old Label / URI</th>
+    <th scope="col">New Labels / URIs</th>
+    <th scope="col">Action</th>
+    <th scope="col">Scope / Collection</th>
+    <th scope="col">Timestamp</th>
+    <th scope="col">Complete?</th>
+  </tr>
+  </thead>
+  <tbody>
+    <% attributes_to_display = [:old_label, :new_labels, :action, :collection_id, :created_at] %>
+    <% @changes.each do |change| %>
+      <tr>
+        <% attributes_to_display.each do |attr| %>
+          <% case attr %>
+            <% when :old_label %>
+              <td><%= change.old_label %><br/>(<%= change.old_uri %>)</td>
+            <% when :new_labels %>
+              <td>
+                <% change.new_labels.each do |label| %>
+                  <span class="new-label-cell-span"><%= label %><br/>(<%= change.new_uris[change.new_labels.index(label)] %>)</span>
+                <% end %>
+              </td>
+            <% when :created_at %>
+              <td><%= change.created_at.in_time_zone.strftime('%B %d %Y, %I:%M %p') %></td>
+            <% when :collection_id %>
+              <td><%= change.collection_id == "All" ? "Everything" : Collection.find(change.collection_id).title.first %></td>
+            <% else %>
+              <% if change.send(attr).class == Array %>
+                <td class="col-md-2"><%= sanitize(change.send(attr).join("<br/>")) %></td>
+              <% else %>
+                <td class="<%= 'col-md-2' if attr == attributes_to_display.first %>"><%= change.send(attr).capitalize %></td>
+              <% end %>
+          <% end %>
+        <% end %>
+          <td>
+            <%= render_complete_cell(change) %>
+          </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

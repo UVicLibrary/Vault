@@ -1,0 +1,7 @@
+<% if @response %>
+  <%= render 'facets', uri: uri, label: label %>
+  <%= render 'default_group', docs: docs, uri: uri %>
+  <%= render 'results_pagination' %>
+<% else %>
+  <p>No URIs selected. Select a URI (above) to delete or replace and click "Search Preview" to see works that would have one or more URIs replaced with the current parameters.</p>
+<% end %>

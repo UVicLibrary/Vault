@@ -1,0 +1,9 @@
+<% if @response.total_pages > 1 %>
+  <div class="row record-padding">
+    <div class="col-md-9">
+      <div class="pagination">
+        <%= paginate @response, theme: 'blacklight', remote: true %>
+      </div>
+    </div>
+  </div>
+<% end %>

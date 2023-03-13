@@ -28,6 +28,7 @@
 //= require vault_homepage
 //= require navbar
 //= require hyrax
+//= require fast_update
 //= require handlebars-v4.0.5
 //= require jquery.flot.pie
 //= require flot_graph
@@ -35,4 +36,3 @@
 //= require turbolinks
 //= require blacklight_gallery/default
 //= require masonry
-

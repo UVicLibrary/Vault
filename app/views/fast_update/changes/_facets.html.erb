@@ -1,0 +1,17 @@
+<% # main container for facets/limits menu -%>
+<% if has_facet_values? %>
+  <div class="list-filters row">
+    <div class="col-md-4">
+      <span class="label-count-display">
+        <span><%= @response.total_count %> result<%= "s" if @response.total_count > 1  %></span> for <span><%= label %></span>
+      </span>
+    </div>
+    <div class="col-md-4">
+      <span class="list-filters-label">Filter by collection:</span>
+      <%= render_facet_partials %>
+    </div>
+    <div class="col-md-4">
+      <%= render 'constraints' %>
+    </div>
+  </div>
+<% end %>

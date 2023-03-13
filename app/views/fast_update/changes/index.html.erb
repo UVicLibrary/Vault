@@ -1,0 +1,109 @@
+<div class="container fast-update-container">
+  <h1>Replace or Delete a URI</h1>
+
+  <p>Replace one FAST URI with another across the entire repository, or scoped to a collection.</p>
+  <div class="row">
+  <%= simple_form_for @change, html: { data: { behavior: 'change-form', 'param-key' => 'fast_update_change' } } do |f| %>
+    <div class="field-wrapper col-md-4 col-sm-12 col-xs-12">
+    <%= f.input :old_label,
+                label: 'URI to replace or delete:',
+                placeholder: 'Search for an entity',
+                input_html: {
+                    class: 'form-control',
+                    id: 'old-label',
+                    data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                            'autocomplete-type' => "linked",
+                            'autocomplete' => :old_label,
+                            'fieldName' => 'collection_id'
+                    }
+                },
+                wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                                        'field-name' => :old_label }},
+                required: true %>
+    <%= f.input :old_uri,
+                label: false,
+                input_html: {
+                    type: 'hidden',
+                    data: { 'id' => "remote" }
+                }
+                %>
+    </div>
+    <div class="fast-update-form-group col-md-4 col-sm-12 col-xs-12">
+      <div role="radiogroup">
+        <%= f.collection_radio_buttons :action, [['delete', 'Delete'], ['replace', 'Replace with:']], :first, :last, checked: ['replace', 'Replace with:'] %>
+      </div>
+      <div>
+          <%= f.input :new_uris,
+                      label: false,
+                      as: :fast_update,
+                      placeholder: 'Search for an entity',
+                      input_html: {
+                          class: 'form-control controlled_vocabulary',
+                          id: 'new-label',
+                          data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                                  'autocomplete-type' => "linked",
+                                  'autocomplete' => :new_uris
+                          }
+                      },
+                      wrapper_html: { class: 'controlled_vocabulary', # 'fast_update_form_field',
+                          data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                                              'field-name' => :new_label }} %>
+      </div>
+    </div>
+      <div class="fast-update-form-group col-md-4 col-sm-12 col-xs-12">
+        <div role="radiogroup">
+          <%= f.collection_radio_buttons :collection_id, [['All', 'in Everything'], ['', 'in a Collection:']], :first, :last, checked: ['All', 'in Everything'] %>
+        </div>
+        <div class="field-wrapper">
+          <%= f.input :collection_id,
+              label: false,
+              prompt: :translate,
+              placeholder: 'Search for a collection',
+              input_html: {
+                class: 'form-control',
+                data: {
+                  autocomplete: 'collection',
+                  'autocomplete-url' => Rails.application.routes.url_helpers.qa_path + '/search/collections?access=edit'
+                }
+              } %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <%= link_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview' %>
+        <%= f.submit 'Submit', class: 'btn btn-primary disabled', id: 'fast-update-submit-button' %>
+      </div>
+    </div>
+  <% end %><!-- /form -->
+  <div class="row">
+    <ul class="nav nav-tabs" id="fast-update-tabs" role="tablist">
+      <li ><a aria-expanded="false" href="#fast-update-search-results-tab" role="tab" data-toggle="tab">Search Results</a></li>
+      <li class="active"><a aria-expanded="true" href="#fast-update-changes-tab" role="tab" data-toggle="tab">Previous Changes</a></li>
+    </ul>
+    <div class="tab-content" id="fast-update-tabs-content">
+      <div class="tab-pane" aria-labelled-by="fast-update-search-results-tab" id="fast-update-search-results-tab">
+        <div class="col-md-12 fast-update-table-container">
+          <div class="panel-body">
+            <h2>Search Results</h2>
+            <div class="table-responsive" id="documents">
+              <%= render 'search_results' %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane active" aria-labelled-by="fast-update-changes-tab" id="fast-update-changes-tab">
+        <div class="col-md-12 fast-update-table-container">
+          <div class="panel-body">
+            <h2 class="fast-update-past-changes">Previous Changes</h2>
+            <% if @changes.any? %>
+              <%= render 'changes_table'%>
+            <% else %>
+              <p>No changes to show.</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
