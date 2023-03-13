@@ -33,7 +33,7 @@ module FastUpdate
       if @change.save
         # Enqueue the job
         collection = @change.collection_id == "All" ? nil : @change.collection_id
-        ReplaceOrDeleteUriJob.perform_now(@change.id, collection)
+        ReplaceOrDeleteUriJob.perform_later(@change.id, collection)
         flash[:notice] = "Your files are being processed by #{view_context.application_name} in the background. You may need to refresh this page to see these updates."
       else
         flash[:error] = @change.errors.full_messages

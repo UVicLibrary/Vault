@@ -16,11 +16,11 @@
         <% attributes_to_display.each do |attr| %>
           <% case attr %>
             <% when :old_label %>
-              <td><%= change.old_label %><br/>(<%= change.old_uri %>)</td>
+              <td><span class="fast-update-bolded"><%= change.old_label %></span><br/>(<%= change.old_uri %>)</td>
             <% when :new_labels %>
               <td>
                 <% change.new_labels.each do |label| %>
-                  <span class="new-label-cell-span"><%= label %><br/>(<%= change.new_uris[change.new_labels.index(label)] %>)</span>
+                  <span class="new-label-cell-span"><span class="fast-update-bolded"><%= label %></span><br/>(<%= change.new_uris[change.new_labels.index(label)] %>)</span>
                 <% end %>
               </td>
             <% when :created_at %>
