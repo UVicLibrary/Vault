@@ -116,3 +116,7 @@
     display: block;
     margin-bottom: 1em;
 }
+
+.fast-update-bolded {
+    font-weight: bold;
+}
