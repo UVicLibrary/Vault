@@ -23,7 +23,7 @@ module FastUpdate
         else
           raise "Change type not recognized: #{row[0]}"
         end
-        array << Change.new(attributes)
+        array << XlsxChange.new(attributes)
       end
     end
 
@@ -62,7 +62,7 @@ module FastUpdate
     end
   end
 
-  class Change
+  class XlsxChange
     attr_accessor :type, :uri, :label, :fast_id, :suggestions
 
     def initialize(options={})
