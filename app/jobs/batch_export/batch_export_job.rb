@@ -26,7 +26,7 @@ class BatchExportJob < ActiveJob::Base
 
   # @param[Array <GenericWork> ] works - the works to export
   # @param[String] dirname - the directory to export to
-  def perform(works, dirname = "/mnt/LSYS01/vault/export_files")
+  def perform(works = get_recent_works, dirname = "/mnt/LSYS01/vault/export_files")
     Dir.chdir(dirname) do
       works.each do |work|
         # Don't export if work is in a test collection
@@ -38,6 +38,7 @@ class BatchExportJob < ActiveJob::Base
           FileUtils.mkdir_p(bag_dir)
           Dir.chdir(bag_dir) do
             FileUtils.mkdir_p("data")
+            download_objects(file_set)
             extract_text(file_set)
             write_file_metadata(file_set, Dir.pwd,"data/metadata.txt")
             write_file_set_and_work_metadata(file_set, "work_and_file_set_metadata.csv")
@@ -51,6 +52,8 @@ class BatchExportJob < ActiveJob::Base
         end
       end
     end
+    # Move everything to narwhal
+    # Dir.glob("#{dirname}/*.7z").each { |f| FileUtils.mv(f, "/mnt/narwhal/#{File.basename(f)}") }
   end
 
   private
@@ -125,7 +128,7 @@ class BatchExportJob < ActiveJob::Base
     (Date.today.beginning_of_month - 3.months).midnight.strftime("%FT%H:%M:%SZ")
   end
 
-  # @return [Array < GenericWork >] array of works to pass to fixity check
+  # @return [Array <GenericWork>] array of works to pass to fixity check
   def get_recent_works
     # Get all works uploaded between the start date and end date
     solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
