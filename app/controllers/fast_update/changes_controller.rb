@@ -29,7 +29,15 @@ module FastUpdate
       filtered_new_uris = new_uris.select(&:present?)
       filtered_new_labels = new_labels.select(&:present?)
 
-      @change = FastUpdate::Change.new(change_params.merge({ new_labels: filtered_new_labels, new_uris: filtered_new_uris }))
+      attributes = change_params.merge({ new_labels: filtered_new_labels, new_uris: filtered_new_uris })
+
+      # If a URI was pasted in, there may not be an old label set in params so we provide a dummy one.
+      attributes["old_label"] == "" ? attributes['old_label'] = "No label available" : nil
+      # Remove any whitespace from pasting uris in
+      attributes['old_uri'] = attributes['old_uri'].strip
+
+      @change = FastUpdate::Change.new(attributes)
+
       if @change.save
         # Enqueue the job
         collection = @change.collection_id == "All" ? nil : @change.collection_id
