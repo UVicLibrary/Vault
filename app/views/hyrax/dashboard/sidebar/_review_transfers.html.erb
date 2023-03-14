@@ -1,5 +1,5 @@
-<%# if can? :review, :submissions %>
-  <%#= menu.nav_link(main_app.to_spotlight_index_path) do %>
-  <!--      <span class="fa fa-flag" aria-hidden="true"></span> <span class="sidebar-action-text"><%#= t('Review Transfers') %></span>-->
-  <%# end %>
-<%# end %>
+<% if can? :review, :submissions %>
+  <%= menu.nav_link(main_app.to_spotlight_index_path) do %>
+        <span class="fa fa-flag" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('Review Transfers') %></span>
+  <% end %>
+<% end %>
