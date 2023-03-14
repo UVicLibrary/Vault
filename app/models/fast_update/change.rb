@@ -1,7 +1,7 @@
 class FastUpdate::Change < ApplicationRecord
   attribute :count, :integer, default: 0
 
-  validates :old_label, presence: true
+  # validates :old_label, presence: true
   validates :old_uri, presence: true
   # [Optional:] exclusion: { in: ->(repl) { repl.new_uris }, message: "New uri cannot be the same as old one" }
   validates :action, presence: true

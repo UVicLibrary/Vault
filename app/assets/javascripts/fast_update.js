@@ -115,21 +115,13 @@ class fastUpdateLinkedData extends LinkedData {
             this.setIdentifier(uri);
             // Set the label
             this.element.val(result['label']);
-            setSearchParams(this.element);
+            if (this.element.attr('id') == "old-label") {
+                setSearchParams(result['label'], uri);
+            }
         } else {
             this.setIdentifier(result.id);
         }
         $('#fast-update-submit-button').removeClass('disabled');
-
-        function setSearchParams(elem) {
-            if (elem.attr('id') == "old-label") {
-                let host = window.location.origin;
-                let url =  new URL(host + $('#fast-update-search-preview').attr('href'));
-                url.searchParams.append('old_uri', uriFromId(result['id']));
-                url.searchParams.append('old_label', result['label']);
-                $('#fast-update-search-preview').attr('href', url.pathname + url.search);
-            }
-        }
 
         function uriFromId(fastId) {
             return 'http://id.worldcat.org/fast/' + fastId.replace('fst','').replace(/^0+/, '');
@@ -190,6 +182,10 @@ $(document).on('turbolinks:load', function() {
     toggleDisabled($('#fast_update_change_collection_id_all'));
     new FastUpdateFieldManager($('.form-group.fast_update_change_new_uris'), 'fast_update_change')
 
+    $('#fast_update_change_old_uri').on('change', function(e) {
+        setSearchParams( $('#old-label').val().trim(),$(this).val().trim());
+    });
+
     function addAutocomplete(id) {
         let element = $('#' + id);
         autocomplete.setup(element, element.data('autocomplete'), element.data('autocomplete-url'));
@@ -222,3 +218,12 @@ $(document).on('turbolinks:load', function() {
     }
 
 });
+
+// Global function declaration
+function setSearchParams(label, uri) {
+    let host = window.location.origin;
+    let url =  new URL(host + $('#fast-update-search-preview').attr('href'));
+    url.searchParams.append('old_uri', uri);
+    url.searchParams.append('old_label', label);
+    $('#fast-update-search-preview').attr('href', url.pathname + url.search);
+}

@@ -120,3 +120,8 @@
 .fast-update-bolded {
     font-weight: bold;
 }
+
+.fast-update-or-span {
+    margin-bottom: 15px;
+    display: inline-block;
+}

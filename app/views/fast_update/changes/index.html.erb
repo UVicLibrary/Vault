@@ -18,12 +18,12 @@
                     }
                 },
                 wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
-                                        'field-name' => :old_label }},
-                required: true %>
+                                        'field-name' => :old_label }} %><span class="fast-update-or-span"> OR </span>
     <%= f.input :old_uri,
                 label: false,
+                placeholder: "Paste a URI",
                 input_html: {
-                    type: 'hidden',
+                    # type: 'hidden',
                     data: { 'id' => "remote" }
                 }
                 %>
@@ -72,7 +72,7 @@
     <div class="row">
       <div class="col-md-3">
         <%= link_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview' %>
-        <%= f.submit 'Submit', class: 'btn btn-primary disabled', id: 'fast-update-submit-button' %>
+        <%= f.submit 'Submit', class: 'btn btn-primary', id: 'fast-update-submit-button' %>
       </div>
     </div>
   <% end %><!-- /form -->
