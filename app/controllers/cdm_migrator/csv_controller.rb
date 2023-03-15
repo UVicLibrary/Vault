@@ -102,7 +102,7 @@ module CdmMigrator
         elsif type.include? "Work"
           metadata = create_data(row.except('id', 'type'), work_form(type), obj, mvs)
         elsif type.include? "File"
-          metadata = create_data(row.except('id', 'type'), work_form(type), obj, mvs)
+          metadata = create_data(row.except('id', 'type'), file_form, obj, mvs)
         end
         unless metadata.nil?
           obj.attributes = metadata
