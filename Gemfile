@@ -95,6 +95,12 @@ gem 'blacklight_oai_provider', '~> 6.0'
 gem 'blacklight_range_limit', '~> 6.5'
 gem 'blacklight_advanced_search'
 
+# For exporting bagit bags from Vault
+gem 'down'
+gem 'posix-spawn'
+gem 'http_parser.rb'
+gem 'bagit'
+
 # This has been updated to 11.0.7 in Hyrax 3
 # gem 'hydra-access-controls', '~>10.7.0'
 
@@ -123,9 +129,9 @@ gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
 gem 'sidekiq','~> 5.0.3' # '~> 6.0.0'
-gem 'sidekiq-benchmark'
+gem 'sidekiq-cron'
 
-gem 'cdm_migrator'
+gem 'cdm_migrator', '3.3.1'
 gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
