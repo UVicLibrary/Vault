@@ -112,6 +112,9 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
+# This has been updated to 11.0.7 in Hyrax 3
+# gem 'hydra-access-controls', '~>10.7.0'
+
 # gem 'hydra-access-controls', '~>10.7.0'
 gem 'hydra-derivatives', '~> 3.5'
 
