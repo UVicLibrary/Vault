@@ -1,10 +1,9 @@
 var LinkedData = require('hyrax/autocomplete/linked_data');
 var Resource = require('hyrax/autocomplete/resource');
 var ControlledVocabulary = require('hyrax/editor/controlled_vocabulary');
-const { FieldManager } = require('hydra-editor/field_manager');
 var Handlebars = require('handlebars');
+var ConfirmRemoveDialog = require('hyrax/relationships/confirm_remove_dialog');
 
-// class FastUpdateFieldManager extends FieldManager {
 class FastUpdateFieldManager extends ControlledVocabulary {
 
     constructor(element, paramKey) {
@@ -168,6 +167,20 @@ class fastUpdateResource extends Resource {
 
 }
 
+class ConfirmRemoveUriDialog extends ConfirmRemoveDialog {
+
+    launch() {
+        let dialog = $(this.template())
+        dialog.find('[data-behavior="submit"]').click(() => {
+            dialog.modal('hide');
+            dialog.remove();
+            this.fn();
+        })
+        dialog.modal('show')
+    }
+
+}
+
 $(document).on('turbolinks:load', function() {
     var autocomplete = new (fastUpdateAutocomplete);
     var ids = ['old-label', 'new-label','fast_update_change_collection_id'];
@@ -184,6 +197,24 @@ $(document).on('turbolinks:load', function() {
 
     $('#fast_update_change_old_uri').on('change', function(e) {
         setSearchParams( $('#old-label').val().trim(),$(this).val().trim());
+    });
+
+    var submitButton = $('#fast-update-submit-button')
+    submitButton.click((e) => {
+        if ($('#fast_update_change_action_delete').is(':checked')) {
+            e.preventDefault();
+            var dialog = new ConfirmRemoveUriDialog(submitButton.data('confirmText'),
+                submitButton.data('confirmCancel'),
+                submitButton.data('confirmRemove'),
+                // Unbind submit first so that default behavior is not prevented. From:
+                // https://stackoverflow.com/questions/1164132/how-to-reenable-event-preventdefault/1164177#1164177
+                () => { $('#new_fast_update_change').unbind('submit').submit() });
+            dialog.launch();
+            // To be less fancy, simply use
+            // confirm(submitButton.data('confirmText'));
+        }
+        else { return; }
+
     });
 
     function addAutocomplete(id) {
