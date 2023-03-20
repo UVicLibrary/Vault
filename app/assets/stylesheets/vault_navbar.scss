@@ -198,6 +198,21 @@
     }
   }
 
+  @media only screen and (min-width: 767px ) and (max-width:  1250px ) {
+
+    #vault_logo > div {
+      padding-left: 0px;
+    }
+
+    .nav > li > a {
+      padding: 15px 10px;
+    }
+
+    .navbar-nav {
+      padding-right: 0px;
+    }
+  }
+
   @media only screen and (max-width: 840px ) {
     a {
       font-size: 20px;
@@ -205,15 +220,16 @@
     body {
       margin-bottom: 55%
     }
-  }
-
-  @media only screen and (max-width: 768px ) {
     .col-md-5 {
       display: none;
     }
     .col-md-7 {
       display: none;
     }
+  }
+
+  @media only screen and (max-width: 768px ) {
+
     .navbar-nav>li>a {
       padding-left: 30px;
     }
