@@ -20,7 +20,7 @@
 }
 
 #fast-update-search-preview {
-    margin-right: 1rem;
+    margin-right: 0.5rem;
 }
 
 .fast-update-table {
@@ -124,4 +124,10 @@
 .fast-update-or-span {
     margin-bottom: 15px;
     display: inline-block;
+    font-weight: 600;
+}
+
+.fast-update-icon {
+    color: #0075FF;
+    margin-left: 0.5rem;
 }
