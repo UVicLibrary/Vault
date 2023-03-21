@@ -18,7 +18,9 @@
                     }
                 },
                 wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
-                                        'field-name' => :old_label }} %><span class="fast-update-or-span"> OR </span>
+                                        'field-name' => :old_label }} %>
+      <span class="fast-update-or-span"> OR </span>
+      <a href="#" id="remove_trophy_help" data-toggle="popover" data-content="In cases where FAST has already diverted deprecated labels to point to the new URI, you will need to copy/paste the old URI. Otherwise, the suggestion box will autofill the new URI instead." data-original-title="Select or Paste in a URI"><i class="fa fa-question-circle fast-update-icon"></i></a>
     <%= f.input :old_uri,
                 label: false,
                 placeholder: "Paste a URI",
@@ -71,7 +73,7 @@
     </div>
     <div class="row">
       <div class="col-md-3">
-        <%= link_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview' %>
+        <%= button_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview', class: 'btn btn-default' %>
         <%= f.submit 'Submit', class: 'btn btn-primary', id: 'fast-update-submit-button', data: { confirm_text: "Are you sure you want to remove this URI from the repository? This cannot be undone and affected works are not tracked.", confirm_cancel: "Cancel", confirm_remove: 'Remove'  } %>
       </div>
     </div>
