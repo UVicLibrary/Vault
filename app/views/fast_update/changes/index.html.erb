@@ -73,7 +73,7 @@
     </div>
     <div class="row">
       <div class="col-md-3">
-        <%= button_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview', class: 'btn btn-default' %>
+        <%= link_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview', class: 'btn btn-default', type: "button" %>
         <%= f.submit 'Submit', class: 'btn btn-primary', id: 'fast-update-submit-button', data: { confirm_text: "Are you sure you want to remove this URI from the repository? This cannot be undone and affected works are not tracked.", confirm_cancel: "Cancel", confirm_remove: 'Remove'  } %>
       </div>
     </div>

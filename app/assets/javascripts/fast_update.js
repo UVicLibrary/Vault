@@ -4,6 +4,22 @@ var ControlledVocabulary = require('hyrax/editor/controlled_vocabulary');
 var Handlebars = require('handlebars');
 var ConfirmRemoveDialog = require('hyrax/relationships/confirm_remove_dialog');
 
+
+$(document).on('turbolinks:load', function() {
+    new FastUpdateFormManager($('#new_fast_update_change'));
+    new FastUpdateFieldManager($('.form-group.fast_update_change_new_uris'), 'fast_update_change')
+});
+
+// Global function used by FastUpdateLinkedData and FastUpdateFormManager
+function setFastUpdateParams(label, uri) {
+    let host = window.location.origin;
+    let url =  new URL(host + $('#fast-update-search-preview').attr('href'));
+    url.searchParams.append('old_uri', uri);
+    url.searchParams.append('old_label', label);
+    $('#fast-update-search-preview').attr('href', url.pathname + url.search);
+}
+
+
 class FastUpdateFieldManager extends ControlledVocabulary {
 
     constructor(element, paramKey) {
@@ -26,12 +42,24 @@ class FastUpdateFieldManager extends ControlledVocabulary {
             removeText:         'Remove',
 
             labelControls:      true,
+            /* the selector for the text input tag to add autocomplete to */
+
         }
 
         super(element, $.extend({}, options, $(element).data()))
         this.paramKey = paramKey
         this.fieldName = this.element.data('fieldName')
         this.searchUrl = this.element.data('autocompleteUrl')
+    }
+
+    init() {
+        this._addInitialClasses();
+        this._addAriaLiveRegions();
+        this._appendControls();
+        this._attachEvents();
+        this._addCallbacks();
+        this._formatStringsAndLabels();
+        this.addAutocompleteToEditor($('#new-label'));
     }
 
     _attachEvents() {
@@ -66,7 +94,7 @@ class FastUpdateFieldManager extends ControlledVocabulary {
      * @param {jQuery} input - The <input type="text"> tag
      */
     addAutocompleteToEditor(input) {
-        var autocomplete = new fastUpdateAutocomplete()
+        var autocomplete = new FastUpdateAutocomplete()
         autocomplete.setup(input, this.fieldName, this.searchUrl)
     }
 
@@ -78,13 +106,13 @@ class FastUpdateFieldManager extends ControlledVocabulary {
 
 }
 
-class fastUpdateAutocomplete extends autocompleteModule {
+class FastUpdateAutocomplete extends autocompleteModule {
 
     byDataAttribute(element, url) {
         let type = element.data('autocomplete-type')
 
         if(type === 'linked') {
-            new fastUpdateLinkedData(element, url)
+            new FastUpdateLinkedData(element, url)
         } else {
             new Default(element, url)
         }
@@ -104,7 +132,7 @@ class fastUpdateAutocomplete extends autocompleteModule {
 
 // Overwrite this to prevent input from changing to readonly
 // when selected
-class fastUpdateLinkedData extends LinkedData {
+class FastUpdateLinkedData extends LinkedData {
 
     selected(elem) {
         let result = this.element.select2("data")
@@ -115,7 +143,7 @@ class fastUpdateLinkedData extends LinkedData {
             // Set the label
             this.element.val(result['label']);
             if (this.element.attr('id') == "old-label") {
-                setSearchParams(result['label'], uri);
+                setFastUpdateParams(result['label'], uri);
             }
         } else {
             this.setIdentifier(result.id);
@@ -181,49 +209,50 @@ class ConfirmRemoveUriDialog extends ConfirmRemoveDialog {
 
 }
 
-$(document).on('turbolinks:load', function() {
-    var autocomplete = new (fastUpdateAutocomplete);
-    var ids = ['old-label', 'new-label','fast_update_change_collection_id'];
-    // Initalize global variable where we will store the last selected
-    ids.forEach(id => addAutocomplete(id));
-    $('.fast-update-form-group input[type=radio]').change(function() {
-        toggleDisabled($(this));
-        toggleParams($(this));
-    });
-    // This causes JS errors if not removed
-    $('#fast_update_change_collection_id').removeAttr('required');
-    toggleDisabled($('#fast_update_change_collection_id_all'));
-    new FastUpdateFieldManager($('.form-group.fast_update_change_new_uris'), 'fast_update_change')
+class FastUpdateFormManager {
 
-    $('#fast_update_change_old_uri').on('change', function(e) {
-        setSearchParams( $('#old-label').val().trim(),$(this).val().trim());
-    });
-
-    var submitButton = $('#fast-update-submit-button')
-    submitButton.click((e) => {
-        if ($('#fast_update_change_action_delete').is(':checked')) {
-            e.preventDefault();
-            var dialog = new ConfirmRemoveUriDialog(submitButton.data('confirmText'),
-                submitButton.data('confirmCancel'),
-                submitButton.data('confirmRemove'),
-                // Unbind submit first so that default behavior is not prevented. From:
-                // https://stackoverflow.com/questions/1164132/how-to-reenable-event-preventdefault/1164177#1164177
-                () => { $('#new_fast_update_change').unbind('submit').submit() });
-            dialog.launch();
-            // To be less fancy, simply use
-            // confirm(submitButton.data('confirmText'));
-        }
-        else { return; }
-
-    });
-
-    function addAutocomplete(id) {
-        let element = $('#' + id);
-        autocomplete.setup(element, element.data('autocomplete'), element.data('autocomplete-url'));
+    constructor(element) {
+        this.element = $(element);
+        // The selectors for elements to add autocomplete to
+        this.autocompleteSelectors = ['#old-label','#fast_update_change_collection_id'];
+        this.submitButton = $('#fast-update-submit-button');
+        this.oldURIField = $('#fast_update_change_old_uri');
+        this.oldLabelField =
+        this.init();
     }
 
-    // Toggle the disabled attribute
-    function toggleDisabled(elem) {
+    init() {
+        // This causes JS errors if not removed
+        $('#fast_update_change_collection_id').removeAttr('required');
+        this._setupAutocomplete(this.autocompleteSelectors);
+        this._attachToggleEvents();
+        this._setURISearchParam();
+        this._setupConfirmation();
+    }
+
+    _setupAutocomplete(selectors) {
+        let elements = selectors.map(selector => $(selector));
+        let autocomplete = new FastUpdateAutocomplete;
+        elements.forEach(elem => addAutocomplete(elem));
+        function addAutocomplete(element) {
+            autocomplete.setup(element, element.data('autocomplete'), element.data('autocomplete-url'));
+        }
+    }
+
+    _attachToggleEvents() {
+        // Set initial state
+        this._toggleDisabled($('#fast_update_change_collection_id_all'));
+        let formManager = this;
+        // Attach events
+        $('.fast-update-form-group input[type=radio]').change( function(e) {
+            formManager._toggleDisabled($(this));
+            if ($(this).attr('id').includes('collection')) {
+                formManager._updateCollectionParam($(this));
+            }
+        });
+    }
+
+    _toggleDisabled(elem) {
         let input = elem.closest('div[role=radiogroup]').siblings().first().find('input[data-autocomplete]');
         if (elem.attr('value') == 'delete' || elem.attr('value') == 'All') {
             input.prop('disabled','true');
@@ -232,8 +261,7 @@ $(document).on('turbolinks:load', function() {
         }
     }
 
-    // Toggle the params if a collection is (de)selected
-    function toggleParams(elem) {
+    _updateCollectionParam(elem) {
         // Reset the param if the collection id field has been enabled
         let collection = elem.closest('div').siblings().find('.select2-chosen').text();
         let url =  new URL(window.location.origin + $('#fast-update-search-preview').attr('href'));
@@ -248,13 +276,30 @@ $(document).on('turbolinks:load', function() {
         }
     }
 
-});
+    _setURISearchParam() {
+        let oldLabelField = this.oldLabelField;
+        this.oldURIField.on('change', function(e) {
+            setFastUpdateParams( oldLabelField.val().trim(),$(this).val().trim());
+        });
+    }
 
-// Global function declaration
-function setSearchParams(label, uri) {
-    let host = window.location.origin;
-    let url =  new URL(host + $('#fast-update-search-preview').attr('href'));
-    url.searchParams.append('old_uri', uri);
-    url.searchParams.append('old_label', label);
-    $('#fast-update-search-preview').attr('href', url.pathname + url.search);
+    _setupConfirmation() {
+        let form = this.element;
+        let button = this.submitButton;
+        button.click(function(e) {
+            if ($('#fast_update_change_action_delete').is(':checked')) {
+                e.preventDefault();
+                let dialog = new ConfirmRemoveUriDialog(button.data('confirmText'),
+                    button.data('confirmCancel'),
+                    button.data('confirmRemove'),
+                    // Unbind submit first so that default behavior is not prevented. From:
+                    // https://stackoverflow.com/questions/1164132/how-to-reenable-event-preventdefault/1164177#1164177
+                    () => { form.unbind('submit').submit() });
+                dialog.launch();
+                // To be less fancy, simply use
+                // confirm(submitButton.data('confirmText'));
+            }
+            else { return; }
+        });
+    }
 }
