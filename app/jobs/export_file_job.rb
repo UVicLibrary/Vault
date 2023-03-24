@@ -84,8 +84,17 @@ class ExportFileJob < ActiveJob::Base
         id = file_set.id
         url = "#{host_url}/downloads/#{id}"
         ext = File.extname(File.basename(file_set.files.first.file_name.first))
-        Down::Wget.download(url, :no_check_certificate, destination: "bitstream_#{file_set.id}")
-        FileUtils.copy_file("bitstream_#{id}", "#{id}#{ext}")
+        begin
+          Down::Wget.download(url, :no_check_certificate, destination: "bitstream_#{file_set.id}")
+          FileUtils.copy_file("bitstream_#{id}", "#{id}#{ext}")
+        rescue Down::ClientError # Fallback to curl
+          user = ActiveFedora.fedora_config.credentials[:user]
+          password = ActiveFedora.fedora_config.credentials[:password]
+          filename = file_set.files.first.file_name.first
+          `curl #{file_set.files.first.uri.to_s} -u #{user}:#{password} -L -O -J`
+          File.rename(filename, "#{id}#{ext}")
+          FileUtils.copy_file("#{id}#{ext}", "bitstream_#{id}")
+        end
       end
     end
 
