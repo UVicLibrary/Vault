@@ -48,8 +48,6 @@ class FastUpdateFieldManager extends ControlledVocabulary {
 
         super(element, $.extend({}, options, $(element).data()))
         this.paramKey = paramKey
-        this.fieldName = this.element.data('fieldName')
-        this.searchUrl = this.element.data('autocompleteUrl')
     }
 
     init() {
@@ -94,8 +92,8 @@ class FastUpdateFieldManager extends ControlledVocabulary {
      * @param {jQuery} input - The <input type="text"> tag
      */
     addAutocompleteToEditor(input) {
-        var autocomplete = new FastUpdateAutocomplete()
-        autocomplete.setup(input, this.fieldName, this.searchUrl)
+        let autocomplete = new FastUpdateAutocomplete()
+        autocomplete.setup(input, this.element.data('fieldName'), this.element.data('autocomplete-url'))
     }
 
     createAddHtml(options) {
@@ -121,7 +119,7 @@ class FastUpdateAutocomplete extends autocompleteModule {
     byFieldName(element, fieldName, url) {
         switch (fieldName) {
             case 'collection':
-                new fastUpdateResource(
+                new FastUpdateResource(
                     element,
                     url)
                 break
@@ -157,7 +155,7 @@ class FastUpdateLinkedData extends LinkedData {
     }
 }
 
-class fastUpdateResource extends Resource {
+class FastUpdateResource extends Resource {
 
     initUI(element) {
         this.element = element
@@ -217,7 +215,6 @@ class FastUpdateFormManager {
         this.autocompleteSelectors = ['#old-label','#fast_update_change_collection_id'];
         this.submitButton = $('#fast-update-submit-button');
         this.oldURIField = $('#fast_update_change_old_uri');
-        this.oldLabelField =
         this.init();
     }
 
