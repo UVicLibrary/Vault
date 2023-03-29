@@ -20,6 +20,12 @@
 //= require blacklight_range_limit
 //= require browse_collections
 
+// Required by Blacklight-Maps
+//= require blacklight-maps
+//= require blacklight-maps/blacklight-maps-browse
+//= require blacklight_gallery/default
+//= require masonry
+
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
 // a pattern found in ScholarSphere)
 //
@@ -33,6 +39,7 @@
 //= require jquery.flot.pie
 //= require flot_graph
 //= require statistics_tab_manager
+
 //= require turbolinks
-//= require blacklight_gallery/default
-//= require masonry
+
+
