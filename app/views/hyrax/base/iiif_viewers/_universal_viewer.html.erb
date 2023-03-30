@@ -10,7 +10,7 @@
 </div>
 <% if pdf = presenter.file_set_presenters.find { |fs| fs.pdf? } %>
     <% if Hyrax.config.display_media_download_link? && allow_downloads?(pdf) %>
-      <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
+      <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link') + (pdf.title.first.downcase.include?("transcript") ? " transcript" : ""),
                   hyrax.download_path(pdf),
                   data: { turbolinks: false },
                   target: :_blank,
