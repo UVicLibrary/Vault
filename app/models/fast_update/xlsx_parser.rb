@@ -21,23 +21,32 @@ module FastUpdate
         when "Deprecated", "Split"
           attributes = { type: change_type, uri: uri, label: label_for(uri), fast_id: fast_id, suggestions: get_suggestions(row) }
         else
-          raise "Change type not recognized: #{row[0]}"
+          raise UnknownChangeTypeError.new("Change type not recognized: #{row[0]}")
         end
         array << XlsxChange.new(attributes)
       end
     end
 
-    # private
+    class UnknownChangeTypeError < StandardError; end
+
+    private
 
     # @return [String] The label for a FAST uri
     def label_for(uri)
       resource = ::ActiveTriples::Resource.new(uri)
       resource.fetch
-      resource.rdf_label.first
+      # Sometimes fetching fails without an error message and returns the uri instead
+      # so we make a call directly to the URI as a fallback
+      if resource.rdf_label.first.starts_with?("http://")
+        open(uri).read.match(/<skos:prefLabel>(.+)<\/skos:prefLabel>/)[1]
+      else
+        resource.rdf_label.first
+      end
     end
 
     # Scrubs MARC subfield codes from the string
     def get_label(string)
+      string.gsub!('$x','--')
       regex =/7\d{2}\s+\d+\$a(.+)\$2fast/
       marc_codes = /\$([a-z]|\d)+/
       string.match(regex)[1].gsub(marc_codes, ' ')
