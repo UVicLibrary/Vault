@@ -9,6 +9,12 @@ module FastUpdate
 
     helper_method :default_page_title, :admin_host?, :available_translations, :available_works, :collection_path
 
+    # before_action do
+    #   raise Hydra::AccessDenied unless current_user && current_ability.admin?
+    # end
+
+    before_action :authenticate
+
     configure_blacklight do |config|
       # Reset facet fields
       config.facet_fields = { }
@@ -26,10 +32,7 @@ module FastUpdate
     def create
       # Filtering for empty strings allows model to validate arrays for presence of these attributes.
       # Otherwise [""].present? => true
-      filtered_new_uris = new_uris.select(&:present?)
-      filtered_new_labels = new_labels.select(&:present?)
-
-      attributes = change_params.merge({ new_labels: filtered_new_labels, new_uris: filtered_new_uris })
+      attributes = change_params.merge({ new_labels: new_labels.select(&:present?), new_uris: new_uris.select(&:present?) })
 
       # If a URI was pasted in, there may not be an old label set in params so we provide a dummy one.
       attributes["old_label"] == "" ? attributes['old_label'] = "No label available" : nil
@@ -40,7 +43,7 @@ module FastUpdate
 
       if @change.save
         # Enqueue the job
-        collection = @change.collection_id == "All" ? nil : @change.collection_id
+        collection = @change.collection_id == "all" ? nil : @change.collection_id
         ReplaceOrDeleteUriJob.perform_later(@change.id, collection)
         flash[:notice] = "Your files are being processed by #{view_context.application_name} in the background. You may need to refresh this page to see these updates."
       else
@@ -51,8 +54,7 @@ module FastUpdate
     end
 
     def search_preview
-      # Need to set a response object somewhere in here
-      (@response, @document_list) = query_solr
+      (@response, @document_list) = search_service.search_results
       respond_to do |format|
         format.js {
           render 'search_preview.js.erb', locals: { uri: params[:old_uri], label: params[:old_label] }
@@ -69,7 +71,8 @@ module FastUpdate
     private
 
     def authenticate
-      authorize! :edit, available_work_types.first
+      # Can also be: authorize! :edit, available_work_types.first
+      raise Hydra::AccessDenied unless current_user && current_ability.admin?
     end
 
     def available_work_types
