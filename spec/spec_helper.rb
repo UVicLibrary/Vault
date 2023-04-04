@@ -25,6 +25,8 @@ RSpec.configure do |config|
     WebMock.allow_net_connect!
   end
 
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
