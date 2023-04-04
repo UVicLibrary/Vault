@@ -17,6 +17,7 @@ module FastUpdate
       solr_parameters[:sort] ||= "title_sort_ssi asc"
     end
 
+    # Allow non-work models
     # def only_works?
     #   false
     # end
