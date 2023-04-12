@@ -2,13 +2,22 @@
     margin-top: 2rem;
 }
 
-#new_fast_update_change .collection_radio_buttons {
-    margin-left: 0.5rem;
-    vertical-align: -webkit-baseline-middle;
+#new_fast_update_change .field-wrapper:first-child {
+    margin-bottom: 0.5rem;
 }
 
-.fast-update-form-group, div[role=radiogroup] {
-    height: 3rem;
+#new_fast_update_change .collection_radio_buttons {
+    margin-left: 0.5rem;
+}
+
+@media only screen and (min-width: 1024px) {
+    .fast-update-buttons-container {
+        margin-top: 1.5rem;
+    }
+}
+
+.fast-update-form-group, div[role=radiogroup] label {
+    margin-bottom: 0.5rem;
 }
 
 .fast-update-form-group span:first-of-type > label {
