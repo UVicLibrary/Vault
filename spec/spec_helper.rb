@@ -25,7 +25,12 @@ RSpec.configure do |config|
     WebMock.allow_net_connect!
   end
 
+  # Require supporting ruby files from spec/support/ and subdirectories.  Note: engine, not Rails.root context.
+  Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
+
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Capybara::RSpecMatchers, type: :input
+  config.include InputSupport, type: :input
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
