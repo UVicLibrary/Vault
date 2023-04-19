@@ -1,8 +1,10 @@
+require 'hyrax/specs/spy_listener'
+
 RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   routes { Hyrax::Engine.routes }
-  let(:user)  { FactoryBot.create(:admin) }
-  let(:other) { build(:user) }
-  let(:collection_type_gid) { create(:user_collection_type).gid }
+  let(:user)  { create(:admin) }
+  let(:other) { create(:user) }
+  let(:collection_type_gid) { FactoryBot.create(:user_collection_type).to_global_id.to_s }
 
   let(:collection) do
     create(:public_collection_lw, title: ["My collection"],
@@ -22,7 +24,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe '#new' do
-    before { subject.sign_in user }
+    before { sign_in user }
 
     it 'assigns @collection' do
       get :new
@@ -31,21 +33,25 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe '#create' do
-
-    before do
-      subject.sign_in user
-      allow(user).to receive(:groups).and_return(["admin"])
-    end
+    before { sign_in user }
 
     # rubocop:disable RSpec/ExampleLength
     it "creates a Collection" do
+      expect do
         post :create, params: {
-            collection: collection_attrs.merge(
-                visibility: 'open'
-            )
-        }
+          collection: collection_attrs.merge(
+            visibility: 'open',
+            # TODO: Tests with old approach to sharing a collection which is deprecated and
+            # will be removed in 3.0.  New approach creates a PermissionTemplate with
+            # source_id = the collection's id.
+            permissions_attributes: [{ type: 'person',
+                                       name: 'archivist1',
+                                       access: 'edit' }]
+          )
+     }
+      end.to change { Collection.count }.by(1)
       expect(assigns[:collection].visibility).to eq 'open'
-      expect(assigns[:collection].edit_users).to contain_exactly user.email
+      expect(assigns[:collection].edit_users).to contain_exactly "archivist1", user.email
       expect(flash[:notice]).to eq "Collection was successfully created."
     end
 
@@ -63,12 +69,11 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       it "adds docs to the collection and adds the collection id to the documents in the collection" do
         post :create, params: {
-            batch_document_ids: [asset1.id, unowned_asset.id],
-            collection: collection_attrs
+          batch_document_ids: [asset1.id, unowned_asset.id],
+          collection: collection_attrs
         }
-
         expect(assigns[:collection].member_objects).to eq [asset1, unowned_asset]
-        asset_results = Hyrax::SolrService.instance.conn.get "select", params: { fq: ["id:\"#{asset1.id}\""], fl: ['id', "collection_tesim"] }
+        asset_results = Hyrax::SolrService.get(fq: ["id:\"#{asset1.id}\""], fl: ['id', "collection_tesim"])
         expect(asset_results["response"]["numFound"]).to eq 1
         doc = asset_results["response"]["docs"].first
         expect(doc["id"]).to eq asset1.id
@@ -81,7 +86,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       it "creates a Collection of default type when type is nil" do
         expect do
           post :create, params: {
-              collection: collection_attrs
+            collection: collection_attrs
           }
         end.to change { Collection.count }.by(1)
         expect(assigns[:collection].collection_type.machine_id).to eq Hyrax::CollectionType::USER_COLLECTION_MACHINE_ID
@@ -90,7 +95,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       it "creates a Collection of specified type" do
         expect do
           post :create, params: {
-              collection: collection_attrs, collection_type_gid: collection_type.gid
+            collection: collection_attrs, collection_type_gid: collection_type.gid
           }
         end.to change { Collection.count }.by(1)
         expect(assigns[:collection].collection_type_gid).to eq collection_type.gid
@@ -104,10 +109,10 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         parent_collection
         expect do
           post :create, params: {
-              collection: collection_attrs, parent_id: parent_collection.id
+            collection: collection_attrs, parent_id: parent_collection.id
           }
         end.to change { Collection.count }.by(1)
-        expect(assigns[:collection].member_of_collections).to eq [parent_collection]
+        expect(assigns[:collection].reload.member_of_collections).to eq [parent_collection]
       end
     end
 
@@ -129,7 +134,14 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe "#update" do
-    before { subject.sign_in user }
+    let(:listener) { Hyrax::Specs::SpyListener.new }
+
+    before do
+      Hyrax.publisher.subscribe(listener)
+      sign_in user
+    end
+
+    after { Hyrax.publisher.unsubscribe(listener) }
 
     context 'collection members' do
       before do
@@ -187,10 +199,10 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       it 'moves the members' do
         put :update,
             params: {
-                id: collection,
-                collection: { members: 'move' },
-                destination_collection_id: collection2,
-                batch_document_ids: [asset2, asset3]
+              id: collection,
+              collection: { members: 'move' },
+              destination_collection_id: collection2,
+              batch_document_ids: [asset2, asset3]
             }
         expect(collection.reload.member_objects).to eq [asset1]
         expect(collection2.reload.member_objects).to match_array [asset2, asset3]
@@ -207,11 +219,11 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       it "removes blank strings from params before updating Collection metadata" do
         put :update, params: {
-            id: collection,
-            collection: {
-                title: ["My Next Collection "],
-                creator: [""]
-            }
+          id: collection,
+          collection: {
+              title: ["My Next Collection "],
+              creator: [""]
+          }
         }
         expect(assigns[:collection].title).to eq ["My Next Collection "]
         expect(assigns[:collection].creator).to eq []
@@ -249,8 +261,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       let(:result) { double(documents: [], total: 0) }
 
       before do
-        subject.sign_in user
-        allow(user).to receive(:groups).and_return(["admin"])
+        sign_in user
         allow(Collection).to receive(:find).and_return(collection)
         allow(collection).to receive(:save!).and_return(false)
         allow(controller).to receive(:repository).and_return(repository)
@@ -258,8 +269,8 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       it "renders the form again" do
         put :update, params: {
-            id: collection,
-            collection: collection_attrs
+          id: collection,
+          collection: collection_attrs
         }
         expect(response).to be_successful
         expect(response).to render_template(:edit)
@@ -267,85 +278,69 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     end
 
     context "updating a collections branding metadata" do
+      let(:uploaded) { FactoryBot.create(:uploaded_file) }
+
       it "saves banner metadata" do
-        val = double("/public/banner.gif")
-        allow(val).to receive(:file_url).and_return("/public/banner.gif")
-        allow(Hyrax::UploadedFile).to receive(:find).with(["1"]).and_return([val])
+        put :update, params: { id: collection, banner_files: [uploaded.id], collection: { creator: ['Emily'] }, update_collection: true }
 
-        allow(File).to receive(:split).with(any_args).and_return(["banner.gif"])
-        allow(FileUtils).to receive(:cp).with(any_args).and_return(nil)
-
-        put :update, params: { id: collection, banner_files: [1], collection: { creator: ['Emily'] }, update_collection: true }
-        collection.reload
-        expect(CollectionBrandingInfo.where(collection_id: collection.id, role: "banner").where("local_path LIKE '%banner.gif'")).to exist
+        expect(CollectionBrandingInfo
+                 .where(collection_id: collection.id, role: "banner")
+                 .where("local_path LIKE '%#{uploaded.file.filename}'"))
+          .to exist
       end
 
       it "doesn't save banner metadata" do
-        val = double("/public/banner.gif")
-        allow(val).to receive(:file_url).and_return("/public/banner.gif")
-        allow(Hyrax::UploadedFile).to receive(:find).with(["1"]).and_return([val])
-
-        allow(File).to receive(:split).with(any_args).and_return(["banner.gif"])
-        allow(FileUtils).to receive(:cp).with(any_args).and_return(nil)
-
-        put :update, params: { id: collection, banner_files: [1], collection: { creator: ['Emily'] } }
-        collection.reload
-        expect(CollectionBrandingInfo.where(collection_id: collection.id, role: "banner").where("local_path LIKE '%banner.gif'")).not_to exist
+        put :update, params: { id: collection, banner_files: [uploaded.id], collection: { creator: ['Emily'] } }
+        expect(CollectionBrandingInfo
+                 .where(collection_id: collection.id, role: "banner")
+                 .where("local_path LIKE '%#{uploaded.file.filename}'"))
+          .not_to exist
       end
 
       it "saves logo metadata" do
-        val = double(["/public/logo.gif"])
-        allow(val).to receive(:file_url).and_return("/public/logo.gif")
-        allow(Hyrax::UploadedFile).to receive(:find).with("1").and_return(val)
+        put :update, params: { id: collection,
+                               logo_files: [uploaded.id],
+                               alttext: ["Logo alt Text"],
+                               linkurl: ["http://abc.com"],
+                               collection: { creator: ['Emily'] },
+                               update_collection: true }
 
-        allow(File).to receive(:split).with(any_args).and_return(["logo.gif"])
-        allow(FileUtils).to receive(:cp).with(any_args).and_return(nil)
-
-        put :update, params: { id: collection, logo_files: [1], alttext: ["Logo alt Text"], linkurl: ["http://abc.com"], collection: { creator: ['Emily'] }, update_collection: true }
-        collection.reload
-
-        expect(CollectionBrandingInfo.where(collection_id: collection.id, role: "logo", alt_text: "Logo alt Text", target_url: "http://abc.com").where("local_path LIKE '%logo.gif'")).to exist
+        expect(CollectionBrandingInfo
+                 .where(collection_id: collection.id, role: "logo", alt_text: "Logo alt Text", target_url: "http://abc.com")
+                 .where("local_path LIKE '%#{uploaded.file.filename}'"))
+          .to exist
       end
 
       context 'where the linkurl is not a valid http|http link' do
+
         it "does not save linkurl containing html; target_url is empty" do
-          val = double(["/public/logo.gif"])
-          allow(val).to receive(:file_url).and_return("/public/logo.gif")
-          allow(Hyrax::UploadedFile).to receive(:find).with("1").and_return(val)
-
-          allow(File).to receive(:split).with(any_args).and_return(["logo.gif"])
-          allow(FileUtils).to receive(:cp).with(any_args).and_return(nil)
-
-          put :update, params: { id: collection, logo_files: [1], alttext: ["Logo alt Text"], linkurl: ["<script>remove_me</script>"], collection: { creator: ['Emily'] }, update_collection: true }
-          collection.reload
+          put :update, params: { id: collection,
+                                 logo_files: [uploaded.id],
+                                 alttext: ["Logo alt Text"], linkurl: ["<script>remove_me</script>"],
+                                 collection: { creator: ['Emily'] },
+                                 update_collection: true }
 
           expect(
-              CollectionBrandingInfo.where(
-                  collection_id: collection.id,
-                  role: "logo",
-                  alt_text: "Logo alt Text",
-                  target_url: "<script>remove_me</script>"
-              ).where("target_url LIKE '%remove_me%)'")
+            CollectionBrandingInfo.where(
+              collection_id: collection.id,
+              target_url: "<script>remove_me</script>"
+            ).where("target_url LIKE '%remove_me%)'")
           ).not_to exist
         end
 
         it "does not save linkurl containing dodgy protocol; target_url is empty" do
-          val = double(["/public/logo.gif"])
-          allow(val).to receive(:file_url).and_return("/public/logo.gif")
-          allow(Hyrax::UploadedFile).to receive(:find).with("1").and_return(val)
+          put :update, params: { id: collection,
+                                 logo_files: [uploaded.id],
+                                 alttext: ["Logo alt Text"],
+                                 linkurl: ['javascript:alert("remove_me")'],
+                                 collection: { creator: ['Emily'] },
+                                 update_collection: true }
 
-          allow(File).to receive(:split).with(any_args).and_return(["logo.gif"])
-          allow(FileUtils).to receive(:cp).with(any_args).and_return(nil)
-
-          put :update, params: { id: collection, logo_files: [1], alttext: ["Logo alt Text"], linkurl: ['javascript:alert("remove_me")'], collection: { creator: ['Emily'] }, update_collection: true }
-          collection.reload
           expect(
-              CollectionBrandingInfo.where(
-                  collection_id: collection.id,
-                  role: "logo",
-                  alt_text: "Logo alt Text",
-                  target_url: 'javascript:alert("remove_me")'
-              ).where("target_url LIKE '%remove_me%)'")
+            CollectionBrandingInfo.where(
+              collection_id: collection.id,
+              target_url: 'javascript:alert("remove_me")'
+            ).where("target_url LIKE '%remove_me%)'")
           ).not_to exist
         end
       end
@@ -355,7 +350,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   describe "#show" do
     context "when signed in" do
       before do
-        subject.sign_in user
+        sign_in user
         [asset1, asset2, asset3, asset4, asset5].each do |asset|
           asset.member_of_collections = [collection]
           asset.save
@@ -435,8 +430,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       before do
         other_admin = FactoryBot.create(:admin)
-        subject.sign_in other_admin
-        allow(other_admin).to receive(:groups).and_return(["admin"])
+        sign_in other_admin
         allow(controller.current_ability).to receive(:can?).with(:show, collection).and_return(true)
       end
 
@@ -455,7 +449,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe "#delete" do
-    before { subject.sign_in user }
+    before { sign_in user }
     context "when it succeeds" do
       it "redirects to My Collections" do
         delete :destroy, params: { id: collection }
@@ -490,11 +484,11 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe "#edit" do
-    before { subject.sign_in user }
+    before { sign_in user }
 
     it "is successful" do
       get :edit, params: { id: collection }
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns[:form]).to be_instance_of Hyrax::Forms::CollectionForm
       expect(flash[:notice]).to be_nil
     end
@@ -504,7 +498,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.browse_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
         get :edit, params: { id: collection }
         expect(response).to be_successful
       end
@@ -519,7 +513,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.browse_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
         get :edit, params: { id: collection }
         expect(response).to be_successful
       end
@@ -527,11 +521,14 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   end
 
   describe "#files" do
-    before { subject.sign_in user }
+    before { sign_in user }
 
     it 'shows a list of member files' do
       get :files, params: { id: collection }, format: :json
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
+
 end
+
+
