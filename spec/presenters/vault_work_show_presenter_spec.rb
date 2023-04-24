@@ -49,7 +49,8 @@ RSpec.describe VaultWorkShowPresenter do
       result = [
           { "label" => "Creator label", "value" => ['University of Victoria (B.C.). Library'] },
           { "label" => "Creator", "value" => ['http://id.worldcat.org/fast/522461'] },
-          { "label" => "Extent", "value" => ['20 pages'] }
+          { "label" => "Extent", "value" => ['20 pages'] },
+          { "label" => "Date created", "value" => ['an unformatted date'] }
       ]
       expect(subject.manifest_metadata).to match_array(result)
     end
@@ -86,7 +87,7 @@ RSpec.describe VaultWorkShowPresenter do
 
       it "allows access to items it can't read otherwise" do
         expect(subject.size).to eq 6
-        expect(subject.pluck('id')).to eq ids_list
+        expect(subject).to eq ids_list
       end
     end
 
@@ -102,8 +103,8 @@ RSpec.describe VaultWorkShowPresenter do
 
       it "does not allow access to items it can't read" do
         expect(subject.size).to eq 4
-        expect(subject.pluck('id')).to include('item0','item2','item4')
-        expect(subject.pluck('id')).not_to include('item1','item3')
+        expect(subject).to include('item0','item2','item4', 'item5')
+        expect(subject).not_to include('item1','item3')
       end
     end
   end

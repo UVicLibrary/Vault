@@ -16,7 +16,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, omniauth_providers: [:cas], authentication_keys: [:email]
 
-  # before_create :add_default_roles
+  before_create :add_default_roles
 
   # When a user authenticates via CAS (UVic login), find
   # an existing user by email or create a new user and
