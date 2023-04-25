@@ -13,12 +13,10 @@ pg_upgrade_*.log
 **.orig
 rerun.txt
 pickle-email-*.html
-*.jpg
-*.png
-*.tif
-*.jp2
 fits-1.5.0
-
+public/branding
+public/uploaded_collection_thumbnails
+public/pdf_thumbnails
 .gitignore
 
 ## Environment normalization:
