@@ -27,13 +27,11 @@ RSpec.describe CollectionThumbnailPathService do
     end
 
     context "with a thumbnail selected from a work/file set" do
-      let(:version) { ActiveFedora::VersionsGraph::ResourceVersion.new }
 
       before do
         allow(collection).to receive(:thumbnail).and_return(file_set)
         allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg").and_return(false)
-        allow(file_set).to receive(:latest_content_version).and_return(version)
-        version.label = "version1"
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return(file.id)
       end
 
       it { is_expected.to eq '/images/s1%2F78%2F4k%2F72%2Fs1784k724%2Ffiles%2F6185235a-79b2-4c29-8c24-4d6ad9b11470/full/!500,900/0/default.jpg' }
@@ -43,8 +41,7 @@ RSpec.describe CollectionThumbnailPathService do
         before do
           allow(collection).to receive(:thumbnail).and_return(file_set)
           allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg").and_return(false)
-          allow(file_set).to receive(:latest_content_version).and_return(version)
-          version.label = "version2"
+          allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return("#{file.id}/fcr:versions/version2")
         end
 
         it "uses the latest version" do
