@@ -35,7 +35,7 @@ RSpec.describe FastUpdate::LinkedDataSearchService do
       it 'searches Solr for documents with the label in label fields' do
         stub_result = { "response" => { "docs" => "Foo" } }
         allow(ActiveFedora::SolrService).to receive(:get).with(any_args).and_return(stub_result)
-        expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:label_query), { rows: 12000 } )
+        expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:label_query), { rows: 12000, sort: "has_model_ssim desc" } )
         expect(subject.search_for_label).to eq("Foo")
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe FastUpdate::LinkedDataSearchService do
       it 'searches Solr for documents with the uri in controlled property fields' do
         stub_result = { "response" => { "docs" => "Foo" } }
         allow(ActiveFedora::SolrService).to receive(:get).with(any_args).and_return(stub_result)
-        expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:uri_query), { rows: 12000 } )
+        expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:uri_query), { rows: 12000, sort: "has_model_ssim desc" } )
         expect(subject.search_for_uri).to eq("Foo")
       end
     end

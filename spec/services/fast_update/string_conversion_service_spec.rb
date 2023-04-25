@@ -31,7 +31,7 @@ RSpec.describe FastUpdate::StringConversionService do
 
     it 'searches for documents that need to be converted' do
       allow(ActiveFedora::SolrService).to receive(:get).with(any_args).and_return(response)
-      expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:label_query), { rows: 12000 } )
+      expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:label_query), { rows: 12000, sort: "has_model_ssim desc" } )
       expect(subject.search_for_new_headings).to eq([doc_needs_conversion])
     end
   end

@@ -1,9 +1,14 @@
 RSpec.describe FastUpdate::UriConversionService do
-  subject { described_class.new("http://id.worldcat.org/fast/549011", ["http://id.worldcat.org/fast/1432983"]) }
+
+
+  subject { described_class.new("http://id.worldcat.org/fast/549011",
+                                ["http://id.worldcat.org/fast/1432983"],
+                                action: "replace") }
   let(:collection) { build(:collection_lw, id: "foo") }
   let(:collection_service) { described_class.new("http://id.worldcat.org/fast/549011",
                                                  ["http://id.worldcat.org/fast/1432983"],
-                                                                 collection) }
+                                                 collection,
+                                                 action: "replace" ) }
   let(:document) { { 'id' => 'foo',
                      'creator_tesim' => ["http://id.worldcat.org/fast/549011", "A String"],
                      'provider_tesim' => "http://id.worldcat.org/fast/1432983" } }
@@ -11,7 +16,7 @@ RSpec.describe FastUpdate::UriConversionService do
   describe '#call' do
     let(:work) { GenericWork.new(creator: [Hyrax::ControlledVocabularies::Creator.new("http://id.worldcat.org/fast/549011"),"A String"],
                                  title: ["A title"],
-                                 provider: [Hyrax::ControlledVocabularies::Provider.new("http://id.worldcat.org/fast/549011")]) }
+                                 provider: [Hyrax::ControlledVocabularies::Provider.new("http://id.worldcat.org/fast/1432983")]) }
 
     before do
       allow(ActiveFedora::Base).to receive(:find).and_call_original # Need this for saving a work
@@ -25,12 +30,15 @@ RSpec.describe FastUpdate::UriConversionService do
         expect(work.creator.map(&:class)).to all(be_in([Hyrax::ControlledVocabularies::Creator, String]))
         expect(work.creator).to match_array([Hyrax::ControlledVocabularies::Creator.new("http://id.worldcat.org/fast/1432983"),
                                              "A String"])
+        # Fields without the URI should be untouched
+        expect(work.provider).to eq([Hyrax::ControlledVocabularies::Provider.new("http://id.worldcat.org/fast/1432983")])
       end
     end
 
     context 'when replacing with multiple uris' do
       subject { described_class.new("http://id.worldcat.org/fast/549011",
-                                    ["http://id.worldcat.org/fast/1432983","http://id.worldcat.org/fast/1746676"]) }
+                                    ["http://id.worldcat.org/fast/1432983","http://id.worldcat.org/fast/1746676"],
+                                    action: "replace") }
       it 'replaces one uri with multiple uris and saves the object' do
         subject.call(document)
         # Each value should be an instance of Hyrax::ControlledVocabularies::Creator or a String
@@ -38,6 +46,17 @@ RSpec.describe FastUpdate::UriConversionService do
         expect(work.creator).to match_array([Hyrax::ControlledVocabularies::Creator.new("http://id.worldcat.org/fast/1432983"),
                                              Hyrax::ControlledVocabularies::Creator.new("http://id.worldcat.org/fast/1746676"),
                                              "A String"])
+        expect(work.provider).to eq([Hyrax::ControlledVocabularies::Provider.new("http://id.worldcat.org/fast/1432983")])
+      end
+    end
+
+    context "when action is delete" do
+      subject { described_class.new("http://id.worldcat.org/fast/549011", nil, action: "delete") }
+
+      it 'deletes the uri' do
+        subject.call(document)
+        expect(work.creator).to eq(["A String"])
+        expect(work.provider).to eq([Hyrax::ControlledVocabularies::Provider.new("http://id.worldcat.org/fast/1432983")])
       end
     end
   end
@@ -49,7 +68,7 @@ RSpec.describe FastUpdate::UriConversionService do
 
     context 'when no collection is specified' do
       it 'searches the whole repository' do
-        expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:uri_query), { rows: 12000 } )
+        expect(ActiveFedora::SolrService).to receive(:get).with(subject.send(:uri_query), { rows: 12000, sort: "has_model_ssim desc" } )
         expect(subject.search_for_uri).to eq([document])
       end
     end
