@@ -18,13 +18,7 @@ module IIIFThumbnailPaths
       return default_image unless af_file_set.original_file and af_file_set.image?
 
       # Use latest version
-      if af_file_set.latest_content_version && af_file_set.latest_content_version.label != "version1"
-        path = "#{af_file_set.original_file.id}/fcr:versions/#{af_file_set.latest_content_version.label}"
-      elsif af_file_set
-        path = af_file_set.original_file.id
-      else
-        path = file_set.original_file_id
-      end
+      path = Hyrax::VersioningService.versioned_file_id(af_file_set.original_file)
       Riiif::Engine.routes.url_helpers.image_path(
         path,
         size: size

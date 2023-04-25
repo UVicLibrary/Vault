@@ -15,7 +15,13 @@ RSpec.describe VaultThumbnailPathService do
     let(:object) { build(:file_set, id: '999') }
 
     context "that has an image thumbnail" do
-      let(:original_file) { mock_file_factory(mime_type: 'image/jpeg') }
+      before do
+        allow(ActiveFedora::Base).to receive(:find).with('999').and_return(object)
+        allow(object).to receive(:original_file).and_return(original_file)
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return(original_file.id)
+      end
+
+      let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
 
       before { allow(File).to receive(:exist?).and_return(true) }
       it { is_expected.to eq IIIFWorkThumbnailPathService.call(object) }
@@ -46,7 +52,7 @@ RSpec.describe VaultThumbnailPathService do
       before do
         allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
         allow(representative).to receive(:original_file).and_return(original_file)
-        allow(described_class).to receive(:thumbnail?).with(representative).and_return true
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return(original_file.id)
       end
 
       let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
@@ -55,12 +61,7 @@ RSpec.describe VaultThumbnailPathService do
 
       context "and has more than one version" do
 
-        let(:version) { ActiveFedora::VersionsGraph::ResourceVersion.new }
-
-        before do
-          allow(representative).to receive(:latest_content_version).and_return(version)
-          version.label = "version2"
-        end
+        before { allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return("#{original_file.id}/fcr:versions/version2") }
 
         it "returns the path to the latest version" do
           expect(subject).to eq "/images/#{original_file.id}%2Ffcr:versions%2Fversion2/full/!150,300/0/default.jpg"
