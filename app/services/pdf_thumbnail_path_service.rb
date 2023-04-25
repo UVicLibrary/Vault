@@ -1,4 +1,4 @@
-class PdfThumbnailPathService < Hyrax::ThumbnailPathService
+class PdfThumbnailPathService < Hyrax::WorkThumbnailPathService
   # We use poppler to generate pdf thumbnails instead of ImageMagick/MiniMagick.
   # (See file set derivatives service.) Index that new path into the thumbnail
   # field for works.
@@ -8,14 +8,12 @@ class PdfThumbnailPathService < Hyrax::ThumbnailPathService
     # @param [file set] object - to get the thumbnail for
     # @return [String] a path to the thumbnail
     def call(object)
-      thumb = ::FileSet.find(object.id.to_s)
-
-      if in_collection?(thumb) && File.exist?("#{public_path}#{coll_path(collection_title(thumb), thumb.id)}")
-        coll_path(collection_title(thumb), thumb.id)
-      elsif in_collection?(thumb)
+      if in_collection?(object) && File.exist?("#{public_path}#{coll_path(collection_title(object), object.id)}")
+        coll_path(collection_title(object), object.id)
+      elsif in_collection?(object)
         default_image
-      elsif File.exist?("#{public_path}#{misc_path(thumb.id)}")
-        misc_path(thumb.id)
+      elsif File.exist?("#{public_path}#{misc_path(object.id)}")
+        misc_path(object.id)
       else
         default_image
       end

@@ -1,5 +1,6 @@
 module IIIFThumbnailPaths
   extend ActiveSupport::Concern
+  # Customized to use the latest version if a thumbnail has multiple versions
 
   class_methods do
     # @param [FileSet] file_set
@@ -13,9 +14,8 @@ module IIIFThumbnailPaths
 
     # @private
     def iiif_thumbnail_path(file_set, size)
-
       af_file_set = ::FileSet.find(file_set.id.to_s)
-      return default_image unless af_file_set.original_file
+      return default_image unless af_file_set.original_file and af_file_set.image?
 
       # Use latest version
       if af_file_set.latest_content_version && af_file_set.latest_content_version.label != "version1"
@@ -31,13 +31,5 @@ module IIIFThumbnailPaths
       )
     end
 
-    # @param [FileSet] thumbnail the object that is the thumbnail
-    # @return [boolean] true when a thumbnail (either generated or a common asset)
-    #                   is expected to be available on the file system
-    # def thumbnail?(thumbnail)
-    #   return true if thumbnail.image? || thumbnail.pdf? || thumbnail.office_document? ||
-    #                  thumbnail.audio? || thumbnail.video?
-    #   super(thumbnail)
-    # end
   end
 end
