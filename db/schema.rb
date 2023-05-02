@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191212192315) do
+ActiveRecord::Schema.define(version: 2023_03_13_164520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,6 +141,20 @@ ActiveRecord::Schema.define(version: 20191212192315) do
   create_table "endpoints", id: :serial, force: :cascade do |t|
     t.string "type"
     t.binary "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "fast_update_changes", force: :cascade do |t|
+    t.string "old_uri"
+    t.string "old_label"
+    t.string "action"
+    t.string "new_uris", default: [], array: true
+    t.string "new_labels", default: [], array: true
+    t.string "collection_id"
+    t.string "string"
+    t.boolean "complete"
+    t.integer "count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -399,9 +413,9 @@ ActiveRecord::Schema.define(version: 20191212192315) do
   end
 
   create_table "single_use_links", id: :serial, force: :cascade do |t|
-    t.string "downloadKey"
+    t.string "download_key"
     t.string "path"
-    t.string "itemId"
+    t.string "item_id"
     t.datetime "expires"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -439,7 +453,7 @@ ActiveRecord::Schema.define(version: 20191212192315) do
 
   create_table "sipity_entity_specific_responsibilities", id: :serial, force: :cascade do |t|
     t.integer "workflow_role_id", null: false
-    t.string "entity_id", null: false
+    t.integer "entity_id", null: false
     t.integer "agent_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -584,6 +598,17 @@ ActiveRecord::Schema.define(version: 20191212192315) do
 
   create_table "tinymce_assets", id: :serial, force: :cascade do |t|
     t.string "file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "to_spotlight_spotlight_transfers", id: :serial, force: :cascade do |t|
+    t.string "user"
+    t.text "mappings"
+    t.boolean "approved", default: false
+    t.string "collection_id"
+    t.string "exhibit_id"
+    t.string "spotlight_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
