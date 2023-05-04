@@ -70,14 +70,13 @@ class CreateSolrCollectionJob < ActiveJob::Base
     end
 
     def collection_url(name)
-      normalized_uri = if Settings.solr.url.ends_with?('/')
-                         Settings.solr.url
+      uri ||= ENV['SOLR_URL'] || Blacklight.connection_config[:url] || Settings.solr.url
+      normalized_uri = if uri.ends_with?('/')
+                        uri
                        else
-                         "#{Settings.solr.url}/"
+                         "#{uri}/"
                        end
-
       uri = URI(normalized_uri) + name
-
       uri.to_s
     end
 end
