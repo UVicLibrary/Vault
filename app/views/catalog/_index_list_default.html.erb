@@ -42,7 +42,7 @@
                     <% value.gsub!( url, ('<a href="' + url + '">' + url + '</a>')) %>
                   <% end %>
                 <% end %>
-                <%= value.html_safe %>
+                <%= value.html_safe if value %>
               <% end %>
             </div>
           </div>
