@@ -21,8 +21,10 @@ using the Vault interface.
 In terms of Vault-specific features, see [the wiki](https://github.com/UVicLibrary/Vault/wiki) for documentation on using the interface or the 
 [documentation folder](./documentation) of this repo for code documentation. A list of topics (with links) for the latter is below:
 
-## Gem Versions (Dependencies)
-See the Gemfile for a full listing. Major highlights:
+## Versions/Dependencies
+See the Gemfile for a full listing.
+* **Ruby 2.6.8**
+* **Rails 5.2.4.6**
 * **Hyku** - somewhere between versions 2 and 3 (we've mixed and matched features from both)
 * **Hyrax 3.0.2**
 * **Active Fedora 13.1**
