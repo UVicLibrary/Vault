@@ -5,7 +5,7 @@ module CdmMigrator
     # overriding the included_fields method below. You can also specify different work types by changing/overriding
     # the available_work_types method.
 
-    # @param [Array <Class>] - the available work types, passed in from the controller
+    # @param [Array <Class>] - the available work types, passed in from the controller, such as GenericWork
     def initialize(work_types)
       @work_types = work_types
     end
