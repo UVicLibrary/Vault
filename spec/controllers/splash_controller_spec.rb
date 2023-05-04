@@ -1,4 +1,6 @@
-RSpec.describe SplashController do
+# frozen_string_literal: true
+
+RSpec.describe SplashController, multitenant: true do
   describe 'get index' do
     it 'is successful' do
       get :index
