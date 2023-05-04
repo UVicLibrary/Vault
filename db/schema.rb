@@ -98,9 +98,6 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
     t.datetime "updated_at", null: false
     t.string "external_key"
     t.integer "site_id"
-    t.string "researcher_thumbnail"
-    t.string "researcher_name"
-    t.string "researcher_title"
     t.index ["site_id"], name: "index_content_blocks_on_site_id"
   end
 
@@ -148,11 +145,11 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
   create_table "fast_update_changes", force: :cascade do |t|
     t.string "old_uri"
     t.string "old_label"
+    t.string "string"
     t.string "action"
     t.string "new_uris", default: [], array: true
     t.string "new_labels", default: [], array: true
     t.string "collection_id"
-    t.string "string"
     t.boolean "complete"
     t.integer "count"
     t.datetime "created_at", null: false
@@ -273,8 +270,8 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
   end
 
   create_table "mailboxer_conversation_opt_outs", id: :serial, force: :cascade do |t|
-    t.integer "unsubscriber_id"
     t.string "unsubscriber_type"
+    t.integer "unsubscriber_id"
     t.integer "conversation_id"
     t.index ["conversation_id"], name: "index_mailboxer_conversation_opt_outs_on_conversation_id"
     t.index ["unsubscriber_id", "unsubscriber_type"], name: "index_mailboxer_conversation_opt_outs_on_unsubscriber_id_type"
@@ -290,13 +287,13 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
     t.string "type"
     t.text "body"
     t.string "subject", default: ""
-    t.integer "sender_id"
     t.string "sender_type"
+    t.integer "sender_id"
     t.integer "conversation_id"
     t.boolean "draft", default: false
     t.string "notification_code"
-    t.integer "notified_object_id"
     t.string "notified_object_type"
+    t.integer "notified_object_id"
     t.string "attachment"
     t.datetime "updated_at", null: false
     t.datetime "created_at", null: false
@@ -309,8 +306,8 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
   end
 
   create_table "mailboxer_receipts", id: :serial, force: :cascade do |t|
-    t.integer "receiver_id"
     t.string "receiver_type"
+    t.integer "receiver_id"
     t.integer "notification_id", null: false
     t.boolean "is_read", default: false
     t.boolean "trashed", default: false
@@ -395,8 +392,8 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
 
   create_table "roles", id: :serial, force: :cascade do |t|
     t.string "name"
-    t.integer "resource_id"
     t.string "resource_type"
+    t.integer "resource_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
@@ -586,7 +583,12 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
     t.string "institution_name"
     t.string "institution_name_full"
     t.string "banner_image"
+    t.string "logo_image"
+    t.string "default_collection_image"
+    t.string "default_work_image"
     t.text "available_works", default: [], array: true
+    t.string "directory_image"
+    t.string "contact_email"
   end
 
   create_table "subject_local_authority_entries", id: :serial, force: :cascade do |t|
@@ -722,14 +724,13 @@ ActiveRecord::Schema.define(version: 2023_03_13_164520) do
   add_foreign_key "accounts", "endpoints", column: "fcrepo_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "redis_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "solr_endpoint_id", on_delete: :nullify
+  add_foreign_key "batch_ingests", "users"
   add_foreign_key "collection_type_participants", "hyrax_collection_types"
   add_foreign_key "content_blocks", "sites"
-  add_foreign_key "curation_concerns_operations", "users"
   add_foreign_key "ingest_works", "batch_ingests"
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"
   add_foreign_key "mailboxer_notifications", "mailboxer_conversations", column: "conversation_id", name: "notifications_on_conversation_id"
   add_foreign_key "mailboxer_receipts", "mailboxer_notifications", column: "notification_id", name: "receipts_on_notification_id"
   add_foreign_key "permission_template_accesses", "permission_templates"
   add_foreign_key "qa_local_authority_entries", "qa_local_authorities", column: "local_authority_id"
-  add_foreign_key "uploaded_files", "users"
 end

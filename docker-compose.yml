@@ -16,169 +16,130 @@ networks:
 
 services:
   zoo1:
-    image: zookeeper:3.6.2
-    container_name: zoo1
-    restart: always
-    hostname: zoo1
-    ports:
-      - 2181:2181
-      - 7001:7000
+    image: zookeeper:3.4
     environment:
-      ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
-      ZOO_4LW_COMMANDS_WHITELIST: mntr, conf, ruok
-      ZOO_CFG_EXTRA: "metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider metricsProvider.httpPort=7000 metricsProvider.exportJvmInfo=true"
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=zoo1:2888:3888
+    expose:
+      - 2181
+      - 2888
+      - 3888
+    volumes:
+      - zk1:/data
+      - zkconf:/conf
     networks:
       internal:
         aliases:
           - zookeeper_cluster
     healthcheck:
-      test: [ "CMD-SHELL", "echo 'ruok' | nc -w 2 -q 2 localhost 2181 | grep imok || exit 1" ]
-      interval: "10s"
+      test: ["CMD-SHELL", "echo 'ruok' | nc -w 2 -q 2 localhost 2181 | grep imok || exit 1"]
+      interval: "5s"
       timeout: "8"
-
-  zoo2:
-    image: zookeeper:3.6.2
-    container_name: zoo2
-    restart: always
-    hostname: zoo2
-    ports:
-      - 2182:2181
-      - 7002:7000
-    environment:
-      ZOO_MY_ID: 2
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
-      ZOO_4LW_COMMANDS_WHITELIST: mntr, conf, ruok
-      ZOO_CFG_EXTRA: "metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider metricsProvider.httpPort=7000 metricsProvider.exportJvmInfo=true"
-    networks:
-      internal:
-        aliases:
-          - zookeeper_cluster
-
-  zoo3:
-    image: zookeeper:3.6.2
-    container_name: zoo3
-    restart: always
-    hostname: zoo3
-    ports:
-      - 2183:2181
-      - 7003:7000
-    environment:
-      ZOO_MY_ID: 3
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
-      ZOO_4LW_COMMANDS_WHITELIST: mntr, conf, ruok
-      ZOO_CFG_EXTRA: "metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider metricsProvider.httpPort=7000 metricsProvider.exportJvmInfo=true"
-    networks:
-      internal:
-        aliases:
-          - zookeeper_cluster
   solr:
-    image: solr:8.7
-    container_name: solr
-    command:
-      - solr-precreate
+    image: solr:7.5
+    command: solr -c -f -z zoo1:2181
     environment:
       - OOM=script
       - VIRTUAL_PORT=8983
+      - VIRTUAL_HOST=localhost
     depends_on:
       zoo1:
         condition: service_healthy
     expose:
       - 8983
-    ports:
-      - 8983:8983
     volumes:
       - .:/app
       - solr:/opt/solr/server/solr
-      - .\solr\vault_docker_config:/opt/solr-8.7.0/server/solr/configsets/vault_dev
-      # Run these commands to create a core named vault_dev:
-      # docker exec --user root solr chown -R solr:solr /opt/solr/server/solr
-      # docker exec -d solr solr create_core -c vault_dev -d /opt/solr-8.7.0/server/solr/configsets/vault_dev
     networks:
       internal:
+    ports:
+      - "8983:8983"
 
   fcrepo:
-    image: cbeer/fcrepo4:4.7
+    image: ghcr.io/samvera/fcrepo4:4.7.5
+    volumes:
+      - fcrepo:/data:cached
     env_file:
       - .env
-    expose:
-      - 8080
-      - 8984
-    ports:
-      - 8080:8080
-    volumes:
-      - fcrepo:/data
     environment:
       - JAVA_OPTS=${JAVA_OPTS} -Dfcrepo.modeshape.configuration="classpath:/config/file-simple/repository.json" -Dfcrepo.object.directory="/data/objects" -Dfcrepo.binary.directory="/data/binaries"
+      - VIRTUAL_PORT=8080
+      - VIRTUAL_HOST=localhost
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
     networks:
       internal:
 
   db:
     image: postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=${DATABASE_USER}
     volumes:
       - db:/var/lib/postgresql/data
     networks:
       internal:
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
-
-  base:
-    image: hyku/base:latest
-    build:
-      context: .
-      dockerfile: Dockerfile.base
-    env_file:
-      - .env
 
   app:
     build: .
+    image: hyku/main:latest
+    env_file:
+      - .env
+    # Commands to run on first install:
+      # bundle exec rails zookeeper:upload
+      # rails db:migrate
     environment:
-      - REDIS_HOST=redis
-      - DATABASE_URL:postgres://user:pass@postgres:5432/datex_dev?pool=5&encoding=utf-8
-      # - DATABASE_URL=postgresql://postgres@db/postgres
-      - FEDORA_URL=http://fcrepo:8080/fcrepo/rest
-      - SOLR_URL=http://solr:8983/solr/vault_dev
-      - SETTINGS__ACTIVE_JOB__QUEUE_ADAPTER=sidekiq
-      - SETTINGS__MULTITENANCY__ENABLED=false
-      # - SETTINGS__MULTITENANCY__ADMIN_HOST=http://localhost:3000
-      # - SETTINGS__MULTITENANCY__ADMIN_ONLY_TENANT_CREATION=false
-      - SETTINGS__SOLR__URL=http://solr:8983/solr/vault_dev
-      - SETTINGS__ZOOKEEPER__CONNECTION_STR=zookeeper_cluster:2181/configs
-      - RAILS_ENV=development # production
-      - RAILS_SERVE_STATIC_FILES=true
+      - IN_DOCKER=true
+      - LD_LIBRARY_PATH=/opt/fits/tools/mediainfo/linux
       - RAILS_LOG_TO_STDOUT=true
+      - REDIS_HOST=redis
       - SECRET_KEY_BASE=asdf
-      - RAILS_CACHE_STORE_URL=memcache
-      # version and location of fits are set in Dockerfile:
-      #- LD_LIBRARY_PATH=/opt/fits-1.0.5/tools/mediainfo/linux
-      - LD_LIBRARY_PATH=/opt/fits-1.5.1/tools/mediainfo/linux
+      - SETTINGS__ACTIVE_JOB__QUEUE_ADAPTER=sidekiq
+      - SETTINGS__FITS_PATH=/opt/fits/fits.sh
+      # Comment out these 5 for single tenancy / Uncomment for multi
+      - SETTINGS__MULTITENANCY__ADMIN_HOST=localhost
+      - SETTINGS__MULTITENANCY__ADMIN_ONLY_TENANT_CREATION=false
+      - SETTINGS__MULTITENANCY__DEFAULT_HOST=%{tenant}.localhost
+      - SETTINGS__MULTITENANCY__ROOT_HOST=localhost
+      - SETTINGS__MULTITENANCY__ENABLED=true
+      # Comment out these 2 for multi tenancy / Uncomment for single
+      # You may also need to change the SOLR_URL in your .env file and/or
+      # create a new Solr collection
+      # - SETTINGS__MULTITENANCY__ROOT_HOST=localhost
+      # - SETTINGS__MULTITENANCY__ENABLED=false
+      - SETTINGS__ZOOKEEPER__CONNECTION_STR=zookeeper_cluster:2181/configs
+      - PASSENGER_APP_ENV=development
     volumes:
-      - app:/data/tmp/uploads
+      - app:/home/app/webapp/tmp/uploads
+      - assets:/home/app/webapp/public/assets
+      - cache:/home/app/webapp/tmp/cache
+      - .:/home/app/webapp
     networks:
       internal:
 
   web:
     extends:
       service: app
-#    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -p 3000 -b '0.0.0.0'"
     depends_on:
       - db
       - solr
       - fcrepo
       - redis
       - zoo1
-      - zoo2
-      - zoo3
-      - memcache
-      - db_migrate
+      - workers
     expose:
       - 80
     ports:
       - 3000:3000
-    volumes:
-      - .:/data:consistent
     stdin_open: true
     tty: true
+    volumes:
+      - .:/home/app/webapp:consistent
 
   workers:
     extends:
@@ -190,22 +151,6 @@ services:
       - fcrepo
       - redis
       - zoo1
-      - initialize_app
-      - db_migrate
-
-  initialize_app:
-    extends:
-      service: app
-    command: bundle exec rails zookeeper:upload
-    depends_on:
-      - zoo1
-
-  db_migrate:
-    extends:
-      service: app
-    command: bundle exec rails db:migrate-old
-    depends_on:
-      - db
 
   redis:
     image: redis:5
@@ -219,8 +164,3 @@ services:
 #    image: selenium/standalone-chrome:3.141
 #    networks:
 #      internal:
-
-  memcache:
-    image: memcached:1.5.14
-    networks:
-      internal:

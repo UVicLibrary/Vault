@@ -1,27 +1,25 @@
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  host: db
-  username: postgres
-  password: password
-  pool: 5
+# Hi - please dont edit this file directly, instead make changes in your .env file
+
+login: &login
+  adapter: <%= ENV['DATABASE_ADAPTER'] || 'postgresql' %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  database: <%= ENV['DATABASE_NAME'] || 'hyku' %>
+  pool: 50
+  timeout: 5000
+
 
 development:
-  <<: *default
-  database: myapp_development
-
+  <<: *login
 
 test:
-  database: myapp_test
-  adapter: postgresql
-  encoding: unicode
-  host: db
-  username: postgres
-  password: password
-  pool: 5
+  <<: *login
+  database: <%= ENV['DATABASE_TEST_NAME'] || 'hyku_test' %>
+
+staging:
+  <<: *login
 
 
 production:
-  <<: *default
-  database: myapp_production
-  adapter: postgresql
+  <<: *login

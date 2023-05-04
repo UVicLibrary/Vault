@@ -1,11 +1,21 @@
 FROM ruby:2.6.8
 RUN apt-get update -qq && \
     apt-get install -y \
+        build-essential \
+        ghostscript \
+        imagemagick \
+        libpq-dev \
+        nodejs \
+        npm \
+        libreoffice \
+        libsasl2-dev \
+        netcat \
         nano \
         lsof \
         yarn \
+        unzip \
         poppler-utils && \
-    apt-get install -y build-essential libpq-dev nodejs npm libreoffice imagemagick unzip ghostscript && \
+        apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # If you want to run a newer version of UniversalViewer, you may need to install a newer version of nodejs
@@ -26,15 +36,15 @@ RUN mkdir -p /opt/fits && \
 RUN mkdir /node
 RUN  npm install universalviewer@3.0.36 --prefix /node
 
-RUN mkdir /data
-WORKDIR /data
-ADD Gemfile /data/Gemfile
-ADD Gemfile.lock /data/Gemfile.lock
+# The new home for our application is /home/app/webapp (used to be /data)
+RUN mkdir -p /home/app/webapp
+WORKDIR /home/app/webapp
+
+ADD Gemfile /home/app/webapp/Gemfile
+ADD Gemfile.lock /home/app/webapp/Gemfile.lock
 ADD .irbrc /root/.irbrc
 RUN bundle install
-RUN rails db:migrate
-ADD . /data
-# Configure Active Fedora to use the right core
-# RUN sed 's/hydra-development/vault_dev/g' /usr/local/bundle/gems/active-fedora-11.5.2/config/solr.yml
-# RUN bundle exec rake assets:precompile
+RUN rails db:migrate RAILS_ENV=development
+ADD . /home/app/webapp
 EXPOSE 3000
+CMD /bin/bash
