@@ -46,6 +46,7 @@ user.save
 ```
 
 4. Visit `vault.localhost:3000` and login to see your new tenant in action!
+5. **Optional but recommended:** in `home/webapp/app`, run `rake hyrax:default_collection_types:create` to create the "User Collection" collection type.
 
 ### Troubleshooting Solr and Fedora Connections
 If you get an error message, the application may not be connecting to Solr or Fedora properly, or it may not have created the necessary Solr collection or Fedora container. Here are some things to try if you're seeing errors:
@@ -106,13 +107,25 @@ When running automated tests with RSpec, it's important to keep our test and dev
 #### Set up the test database
 Open a bash console in the web container and run the commands
 ```
-rails db:create RAILS_ENV=test
-rails db:migrate RAILS_ENV=test
-
+rails db:setup RAILS_ENV=test
 # If you get errors, you may have to add bundle exec:
-bundle exec rails db:create RAILS_ENV=test
-bundle exec rails db:migrate RAILS_ENV=test
+bundle exec rails db:setup
 ```
+
+#### Error message: FATAL database "hyku_test" does not exist
+
+This error is strange since we know the database does not exist because we're trying to create it with `rails db:setup`. Nevertheless, trying to run `rails db:create RAILS_ENV=test` or `bundle exec rails db:create RAILS_ENV=test` can still fail.
+
+In this case, we can still create the database in the `db` container directly. In Terminal/Powershell, type the following commands:
+```
+# This opens the command line in the (postgres) database container
+docker exec -it vault_db_1 sh
+# This creates a database with the name set in your .env file
+createdb $DATABASE_TEST_NAME -U $POSTGRES_USER
+# Go back to Terminal/Powershell
+exit
+```
+Then open bash in the web container (`docker exec -it vault_web_1 bash`) and run `rails db:setup` again.
 
 #### Create the Solr test collection
 1. Go to the Solr Dashboard at [localhost:8983](http://localhost:8983).

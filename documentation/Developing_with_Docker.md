@@ -83,7 +83,7 @@ If this step fails, see our [Troubleshooting Docker](./Troubleshooting.md) page.
 **Do not run docker-compose down unless you want all your Solr data to be wiped.**
 5. To start up everything again, run `docker-compose up -d` as before
 
-See the [Multitenancy instructions page](./Multitenancy.md) to learn how to create your first tenant.
+See the [Multitenancy instructions page](./Multitenancy.md) to learn how to create your first tenant, or see [instructions for setting up the test environment](./Multitenancy.md#set-up-testing-rspec).
 
 **Note**
 Unlike Hyrax or Hyku, we don't start the server automatically when starting up Docker. This gives us more 
