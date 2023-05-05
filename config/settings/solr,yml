@@ -3,4 +3,4 @@
 development:
   url: <%= ENV['SOLR_URL'] || "http://solr:8983/solr/vault_dev" %>
 test:
-  url: "http://solr:8985/solr/test"
+  url: "http://solr:8983/solr/test"
