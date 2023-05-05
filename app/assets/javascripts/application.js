@@ -19,11 +19,6 @@
 //= require blacklight/blacklight
 //= require blacklight_range_limit
 //= require browse_collections
-
-// Required by Blacklight-Maps
-//= require blacklight-maps
-//= require blacklight-maps/blacklight-maps-browse
-//= require blacklight_gallery/default
 //= require masonry
 
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
