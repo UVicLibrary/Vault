@@ -76,6 +76,7 @@ group :test do
   gem 'rspec-activemodel-mocks'
   gem 'selenium-webdriver'
   gem 'webmock'
+  gem 'carrierwave-aws'
 end
 
 group :development do
@@ -128,7 +129,8 @@ gem 'riiif', '~> 1.1'
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
-gem 'sidekiq','~> 5.0.3' # '~> 6.0.0'
+gem 'sidekiq', '~> 6.0.0'
+gem 'redis', '4.6'
 gem 'sidekiq-cron'
 
 gem 'cdm_migrator', '3.3.1'
