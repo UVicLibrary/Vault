@@ -18,6 +18,7 @@
 * [Solr container is unhealthy](#solr-container-is-unhealthy)
 * [psql error cannot connect to database](#psql-error-cannot-connect-to-database-in-the-workers-and-web-container)
 * [Can't login to app or can't create anything](#i-cant-log-into-the-application-or-i-can-log-in-but-cant-create-any-works-or-collections)
+* [Error in docker-compose.yml: services.zoo1.healthcheck.timeout must be a string](#error-in-docker-compose.yml:-services.zoo1.healthcheck.timeout-must-be-a-string)
 
 #### Turning it off and on again
 * Run `docker-compose down` to remove containers and `docker-compose up -d` to recreate them
