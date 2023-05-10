@@ -24,7 +24,7 @@
 2. In the bottom right corner, there should be an Administrator Login link (image below). Log in with the credentials you made in [Step 4 of the Docker instructions](./Developing_with_Docker.md#step-4-first-time-setup-and-startingrunning-the-application).
 ![A screenshot of the Administrator Login link. The text above it reads "Copyright Samvera Licensed under the Apache License, Version 2.0](./images/admin_login.jpg)
 
- If you haven't created a superadmin account already, you can create a new user now by clicking "Sign up." If you do this, you will have to open a separate bash window, open the rails console (`rails c`), and run `rake hyku:superadmin:grant["email_address"]`, replacing `email_address` with the email address associated with your new account. For example, if your email address is "example@email.com", the command would be `rake hyku:superadmin:grant["example@email.com"]`.
+ If you haven't created a superadmin account already, you can create a new user now by clicking "Sign up." If you do this, you will have to open a separate bash window, run `rake hyku:superadmin:grant["email_address"]`, replacing `email_address` with the email address associated with your new account. For example, if your email address is "example@email.com", the command would be `rake hyku:superadmin:grant["example@email.com"]`.
   
 ### Create a New Tenant
 1. Once logged in, you should be able to create a new tenant (called an "Account" in the interface). You may be redirected automatically if there are no tenants, or you can visit `localhost:3000/proprietor/accounts/new` in your browser.
