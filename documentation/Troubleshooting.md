@@ -111,3 +111,9 @@ user.roles << "admin"
 user.save
 ```
 
+### Error in docker-compose.yml: services.zoo1.healthcheck.timeout must be a string
+* This is happening due to an error in the docker-compose.yml file at lines 36 and 37. Change healthcheck "interval" and "timeout" to:
+```ruby
+interval: 5s
+timeout: 8s
+```
