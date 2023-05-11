@@ -158,11 +158,7 @@ module Hyrax
     end
 
     def solr_url
-      if Settings.multitenancy.enabled
-        Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
-      else
-        Settings.solr.url
-      end
+      Blacklight.connection_config[:url]
     end
 
     # @api public
