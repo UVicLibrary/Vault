@@ -17,7 +17,7 @@ RSpec.describe CreateSolrCollectionJob do
                                                                   'collection.configName': 'hyku'))
       described_class.perform_now(account)
 
-      expect(account.solr_endpoint.url).to eq "#{Settings.solr.url}#{account.tenant}"
+      expect(account.solr_endpoint.url).to eq "#{ENV.fetch('SOLR_URL')}#{account.tenant}"
     end
 
     it 'is idempotent' do
@@ -28,6 +28,20 @@ RSpec.describe CreateSolrCollectionJob do
 
       described_class.perform_now(account)
     end
+  end
+
+  describe '#normalize_uri' do
+    let(:uris) { ["http://solr_url:8983",
+                  "http://solr_url:8983/",
+                  "http://solr_url:8983/solr",
+                  "http://solr_url:8983/solr/"] }
+    let(:job) { described_class.new }
+    let(:subject) { uris.map { |uri| job.send(:normalize_uri, uri) } }
+
+    it 'normalizes the SOLR_URL to include /solr/ at the end' do
+      expect(subject).to all(eq("http://solr_url:8983/solr/"))
+    end
+
   end
 
   describe CreateSolrCollectionJob::CollectionOptions do

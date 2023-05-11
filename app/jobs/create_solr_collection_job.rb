@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Create a new account-specific Solr collection using the base templates
-class CreateSolrCollectionJob < ActiveJob::Base
+class CreateSolrCollectionJob < ApplicationJob
   non_tenant_job
 
   ##
@@ -70,13 +72,21 @@ class CreateSolrCollectionJob < ActiveJob::Base
     end
 
     def collection_url(name)
-      uri ||= ENV['SOLR_URL'] || Blacklight.connection_config[:url] || Settings.solr.url
-      normalized_uri = if uri.ends_with?('/')
-                        uri
-                       else
-                         "#{uri}/"
-                       end
-      uri = URI(normalized_uri) + name
+      uri ||= ENV['SOLR_URL'] || Settings.solr.url || Blacklight.connection_config[:url]
+      uri = URI(normalize_uri(uri)) + name
       uri.to_s
+    end
+
+    def normalize_uri(uri)
+      unless uri.ends_with?("solr/")
+        if uri.ends_with?('/')
+          uri = "#{uri}solr/"
+        elsif uri.ends_with?('solr')
+          uri = "#{uri}/"
+        else
+          uri = "#{uri}/solr/"
+        end
+      end
+      uri
     end
 end

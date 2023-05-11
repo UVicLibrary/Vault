@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Account, type: :model do
   describe '.tenants' do
     context 'when tenant_list param is nil' do
@@ -59,6 +61,11 @@ RSpec.describe Account, type: :model do
   end
 
   describe '.admin_host' do
+
+    before do
+      allow(ENV).to receive(:[]).and_call_original
+    end
+
     it 'uses the configured setting' do
       allow(Settings.multitenancy).to receive(:admin_host).and_return('admin-host')
       expect(described_class.admin_host).to eq 'admin-host'
@@ -81,9 +88,9 @@ RSpec.describe Account, type: :model do
     let!(:old_default_index) { Blacklight.default_index }
 
     before do
-      subject.build_solr_endpoint.update(url: 'http://example.com/solr/')
-      subject.build_fcrepo_endpoint.update(url: 'http://example.com/fedora', base_path: '/dev')
-      subject.build_redis_endpoint.update(namespace: 'foobaz')
+      subject.build_solr_endpoint(url: 'http://example.com/solr/')
+      subject.build_fcrepo_endpoint(url: 'http://example.com/fedora', base_path: '/dev')
+      subject.build_redis_endpoint(namespace: 'foobaz')
       subject.switch!
     end
 
@@ -115,9 +122,9 @@ RSpec.describe Account, type: :model do
     let!(:previous_fedora_host) { ActiveFedora.fedora.host }
 
     before do
-      subject.build_solr_endpoint.update(url: 'http://example.com/solr/')
-      subject.build_fcrepo_endpoint.update(url: 'http://example.com/fedora', base_path: '/dev')
-      subject.build_redis_endpoint.update(namespace: 'foobaz')
+      subject.build_solr_endpoint(url: 'http://example.com/solr/')
+      subject.build_fcrepo_endpoint(url: 'http://example.com/fedora', base_path: '/dev')
+      subject.build_redis_endpoint(namespace: 'foobaz')
     end
 
     after do
@@ -203,9 +210,12 @@ RSpec.describe Account, type: :model do
 
       context 'is unset' do
         it 'builds default cname from name and admin_host' do
+          original = Settings.multitenancy.default_host
+          Settings.multitenancy.default_host = nil
           allow(Settings.multitenancy).to receive(:admin_host).and_return('admin-host')
           expect(account1.errors).to be_empty
           expect(account1.cname).to eq('example.admin-host')
+          Settings.multitenancy.default_host = original
         end
       end
     end
@@ -245,7 +255,7 @@ RSpec.describe Account, type: :model do
     end
 
     describe 'guarantees only one account can reference the same' do
-      let(:endpoint) { SolrEndpoint.new(url: 'solr') }
+      let(:endpoint) { SolrEndpoint.create(url: 'solr') }
       let!(:account1) { described_class.create(name: 'example', solr_endpoint: endpoint) }
 
       it 'solr_endpoint' do
