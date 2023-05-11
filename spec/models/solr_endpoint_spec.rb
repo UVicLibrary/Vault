@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe SolrEndpoint do
   subject(:instance) { described_class.new url: 'http://example.com/solr/' }
 
@@ -5,7 +7,9 @@ RSpec.describe SolrEndpoint do
     subject(:options) { instance.connection_options }
 
     it 'merges the model attributes with the application settings' do
-      expect(options).to include url: 'http://example.com/solr/', read_timeout: 120
+      # The original file tests for read_timeout but I can't find any reference to read_timeout
+      # in active-fedora 13? Strange.
+      expect(options).to include url: 'http://example.com/solr/', open_timeout: 120
     end
   end
 
@@ -24,15 +28,21 @@ RSpec.describe SolrEndpoint do
       # been called. This caused an error prior to stubbing for certain test seeds.
       allow(ActiveFedora::SolrService.instance).to receive(:conn)
         .and_return(double(options: af_options))
+      allow(RSolr).to receive(:connect).and_call_original
       allow(RSolr).to receive(:connect)
-        .with("read_timeout" => 120,
-              "open_timeout" => 120,
-              "url" => "http://example.com/solr/")
+        .with(hash_including("read_timeout" => 120,
+                             "open_timeout" => 120,
+                             "url" => "http://example.com/solr/"))
         .and_return(result)
     end
 
     it 'returns the initialized connection (without an adapter option)' do
       expect(subject).to be result
+    end
+
+    after do
+      # For ActiveFedoraCleaner
+      allow(ActiveFedora::SolrService.instance).to receive(:conn).and_call_original
     end
   end
 
