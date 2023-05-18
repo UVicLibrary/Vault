@@ -1,12 +1,7 @@
 <% if Hyrax.config.display_media_download_link? %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-      <% if params[:controller] == "hyrax/file_sets" && params[:action] == "show" %><%# for FileSet#show view %>
-        <% iframe_width = "100%" %>
-      <% else %>
-        <% iframe_width = "75vw" %>
-      <% end %>
-        <iframe src="<%= pdfjs.full_path(file: hyrax.download_path(file_set)) %>#disableAutoFetch=true&disableStream=true"style='width: <%= iframe_width %>; height: 100vw; overflow: hidden;' scrolling="yes">
+        <iframe src="<%= pdfjs.full_path(file: hyrax.download_path(file_set)) %>#disableAutoFetch=true&disableStream=true"style='width: 100%; height: 100vw; overflow: hidden;' scrolling="yes">
         <%#= pdfjs_viewer pdf_url:  hyrax.download_path(file_set), style: :full %>
         </iframe>
       <% if request.base_url.include?("vault") && (can?(:edit, file_set.id) or file_set.parent.downloadable?) %>
