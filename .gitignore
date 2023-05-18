@@ -18,6 +18,7 @@ pickle-email-*.html
 *.png
 *.tif
 *.jp2
+*.ini
 
 /public/robots.txt
 /config/settings.yml
