@@ -1,58 +1,53 @@
-class FeaturedCollectionList < ApplicationRecord
+# frozen_string_literal: true
+
+class FeaturedCollectionList
   include ActiveModel::Model
-  delegate :empty?, to: :featured_collections
 
   # @param [ActionController::Parameters] a collection of nested perameters
   def featured_collections_attributes=(attributes_collection)
     attributes_collection = attributes_collection.to_h if attributes_collection.respond_to?(:permitted?)
+    # rubocop:disable Metrics/LineLength
     attributes_collection = attributes_collection.sort_by { |i, _| i.to_i }.map { |_, attributes| attributes } if attributes_collection.is_a? Hash
-
     attributes_collection.each do |attributes|
-      if FeaturedCollection.exists?(attributes['id'])
-        existing_record = FeaturedCollection.find(attributes['id'])
-        existing_record.update(attributes.except('id'))
-      else # If a featured collection has been deleted (Record not found)
-        attributes_collection.delete(attributes)
-        reset_order
-      end
+      raise "Missing id" if attributes['id'].blank?
+      existing_record = FeaturedCollection.find(attributes['id'])
+      existing_record.update(attributes.except('id'))
     end
-  end
-
-  def reset_order
-    @featured_collections.each do |collection|
-      collection.order = @featured_collections.index(collection) + 1
-      collection.save
-    end
+    # rubocop:enable Metrics/LineLength
   end
 
   def featured_collections
-    # return @featured_collections if @featured_collections
-    @featured_collections ||= FeaturedCollection.all
-    #add_solr_document_to_collections
-  end
-
-  def add_solr_document_to_collections
-    collection_presenters.each do |presenter|
-      collection_with_id(presenter.id).presenter = presenter
+    return @collections if @collections
+    @collections = FeaturedCollection.all
+    add_solr_document_to_collections
+    @collections = @collections.reject do |collection|
+      collection.destroy if collection.presenter.blank?
+      collection.presenter.blank?
     end
   end
 
-  def ids
-    featured_collections.pluck(:collection_id)
-  end
+  delegate :empty?, to: :featured_collections
 
-  def collection_presenters
-    Hyrax::PresenterFactory.build_for(ids: ids,
-                                      presenter_class: Hyrax::CollectionPresenter,
-                                      presenter_args: nil)
-  end
+  private
 
-  def collection_with_id(id)
-    @featured_collections.find { |c| c.collection_id == id }
-  end
+    def add_solr_document_to_collections
+      collection_presenters.each do |presenter|
+        collection_with_id(presenter.id).presenter = presenter
+      end
+    end
 
-  def presenter_with_id(id)
-    collection_presenters.find(id).first
-  end
+    def ids
+      @collections.pluck(:collection_id)
+    end
 
+    def collection_presenters
+      ability = nil
+      Hyrax::PresenterFactory.build_for(ids: ids,
+                                        presenter_class: Hyrax::WorkShowPresenter,
+                                        presenter_args: ability)
+    end
+
+    def collection_with_id(id)
+      @collections.find { |c| c.collection_id == id }
+    end
 end
