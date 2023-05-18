@@ -7,12 +7,19 @@ module Hyrax
       coll_permissions = coll.permissions.map(&:to_hash)
         # Copy collection permissions to works
         works.each do |work|
-          # We overwrite work's permissions with collection permissions.
-          work.permissions_attributes = coll_permissions
-          work.save!
+          if work.permissions.map(&:to_hash) != coll_permissions
+            # Clear the work permissions hash first or Hydra will create duplicate relationships
+            work.permissions = []
+            work.permissions_attributes = coll_permissions
+            work.save!
+          end
           work.file_sets.each do |file_set|
-            file_set.permissions_attributes = coll_permissions
-            file_set.save!
+            if file_set.permissions.map(&:to_hash) != coll_permissions
+              # Clear file permissions first
+              file_set.permissions = []
+              file_set.permissions_attributes = coll_permissions
+              file_set.save!
+            end
           end
         end
 
