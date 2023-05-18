@@ -3,7 +3,7 @@ development:
   url: <%= ENV['SOLR_URL'] || "http://solr:8983/solr/dev" %>
 test: &test
   adapter: solr
-  url: <%= ENV['SOLR_URL'] ? ENV['SOLR_URL'] + 'test' : "http://solr:#{ENV.fetch('SOLR_TEST_PORT', 8985)}/solr/test" %>
+  url: <%= ENV['SOLR_URL'] ? ENV['SOLR_URL'] + '/solr/test' : "http://solr:#{ENV.fetch('SOLR_TEST_PORT', 8985)}/solr/test" %>
 production:
   adapter: solr
   url: <%= ENV['SOLR_URL'] || "http://127.0.0.1:8983/solr/blacklight-core" %>
