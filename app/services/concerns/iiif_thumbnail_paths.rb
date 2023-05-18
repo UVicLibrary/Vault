@@ -14,12 +14,13 @@ module IIIFThumbnailPaths
     # @private
     def iiif_thumbnail_path(file_set, size)
 
+      # af_file_set = ::FileSet.find(file_set.id.to_s)
       af_file_set = ::FileSet.find(file_set.id.to_s)
       return default_image unless af_file_set.original_file
 
       # Use latest version
       if af_file_set.latest_content_version && af_file_set.latest_content_version.label != "version1"
-        path = "#{af_file_set.original_file.id}/fcr:versions/#{file_set.latest_content_version.label}"
+        path = "#{af_file_set.original_file.id}/fcr:versions/#{af_file_set.latest_content_version.label}"
       elsif af_file_set
         path = af_file_set.original_file.id
       else
