@@ -17,7 +17,7 @@ RSpec.describe CreateSolrCollectionJob do
                                                                   'collection.configName': 'hyku'))
       described_class.perform_now(account)
 
-      expect(account.solr_endpoint.url).to eq "#{ENV.fetch('SOLR_URL')}#{account.tenant}"
+      expect(account.solr_endpoint.url).to eq "#{ENV.fetch('SOLR_URL')}/solr/#{account.tenant}"
     end
 
     it 'is idempotent' do
