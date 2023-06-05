@@ -14,7 +14,7 @@ RSpec.configure do |config|
 
   # Comment this out after running spec tests once; Otherwise,
   # we get a duplicate definitions error.
-  config.before(:suite) do
-    FactoryBot.find_definitions
-  end
+  # config.before(:suite) do
+  #   FactoryBot.find_definitions
+  # end
 end
