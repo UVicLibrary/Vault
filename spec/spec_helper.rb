@@ -16,10 +16,45 @@
 require 'webmock/rspec'
 require 'i18n/debug' if ENV['I18N_DEBUG']
 
+# ensure Hyrax::Schema gets loaded is resolvable for `support/` models
+Hyrax::Schema # rubocop:disable Lint/Void
+
+Valkyrie::MetadataAdapter
+    .register(Valkyrie::Persistence::Memory::MetadataAdapter.new, :test_adapter)
+
+require 'hyrax/specs/shared_specs/factories/strategies/json_strategy'
+require 'hyrax/specs/shared_specs/factories/strategies/valkyrie_resource'
+FactoryBot.register_strategy(:valkyrie_create, ValkyrieCreateStrategy)
+FactoryBot.register_strategy(:json, JsonStrategy)
+FactoryBot.definition_file_paths = [File.expand_path("../factories", __FILE__)]
+
+query_registration_target =
+    Valkyrie::MetadataAdapter.find(:test_adapter).query_service.custom_queries
+[Hyrax::CustomQueries::Navigators::CollectionMembers,
+ Hyrax::CustomQueries::Navigators::ChildFilesetsNavigator,
+ Hyrax::CustomQueries::Navigators::ChildWorksNavigator,
+ Hyrax::CustomQueries::FindAccessControl,
+ Hyrax::CustomQueries::FindCollectionsByType,
+ Hyrax::CustomQueries::FindManyByAlternateIds,
+ Hyrax::CustomQueries::FindIdsByModel,
+ Hyrax::CustomQueries::FindFileMetadata,
+ Hyrax::CustomQueries::Navigators::FindFiles].each do |handler|
+  query_registration_target.register_query_handler(handler)
+end
+
+
 RSpec.configure do |config|
   config.before(:suite) do
     WebMock.disable_net_connect!(allow_localhost: true, allow: 'hyku-carrierwave-test.s3.amazonaws.com')
   end
+
+  # Require supporting ruby files from spec/support/ and subdirectories.  Note: engine, not Rails.root context.
+  # Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
+  Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+  config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Capybara::RSpecMatchers, type: :input
+  config.include InputSupport, type: :input
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -102,4 +137,79 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  Shoulda::Matchers.configure do |config|
+    config.integrate do |with|
+      with.test_framework :rspec
+      with.library :rails
+    end
+  end
+
+  ActiveJob::Base.queue_adapter = :test
+
+  # Use this example metadata when you want to perform jobs inline during testing.
+  #
+  #   describe '#my_method`, :perform_enqueued do
+  #     ...
+  #   end
+  #
+  # If you pass an `Array` of job classes, they will be treated as the filter list.
+  #
+  #   describe '#my_method`, perform_enqueued: [MyJobClass] do
+  #     ...
+  #   end
+  #
+  # Limit to specific job classes with:
+  #
+  #   ActiveJob::Base.queue_adapter.filter = [JobClass]
+  #
+  config.around(:example, :perform_enqueued) do |example|
+    ActiveJob::Base.queue_adapter.filter =
+        example.metadata[:perform_enqueued].try(:to_a)
+    ActiveJob::Base.queue_adapter.perform_enqueued_jobs    = true
+    ActiveJob::Base.queue_adapter.perform_enqueued_at_jobs = true
+
+    example.run
+
+    ActiveJob::Base.queue_adapter.filter = nil
+    ActiveJob::Base.queue_adapter.perform_enqueued_jobs    = false
+    ActiveJob::Base.queue_adapter.perform_enqueued_at_jobs = false
+  end
+
+  config.before(:example, :index_adapter) do |example|
+    allow(Hyrax.config)
+        .to receive(:query_index_from_valkyrie)
+                .and_return(true)
+
+    adapter_name = example.metadata[:index_adapter]
+
+    allow(Hyrax)
+        .to receive(:index_adapter)
+                .and_return(Valkyrie::IndexingAdapter.find(adapter_name))
+  end
+
+  config.after(:example, :index_adapter) do |example|
+    adapter_name = example.metadata[:index_adapter]
+    Valkyrie::IndexingAdapter.find(adapter_name).wipe!
+  end
+
+  config.before(:example, :valkyrie_adapter) do |example|
+    adapter_name = example.metadata[:valkyrie_adapter]
+
+    allow(Hyrax)
+        .to receive(:metadata_adapter)
+                .and_return(Valkyrie::MetadataAdapter.find(adapter_name))
+  end
+
+  # turn on the default nested reindexer; we use a null implementation for most
+  # tests because it's (supposedly?) much faster. why is it faster but doesn't
+  # impact most tests? maybe we should fix this in the implementation instead?
+  config.around(:example, :with_nested_reindexing) do |example|
+    original_indexer = Hyrax.config.nested_relationship_reindexer
+    Hyrax.config.nested_relationship_reindexer =
+        Hyrax.config.default_nested_relationship_reindexer
+    example.run
+    Hyrax.config.nested_relationship_reindexer = original_indexer
+  end
+
 end
