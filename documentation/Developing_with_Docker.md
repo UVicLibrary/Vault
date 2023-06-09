@@ -57,10 +57,10 @@ Once built, here is a non-exhaustive list of services and where they are configu
 | Service Name | Container Name (Docker Desktop/docker-compose.yml) | Associated Variable Name(s) | Configured in | How/Where to Access in Browser |
 |---|---|---|---|---|
 | Solr | vault_solr_1 / solr | SOLR_URL | .env | localhost:8983 |
-| Fedora | vault_fcrepo_1 / fcrepo | FEDORA_URL | .env | localhost, but the exact port number will vary. The easiest way to find it is to click the highlighted button below in Docker Desktop. |
+| Fedora | vault_fcrepo_1 / fcrepo | FEDORA_URL | .env | localhost:8080 |
 | Postgres | vault_db_1 / db | DATABASE_ADAPTER, DATABASE_NAME, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_USER, DATABASE_TEST_NAME | .env | N/A |
-| Sidekiq | vault_workers_1 / workers | N/A | config/initializers/sidekiq.yml | <tenant name>.localhost:3000/sidekiq (You need to creat a tenant and add [one or more lines](https://github.com/UVicLibrary/Vault/blob/main/config/routes.rb#L134) to `config/routes.rb` before you can see this) |
-| Web (Rails) Server | vault_web_1 / web | SETTINGS__MULTITENANCY__DEFAULT_HOST, SETTINGS__MULTITENANCY__ADMIN_HOST, SETTINGS__MULTITENANCY__ROOT_HOST | docker-compose.yml | localhost:3000, or <tenant name>.localhost:3000 |
+| Sidekiq | vault_workers_1 / workers | N/A | config/initializers/sidekiq.yml | [<tenant name>].localhost:3000/sidekiq (You need to creat a tenant and add [one or more lines](https://github.com/UVicLibrary/Vault/blob/main/config/routes.rb#L134) to `config/routes.rb` before you can see this) |
+| Web (Rails) Server | vault_web_1 / web | SETTINGS__MULTITENANCY__DEFAULT_HOST, SETTINGS__MULTITENANCY__ADMIN_HOST, SETTINGS__MULTITENANCY__ROOT_HOST | docker-compose.yml | localhost:3000, or [<tenant name>].localhost:3000 |
 
 If this step fails, see our [Troubleshooting Docker](./Troubleshooting.md) page. Other helpful links:
 * [Hyrax docs on debugging Docker](https://github.com/samvera/hyrax/blob/main/CONTAINERS.md#debugging)
