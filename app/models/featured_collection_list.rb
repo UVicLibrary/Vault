@@ -28,15 +28,16 @@ class FeaturedCollectionList
 
   delegate :empty?, to: :featured_collections
 
-  private
-
     def add_solr_document_to_collections
       collection_presenters.each do |presenter|
         collection_with_id(presenter.id).presenter = presenter
       end
     end
 
+  private
+
     def ids
+      return [] if self.empty?
       @collections.pluck(:collection_id)
     end
 
