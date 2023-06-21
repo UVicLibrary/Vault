@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "rails_autolink/helpers"
 
 module Hyrax
@@ -13,6 +14,10 @@ module Hyrax
       # @param [Symbol] field
       # @param [Array] values
       # @param [Hash] options
+      # @option options [String] :label The field label to render
+      # @option options [String] :include_empty Do we render if if the values are empty?
+      # @option options [String] :work_type Used for some I18n logic
+      # @option options [Boolean] :sort sort the values with +Array#sort+ if truthy
       def initialize(field, values, options = {})
         @field = field
         @values = values
@@ -21,47 +26,60 @@ module Hyrax
 
       # Draw the table row for the attribute
       def render
-        markup = ''
+        return '' if values.all?(&:blank?) && !options[:include_empty]
+        # return '' if values.blank? && !options[:include_empty]
 
-        return markup if values.none?(&:present?) && !options[:include_empty]
-        markup << %(<tr><th>#{label}</th>\n<td><ul class='tabular'>)
+        markup = %(<tr><th>#{label}</th>\n<td><ul class='tabular'>)
+
         attributes = microdata_object_attributes(field).merge(class: "attribute attribute-#{field}")
-        Array(values).each do |value|
-          markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
-        end
-        markup << %(</ul></td></tr>)
+
+        values_array = Array(values)
+        values_array = values_array.sort if options[:sort]
+
+        markup += values_array.map do |value|
+          "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
+        end.join
+
+        markup += %(</ul></td></tr>)
+
         markup.html_safe
       end
 
       # Draw the dl row for the attribute
       def render_dl_row
-        markup = ''
+        return '' if values.blank? && !options[:include_empty]
 
-        return markup if values.blank? && !options[:include_empty]
+        markup = %(<dt>#{label}</dt>\n<dd><ul class='tabular'>)
 
-        markup << %(<dt>#{label}</dt>\n<dd><ul class='tabular'>)
         attributes = microdata_object_attributes(field).merge(class: "attribute attribute-#{field}")
-        Array(values).each do |value|
-          markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
-        end
-        markup << %(</ul></dd>)
+        values_array = Array(values)
+        values_array = values_array.sort if options[:sort]
+
+        markup += values_array.map do |value|
+          "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
+        end.join
+        markup += %(</ul></dd>)
+
         markup.html_safe
       end
 
+      # Defaults to the label provided in the options, otherwise, it
+      # fallsback to the inner logic of the method.
+      #
       # @return The human-readable label for this field.
       # @note This is a central location for determining the label of a field
       #   name. Can be overridden if more complicated logic is needed.
-      #
-      # Override to get rid of "label" in interface
-      # (Provider label => Provider in the display but still draws
-      # from provider_label attribute)
       def label
-        translate(
+        if options&.key?(:label)
+          options.fetch(:label)
+        else
+          translate(
             :"blacklight.search.fields.#{work_type_label_key}.show.#{field}",
             default: [:"blacklight.search.fields.show.#{field}",
                       :"blacklight.search.fields.#{field}",
-                      options.fetch(:label, field.to_s.humanize).gsub('label','')]
-        )
+                      field.to_s.humanize]
+          )
+        end
       end
 
       private
@@ -75,12 +93,10 @@ module Hyrax
       end
 
       def html_attributes(attributes)
-        buffer = ""
-        attributes.each do |k, v|
-          buffer << " #{k}"
-          buffer << %(="#{v}") if v.present?
-        end
-        buffer
+        attributes.map do |key, value|
+          value_set = value.present? ? %(="#{value}") : nil
+          " #{key}#{value_set}"
+        end.join
       end
 
       def li_value(value)
@@ -90,6 +106,6 @@ module Hyrax
       def work_type_label_key
         options[:work_type] ? options[:work_type].underscore : nil
       end
-    end
   end
+end
 end
