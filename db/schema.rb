@@ -15,6 +15,15 @@ ActiveRecord::Schema.define(version: 20181218060922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "account_cross_searches", force: :cascade do |t|
+    t.bigint "search_account_id"
+    t.bigint "full_account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["full_account_id"], name: "index_account_cross_searches_on_full_account_id"
+    t.index ["search_account_id"], name: "index_account_cross_searches_on_search_account_id"
+  end
+
   create_table "accounts", id: :serial, force: :cascade do |t|
     t.string "tenant"
     t.string "cname"
@@ -24,10 +33,15 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.integer "fcrepo_endpoint_id"
     t.string "name"
     t.integer "redis_endpoint_id"
+    t.bigint "data_cite_endpoint_id"
+    t.jsonb "settings", default: {}
+    t.boolean "is_public", default: false
     t.index ["cname", "tenant"], name: "index_accounts_on_cname_and_tenant"
     t.index ["cname"], name: "index_accounts_on_cname", unique: true
+    t.index ["data_cite_endpoint_id"], name: "index_accounts_on_data_cite_endpoint_id"
     t.index ["fcrepo_endpoint_id"], name: "index_accounts_on_fcrepo_endpoint_id", unique: true
     t.index ["redis_endpoint_id"], name: "index_accounts_on_redis_endpoint_id", unique: true
+    t.index ["settings"], name: "index_accounts_on_settings", using: :gin
     t.index ["solr_endpoint_id"], name: "index_accounts_on_solr_endpoint_id", unique: true
   end
 
@@ -106,6 +120,16 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.index ["parent_id"], name: "index_curation_concerns_operations_on_parent_id"
     t.index ["rgt"], name: "index_curation_concerns_operations_on_rgt"
     t.index ["user_id"], name: "index_curation_concerns_operations_on_user_id"
+  end
+
+  create_table "domain_names", force: :cascade do |t|
+    t.bigint "account_id"
+    t.string "cname"
+    t.boolean "is_active", default: true
+    t.boolean "is_ssl_enabled", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_domain_names_on_account_id"
   end
 
   create_table "domain_terms", id: :serial, force: :cascade do |t|
@@ -652,6 +676,8 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.index ["work_id"], name: "index_work_view_stats_on_work_id"
   end
 
+  add_foreign_key "account_cross_searches", "accounts", column: "full_account_id"
+  add_foreign_key "account_cross_searches", "accounts", column: "search_account_id"
   add_foreign_key "accounts", "endpoints", column: "fcrepo_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "redis_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "solr_endpoint_id", on_delete: :nullify
