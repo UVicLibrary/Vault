@@ -49,7 +49,6 @@ group :development, :test do
   gem 'rspec'
   gem 'rspec-rails', '>= 3.6.0'
 
-  gem 'coveralls', require: false
   gem 'simplecov', require: false
 
   gem 'fcrepo_wrapper', '~> 0.4'
@@ -106,6 +105,7 @@ gem 'bagit'
 # gem 'hydra-access-controls', '~>10.7.0'
 
 gem 'hyrax', '3.0.2' #'2.9.6'
+gem 'hyrax-doi', git: 'https://github.com/samvera-labs/hyrax-doi.git', branch: 'hyrax_upgrade'
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
@@ -133,7 +133,7 @@ gem 'sidekiq', '~> 6.0.0'
 gem 'redis', '4.6'
 gem 'sidekiq-cron'
 
-gem 'cdm_migrator', '3.3.1'
+gem 'cdm_migrator', '3.3.2'
 gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
