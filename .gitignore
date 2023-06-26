@@ -53,10 +53,6 @@ bower.json
 public/uploads
 /.idea/*
 
-db/migrate/20190130224916_add_details_to_content_blocks.rb
-db/migrate/20190129234924_add_researcher_thumbnail_to_content_blocks.rb
-db/migrate/20190119004202_create_featured_collection_lists.rb
-db/migrate/20190119001112_create_featured_collections.rb
 .env
 fits.log
 
@@ -64,5 +60,4 @@ fits.log
 # Ignore docker files
 .solr_wrapper
 .env
-db
 
