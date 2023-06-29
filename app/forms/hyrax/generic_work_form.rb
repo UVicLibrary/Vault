@@ -2,6 +2,10 @@
 #  `rails generate curation_concerns:work GenericWork`
 module Hyrax
   class GenericWorkForm < Hyrax::Forms::WorkForm
+    # Adds behaviors for hyrax-doi plugin.
+    include Hyrax::DOI::DOIFormBehavior
+    # Adds behaviors for DataCite DOIs via hyrax-doi plugin.
+    include Hyrax::DOI::DataCiteDOIFormBehavior
     include Hyrax::FormTerms
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions

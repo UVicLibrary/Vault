@@ -20,6 +20,8 @@ module Hyku
     config.time_zone = 'Pacific Time (US & Canada)'
 
     config.autoload_paths << "#{root}/lib/fast_update"
+    config.autoload_paths << "#{root}/app/services/doi"
+    config.autoload_paths << "#{root}/app/services/identifier"
 
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
