@@ -1,5 +1,9 @@
 class GenericWork < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
+  # Adds behaviors for hyrax-doi plugin.
+  include Hyrax::DOI::DOIBehavior
+  # Adds behaviors for DataCite DOIs via hyrax-doi plugin.
+  include Hyrax::DOI::DataCiteDOIBehavior
   
   
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|

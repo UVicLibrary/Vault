@@ -2,6 +2,8 @@ module HyraxHelper
   include ::BlacklightHelper
   include Hyrax::BlacklightOverride
   include Hyrax::HyraxHelperBehavior
+  # Helpers provided by hyrax-doi plugin.
+  include Hyrax::DOI::HelperBehavior
 
   def application_name
     Site.application_name || super
