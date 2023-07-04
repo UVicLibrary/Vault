@@ -2,6 +2,9 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     # app/controllers/authorize_by_ip_address.rb
     include AuthorizeByIpAddress
 
+    include Hyrax::DOI::DOIPresenterBehavior
+    include Hyrax::DOI::DataCiteDOIPresenterBehavior
+
     attr_accessor :solr_document, :current_ability, :request
 
     class_attribute :collection_presenter_class

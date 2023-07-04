@@ -35,6 +35,10 @@ RSpec.describe VaultWorkShowPresenter do
   it { is_expected.to delegate_method(:chronological_coverage).to(:solr_document) }
   it { is_expected.to delegate_method(:thumbnail_path).to(:solr_document) }
 
+  it "includes DOI and DataCite DOI behaviour" do
+    expect(presenter.class.ancestors).to include(Hyrax::DOI::DOIPresenterBehavior, Hyrax::DOI::DataCiteDOIPresenterBehavior)
+  end
+
   describe '#downloadable?' do
     let(:work) { GenericWork.new(downloadable: true) }
     before { allow(GenericWork).to receive(:find).and_return(work) }
