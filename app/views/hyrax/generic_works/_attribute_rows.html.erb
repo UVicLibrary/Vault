@@ -3,7 +3,7 @@
 <%= presenter.attribute_to_html(:subject_label, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:publisher, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:language, render_as: :faceted) %>
-<%= presenter.attribute_to_html(:identifier) %><%# render_as: :linked, search_field: 'identifier_tesim' %>
+<%= presenter.attribute_to_html(:identifier) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:date_created, render_as: :date_created, begin: "#{presenter.fetch('year_range_isim',[]).first}", end: "#{presenter.fetch('year_range_isim',[]).last}") %>
 <%= presenter.attribute_to_html(:based_near_label, render_as: :faceted) %>
@@ -38,8 +38,13 @@
 <%= presenter.attribute_to_html(:technical_note) %>
 <%= presenter.attribute_to_html(:year) %>
 <%= presenter.attribute_to_html(:license, render_as: :license, html_dl: true) %>
-Permalink
+<% if respond_to?(:render_doi?) && render_doi?(presenter) && presenter.doi %>
+  <%= render 'hyrax/attributes/doi', presenter: presenter %>
+<% else %>
+  <!-- Permalink-->
   <% permalink = "#{request.base_url}/concern/generic_works/#{presenter.id}" %>
-<ul class="tabular">
-  <li class="attribute attribute-permalink"><a class="wrap-long-urls" href="<%= permalink %>"><%= permalink %></a></li>
-</ul>
+  <ul class="tabular">
+    <li class="attribute attribute-permalink"><a class="wrap-long-urls" href="<%= permalink %>"><%= permalink %></a></li>
+  </ul>
+<% end %>
+
