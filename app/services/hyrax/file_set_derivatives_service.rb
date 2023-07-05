@@ -31,7 +31,8 @@ module Hyrax
       when *file_set.class.office_document_mime_types then create_office_document_derivatives(filename)
       when *file_set.class.audio_mime_types           then create_audio_derivatives(filename)
       when *file_set.class.video_mime_types           then create_video_derivatives(filename)
-      when *file_set.class.image_mime_types           then create_image_derivatives(filename)
+      # Do not generate image thumbnails as these will be handled by IIIF
+      # when *file_set.class.image_mime_types           then create_image_derivatives(filename)
       end
     end
 
