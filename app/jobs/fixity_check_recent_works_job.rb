@@ -13,17 +13,17 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
 
     # @return a DateTime object in Solr format
     def six_months_ago
-      (Date.today.beginning_of_month - 6.months).midnight.strftime("%FT%H:%M:%SZ")
+      (Date.today.beginning_of_month - 7.months).midnight.strftime("%FT%H:%M:%SZ")
     end
 
     # @return a DateTime object in Solr format
     def three_months_ago
-      (Date.today.beginning_of_month - 3.months).midnight.strftime("%FT%H:%M:%SZ")
+      (Date.today.beginning_of_month - 4.months).midnight.strftime("%FT%H:%M:%SZ")
     end
 
     # @return [Array < GenericWork >] array of works to pass to fixity check
     def get_work_ids(start_date, end_date)
-      if Settings.multitenancy.enabled?
+      if Settings.multitenancy.enabled
        # Get all works uploaded between the start date and end date
         solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
       else

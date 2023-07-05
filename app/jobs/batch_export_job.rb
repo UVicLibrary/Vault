@@ -43,12 +43,12 @@ class BatchExportJob < ExportFileJob
 
   # @return a DateTime object
   def start_date
-    (Date.today.beginning_of_month - 6.months).midnight.strftime("%FT%H:%M:%SZ")
+    (Date.today.beginning_of_month - 7.months).midnight.strftime("%FT%H:%M:%SZ")
   end
 
   # @return a DateTime object
   def end_date
-    (Date.today.beginning_of_month - 3.months).midnight.strftime("%FT%H:%M:%SZ")
+    (Date.today.beginning_of_month - 4.months).midnight.strftime("%FT%H:%M:%SZ")
   end
 
   # @return [Array <GenericWork>]

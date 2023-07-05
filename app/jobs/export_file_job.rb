@@ -42,6 +42,7 @@ class ExportFileJob < ActiveJob::Base
       bag.manifest!(algo: 'sha1')
       # Compress everything into .7z format. Requires p7zip library; apt install p7zip-full
       `7z a #{file_set.id} ./#{file_set.id}/*`
+      # Clean up after ourselves
     end
   end
 
