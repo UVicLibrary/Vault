@@ -13,14 +13,15 @@ RSpec.describe Hyrax::CollectionPresenter do
     build(:collection_lw,
           id: 'adc12v',
           description: ['a nice collection'],
-          based_near: ['Over there'],
+          based_near: [Hyrax::ControlledVocabularies::Location.new("https://sws.geonames.org/6174041/")],
           title: ['A clever title'],
           keyword: ['neologism'],
           resource_type: ['http://purl.org/dc/dcmitype/Collection'],
-          related_url: ['http://example.com/'],
+          related_url: related_url,
           date_created: ['some date'])
   end
   let(:ability) { double }
+  let(:related_url) { ['http://example.com/'] }
   let(:presenter) { described_class.new(solr_doc, ability) }
   let(:solr_doc) { SolrDocument.new(collection.to_solr) }
 
@@ -109,13 +110,22 @@ RSpec.describe Hyrax::CollectionPresenter do
   describe "#based_near" do
     subject { presenter.based_near }
 
-    it { is_expected.to eq ['Over there'] }
+    it { is_expected.to eq ["https://sws.geonames.org/6174041/"] }
   end
 
   describe "#related_url" do
-    subject { presenter.related_url }
+    context 'without a dbpedia or ActiveTriples url' do
+      subject { presenter.related_url }
+      it { is_expected.to eq ['http://example.com/'] }
+    end
 
-    it { is_expected.to eq ['http://example.com/'] }
+    context 'with a dbpedia or ActiveTriples url' do
+      let(:related_url) { ["http://dbpedia.org/"] }
+      it 'removes the url' do
+        expect(presenter.related_url).to eq([])
+      end
+    end
+
   end
 
   describe '#to_key' do

@@ -24,8 +24,8 @@ class CollectionIndexer < Hyrax::CollectionIndexer
 
     # This is any ugly patch to stop something (Active Fedora?) sometimes stuffing the Geonames' rdfs:seeAlso
     # attribute into the document's related_url field
-    if object.related_url.any? { |val| val.include? "ActiveTriples" or "dbpedia" }
-      object.related_url = object.related_url.reject { |val| val.include? "ActiveTriples" or "dbpedia" }
+    if object.related_url.any? { |val| val.include? "ActiveTriples" or val.include? "dbpedia" }
+      object.related_url = object.related_url.reject { |val| val.include? "ActiveTriples" or val.include? "dbpedia" }
       object.save!
     end
 
@@ -41,7 +41,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       end
 
       solr_doc['in_scua_bsi'] = object.in_scua
-      solr_doc['location_sort_tesim'] = object.based_near.map { |val| GeonamesHierarchyService.call(val.id) }.flatten.uniq
+      solr_doc['location_sort_tesim'] = object.based_near.map { |val| GeonamesHierarchyService.call(val.id) }.flatten.uniq if object.based_near.present?
     end
   end
 
