@@ -114,14 +114,8 @@ module CdmMigrator
     end
 
     def export
-      if Settings.multitenancy.enabled?
-        solr_url = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
-      else
-        solr_url = Settings.solr.url
-      end
-
       # Get a collection's member works from Solr
-      solr = RSolr.connect url: solr_url
+      solr = RSolr.connect url: Blacklight.connection_config[:url]
       response = solr.get 'select', params: {
           q: "member_of_collection_ids_ssim:#{params[:collection_id]}",
           rows: 3400,
