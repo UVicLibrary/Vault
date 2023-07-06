@@ -56,7 +56,6 @@ RSpec.describe FeaturedCollectionList, type: :model do
 
     it "sets order" do
       subject
-      byebug
       expect(featured_collection.reload.order).to eq 6
     end
   end
