@@ -73,7 +73,7 @@ class SolrDocument
   end
 
   def chronological_coverage
-      edtf_date('chronological_coverage')
+    fetch('chronological_coverage_tesim',[])
   end
 
   def extent
@@ -141,11 +141,11 @@ class SolrDocument
   end
 
   def date_digitized
-      edtf_date('date_digitized')
+      fetch('date_digitized_tesim',[])
   end
 
   def date_created
-      edtf_date('date_created')
+      fetch('date_created_tesim',[])
   end
 
   def transcript
@@ -160,22 +160,8 @@ class SolrDocument
       fetch('year_tesim', [])
   end
 
-  # @return [Array <String>] An array of humanized EDTF dates for display.
-  # @param [String] The name of the field (without the _tesim)
-  # TO DO: Move this logic into an app/renderer with the option to facet
-  def edtf_date(field_name)
-      date_string = fetch(field_name + '_tesim', [])
-      if Settings.multitenancy.enabled?
-        return date_string unless Account.find_by(tenant: Apartment::Tenant.current).cname.include?("vault")
-      end
-      Array(date_string).each_with_object([]) do |date, array|
-        begin
-          service = EdtfDateService.new(date)
-          array.push(service.humanized)
-        rescue EdtfDateService::InvalidEdtfDateError
-          array.push(date)
-        end
-      end
+  def year_range
+    fetch('year_range_isim', [])
   end
 
   def full_text

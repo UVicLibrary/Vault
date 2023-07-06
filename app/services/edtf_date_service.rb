@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class EdtfDateService
   # A service for indexing and humanzing EDTF dates
   # Used by app/indexers/work_indexer for date_created and
