@@ -127,41 +127,34 @@ module VaultHomepageHelper
   end
 
   def build_year_range_facets(arr)
+    first_date = EdtfDateService.new(arr.first).first_year - 1
+    last_date = EdtfDateService.new(arr.last).year_range.last + 1
 
-    services = arr.map { |century| EdtfDateService.new(century) }
-
-    new_array = []
-    new_array.push(start_range_facet(services.first.year_range.first))
-
-    services.each do |service|
-      value = service.humanized
-      begin_date = service.year_range.first
-      end_date = service.year_range.last
-      renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
-      path = renderer.search_path
-      new_array.push({ value => path })
-    end
-
-    new_array.push(end_range_facet(services.last.year_range.last + 1))
-    new_array
+    arr.map do |century|
+      service = EdtfDateService.new(century)
+      link_text = service.humanized
+      renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, [century])
+      path = renderer.search_path(service, link_text)
+      { link_text => path }
+    end.prepend(start_range_facet(first_date)).append(end_range_facet(last_date))
   end
 
   def start_range_facet(year)
-    value = EdtfDateService.new("../#{year}").humanized
-    begin_date = range_results_endpoint("year_range_isim",:min).to_i
+    start_date = range_results_endpoint("year_range_isim",:min).to_i
     end_date = year
-    renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
-    path = renderer.search_path
-    { value => path }
+    service = EdtfDateService.new("../#{year}")
+    renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, ["#{start_date}/#{end_date}"])
+    path = renderer.search_path(service, service.humanized)
+    { service.humanized => path }
   end
 
   def end_range_facet(year)
-    value = EdtfDateService.new("#{year}/..").humanized
-    begin_date = year
+    start_date = year
     end_date = Date.today.year
-    renderer = Hyrax::Renderers::DateCreatedRenderer.new(:date_created, [], { begin: begin_date, end: end_date})
-    path = renderer.search_path
-    { value => path }
+    service = EdtfDateService.new("#{year}/..")
+    renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, ["#{start_date}/#{end_date}"])
+    path = renderer.search_path(service, service.humanized)
+    { service.humanized => path }
   end
 
 end
