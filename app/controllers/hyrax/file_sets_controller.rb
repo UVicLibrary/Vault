@@ -24,7 +24,7 @@ module Hyrax
     # self.show_presenter = Hyrax::FileSetPresenter
 
     # Tenant-specific file set presenters
-    if Settings.multitenancy.enabled
+    if Settings.multitenancy.enabled?
       case Account.find_by(tenant: Apartment::Tenant.current).cname
       when "iaff"
         self.show_presenter = Hyrax::FileSetPresenter
