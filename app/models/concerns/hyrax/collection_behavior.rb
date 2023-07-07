@@ -4,6 +4,7 @@ module Hyrax
     include Hydra::AccessControls::WithAccessRight
     include Hydra::WithDepositor # for access to apply_depositor_metadata
     include Hydra::AccessControls::Permissions
+    include CollectionLevelDownloads
     include Hyrax::CoreMetadata
     include Hydra::Works::CollectionBehavior
     include Hyrax::Noid
@@ -90,28 +91,6 @@ module Hyrax
       title.present? ? title.join(' | ') : 'No Title'
     end
 
-    # Override method in hydra-access-controls/app/models/concerns/hydra/acces_controls/access_right.rb
-    def authenticated_only_access?
-      return false if open_access?
-      self.visibility == "authenticated"
-    end
-
-    # Returns an array. First integer is how many downloadable, the second is the total no. of works.
-    def count_downloadable
-      works = GenericWork.where(member_of_collection_ids_ssim: self.id)
-      [ works.select(&:downloadable).count, works.count ]
-    end
-
-    # Return works that are not downloadable
-    def not_downloadable
-      works = GenericWork.where(member_of_collection_ids_ssim: self.id)
-      works.each_with_object([]) do |work, array|
-        unless work.downloadable?
-          array.push(work)
-        end
-      end
-    end
-
     module ClassMethods
       # This governs which partial to draw when you render this type of object
       def _to_partial_path #:nodoc:
@@ -173,41 +152,19 @@ module Hyrax
       Hyrax::PermissionTemplate.find_by!(source_id: id)
     end
 
+    ##
+    # @deprecated use PermissionTemplate#reset_access_controls instead
+    #
     # Calculate and update who should have read/edit access to the collections based on who
     # has access in PermissionTemplateAccess
     def reset_access_controls!
-      update!(edit_users: permission_template_edit_users,
-              edit_groups: permission_template_edit_groups,
-              read_users: permission_template_read_users,
-              read_groups: (permission_template_read_groups + visibility_group).uniq)
+      Deprecation.warn("reset_access_controls! is deprecated; use PermissionTemplate#reset_access_controls instead.")
+
+      permission_template
+          .reset_access_controls_for(collection: self, interpret_visibility: true)
     end
 
     private
-
-    def permission_template_edit_users
-      permission_template.agent_ids_for(access: 'manage', agent_type: 'user')
-    end
-
-    def permission_template_edit_groups
-      permission_template.agent_ids_for(access: 'manage', agent_type: 'group')
-    end
-
-    def permission_template_read_users
-      (permission_template.agent_ids_for(access: 'view', agent_type: 'user') +
-        permission_template.agent_ids_for(access: 'deposit', agent_type: 'user')).uniq
-    end
-
-    def permission_template_read_groups
-      (permission_template.agent_ids_for(access: 'view', agent_type: 'group') +
-        permission_template.agent_ids_for(access: 'deposit', agent_type: 'group')).uniq -
-        [::Ability.registered_group_name, ::Ability.public_group_name]
-    end
-
-    def visibility_group
-      return [Hydra::AccessControls::AccessRight::PERMISSION_TEXT_VALUE_PUBLIC] if visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-      return [::Ability.registered_group_name] if visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
-      []
-    end
 
     # Calculate the size of all the files in the work
     # @param work_id [String] identifer for a work
