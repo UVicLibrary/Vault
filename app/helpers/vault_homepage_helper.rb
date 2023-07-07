@@ -33,6 +33,23 @@ module VaultHomepageHelper
     presenters.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), data: { turbolinks: false }) }
   end
 
+  # Homepage facet links
+  def year_range_values
+    build_year_range_facets(year_range_facets)
+  end
+
+  def genre_facet_values
+    build_facets(genre_facets)
+  end
+
+  def subject_facet_values
+    build_facets(subject_facets)
+  end
+
+  def place_facet_values
+    build_facets(place_facets)
+  end
+
   # Standard display of a facet value in a list. Used in both _facets sidebar
   # partial and catalog/facet expanded list. Will output facet value name as
   # a link to add that to your restrictions, with count in parens.
@@ -77,6 +94,7 @@ module VaultHomepageHelper
   end
 
   def render_year_range_value(hash)
+    # byebug
     label = hash.keys.first
     path = hash[label]
     content_tag(:li, class:"homepage-facet-label col-md") do
@@ -86,57 +104,57 @@ module VaultHomepageHelper
 
   private
 
-  def genre_facets
-    [  "diaries", "historical maps", "letters (correspondence)", "photographs", "periodicals", "serials (publications)", "sound recordings", "video recordings (physical artifacts)" ]
-  end
+    def genre_facets
+      [  "diaries", "historical maps", "letters (correspondence)", "photographs", "periodicals", "serials (publications)", "sound recordings", "video recordings (physical artifacts)" ]
+    end
 
   # An array of EDTF date strings (see EdtfDateService)
-  def year_range_facets
-    %w[ 14XX 15XX 16XX 17XX 18XX 19XX ]
-  end
+    def year_range_facets
+      %w[ 14XX 15XX 16XX 17XX 18XX 19XX ]
+    end
 
-  def subject_facets
-    ["Artists", "Authors", "Families", "Immigrants", "Indigenous Peoples", "Literature", "Local history", "Military history", "Transgender"]
-  end
+    def subject_facets
+      ["Anarchism", "Artists", "Authors", "Families", "Gender identity", "Literature", "Local history", "Military history", "World War (1939-1945)"]
+    end
 
-  def place_facets
-    ["British Columbia--Victoria", "British Columbia--Vancouver Island", "British Columbia", "Canada", "China", "England", "France", "Ireland", "Japan"]
-  end
+    def place_facets
+      ["British Columbia--Victoria", "British Columbia--Vancouver Island", "British Columbia", "Canada", "China", "England", "France", "Ireland", "Japan"]
+    end
 
-  def build_facets(arr)
-    # hits: 0 since we don't care about displaying the hit count
-    arr.map { |val| Blacklight::Solr::Response::Facets::FacetItem.new(value: val, hits: 0) }
-  end
+    def build_facets(arr)
+      # hits: 0 since we don't care about displaying the hit count
+      arr.map { |val| Blacklight::Solr::Response::Facets::FacetItem.new(value: val, hits: 0) }
+    end
 
-  def build_year_range_facets(arr)
-    first_date = EdtfDateService.new(arr.first).first_year - 1
-    last_date = EdtfDateService.new(arr.last).year_range.last + 1
+    def build_year_range_facets(arr)
+      first_date = EdtfDateService.new(arr.first).first_year - 1
+      last_date = EdtfDateService.new(arr.last).year_range.last + 1
 
-    arr.map do |century|
-      service = EdtfDateService.new(century)
-      link_text = service.humanized
-      renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, [century])
-      path = renderer.search_path(service, link_text)
-      { link_text => path }
-    end.prepend(start_range_facet(first_date)).append(end_range_facet(last_date))
-  end
+      arr.map do |century|
+        service = EdtfDateService.new(century)
+        link_text = service.humanized
+        renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, [century])
+        path = renderer.search_path(service, link_text)
+        { link_text => path }
+      end.prepend(start_range_facet(first_date)).append(end_range_facet(last_date))
+    end
 
-  def start_range_facet(year)
-    start_date = range_results_endpoint("year_range_isim",:min).to_i
-    end_date = year
-    service = EdtfDateService.new("../#{year}")
-    renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, ["#{start_date}/#{end_date}"])
-    path = renderer.search_path(service, service.humanized)
-    { service.humanized => path }
-  end
+    def start_range_facet(year)
+      start_date = range_results_endpoint("year_range_isim",:min).to_i
+      end_date = year
+      service = EdtfDateService.new("../#{year}")
+      renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, ["#{start_date}/#{end_date}"])
+      path = renderer.search_path(service, service.humanized)
+      { service.humanized => path }
+    end
 
-  def end_range_facet(year)
-    start_date = year
-    end_date = Date.today.year
-    service = EdtfDateService.new("#{year}/..")
-    renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, ["#{start_date}/#{end_date}"])
-    path = renderer.search_path(service, service.humanized)
-    { service.humanized => path }
-  end
+    def end_range_facet(year)
+      start_date = year
+      end_date = Date.today.year
+      service = EdtfDateService.new("#{year}/..")
+      renderer = Hyrax::Renderers::FacetedEdtfDateRenderer.new(:date_created, ["#{start_date}/#{end_date}"])
+      path = renderer.search_path(service, service.humanized)
+      { service.humanized => path }
+    end
 
 end
