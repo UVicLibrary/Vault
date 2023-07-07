@@ -61,7 +61,7 @@
                                        { prompt: "Select access..." },
                                        class: 'form-control' %>
 
-                    <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', :disabled => true %>
+                    <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', disabled: true, onclick: "this.disabled=true;this.value='Adding group, please wait...';this.form.submit();" %>
                   </div>
                 </div>
               <% end %>
@@ -89,7 +89,7 @@
                                        { prompt: "Select access..." },
                                        class: 'form-control' %>
 
-                    <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', :disabled => true %>
+                    <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', disabled: true, onclick: "this.disabled=true;this.value='Adding user, please wait...';this.form.submit();" %>
                   </div>
                 </div>
               <% end %>
