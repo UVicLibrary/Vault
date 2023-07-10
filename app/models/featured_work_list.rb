@@ -54,9 +54,8 @@ class FeaturedWorkList
     end
 
     def presenter_class
-      if Settings.multitenancy.enabled?
-        case Account.find_by(tenant: Apartment::Tenant.current)
-        when "vault"
+      if Settings.multitenancy.enabled
+        if Account.find_by(tenant: Apartment::Tenant.current).cname.include? "vault"
           VaultWorkShowPresenter
         else
           Hyrax::WorkShowPresenter

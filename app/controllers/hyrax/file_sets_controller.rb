@@ -21,20 +21,6 @@ module Hyrax
 
     class_attribute :show_presenter, :form_class
 
-    # self.show_presenter = Hyrax::FileSetPresenter
-
-    # Tenant-specific file set presenters
-    if Settings.multitenancy.enabled?
-      case Account.find_by(tenant: Apartment::Tenant.current).cname
-      when "iaff"
-        self.show_presenter = Hyrax::FileSetPresenter
-      when "vault"
-        self.show_presenter = VaultFileSetPresenter
-      end
-    else
-      self.show_presenter = VaultFileSetPresenter
-    end
-
     self.form_class = Hyrax::Forms::FileSetForm
 
     # A little bit of explanation, CanCan(Can) sets the @file_set via the .load_and_authorize_resource
@@ -192,6 +178,19 @@ module Hyrax
         presenter = show_presenter.new(curation_concern, current_ability, request)
         raise WorkflowAuthorizationException if presenter.parent.blank?
         presenter
+      end
+    end
+
+    def show_presenter
+      # Tenant-specific file set presenters
+      if Settings.multitenancy.enabled
+        if current_account.cname.include? "vault"
+          VaultFileSetPresenter
+        else
+          Hyrax::FileSetPresenter
+        end
+      else
+        VaultFileSetPresenter
       end
     end
 
