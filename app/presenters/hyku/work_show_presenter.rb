@@ -6,11 +6,10 @@ module Hyku
 
     # modify this attribute to use an alternate presenter class for the files
     if Settings.multitenancy.enabled
-      case Account.find_by(tenant: Apartment::Tenant.current).cname
-      when "iaff"
-        Hyrax::MemberPresenterFactory.file_presenter_class = FileSetPresenter
-      when "vault"
+      if Account.find_by(tenant: Apartment::Tenant.current).cname.include? "vault"
         Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+      elsif Account.find_by(tenant: Apartment::Tenant.current).cname.include? "iaff"
+        Hyrax::MemberPresenterFactory.file_presenter_class = FileSetPresenter
       end
     else
       Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
