@@ -1,6 +1,11 @@
 RSpec.describe FeaturedWorkList, type: :model do
   let(:work1) { create(:generic_work) }
   let(:work2) { create(:generic_work) }
+  let(:account) { Account.new(cname: "vault") }
+
+  before do
+    allow(Account).to receive(:find_by).with(any_args).and_return(account)
+  end
 
   describe 'featured_works' do
     before do
@@ -65,4 +70,18 @@ RSpec.describe FeaturedWorkList, type: :model do
 
   end
 
+  describe '#presenter_class' do
+    subject { described_class.new.send(:presenter_class) }
+
+    context 'when in Vault tenant' do
+      it { is_expected.to eq VaultWorkShowPresenter }
+    end
+
+    context 'when not in Vault' do
+      let(:account) { Account.new(cname: "other tenant") }
+      
+      it { is_expected.to eq Hyrax::WorkShowPresenter }
+    end
+
+  end
 end
