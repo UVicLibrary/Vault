@@ -16,6 +16,12 @@ module Hyku
 
     # config.web_console.whitelisted_ips = '142.104.150.115'
     # config.web_console.permissions = '142.104.150.115'
+    #
+    config.time_zone = 'Pacific Time (US & Canada)'
+
+    config.autoload_paths << "#{root}/lib/fast_update"
+    config.autoload_paths << "#{root}/app/services/doi"
+    config.autoload_paths << "#{root}/app/services/identifier"
 
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
