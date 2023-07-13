@@ -11,6 +11,20 @@ RSpec.describe Collection, type: :model do
     end
   end
 
+  describe '#count_downloadable' do
+    let(:work1) { create(:work, downloadable: true) }
+    let(:work2) { create(:work, downloadable: false) }
+
+    before do
+      collection.add_member_objects [work1.id, work2.id]
+      collection.save!
+    end
+
+    it "returns the number of downloadable works and the total number of works" do
+      expect(collection.count_downloadable).to eq([1, 2])
+    end
+  end
+
   describe "#validates_with" do
     before { collection.title = nil }
     it "ensures the collection has a title" do
@@ -92,11 +106,16 @@ RSpec.describe Collection, type: :model do
     before do
       collection.add_member_objects [work1.id]
       collection.save!
+      create(:featured_collection, collection_id: collection.id)
       collection.destroy
     end
 
     it "does not delete member files when deleted" do
       expect(GenericWork.exists?(work1.id)).to be true
+    end
+
+    it "deletes featured collections with the same collection id" do
+      expect(FeaturedCollection.all).to be_empty
     end
   end
 
