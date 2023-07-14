@@ -21,12 +21,13 @@ class Hyrax::HomepageController < ApplicationController
     if request.base_url.include? "vault"
       @featured_collection_list = FeaturedCollectionList.new
 
-      @recent_collection_presenters = recent_collection_presenters.slice(0,8)
-      (@response, @works) = works_by_date_desc # Returns an array of 3 things. [0] is the solr response, [1] is an array of SolrDocuments
-      @recent_work_presenters = recent_work_presenters.slice(0,8)
-      @works_count = @works.count
+      @response = search_results(q: '', sort: sort_field, rows: 48)[0]
 
-      @collection_presenters = build_presenters(collections, Hyrax::CollectionPresenter)
+      # Needed for the All Collections, Recent Collections, and Recent Works tabs
+      @work_count = works_by_date_desc.count
+      @recent_collection_presenters = recent_collection_presenters.slice(0,8)
+      @recent_work_presenters = recent_work_presenters.slice(0,8)
+      @collection_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter)
       @collection_card_presenters = @collection_presenters.slice(0,8)
     else
       recent
@@ -58,9 +59,7 @@ class Hyrax::HomepageController < ApplicationController
   end
 
   def recent_work_presenters
-    (response, works) = search_results(q: '', sort: sort_field, rows: 56)
-    works = works.select{|w| w["has_model_ssim"] == ["GenericWork"]}
-    build_presenters(works, VaultWorkShowPresenter)
+    build_presenters(works_by_date_desc, VaultWorkShowPresenter)
   end
 
   def build_presenters(documents, presenter_class)
@@ -74,7 +73,10 @@ class Hyrax::HomepageController < ApplicationController
   end
 
   def works_by_date_desc
-    search_results(q: '', sort: sort_field, rows: 48)
+    # q: '{!field f=has_model_ssim}GenericWork' doesn't seem to work despite
+    # what the documentation says
+    (_, works) = search_results(q: '', sort: sort_field, rows: 48)
+    works.select{|w| w["has_model_ssim"] == ["GenericWork"]}
   end
 
   # Return all collections
