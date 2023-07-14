@@ -18,7 +18,6 @@ module AccountSwitch
                 else
                   Account.find_by(name: cname_or_name_or_account)
                 end
-      byebug
       if account
         Apartment::Tenant.switch!(account.tenant)
       elsif Account.any?
