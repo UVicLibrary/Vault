@@ -75,8 +75,8 @@ class Hyrax::HomepageController < ApplicationController
   def works_by_date_desc
     # q: '{!field f=has_model_ssim}GenericWork' doesn't seem to work despite
     # what the documentation says
-    (_, works) = search_results(q: '', sort: sort_field, rows: 48)
-    works.select{|w| w["has_model_ssim"] == ["GenericWork"]}
+    (_, results) = search_results(q: '', sort: sort_field, rows: 48)
+    results.select{|w| w["has_model_ssim"] == ["GenericWork"]}
   end
 
   # Return all collections
@@ -103,6 +103,6 @@ class Hyrax::HomepageController < ApplicationController
     end
 
   def sort_field
-    "date_uploaded_dtsi desc"
+    "system_create_dtsi desc"
   end
 end
