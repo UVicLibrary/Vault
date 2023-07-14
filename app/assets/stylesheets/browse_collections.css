@@ -102,9 +102,9 @@
 .load-more-button {
     background-color: #fff;
     height: fit-content;
-    padding-left: 0.75em;
     border: 2px solid #005493;
     border-radius: 6px;
+    padding: 0.25em 0.75em;
 }
 
 .load-more-button-wrapper {
@@ -116,8 +116,9 @@
     background-color: #005493;
 }
 
-.load-more-button a:hover {
+.load-more-button:hover a {
     color: #fff;
+    text-decoration: underline;
 }
 
 #back-to-top {
