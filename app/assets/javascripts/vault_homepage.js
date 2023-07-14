@@ -3,15 +3,15 @@ $(document).on('turbolinks:load', function() {
     function hideDescr(card) {
         titleHeight= $(card.find('.card-title')).outerHeight();
         linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
-        wrapperHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
-        card.css('transform','translateY(' + (wrapperHeight - 10) + 'px)');
+        cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
+        card.css('transform','translateY(' + (cardHeight - linkHeight - titleHeight - 28) + 'px)');
     }
 
     function showDescr(card) {
         cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
         linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
         titleHeight= $(card.find('.card-title')).outerHeight();
-        card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - linkHeight -titleHeight) + 'px)');
+        card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - linkHeight -titleHeight - 98) + 'px)');
     }
 
     function transformCards() {
@@ -152,3 +152,5 @@ $(document).on('turbolinks:load', function() {
     });
 
 });
+
+

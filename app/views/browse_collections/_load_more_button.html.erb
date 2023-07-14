@@ -7,7 +7,6 @@
     <% when "browse-collections-wrapper" %>
         <%= link_to "Load More", main_app.load_more_path(start: 8, append_to: parent), method: :get, remote: :true, data: { start: 8, total: total_count } %>
     <% when "recent-works-wrapper" %>
-        <% byebug %>
         <%= link_to "Load More", main_app.more_recent_works_path(start: 8, append_to: parent), method: :get, remote: :true, data: { start: 8, total: total_count } %>
     <% end %>
     </button>
