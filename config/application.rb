@@ -22,6 +22,7 @@ module Hyku
     config.autoload_paths << "#{root}/lib/fast_update"
     config.autoload_paths << "#{root}/app/services/doi"
     config.autoload_paths << "#{root}/app/services/identifier"
+    config.autoload_paths << "#{root}/app/models/custom"
 
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
