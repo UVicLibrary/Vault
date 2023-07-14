@@ -71,7 +71,7 @@
         <div id="recent-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
           <%= render 'collection_card_row', collection_presenters: @recent_collection_presenters %>
         </div>
-          <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @collections_count, parent: 'recent-collections-wrapper' } %>
+        <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @presenter.collections.count, parent: 'recent-collections-wrapper' } %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
 
@@ -81,7 +81,7 @@
         <div id="recent-works-wrapper" class="col-lg-12 col-md-12 col-sm-12">
           <%= render 'work_card_row', work_presenters: @recent_work_presenters %>
         </div>
-        <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @works.count, parent: 'recent-works-wrapper' } %>
+        <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @work_count, parent: 'recent-works-wrapper' } %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
 
