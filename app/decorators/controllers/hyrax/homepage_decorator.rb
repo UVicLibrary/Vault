@@ -1,34 +1,36 @@
-class Hyrax::HomepageController < ApplicationController
-  # Adds Hydra behaviors into the application controller
-  include Blacklight::SearchContext
-  include Blacklight::SearchHelper
-  include Blacklight::AccessControls::Catalog
+require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/homepage_controller.rb')
+
+# OVERRIDE class from Hyrax v. 3.1.0
+
+Hyrax::HomepageController.class_eval do
+  # For 'Browse by Time Period' facet
   include BlacklightRangeLimit::ControllerOverride
 
-  class_attribute :presenter_class
-  self.presenter_class = Hyrax::HomepagePresenter
-  layout 'homepage'
-  helper Hyrax::ContentBlockHelper
-
   def index
-    # Homepage facet links are configured via VaultHomepageHelper
     @presenter = presenter_class.new(current_ability, collections)
     @featured_researcher = ContentBlock.for(:researcher)
     @marketing_text = ContentBlock.for(:marketing)
     @featured_work_list = FeaturedWorkList.new
     @announcement_text = ContentBlock.for(:announcement)
 
+
     if request.base_url.include? "vault"
       @featured_collection_list = FeaturedCollectionList.new
 
+      # Homepage facet links are configured via VaultHomepageHelper
+
+      # Used by the homepage "Time period" facet
       @response = search_results(q: '', sort: sort_field, rows: 48)[0]
 
-      # Needed for the All Collections, Recent Collections, and Recent Works tabs
-      @work_count = works_by_date_desc.count
+      # Used by the "List All" list of collections
+      @collection_list_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter)
+
+      # Used by the All Collections, Recent Collections tabs tabs
+      @collection_card_presenters = @collection_list_presenters.slice(0,8)
       @recent_collection_presenters = recent_collection_presenters.slice(0,8)
+      # Used by the Recent Works tab
+      @work_count = works_by_date_desc.count
       @recent_work_presenters = recent_work_presenters.slice(0,8)
-      @collection_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter)
-      @collection_card_presenters = @collection_presenters.slice(0,8)
     else
       recent
     end
@@ -90,20 +92,6 @@ class Hyrax::HomepageController < ApplicationController
 
   def count_collections
     Collection.all.count
-  end
-
-  def recent
-    # grab any recent documents
-    (_, @recent_documents) = search_service.search_results do |builder|
-      builder.rows(4)
-      builder.merge(sort: sort_field)
-    end
-  rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
-    @recent_documents = []
-  end
-
-  def search_service
-    Hyrax::SearchService.new(config: blacklight_config, user_params: { q: '' }, scope: self, search_builder_class: Hyrax::HomepageSearchBuilder)
   end
 
   def sort_field
