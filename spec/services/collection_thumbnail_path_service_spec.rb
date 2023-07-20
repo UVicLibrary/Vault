@@ -6,9 +6,8 @@ RSpec.describe CollectionThumbnailPathService do
   end
 
   before do
-    # Lets byebug work
+    # Stubbing this lets byebug work
     allow(File).to receive(:exist?).with(any_args).and_call_original
-    allow(FileSet).to receive(:find).with('s1784k724').and_return(file_set)
     allow(file_set).to receive_messages(original_file: file, id: 's1784k724')
     # https://github.com/projecthydra/active_fedora/issues/1251
     allow(file_set).to receive(:persisted?).and_return(true)
@@ -29,8 +28,8 @@ RSpec.describe CollectionThumbnailPathService do
     context "with a thumbnail selected from a work/file set" do
 
       before do
-        allow(collection).to receive(:thumbnail).and_return(file_set)
-        allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg").and_return(false)
+        allow(collection).to receive(:thumbnail_id).and_return(file_set.id)
+        allow(ActiveFedora::Base).to receive(:find).with(file_set.id).and_return(file_set)
         allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return(file.id)
       end
 
@@ -40,7 +39,6 @@ RSpec.describe CollectionThumbnailPathService do
 
         before do
           allow(collection).to receive(:thumbnail).and_return(file_set)
-          allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg").and_return(false)
           allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return("#{file.id}/fcr:versions/version2")
         end
 
@@ -50,8 +48,29 @@ RSpec.describe CollectionThumbnailPathService do
       end
     end
 
+    context 'with a video thumbnail' do
+      subject { described_class.call(collection) }
+
+      before do
+        allow(described_class).to receive(:video?).with(file_set).and_return(true)
+        allow(ActiveFedora::Base).to receive(:find).with(file_set.id).and_return(file_set)
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return(file.id)
+      end
+
+      context 'with no generated image file' do
+        it { is_expected.to start_with '/assets/collection-' }
+      end
+
+      context 'with a generated image file' do
+        let(:path) { Hyrax::DerivativePath.derivative_path_for_reference(file_set, 'thumbnail') }
+        before { allow(File).to receive(:exist?).with(path).and_return(true) }
+
+        it { is_expected.to eq "/downloads/s1784k724?file=thumbnail" }
+      end
+    end
+
     context "without a thumbnail" do
-      let(:collection) { build(:collection) }
+      before { allow(collection).to receive(:thumbnail_id).and_return nil }
 
       it { is_expected.to start_with '/assets/collection-' }
     end
