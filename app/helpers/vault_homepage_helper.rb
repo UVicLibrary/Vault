@@ -94,7 +94,6 @@ module VaultHomepageHelper
   end
 
   def render_year_range_value(hash)
-    # byebug
     label = hash.keys.first
     path = hash[label]
     content_tag(:li, class:"homepage-facet-label col-md") do
