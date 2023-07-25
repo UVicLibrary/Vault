@@ -97,6 +97,10 @@ class EdtfDateService
       [InvalidEdtfDateError]
     end
 
+    def parsed_date
+      @parsed_date
+    end
+
     private
 
       def parse_date(date_string)
