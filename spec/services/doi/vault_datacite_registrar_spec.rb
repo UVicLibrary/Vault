@@ -15,6 +15,7 @@ RSpec.describe VaultDataCiteRegistrar do
         publisher: [publisher],
         description: [description],
         contributor: [""],
+        create_date: Date.parse("2023-07-26"),
         doi: doi,
         doi_status_when_public: "findable"
     }

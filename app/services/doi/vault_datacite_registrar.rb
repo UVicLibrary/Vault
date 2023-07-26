@@ -18,7 +18,12 @@ class VaultDataCiteRegistrar < Hyrax::DOI::DataCiteRegistrar
   # @param [GenericWork]
   # @param [String] - the existing or draft DOI for the given work
   def work_to_datacite_xml(work, doi)
-    Bolognese::Metadata.new(input: work.attributes.merge(has_model: work.has_model.first).to_json, from: 'generic_work', doi: doi).datacite
+    Bolognese::Metadata.new(input: work.attributes.merge({ create_date: work.create_date, mime_types: mime_types(work) }).to_json, from: 'generic_work', doi: doi).datacite
+  end
+
+  # @return [Array] - the mime types of file sets in the work
+  def mime_types(work)
+    work.file_sets.map(&:mime_type).uniq
   end
 
 end
