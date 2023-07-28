@@ -6,6 +6,13 @@ RSpec.describe Hyrax::FileSetsController do
   let(:actor) { controller.send(:actor) }
   let(:main_app) { Rails.application.routes.url_helpers }
 
+  let(:account) { FactoryBot.create(:account) }
+
+  before do
+    allow(controller).to receive(:current_account).and_return(account)
+    allow(account).to receive(:cname).and_return("vault")
+  end
+
   context "when signed in" do
     before do
       sign_in user
@@ -398,6 +405,9 @@ RSpec.describe Hyrax::FileSetsController do
     end
 
     describe '#show' do
+
+      before { allow(Account).to receive(:find_by).and_return(account) }
+
       it 'denies access to private files' do
         get :show, params: { id: private_file_set }
         expect(response).to fail_redirect_and_flash(main_app.new_user_session_path(locale: 'en'), "You are not authorized to access this page. Log in with your UVic account to access restricted material, or email speccoll@uvic.ca to request access.")
