@@ -24,9 +24,9 @@ class Hyrax::HomepageController < ApplicationController
       @response = search_results(q: '', sort: sort_field, rows: 48)[0]
 
       # Needed for the All Collections, Recent Collections, and Recent Works tabs
-      @work_count = works_by_date_desc.count
       @recent_collection_presenters = recent_collection_presenters.slice(0,8)
       @recent_work_presenters = recent_work_presenters.slice(0,8)
+      @work_count = recent_works_count
       @collection_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter)
       @collection_card_presenters = @collection_presenters.slice(0,8)
     else
@@ -75,8 +75,12 @@ class Hyrax::HomepageController < ApplicationController
   def works_by_date_desc
     # q: '{!field f=has_model_ssim}GenericWork' doesn't seem to work despite
     # what the documentation says
-    (_, results) = search_results(q: '', sort: sort_field, rows: 48)
+    (_, results) = search_results(q: '', sort: sort_field, rows: recent_works_count)
     results.select{|w| w["has_model_ssim"] == ["GenericWork"]}
+  end
+
+  def recent_works_count
+    48
   end
 
   # Return all collections
