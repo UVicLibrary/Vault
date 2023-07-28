@@ -74,6 +74,7 @@ Rails.application.routes.draw do
   get '/advanced/facet', to: 'advanced#facet', as: 'advanced_facet_catalog'
 
   mount Hyrax::Engine, at: '/'
+  mount Hyrax::DOI::Engine, at: '/doi', as: 'hyrax_doi'
   #mount ToSpotlight::Engine, at: '/to_spotlight'
 
   Hyrax::Engine.routes do
