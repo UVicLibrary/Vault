@@ -26,6 +26,10 @@ class CollectionThumbnailPathService < VaultThumbnailPathService
       end
     end
 
+    def upload_dir(collection)
+      "#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}"
+    end
+
     private
 
     # @return the network path to the thumbnail
@@ -37,10 +41,6 @@ class CollectionThumbnailPathService < VaultThumbnailPathService
 
     def uploaded_thumbnail?(collection)
       File.exist?("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg")
-    end
-
-    def upload_dir(collection)
-      "#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}"
     end
 
     def default_image
