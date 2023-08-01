@@ -11,40 +11,46 @@ class Hyrax::HomepageController < ApplicationController
   helper Hyrax::ContentBlockHelper
 
   def index
-    # Homepage facet links are configured via VaultHomepageHelper
     @presenter = presenter_class.new(current_ability, collections)
-    @featured_researcher = ContentBlock.for(:researcher)
-    @marketing_text = ContentBlock.for(:marketing)
     @featured_work_list = FeaturedWorkList.new
     @announcement_text = ContentBlock.for(:announcement)
 
     if request.base_url.include? "vault"
       @featured_collection_list = FeaturedCollectionList.new
 
-      @response = search_results(q: '', sort: sort_field, rows: 48)[0]
+      # Homepage facet links are configured via VaultHomepageHelper
+      # Used by the "List All" list of collections
+      @collection_list_presenters = build_presenters(presenter.collections.sort_by(&:title), Hyrax::CollectionPresenter)
+      # Used by the All Collections tab
+      @collection_card_presenters = @collection_list_presenters.slice(0,8)
+      # Used by the Recent Collections tab
+      @recent_collection_presenters = build_presenters(get_recent_collections(0), Hyrax::CollectionPresenter)
 
-      # Needed for the All Collections, Recent Collections, and Recent Works tabs
-      @recent_collection_presenters = recent_collection_presenters.slice(0,8)
-      @recent_work_presenters = recent_work_presenters.slice(0,8)
-      @work_count = recent_works_count
-      @collection_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter)
-      @collection_card_presenters = @collection_presenters.slice(0,8)
+      # @response is used by the homepage "Time period" facet
+      # The other instance variables are used by the Recent Works tab
+      @response, @recent_works = works_search_service.search_results
+      @recent_work_presenters = build_presenters(@recent_works, VaultWorkShowPresenter)
+
+      # Limit ourselves to maximum 40 recent works
+      @work_count = @response['response']['numFound'] < 40 ? @response['response']['numFound'] : 40
     else
+      @featured_researcher = ContentBlock.for(:researcher)
+      @marketing_text = ContentBlock.for(:marketing)
       recent
     end
   end
 
-  def more_recent_collections
+  def load_more
     respond_to do |format|
-      presenters = recent_collection_presenters.slice(params[:start].to_i, 8)
-      format.js { render 'browse_collections/load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
-    end
-  end
-
-  def more_recent_works
-    respond_to do |format|
-      presenters = recent_work_presenters.slice(params[:start].to_i, 8)
-      format.js { render 'load_more_works.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
+      case params[:append_to]
+      when "browse-collections-wrapper"
+        presenters = build_presenters(get_all_collections(params[:start].to_i), Hyrax::CollectionPresenter)
+      when "recent-collections-wrapper"
+        presenters = build_presenters(get_recent_collections(params[:start].to_i), Hyrax::CollectionPresenter)
+      when "recent-works-wrapper"
+        presenters = build_presenters(get_recent_works(params[:start].to_i), VaultWorkShowPresenter)
+      end
+      format.js { render 'hyrax/homepage/cards/load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
     end
   end
 
@@ -54,34 +60,35 @@ class Hyrax::HomepageController < ApplicationController
       @presenter ||= presenter_class.new(current_ability, collections)
     end
 
-    def recent_collection_presenters
-      build_presenters(collections_by_date_desc, Hyrax::CollectionPresenter)
+    def get_recent_collections(start)
+      @recent_collections ||= presenter.collections.sort_by(&:create_date).reverse
+      @recent_collections.slice(start,8)
     end
 
-  def recent_work_presenters
-    build_presenters(works_by_date_desc, VaultWorkShowPresenter)
-  end
+    def get_all_collections(start)
+      presenter.collections.sort_by(&:title).slice(start,8)
+    end
 
-  def build_presenters(documents, presenter_class)
-    Hyrax::PresenterFactory.build_for(ids: documents.pluck(:id),
-                                      presenter_class: presenter_class,
-                                      presenter_args: nil)
-  end
+    def build_presenters(documents, presenter_class)
+      Hyrax::PresenterFactory.build_for(ids: documents.pluck(:id),
+                                        presenter_class: presenter_class,
+                                        presenter_args: nil)
+    end
 
-  def collections_by_date_desc
-    presenter.collections.sort_by(&:create_date).reverse
-  end
+    def get_recent_works(start)
+      works_search_service.search_results do |builder|
+        builder.start(start)
+      end[1]
+    rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
+      []
+    end
 
-  def works_by_date_desc
-    # q: '{!field f=has_model_ssim}GenericWork' doesn't seem to work despite
-    # what the documentation says
-    (_, results) = search_results(q: '', sort: sort_field, rows: recent_works_count)
-    results.select{|w| w["has_model_ssim"] == ["GenericWork"]}
-  end
-
-  def recent_works_count
-    48
-  end
+    def works_search_service
+      Hyrax::SearchService.new(config: blacklight_config,
+                               user_params: { q: '', sort: sort_field, rows: 8 },
+                               scope: self,
+                               search_builder_class: Hyrax::WorksSearchBuilder)
+    end
 
   # Return all collections
     def collections(rows: count_collections)
@@ -93,7 +100,9 @@ class Hyrax::HomepageController < ApplicationController
     end
 
     def count_collections
-      Collection.all.count
+      Hyrax::CollectionsService.new(self).try(:search_results).count
+    rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
+      0
     end
 
     def recent
@@ -106,7 +115,7 @@ class Hyrax::HomepageController < ApplicationController
       @recent_documents = []
     end
 
-  def sort_field
-    "system_create_dtsi desc"
-  end
+    def sort_field
+      "system_create_dtsi desc"
+    end
 end

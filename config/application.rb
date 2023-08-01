@@ -19,9 +19,19 @@ module Hyku
     #
     config.time_zone = 'Pacific Time (US & Canada)'
 
-    config.autoload_paths << "#{root}/lib/fast_update"
-    config.autoload_paths << "#{root}/app/services/doi"
-    config.autoload_paths << "#{root}/app/services/identifier"
+    # config.autoload_paths << "#{root}/lib/fast_update"
+    # config.autoload_paths << "#{root}/app/services/doi"
+    # config.autoload_paths << "#{root}/app/services/identifier"
+
+    config.paths.add "#{root}/lib/fast_update", eager_load: true
+    config.paths.add "#{root}/app/services/doi", eager_load: true
+    config.paths.add "#{root}/app/services/identifier", eager_load: true
+
+    # config.to_prepare do
+    #   Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
+    #     require_dependency(c)
+    #   end
+    # end
 
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
@@ -57,5 +67,6 @@ config.middleware.use WebConsole::Middleware
         # end
       end
     end
+
   end
 end

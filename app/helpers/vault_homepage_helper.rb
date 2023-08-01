@@ -5,6 +5,13 @@ module VaultHomepageHelper
         (current_page?(root_path) || request.path.include?("catalog"))
   end
 
+  # Size cards dynamically based on whether there are 6 or 8 featured works
+  # @param [Array <Hyrax::CollectionPresenter> or <VaultWorkShowPresenter>]
+  # @return [Integer] - the Bootstrap card width
+  def card_width(presenters)
+    presenters.count > 5 ? 12/(presenters.count.to_f/2).round : 4
+  end
+
   # Render the collections that the current SolrDocument is in
   # @param []SolrDocument]: the document for a GenericWork
   # @return [HTML]: a <p> tag with collection links
@@ -30,7 +37,7 @@ module VaultHomepageHelper
   # @param [Array]: an array of Hyrax::CollectionPresenters
   # @return [Array]: an array of links
   def collection_links(presenters)
-    presenters.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), data: { turbolinks: false }) }
+    presenters.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), class: "homepage-tab-link", data: { turbolinks: false }) }
   end
 
   # Homepage facet links
@@ -99,6 +106,10 @@ module VaultHomepageHelper
     content_tag(:li, class:"homepage-facet-label col-md") do
       link_to(label, path, class: "homepage-facet-link homepage-tab-link", data: { turbolinks: false })
     end
+  end
+
+  def range_config(solr_field)
+    BlacklightRangeLimit.range_config(blacklight_config, solr_field)
   end
 
   private
