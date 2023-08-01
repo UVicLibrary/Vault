@@ -102,6 +102,10 @@ module VaultHomepageHelper
     end
   end
 
+  def range_config(solr_field)
+    BlacklightRangeLimit.range_config(blacklight_config, solr_field)
+  end
+
   private
 
   def genre_facets

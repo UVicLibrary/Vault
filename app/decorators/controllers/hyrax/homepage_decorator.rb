@@ -1,10 +1,9 @@
 require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/homepage_controller.rb')
 
 # OVERRIDE class from Hyrax v. 3.1.0
-
 Hyrax::HomepageController.class_eval do
-  # For 'Browse by Time Period' facet
-  include BlacklightRangeLimit::ControllerOverride
+  # Required for "Time period" facets
+  include RangeLimitHelper
 
   def index
     @presenter = presenter_class.new(current_ability, collections)
@@ -18,19 +17,18 @@ Hyrax::HomepageController.class_eval do
       @featured_collection_list = FeaturedCollectionList.new
 
       # Homepage facet links are configured via VaultHomepageHelper
-
-      # Used by the homepage "Time period" facet
-      @response = search_results(q: '', sort: sort_field, rows: 48)[0]
-
       # Used by the "List All" list of collections
-      @collection_list_presenters = build_presenters(collections.sort_by(&:title), Hyrax::CollectionPresenter)
-
-      # Used by the All Collections, Recent Collections tabs tabs
+      @collection_list_presenters = build_presenters(presenter.collections.sort_by(&:title), Hyrax::CollectionPresenter)
+      # Used by the All Collections tab
       @collection_card_presenters = @collection_list_presenters.slice(0,8)
-      @recent_collection_presenters = recent_collection_presenters.slice(0,8)
-      # Used by the Recent Works tab
-      @work_count = works_by_date_desc.count
-      @recent_work_presenters = recent_work_presenters.slice(0,8)
+      # Used by the Recent Collections tab
+      @recent_collection_presenters = build_presenters(get_recent_collections(0), Hyrax::CollectionPresenter)
+
+      # @response is used by the homepage "Time period" facet
+      # The other instance variables are used by the Recent Works tab
+      @response, @recent_works = works_search_service.search_results
+      @recent_work_presenters = build_presenters(@recent_works, VaultWorkShowPresenter)
+      @work_count = @response['response']['numFound']
     else
       recent
     end
@@ -38,14 +36,14 @@ Hyrax::HomepageController.class_eval do
 
   def more_recent_collections
     respond_to do |format|
-      presenters = recent_collection_presenters.slice(params[:start].to_i, 8)
+      presenters = build_presenters(get_recent_collections(params[:start].to_i), Hyrax::CollectionPresenter)
       format.js { render 'browse_collections/load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
     end
   end
 
   def more_recent_works
     respond_to do |format|
-      presenters = recent_work_presenters.slice(params[:start].to_i, 8)
+      presenters = build_presenters(get_recent_works(params[:start].to_i), VaultWorkShowPresenter)
       format.js { render 'load_more_works.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
     end
   end
@@ -56,12 +54,9 @@ Hyrax::HomepageController.class_eval do
     @presenter ||= presenter_class.new(current_ability, collections)
   end
 
-  def recent_collection_presenters
-    build_presenters(collections_by_date_desc, Hyrax::CollectionPresenter)
-  end
-
-  def recent_work_presenters
-    build_presenters(works_by_date_desc, VaultWorkShowPresenter)
+  def get_recent_collections(start)
+    @recent_collections ||= presenter.collections.sort_by(&:create_date).reverse
+    @recent_collections.slice(start,8)
   end
 
   def build_presenters(documents, presenter_class)
@@ -70,15 +65,17 @@ Hyrax::HomepageController.class_eval do
                                       presenter_args: nil)
   end
 
-  def collections_by_date_desc
-    presenter.collections.sort_by(&:create_date).reverse
+  def get_recent_works(start)
+    works_search_service.search_results do |builder|
+      builder.start(start)
+    end[1]
   end
 
-  def works_by_date_desc
-    # q: '{!field f=has_model_ssim}GenericWork' doesn't seem to work despite
-    # what the documentation says
-    (_, results) = search_results(q: '', sort: sort_field, rows: 48)
-    results.select{|w| w["has_model_ssim"] == ["GenericWork"]}
+  def works_search_service
+    Hyrax::SearchService.new(config: blacklight_config,
+                             user_params: { q: '', sort: sort_field, rows: 8 },
+                             scope: self,
+                             search_builder_class: Hyrax::WorksSearchBuilder)
   end
 
   # Return all collections
@@ -91,7 +88,7 @@ Hyrax::HomepageController.class_eval do
   end
 
   def count_collections
-    Collection.all.count
+    Hyrax::CollectionsService.new(self).search_results.count
   end
 
   def sort_field

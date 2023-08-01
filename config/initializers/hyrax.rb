@@ -166,10 +166,6 @@ Hyrax.config do |config|
   #   config.browse_everything = nil
   # end
   config.browse_everything = nil
-
-  Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
-    require_dependency(c)
-  end
 end
 AdminSet::DEFAULT_ID = "admin_set-default"
 Date::DATE_FORMATS[:standard] = "%m/%d/%Y"
