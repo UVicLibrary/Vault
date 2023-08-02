@@ -1,35 +1,5 @@
 $(document).on('turbolinks:load', function() {
 
-    function hideDescr(card) {
-        titleHeight= $(card.find('.card-title')).outerHeight();
-        linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
-        cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
-        card.css('transform','translateY(' + (cardHeight - linkHeight - titleHeight - 28) + 'px)');
-    }
-
-    function showDescr(card) {
-        cardHeight = parseInt($('.card.col-lg-3 .wrapper').css('min-height'));
-        linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
-        titleHeight= $(card.find('.card-title')).outerHeight();
-        card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - linkHeight -titleHeight - 98) + 'px)');
-    }
-
-    function transformCards() {
-        // Adjust position of work-card titles based on height
-        $('.card.work-card .data').each(function(index) {
-            card = $($('.card.work-card .data')[index]);
-            hideDescr(card);
-        });
-        // Move the description up so it is visible on hover
-        $('.card.work-card .wrapper').on({
-            mouseenter: function() {
-                showDescr($(this).find('.data'));
-            }, mouseleave: function() {
-                hideDescr($(this).find('.data'));
-            }
-        })
-    }
-
     $('.all-collections-button, .list-collections-button').click( function() {
         // Change the link on the featured nav button to match the button that
         // was just clicked. This makes sure we display the correct tab (list or
@@ -75,7 +45,7 @@ $(document).on('turbolinks:load', function() {
         }
     });
 
-    $('button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('button[data-toggle="tab"]').on('shown.bs.tab', function () {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
             buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
             // Update the header

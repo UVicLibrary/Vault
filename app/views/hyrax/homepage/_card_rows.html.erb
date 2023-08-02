@@ -1,0 +1,10 @@
+<div class="card-row row">
+  <% presenters.each do |presenter| %>
+    <% case presenter %>
+    <% when Hyrax::CollectionPresenter %>
+      <%= render 'collection_card', presenter: presenter, card_width: card_width %>
+    <% when VaultWorkShowPresenter %>
+      <%= render 'work_card', presenter: presenter, card_width: card_width %>
+    <% end %>
+  <% end %>
+</div>

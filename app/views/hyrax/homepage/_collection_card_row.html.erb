@@ -1,8 +1,0 @@
-<!-------- app/views/hyrax/homepage/_collection_card_row.html.erb -------->
-<div class="card-row row">
-  <%# Size cards dynamically based on whether there are 6 or 8 featured works %>
-  <% card_width = collection_presenters.count > 5 ? 12/(collection_presenters.count.to_f/2).round : 4 %>
-  <% collection_presenters.each do |presenter| %>
-    <%= render 'collection_card', presenter: presenter, card_width: card_width %>
-  <% end %>
-</div><!-- .card-row.row -->

@@ -5,6 +5,24 @@ module VaultHomepageHelper
         (current_page?(root_path) || request.path.include?("catalog"))
   end
 
+  # Size cards dynamically based on whether there are 6 or 8 featured works
+  # @param [Array <Hyrax::CollectionPresenter> or <VaultWorkShowPresenter>]
+  # @return [Integer] - the Bootstrap card width
+  def card_width(presenters)
+    presenters.count > 5 ? 12/(presenters.count.to_f/2).round : 4
+  end
+
+  def path_for_button(parent_id)
+    case parent_id
+    when "recent-collections-wrapper"
+      main_app.more_recent_collections_path(start: 8, append_to: parent_id)
+    when "browse-collections-wrapper"
+      main_app.load_more_path(start: 8, append_to: parent_id)
+    when "recent-works-wrapper"
+      main_app.more_recent_works_path(start: 8, append_to: parent_id)
+    end
+  end
+
   # Render the collections that the current SolrDocument is in
   # @param []SolrDocument]: the document for a GenericWork
   # @return [HTML]: a <p> tag with collection links

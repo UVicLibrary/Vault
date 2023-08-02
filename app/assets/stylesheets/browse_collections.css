@@ -121,6 +121,10 @@
     text-decoration: underline;
 }
 
+.loading-wrapper {
+    margin-top: 3.5em;
+}
+
 #back-to-top {
     display: inline-block;
     background-color: #fff;

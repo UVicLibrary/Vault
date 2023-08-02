@@ -41,7 +41,7 @@
 
   <!---------------------------- List View for all collections -------------------->
   <div class="tab-pane fade" role="tabpanel" id="list-collections"  aria-selected="true">
-    <div class="container-fluid card-container browse-home">
+    <div class="container-fluid list-container browse-home">
       <%= render_collection_list(@collection_list_presenters) %>
     </div><!-- .container -->
   </div><!-- .tab-pane -->
@@ -51,7 +51,7 @@
     <div class="tab-pane active" id="featured-collections" role="tabpanel"  aria-selected="true">
       <div class="container-fluid card-container">
         <% if FeaturedCollection.any? %>
-          <%= render 'collection_card_row', collection_presenters: @featured_collection_list.collection_presenters %>
+          <%= render 'card_rows', presenters: @featured_collection_list.collection_presenters, card_width: card_width(@featured_collection_list.collection_presenters) %>
         <% end %>
       </div><!-- .container -->
     </div><!-- .tab-pane active, #featured-collections -->
@@ -60,8 +60,8 @@
     <div class="tab-pane fade" id="featured-works" role="tabpanel">
       <div class="container-fluid card-container">
         <% if FeaturedWork.any? %>
-          <%= render 'work_card_row', work_presenters: @featured_work_list.featured_works.map(&:presenter) %>
-        <% end %>
+          <%= render 'card_rows', presenters: @featured_work_list.featured_works.map(&:presenter), card_width: @featured_work_list.featured_works.map(&:presenter) %>
+      <% end %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
 
@@ -69,9 +69,11 @@
     <div class="tab-pane fade" id="recent-collections" role="tabpanel">
       <div class="container-fluid card-container">
         <div id="recent-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-          <%= render 'collection_card_row', collection_presenters: @recent_collection_presenters %>
+          <%= render 'card_rows', presenters: @recent_collection_presenters, card_width: card_width(@recent_collection_presenters) %>
         </div>
-        <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @presenter.collections.count, parent: 'recent-collections-wrapper' } %>
+        <% if @presenter.collections.count > 8 %>
+          <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @presenter.collections.count, parent: 'recent-collections-wrapper' } %>
+        <% end %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
 
@@ -79,9 +81,11 @@
     <div class="tab-pane fade" id="recent-works" role="tabpanel">
       <div class="container-fluid card-container" >
         <div id="recent-works-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-          <%= render 'work_card_row', work_presenters: @recent_work_presenters %>
+          <%= render 'card_rows', presenters: @recent_work_presenters, card_width: card_width(@recent_work_presenters) %>
         </div>
-        <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @work_count, parent: 'recent-works-wrapper' } %>
+        <% if @work_count > 8 %>
+          <%= render partial: 'browse_collections/load_more_button', locals: { total_count: @work_count, parent: 'recent-works-wrapper' } %>
+        <% end %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
 

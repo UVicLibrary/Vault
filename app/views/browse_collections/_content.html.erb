@@ -17,7 +17,9 @@
 <!--  <span id="results-count">Showing X of X results</span>-->
 <!--</div>-->
 <% if @presenter.collections.count > 8 %>
-  <%= render 'browse_collections/load_more_button', total_count: @presenter.collections.count, parent: 'browse-collections-wrapper' %>
+  <div class="load-more-button-wrapper col-lg-12 col-md-12 col-sm-12">
+    <%= render 'browse_collections/load_more_button', total_count: @presenter.collections.count, parent: 'browse-collections-wrapper' %>
+  </div>
   <%# if on the homepage, we don't need to render this again %>
   <% unless controller_name == "homepage" %>
     <%= render 'browse_collections/back_to_top' %>

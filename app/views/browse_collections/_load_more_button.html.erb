@@ -1,14 +1,5 @@
-<% if total_count > 8 %>
-  <div class="load-more-button-wrapper col-lg-12 col-md-12 col-sm-12">
-    <button class="btn load-more-button">
-    <% case parent %>
-    <% when "recent-collections-wrapper" %>
-        <%= link_to "Load More", main_app.more_recent_collections_path(start: 8, append_to: parent), method: :get, remote: :true, data: { start: 8, total: total_count } %>
-    <% when "browse-collections-wrapper" %>
-        <%= link_to "Load More", main_app.load_more_path(start: 8, append_to: parent), method: :get, remote: :true, data: { start: 8, total: total_count } %>
-    <% when "recent-works-wrapper" %>
-        <%= link_to "Load More", main_app.more_recent_works_path(start: 8, append_to: parent), method: :get, remote: :true, data: { start: 8, total: total_count } %>
-    <% end %>
-    </button>
-  </div>
-<% end %>
+<div class="load-more-button-wrapper col-lg-12 col-md-12 col-sm-12">
+  <button class="btn load-more-button">
+    <%= link_to "Load More", path_for_button(parent), method: :get, remote: :true, data: { start: 8, total: total_count } %>
+  </button>
+</div>
