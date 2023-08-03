@@ -2,16 +2,11 @@ require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/homepage_contr
 
 # OVERRIDE class from Hyrax v. 3.1.0
 Hyrax::HomepageController.class_eval do
-  # Required for "Time period" facets
-  include RangeLimitHelper
 
   def index
     @presenter = presenter_class.new(current_ability, collections)
-    @featured_researcher = ContentBlock.for(:researcher)
-    @marketing_text = ContentBlock.for(:marketing)
     @featured_work_list = FeaturedWorkList.new
     @announcement_text = ContentBlock.for(:announcement)
-
 
     if request.base_url.include? "vault"
       @featured_collection_list = FeaturedCollectionList.new
@@ -30,21 +25,23 @@ Hyrax::HomepageController.class_eval do
       @recent_work_presenters = build_presenters(@recent_works, VaultWorkShowPresenter)
       @work_count = @response['response']['numFound']
     else
+      @featured_researcher = ContentBlock.for(:researcher)
+      @marketing_text = ContentBlock.for(:marketing)
       recent
     end
   end
 
-  def more_recent_collections
+  def load_more
     respond_to do |format|
-      presenters = build_presenters(get_recent_collections(params[:start].to_i), Hyrax::CollectionPresenter)
-      format.js { render 'browse_collections/load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
-    end
-  end
-
-  def more_recent_works
-    respond_to do |format|
-      presenters = build_presenters(get_recent_works(params[:start].to_i), VaultWorkShowPresenter)
-      format.js { render 'load_more_works.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
+      case params[:append_to]
+      when "browse-collections-wrapper"
+        presenters = build_presenters(get_all_collections(params[:start].to_i), Hyrax::CollectionPresenter)
+      when "recent-collections-wrapper"
+        presenters = build_presenters(get_recent_collections(params[:start].to_i), Hyrax::CollectionPresenter)
+      when "recent-works-wrapper"
+        presenters = build_presenters(get_recent_works(params[:start].to_i), VaultWorkShowPresenter)
+      end
+      format.js { render 'hyrax/homepage/cards/load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
     end
   end
 
@@ -57,6 +54,10 @@ Hyrax::HomepageController.class_eval do
   def get_recent_collections(start)
     @recent_collections ||= presenter.collections.sort_by(&:create_date).reverse
     @recent_collections.slice(start,8)
+  end
+
+  def get_all_collections(start)
+    presenter.collections.sort_by(&:title).slice(start,8)
   end
 
   def build_presenters(documents, presenter_class)

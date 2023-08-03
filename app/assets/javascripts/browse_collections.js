@@ -1,6 +1,8 @@
 // Javascript for homepage cards and back to top button
 $(document).on('turbolinks:load', function() {
-    $('.load-more-button a').click(function (e) { showLoadingText(e) });
+    $('.load-more-button a').click(function (e) {
+        showLoadingText(e);
+    });
 
     var backToTop = $('#back-to-top');
     $(window).scroll(function() {
@@ -27,9 +29,7 @@ function showLoadingText(e) {
     $(e.target).closest('.load-more-button-wrapper').prepend(loadingText.join(""));
 }
 
-window.addEventListener('workCardsLoaded', function(e) {
-    transformCards()
-});
+window.addEventListener('workCardsLoaded', function(e) { transformCards() });
 
 function transformCards() {
     // Adjust position of work-card titles based on height

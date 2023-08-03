@@ -12,17 +12,6 @@ module VaultHomepageHelper
     presenters.count > 5 ? 12/(presenters.count.to_f/2).round : 4
   end
 
-  def path_for_button(parent_id)
-    case parent_id
-    when "recent-collections-wrapper"
-      main_app.more_recent_collections_path(start: 8, append_to: parent_id)
-    when "browse-collections-wrapper"
-      main_app.load_more_path(start: 8, append_to: parent_id)
-    when "recent-works-wrapper"
-      main_app.more_recent_works_path(start: 8, append_to: parent_id)
-    end
-  end
-
   # Render the collections that the current SolrDocument is in
   # @param []SolrDocument]: the document for a GenericWork
   # @return [HTML]: a <p> tag with collection links
@@ -48,7 +37,7 @@ module VaultHomepageHelper
   # @param [Array]: an array of Hyrax::CollectionPresenters
   # @return [Array]: an array of links
   def collection_links(presenters)
-    presenters.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), data: { turbolinks: false }) }
+    presenters.map { |collection| link_to(collection.title_or_label, hyrax.collection_path(collection.id), class: "homepage-tab-link", data: { turbolinks: false }) }
   end
 
   # Homepage facet links
@@ -112,7 +101,6 @@ module VaultHomepageHelper
   end
 
   def render_year_range_value(hash)
-    # byebug
     label = hash.keys.first
     path = hash[label]
     content_tag(:li, class:"homepage-facet-label col-md") do

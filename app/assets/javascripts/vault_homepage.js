@@ -1,12 +1,14 @@
 $(document).on('turbolinks:load', function() {
 
+    var buttons = $('button[data-toggle="tab"]');
+    buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
+
+    // When a user clicks the all collection tab and then another tab, we need to
+    // change the 'All collections' link to match the (list or card) view that
+    // was previously shown
     $('.all-collections-button, .list-collections-button').click( function() {
-        // Change the link on the featured nav button to match the button that
-        // was just clicked. This makes sure we display the correct tab (list or
-        // card view) the next time the "All Collections" button is clicked.
         $('#all-collections-tab').attr('href', $(this).attr('href'));
         // Collapse the clicked button
-        $(this).css('display','');
         $(this).addClass('collapse');
         // Show the other button
         if ($(this).attr('href') == '#all-collections') {
@@ -15,12 +17,6 @@ $(document).on('turbolinks:load', function() {
             $('.all-collections-button').removeClass('collapse');
         }
     });
-
-    // Set initial states
-    // Changes the header ("Featured ____") to match the tab that is currently active
-    // $("h1#featured-header").html($("#featured-nav li.active").text());
-    var buttons = $('button[data-toggle="tab"]');
-    buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
 
     $('#featured-nav button[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         // adjust height of card titles based on the length of the title
@@ -38,13 +34,12 @@ $(document).on('turbolinks:load', function() {
             }
         } else {
             // collapse/reset both buttons
-            $('.list-collections-button').css('display','');
-            $('.all-collections-button').css('display','');
             $('.list-collections-button').addClass('collapse');
             $('.all-collections-button').addClass('collapse');
         }
     });
 
+    // Update the header when a tab is shown
     $('button[data-toggle="tab"]').on('shown.bs.tab', function () {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
             buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
@@ -57,16 +52,16 @@ $(document).on('turbolinks:load', function() {
         }
     });
 
-    // Make the tabs keyboard accessible with left and right arrows
-    // Accessibility design pattern: https://www.w3.org/TR/wai-aria-practices-1.2/#tabpanel
+    // Allow users to navigate tabs using left and right arrow keys. See
+    // guidelines for "tabs with automatic activation":
+    // https://www.w3.org/WAI/ARIA/apg/patterns/tabs/examples/tabs-automatic/
     $('button[data-toggle="tab"]').keydown(function(e) {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
-            e.preventDefault();
             // Get the index of the current button
             var buttons = $(e.target.closest('ul')).find('button');
             var currentIdx = buttons.index(e.target);
 
-            // Move right
+            // When pressing right (39) or left (37) arrow keys
             if (e.keyCode === 39 || e.keyCode === 37) {
                 buttons[currentIdx].setAttribute("tabindex", -1);
                 buttons[currentIdx].setAttribute("aria-selected", false);
@@ -90,29 +85,11 @@ $(document).on('turbolinks:load', function() {
                 buttons[currentIdx].focus();
             }
 
-            // Shift-tab, go to previous element, go to next element outside buttons
+            // If focused on the homepage facet buttons ("Browse by") and press Shift + tab, jump to the help link
             if (e.shiftKey && e.keyCode == 9 && $(this).closest('ul').attr('id') == 'browse-by-nav') {
+                e.preventDefault()
                 $('.help-link').focus()
-            } else if (e.shiftKey && e.keyCode == 9) { //$(this).closest('ul').attr('id') == 'featured-nav')
-                // detect which tab in "browse by" is currently active
-                // focus on the last element in that tab
-                $('.browse-by-container').find('.tab-pane.active').find('.last-child').focus()
             }
-            // tab key pressed, go to next element outside buttons
-            if (!e.shiftKey && e.keyCode == 9) {
-                var tabPanelId = $(e.target.closest('ul')).find('li.active button')[0].attributes.href.value;
-                $(tabPanelId).first().find('.homepage-tab-link').first().focus()
-            }
-        }
-    });
-
-    // Pressing tab when on the last homepage facet link still takes you to
-    // the 'List All' or 'Card View' buttons even when they are tab-index="-1"
-    // This fixes that.
-    $('.homepage-facet-link.last-child').keydown(function(e) {
-        e.preventDefault();
-        if (!e.shiftKey && e.keyCode == 9) {
-            $('#featured-nav li.active button').focus();
         }
     });
 
