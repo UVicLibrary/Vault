@@ -18,7 +18,7 @@
 // Required by Blacklight
 //= require blacklight/blacklight
 //= require blacklight_range_limit
-//= require browse_collections
+// require browse_collections
 //= require masonry
 
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
@@ -26,7 +26,7 @@
 //
 //= require hyku/groups/per_page
 //= require hyku/groups/add_member
-//= require vault_homepage
+// require vault_homepage
 //= require navbar
 //= require hyrax
 //= require fast_update

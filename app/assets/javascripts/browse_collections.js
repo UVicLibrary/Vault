@@ -22,7 +22,7 @@ function showLoadingText(e) {
     var loadingText = [
        "<div class='loading-wrapper'>",
          "<span class='loading-text'>Loading</span>",
-         "<img src='/browse_collections/Spinner-1s-200px.gif' width='60px' />",
+         "<img src='/vault_homepage/Spinner-1s-200px.gif' width='60px' />",
        "</div>"
     ]
     $(e.target).parent().addClass('hide-load-more');

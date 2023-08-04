@@ -20,3 +20,6 @@
 <% end %>
 
 <%= render template: 'layouts/hyrax' %>
+<% if request.base_url.include? "vault" %>
+  <script defer src="vault_homepage/vault_homepage.js"></script>
+<% end %>
