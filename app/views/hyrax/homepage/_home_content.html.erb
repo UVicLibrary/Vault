@@ -36,7 +36,7 @@
   <div class="tab-pane fade" role="tabpanel" id="all-collections"  aria-selected="true">
     <div class="container-fluid card-container browse-home">
       <div id="browse-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-        <%= render 'hyrax/homepage/cards/card_rows', presenters: @collection_card_presenters, card_width: card_width(@collection_card_presenters) %>
+        <%= render 'hyrax/homepage/cards/card_rows', presenters: @collection_card_presenters %>
       </div>
       <% if @presenter.collections.count > 8 %>
         <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @presenter.collections.count, parent_id: 'browse-collections-wrapper' } %>
@@ -56,7 +56,7 @@
     <div class="tab-pane active" id="featured-collections" role="tabpanel"  aria-selected="true">
       <div class="container-fluid card-container">
         <% if FeaturedCollection.any? %>
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_collection_list.collection_presenters, card_width: card_width(@featured_collection_list.collection_presenters) %>
+          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_collection_list.collection_presenters %>
         <% end %>
       </div><!-- .container -->
     </div><!-- .tab-pane active, #featured-collections -->
@@ -65,7 +65,7 @@
     <div class="tab-pane fade" id="featured-works" role="tabpanel">
       <div class="container-fluid card-container">
         <% if FeaturedWork.any? %>
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_work_list.featured_works.map(&:presenter), card_width: @featured_work_list.featured_works.map(&:presenter) %>
+          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_work_list.featured_works.map(&:presenter) %>
       <% end %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
@@ -74,7 +74,7 @@
     <div class="tab-pane fade" id="recent-collections" role="tabpanel">
       <div class="container-fluid card-container">
         <div id="recent-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_collection_presenters, card_width: card_width(@recent_collection_presenters) %>
+          <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_collection_presenters %>
         </div>
         <% if @presenter.collections.count > 8 %>
           <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @presenter.collections.count, parent_id: 'recent-collections-wrapper' } %>
@@ -86,7 +86,7 @@
     <div class="tab-pane fade" id="recent-works" role="tabpanel">
       <div class="container-fluid card-container" >
         <div id="recent-works-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_work_presenters, card_width: card_width(@recent_work_presenters) %>
+          <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_work_presenters %>
         </div>
         <% if @work_count > 8 %>
           <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @work_count, parent_id: 'recent-works-wrapper' } %>

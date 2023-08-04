@@ -8,8 +8,8 @@ module VaultHomepageHelper
   # Size cards dynamically based on whether there are 6 or 8 featured works
   # @param [Array <Hyrax::CollectionPresenter> or <VaultWorkShowPresenter>]
   # @return [Integer] - the Bootstrap card width
-  def card_width(presenters)
-    presenters.count > 5 ? 12/(presenters.count.to_f/2).round : 4
+  def bootstrap_card_width(count)
+    count > 5 ? 12/(count.to_f/2).round : 4
   end
 
   # Render the collections that the current SolrDocument is in
