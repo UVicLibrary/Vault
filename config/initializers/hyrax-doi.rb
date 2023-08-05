@@ -15,10 +15,3 @@ Hyrax.config.identifier_registrars = { datacite: VaultDataCiteRegistrar }
 # available on Bolognese::Metadata.new(...). Example:
 # Bolognese::Metadata.prepend Bolognese::Readers::CustomReader
 Bolognese::Metadata.prepend Bolognese::Readers::GenericWorkReader
-
-## For DataCite DOIs
-# Test mode will use the DataCite test environment
-Hyrax::DOI::DataCiteRegistrar.mode = :test # Possible options are [:production, :test]
-Hyrax::DOI::DataCiteRegistrar.prefix = ENV['DATACITE_PREFIX']
-Hyrax::DOI::DataCiteRegistrar.username = ENV['DATACITE_USERNAME']
-Hyrax::DOI::DataCiteRegistrar.password = ENV['DATACITE_PASSWORD']

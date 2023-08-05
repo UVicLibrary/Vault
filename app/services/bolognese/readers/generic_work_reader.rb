@@ -256,7 +256,7 @@ module Bolognese
       end
 
       def fst_identifier(uri)
-        uri.match(/http?s:\/\/id\.worldcat\.org\/fast\/(\d{1,8})\/?/)[1]
+        uri.match(/https?:\/\/id\.worldcat\.org\/fast\/(\d{1,8})\/?/)[1]
       end
 
       def name_identifier_hash(val)
