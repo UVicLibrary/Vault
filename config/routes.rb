@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   get '/vault_browse_collections/load_more', to: 'browse_collections#load_more', as: :load_more
   get '/vault_homepage/more_recent_collections', to: 'hyrax/homepage#more_recent_collections', as: :more_recent_collections
   get '/vault_homepage/more_recent_works', to: 'hyrax/homepage#more_recent_works', as: :more_recent_works
-  get '/load_more', to: 'hyrax/homepage#load_more', as: :load_more
+  # get '/load_more', to: 'hyrax/homepage#load_more', as: :load_more
   
   get '/google_map_behavior/getsolr', as: :getsolr
 
