@@ -27,7 +27,7 @@ window.initMap = function(){
                 '<a style="text-decoration: none; color:#333;" href=' + '/concern/generic_works/' + items[i]["id"] + '>' +
                 '<div style="display: table-row">' +
                 '<div style="display: table-cell;"><img src="' + items[i].thumbnail_path_ss + '" alt ="content_thumbnail" height="60" width = "auto"/></div>' +
-                '<div style="display: table-cell; vertical-align: top; padding-left: 10px;">' + (items[i]["description_tesim"] == null ? "" : items[i]["description_tesim"]) + '</div>' +
+                '<div style="display: table-cell; vertical-align: top; padding-left: 10px;">' + (items[i]["description_tesim"] == null ? "" : truncate(items[i]["description_tesim"][0], 250)) + '</div>' +
                 '</div></a>' +
                 '<div style="display: table-row">' +
                 '<div style="display: table-cell; padding-top:5px;"><a href=' + '/concern/generic_works/' + items[i]["id"] + '>View</a></div>' +
@@ -87,6 +87,11 @@ window.initMap = function(){
         maxZoom: 20,
         gridSize: 20
     };
+
+    function truncate(str, maxlength) {
+        return (str.length > maxlength) ?
+            str.slice(0, maxlength - 1) + '…' : str;
+    }
 
     var markerCluster = new MarkerClusterer(map, markers, options);
 }

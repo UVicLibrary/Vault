@@ -1,8 +1,12 @@
 module Hyrax
   module GoogleMapBehavior
     def getsolr
-      works = @member_docs.select {|work| work["coordinates_tesim"].present?}
-      @coordinates = works.sort!{|a,b| a['title_tesim'][0].downcase <=> b['title_tesim'][0].downcase}
+      @google_map_response = google_map_collection_member_service.available_member_works
+      @coordinates = @google_map_response.documents
+    end
+
+    def google_map_collection_member_service
+      @gm_collection_member_service = GoogleMapCollectionMembersService.new(scope: self, collection: collection, params: params_for_query)
     end
   end
 end
