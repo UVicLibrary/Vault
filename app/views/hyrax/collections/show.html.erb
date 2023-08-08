@@ -17,6 +17,8 @@
         <%= @presenter.permission_badge %>
       </div>
 
+      <%= render 'show_google_map', presenter: @presenter %>
+
       <% unless @presenter.logo_record.blank? %>
           <div class="hyc-logos">
             <% @presenter.logo_record.each_with_index  do |lr, i| %>
@@ -60,6 +62,9 @@
                         data: { turbolinks: false } %>
           </div>
         <% end %>
+        <div class="extra-actions">
+          <button id="map_button" onclick="toggleMap()" class="btn btn-default">Show Map</button>
+        </div>
 
         <div class="hyc-metadata">
           <% unless has_collection_search_parameters? || @presenter.total_viewable_items.blank? %>

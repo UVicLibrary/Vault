@@ -1,0 +1,21 @@
+<style>
+  #map {
+      height: 400px;
+      width: 100%;
+      position: relative;
+      z-index: 100;
+      display: none;
+  }
+</style>
+
+<div id="map"></div>
+
+<script>
+  var items = <%= raw @coordinates.to_json %>;
+  var markers = [];
+  var openInfoWindow; //Checks if infoWindow is open or closed
+</script>
+
+<script
+        src="/show_google_map.js">
+</script>

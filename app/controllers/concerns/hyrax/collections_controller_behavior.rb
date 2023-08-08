@@ -38,6 +38,7 @@ module Hyrax
       @curation_concern ||= ActiveFedora::Base.find(params[:id])
       presenter
       query_collection_members
+      getsolr
     end
 
     def collection
