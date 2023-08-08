@@ -34,6 +34,8 @@
 //= require jquery.flot.pie
 //= require flot_graph
 //= require statistics_tab_manager
+//= require markerclusterer
+//= require google_map
 
 //= require turbolinks
 

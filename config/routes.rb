@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   end
 
   get '/load_more', to: 'hyrax/homepage#load_more', as: :load_more
+  get '/google_map_behavior/getsolr', as: :getsolr
+
   get '/browse_collections/autocomplete', to: 'browse_collections#autocomplete'
 
   # For (dis)allowing downloads for an entire collection
