@@ -15,7 +15,7 @@ module Bolognese
         "Collection" => "Collection",
         "Still Image" => "Image",
         "Image" => "Image",
-        "Physical Object" => "Physical Object",
+        "Physical Object" => "PhysicalObject",
         "Sound" => "Sound",
         "Text" => "Text"
       }
@@ -25,6 +25,8 @@ module Bolognese
 
         # Construct a hash of work attributes
         attrs = string.present? ? Maremma.from_json(string) : {}
+
+        puts "#{attrs.fetch('geographic_coverage')}"
 
         metadata = {
 
@@ -161,16 +163,16 @@ module Bolognese
         uri = place['id']
         if place.class == Hash # val is a URI
           label = get_label(uri)
-          latitude, longitude = get_coordinates(uri)
-          { "geoLocationPlace" => label,
-            "geoLocationPoint" => {
-                "pointLongitude" => longitude,
-                "pointLatitude" => latitude } }
+          hash = { "geoLocationPlace" => label }
+          if get_coordinates(uri).any?
+            latitude, longitude = get_coordinates(uri)
+            hash["geoLocationPoint"] = { "pointLongitude" => longitude, "pointLatitude" => latitude }
+          end
         else # val is a String
-        hash = { "geoLocationPlace" => place }
              # If there is only one value in geographic_coverage
              # and coordinates, then we can match them together
         if coordinates.count == 1
+          hash = { "geoLocationPlace" => place }
           hash["geoLocationPoint"] = {
               "pointLongitude" => coordinates.first.split(", ").last,
               "pointLatitude" => coordinates.first.split(", ").first
@@ -188,6 +190,8 @@ module Bolognese
         latitude = data.match(/<schema:latitude>(.+)<\/schema:latitude>/)[1]
         longitude = data.match(/<schema:longitude>(.+)<\/schema:longitude>/)[1]
         [latitude, longitude]
+      rescue NoMethodError # This happens if a place has no coordinates
+        return []
       end
 
       # @param [Hash] - metadata attributes from the work.to_json
