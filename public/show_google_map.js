@@ -1,6 +1,6 @@
 var script = document.createElement('script');
 script.src = src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBi8Yld0eJJqEC95p0EYSHbFCvs5NKmXMg&callback=initMap";
-script.aync = true;
+script.async = true;
 
 window.initMap = function(){
     var map = new google.maps.Map(
@@ -10,6 +10,8 @@ window.initMap = function(){
         }
     );
     var bounds = new google.maps.LatLngBounds();
+    var items = googleMapItems;
+    var markers = googleMapMarkers;
 
     //create markers
     for (i = 0; i < items.length; i++) {

@@ -6,22 +6,17 @@ class SortCollectionMembersByDateService < Hyrax::Collections::CollectionMemberS
   # @return [Blacklight::Solr::Response]
   def available_member_works
     if !params.key?(:sort) && !params.key?(:cq)
-      query_solr(query_builder: works_search_builder, query_params: params.merge(sort: date_sort))
+      response, _docs = search_results do |builder|
+        builder.search_includes_models = :works
+        builder.merge(sort: date_sort)
+      end
+      response
     else
-      Rails.logger.warn("params = #{params}")
-      query_solr(query_builder: works_search_builder, query_params: params)
+      super
     end
   end
 
   private
-
-  # @api private
-  #
-  # set up a member search builder for works only
-  # @return [SortCollectionMembersByDateSearchBuilder] new or existing
-  def works_search_builder
-    @works_search_builder ||= SortCollectionMembersByDateSearchBuilder.new(scope: scope, collection: collection, search_includes_models: :works)
-  end
 
   def date_sort
     "year_sort_dtsi asc, title_sort_ssi asc"

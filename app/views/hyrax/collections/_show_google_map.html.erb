@@ -11,8 +11,8 @@
 <div id="map"></div>
 
 <script>
-  var items = <%= raw @coordinates.to_json %>;
-  var markers = [];
+  var googleMapItems = <%= raw @coordinates.to_json %>;
+  var googleMapMarkers = [];
   var openInfoWindow; //Checks if infoWindow is open or closed
 </script>
 <script async src="/markerclusterer.js"></script>
