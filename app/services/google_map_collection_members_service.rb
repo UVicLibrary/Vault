@@ -5,15 +5,18 @@ class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberSe
   # Call response.documents to view the Solr documents.
   # Call builder.query to see the params sent to Solr
   def available_member_works
-    query_solr(query_builder: works_search_builder.merge(
-                                  fq: "coordinates_tesim:[* TO *]",
-                                  fl: filter_fields,
-                                  rows: 3000),
-               query_params: {})
+    builder = works_search_builder.merge(
+                   fq: add_coordinates_filter(works_search_builder.query['fq']),
+                   rows: 3000)
+    query_solr_with_field_selection(query_builder: builder, fl: filter_fields)
   end
 
   def filter_fields
     %w(coordinates_tesim thumbnail_path_ss description_tesim geographic_coverage_label_tesim title_tesim).join(', ')
+  end
+
+  def add_coordinates_filter(old_fq)
+    old_fq << "coordinates_tesim:[* TO *]"
   end
 
 end
