@@ -5,10 +5,14 @@ class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberSe
   # Call response.documents to view the Solr documents.
   # Call builder.query to see the params sent to Solr
   def available_member_works
-    builder = works_search_builder.merge(
-                   fq: add_coordinates_filter(works_search_builder.query['fq']),
-                   rows: 3000)
-    query_solr_with_field_selection(query_builder: builder, fl: filter_fields)
+    response, _docs = search_results do |builder|
+      builder.search_includes_models = :works
+      builder.merge(
+          fl: filter_fields,
+          fq: add_coordinates_filter(builder.query['fq']),
+          rows: 3000)
+    end
+    response
   end
 
   def filter_fields
