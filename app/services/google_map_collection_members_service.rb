@@ -16,7 +16,7 @@ class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberSe
   end
 
   def filter_fields
-    %w(coordinates_tesim thumbnail_path_ss description_tesim geographic_coverage_label_tesim title_tesim).join(', ')
+    %w(id coordinates_tesim thumbnail_path_ss description_tesim geographic_coverage_label_tesim title_tesim).join(', ')
   end
 
   def add_coordinates_filter(old_fq)
