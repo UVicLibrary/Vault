@@ -1,5 +1,5 @@
 var script = document.createElement('script');
-script.src = src="https://maps.googleapis.com/maps/api/js?key=' + $('#map').attr('data-gmaps') + '&callback=initMap";
+script.src = "https://maps.googleapis.com/maps/api/js?key=" + $('#map').attr('data-gmaps') + "&callback=initMap";
 script.async = true;
 
 window.initMap = function(){
