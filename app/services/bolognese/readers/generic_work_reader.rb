@@ -26,6 +26,8 @@ module Bolognese
         # Construct a hash of work attributes
         attrs = string.present? ? Maremma.from_json(string) : {}
 
+        puts "#{attrs.fetch('id')}"
+
         metadata = {
 
             # MANDATORY FIELDS
@@ -158,26 +160,26 @@ module Bolognese
       # @param [String] - a single value from the geographic coverage field
       # @param [Array <String>] - all values in the coordinates field
       def build_place_and_coordinates(place, coordinates)
-        uri = place['id']
         if place.class == Hash # val is a URI
+          uri = place['id']
           label = get_label(uri)
-          latitude, longitude = get_coordinates(uri)
-          { "geoLocationPlace" => label,
-            "geoLocationPoint" => {
-                "pointLongitude" => longitude,
-                "pointLatitude" => latitude } }
+          hash = { "geoLocationPlace" => label }
+          if get_coordinates(uri).any?
+            latitude, longitude = get_coordinates(uri)
+            hash["geoLocationPoint"] = { "pointLongitude" => longitude, "pointLatitude" => latitude }
+          end
         else # val is a String
-        hash = { "geoLocationPlace" => place }
-             # If there is only one value in geographic_coverage
-             # and coordinates, then we can match them together
-        if coordinates.count == 1
-          hash["geoLocationPoint"] = {
-              "pointLongitude" => coordinates.first.split(", ").last,
-              "pointLatitude" => coordinates.first.split(", ").first
-          }
+         # If there is only one value in geographic_coverage
+         # and coordinates, then we can match them together
+          if coordinates.count == 1
+            hash = { "geoLocationPlace" => place }
+            hash["geoLocationPoint"] = {
+                "pointLongitude" => coordinates.first.split(", ").last,
+                "pointLatitude" => coordinates.first.split(", ").first
+            }
+          end
         end
         hash
-        end
       end
 
       # Gets coordinates from the RDF/XML page for a FAST URI
@@ -187,6 +189,9 @@ module Bolognese
         data = open(uri).read
         latitude = data.match(/<schema:latitude>(.+)<\/schema:latitude>/)[1]
         longitude = data.match(/<schema:longitude>(.+)<\/schema:longitude>/)[1]
+        # Omit coordinates if one is "?"
+        # This happens for some locations such as https://id.worldcat.org/fast/1204373.rdf.xml
+        return [] if (latitude == "?" || longitude == "?")
         [latitude, longitude]
       end
 
