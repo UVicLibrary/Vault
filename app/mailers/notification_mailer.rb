@@ -21,7 +21,8 @@
     def failures # For reindexing dates
     	@user_email = params[:user_email]
     	@failures = params[:failures]
-    	mail(to: @user_email, subject: 'Job Completed with Failures') if @failures
+      job_class = (params[:job_class] || "" )
+    	mail(to: @user_email, subject: "#{job_class} Stopped with Failures") if @failures
     end
 
     def fixity_failures
