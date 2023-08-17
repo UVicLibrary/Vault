@@ -27,6 +27,7 @@ module Bolognese
         attrs = string.present? ? Maremma.from_json(string) : {}
 
         puts "#{attrs.fetch('id')}"
+        puts "#{read_hyrax_work_geo_locations(attrs)}"
 
         metadata = {
 
@@ -154,12 +155,12 @@ module Bolognese
             attrs.fetch("geographic_coverage", []).any?(&:present?))
         places = attrs.fetch("geographic_coverage")
         coordinates = attrs.fetch("coordinates",[])
-        places.map { |place| build_place_and_coordinates(place, coordinates) } if places
+        places.map { |place| build_place_and_coordinates(place, coordinates, places.count) } if places
       end
 
       # @param [String] - a single value from the geographic coverage field
       # @param [Array <String>] - all values in the coordinates field
-      def build_place_and_coordinates(place, coordinates)
+      def build_place_and_coordinates(place, coordinates, places_count)
         if place.class == Hash # val is a URI
           uri = place['id']
           label = get_label(uri)
@@ -169,10 +170,10 @@ module Bolognese
             hash["geoLocationPoint"] = { "pointLongitude" => longitude, "pointLatitude" => latitude }
           end
         else # val is a String
-         # If there is only one value in geographic_coverage
+          hash = { "geoLocationPlace" => place }
+          # If there is only one value in geographic_coverage
          # and coordinates, then we can match them together
-          if coordinates.count == 1
-            hash = { "geoLocationPlace" => place }
+          if coordinates.count == 1 && places_count == 1
             hash["geoLocationPoint"] = {
                 "pointLongitude" => coordinates.first.split(", ").last,
                 "pointLatitude" => coordinates.first.split(", ").first
