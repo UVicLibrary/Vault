@@ -15,7 +15,7 @@ module Bolognese
         "Collection" => "Collection",
         "Still Image" => "Image",
         "Image" => "Image",
-        "Physical Object" => "Physical Object",
+        "Physical Object" => "PhysicalObject",
         "Sound" => "Sound",
         "Text" => "Text"
       }
@@ -25,10 +25,8 @@ module Bolognese
 
         # Construct a hash of work attributes
         attrs = string.present? ? Maremma.from_json(string) : {}
-
         puts "#{attrs.fetch('id')}"
-        puts "#{read_hyrax_work_geo_locations(attrs)}"
-
+        
         metadata = {
 
             # MANDATORY FIELDS
@@ -211,8 +209,9 @@ module Bolognese
       # @param [String] - An EDTF date string from the date created field
       # @return [String] - the same date expressed in in RKMS-ISO8601 standard
       def convert_to_iso_standard(date_string)
-        parsed_date = ::EdtfDateService.new(date_string).parsed_date
-        return date_string if parsed_date.class == Date && !open_interval?(date_string)
+        service = ::EdtfDateService.new(date_string)
+        parsed_date = service.parsed_date
+        return service.send(:strip_markers, date_string) if parsed_date.class == Date && !open_interval?(date_string)
         first_date = parsed_date.try(:begin)
         last_date = parsed_date.try(:end)
         if [EDTF::Decade, EDTF::Century].include?(Date.edtf(date_string.gsub('X','x')).class)
@@ -227,7 +226,7 @@ module Bolognese
           first_date = (date_string.split('/').first == ".."  ? "" : date_string.split('/').first)
           last_date = (date_string.split('/').last == ".." ? "" : date_string.split('/').last)
         end
-        "#{first_date}/#{last_date}"
+        service.send(:strip_markers, "#{first_date}/#{last_date}")
       end
 
       def open_interval?(date)

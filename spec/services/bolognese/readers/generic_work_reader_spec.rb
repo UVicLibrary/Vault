@@ -305,6 +305,14 @@ RSpec.describe Bolognese::Readers::GenericWorkReader do
           expect(subject.at_css('date').inner_text).to eq "1982-06-25"
           expect(subject.at_css('date').attributes['dateType'].value).to eq "Created"
         end
+
+        context 'and has approximate/uncertain markers' do
+          before { work.date_created = ["1982-06-25?", "1982-06-25~", "1982-06-25%"] }
+
+          it 'strips out all markers' do
+            expect(subject.css('date').map(&:inner_text)).to all(eq "1982-06-25")
+          end
+        end
       end
 
       context 'when date created is an interval or a season' do
@@ -314,6 +322,14 @@ RSpec.describe Bolognese::Readers::GenericWorkReader do
             expect(subject.css('dates').count).to eq 1
             expect(subject.at_css('date').inner_text).to eq "1982/1995"
             expect(subject.at_css('date').attributes['dateType'].value).to eq "Created"
+          end
+
+          context 'and has approximate/uncertain markers' do
+            before { work.date_created = ["1982?/1995?", "1982~/1995~", "1982%/1995%"] }
+
+            it 'strips out all markers' do
+              expect(subject.css('date').map(&:inner_text)).to all(eq "1982/1995")
+            end
           end
         end
 
@@ -341,6 +357,14 @@ RSpec.describe Bolognese::Readers::GenericWorkReader do
             expect(subject.css('dates').count).to eq 1
             expect(subject.at_css('date').inner_text).to eq "1912-12-01/1913-02-28"
             expect(subject.at_css('date').attributes['dateType'].value).to eq "Created"
+          end
+
+          context 'and has approximate/uncertain markers' do
+            before { work.date_created = ["1912-24?", "1912-24~", "1912-24%"] }
+
+            it 'strips out all markers' do
+              expect(subject.css('date').map(&:inner_text)).to all(eq "1912-12-01/1913-02-28")
+            end
           end
         end
 
