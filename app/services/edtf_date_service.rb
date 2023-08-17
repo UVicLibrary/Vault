@@ -67,22 +67,26 @@ class EdtfDateService
       # Open-ended date intervals
       if "#{@date_string}".include?("../")
         result = "Before #{@parsed_date.humanize.capitalize}"
+      elsif "#{@date_string}".include?("/..")
+        result = @parsed_date.humanize.capitalize
       else
+        # Everything else
         case @parsed_date.class.name
         when "EDTF::Interval"
-          if season_interval?|| century_interval? || decade_interval?
+          if season_interval? || century_interval? || decade_interval?
             from = apply_humanized_approximate_or_uncertain(Date.edtf(@date_string.split('/')[0]), @date_string.split('/')[0].last)
             to = apply_humanized_approximate_or_uncertain(Date.edtf(@date_string.split('/')[1]), @date_string.split('/')[1].last)
-            result = "#{from}#{I18n.t('edtf.terms.interval_connector_day')}#{to}"
           else
-            result = @parsed_date.humanize
+            from = apply_humanized_approximate_or_uncertain(@parsed_date.from.humanize, @date_string.split('/')[0].last)
+            to = apply_humanized_approximate_or_uncertain(@parsed_date.to.humanize, @date_string.split('/')[1].last)
           end
+          result = "#{from}#{I18n.t('edtf.terms.interval_connector_day')}#{to}"
         when "EDTF::Century", "EDTF::Decade","EDTF::Season"
           result = apply_humanized_approximate_or_uncertain(@parsed_date, @date_string.last)
         when "String" # "unknown" or "no date"
           result = @parsed_date
         when "Date"
-          result = @parsed_date.humanize
+          result = apply_humanized_approximate_or_uncertain(@parsed_date.humanize, @date_string.last)
         end
       end
       delete_prefix(result)
@@ -102,6 +106,9 @@ class EdtfDateService
 
       def parse_date(date_string)
         date_string = date_string.gsub('/..','/open')
+        # Remove all uncertainty and approximation markers when parsing these kinds of dates
+        date_string = strip_markers(date_string)
+
         if date_string == "unknown" or date_string == "no date"
           date_string
         elsif date_string.include? "../"
@@ -131,9 +138,7 @@ class EdtfDateService
             parse_date_before_1000(date_string)
           end
         elsif season_interval? || century_interval? || decade_interval?
-          # Remove all uncertainty and approximation markers when parsing these kinds of dates
           # since edtf-ruby can't parse them and add them back in during .humanize
-          date_string = strip_markers(date_string)
           first_date = Date.edtf(date_string.split("/").first)
           last_date = Date.edtf(date_string.split("/").last)
           EDTF::Interval.new(first_date.first, last_date.last)
@@ -159,10 +164,11 @@ class EdtfDateService
       # Remove all uncertainty and approximation markers
       def strip_markers(date_string)
         markers = ['%','?','~']
+        dup = date_string.dup
         markers.each do |marker|
-          date_string.gsub!(marker,'')
+          dup.gsub!(marker,'')
         end
-        date_string
+        dup
       end
 
       def season_interval?
