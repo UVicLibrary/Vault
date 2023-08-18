@@ -65,7 +65,7 @@
     <div class="tab-pane fade" id="featured-works" role="tabpanel">
       <div class="container-fluid card-container">
         <% if FeaturedWork.any? %>
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_work_list.featured_works.map(&:presenter) %>
+          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_work_list.featured_works.map(&:presenter), card_width: card_width(@featured_work_list.featured_works.map(&:presenter)) %>
       <% end %>
       </div><!-- .container -->
     </div><!-- tab-pane -->
