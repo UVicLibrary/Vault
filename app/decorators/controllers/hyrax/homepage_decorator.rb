@@ -23,7 +23,9 @@ Hyrax::HomepageController.class_eval do
       # The other instance variables are used by the Recent Works tab
       @response, @recent_works = works_search_service.search_results
       @recent_work_presenters = build_presenters(@recent_works, VaultWorkShowPresenter)
-      @work_count = @response['response']['numFound']
+
+      # Limit ourselves to maximum 40 recent works
+      @work_count = @response['response']['numFound'] < 40 ? @response['response']['numFound'] : 40
     else
       @featured_researcher = ContentBlock.for(:researcher)
       @marketing_text = ContentBlock.for(:marketing)
@@ -70,6 +72,8 @@ Hyrax::HomepageController.class_eval do
     works_search_service.search_results do |builder|
       builder.start(start)
     end[1]
+  rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
+    []
   end
 
   def works_search_service
@@ -89,7 +93,9 @@ Hyrax::HomepageController.class_eval do
   end
 
   def count_collections
-    Hyrax::CollectionsService.new(self).search_results.count
+    Hyrax::CollectionsService.new(self).try(:search_results).count
+  rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
+    0
   end
 
   def sort_field
