@@ -3,7 +3,6 @@ class Hyrax::HomepageController < ApplicationController
   include Blacklight::SearchContext
   include Blacklight::SearchHelper
   include Blacklight::AccessControls::Catalog
-  include BlacklightRangeLimit::ControllerOverride
 
   class_attribute :presenter_class
   self.presenter_class = Hyrax::HomepagePresenter
@@ -88,6 +87,10 @@ class Hyrax::HomepageController < ApplicationController
                                user_params: { q: '', sort: sort_field, rows: 8 },
                                scope: self,
                                search_builder_class: Hyrax::WorksSearchBuilder)
+    end
+
+    def search_service
+      Hyrax::SearchService.new(config: blacklight_config, user_params: { q: '' }, scope: self, search_builder_class: Hyrax::HomepageSearchBuilder)
     end
 
   # Return all collections
