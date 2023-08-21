@@ -172,4 +172,8 @@ class SolrDocument
       fetch('in_scua_bsi', nil)
   end
 
+  def doi
+    fetch('doi_ssi', [])
+  end
+
 end
