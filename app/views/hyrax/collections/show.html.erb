@@ -17,8 +17,6 @@
         <%= @presenter.permission_badge %>
       </div>
 
-      <%= render 'show_google_map', presenter: @presenter %>
-
       <% unless @presenter.logo_record.blank? %>
           <div class="hyc-logos">
             <% @presenter.logo_record.each_with_index  do |lr, i| %>
@@ -41,7 +39,9 @@
   </div>
 
   <div class="row hyc-body">
-
+    <div class="col-md-12" style="margin-bottom: 0.5%;">
+    <%= render 'show_google_map', presenter: @presenter %>
+    </div>
     <div class="col-md-8 hyc-description">
       <!-- Includes permalink -->
       <%= render 'collection_description', presenter: @presenter %>
