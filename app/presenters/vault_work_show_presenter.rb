@@ -10,6 +10,8 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     class_attribute :collection_presenter_class
     class_attribute :iiif_metadata_fields
 
+    Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+
     # modify this attribute to use an alternate presenter class for the collections
     self.collection_presenter_class = Hyrax::CollectionPresenter
 
@@ -65,6 +67,7 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     # @return [Array] array of metadata hashes
     def manifest_metadata
       metadata = []
+      byebug
       Hyrax.config.iiif_metadata_fields.each do |field|
           # This line catches empty strings in the creator field [""]
           next if Array.wrap(solr_document.public_send(field)).blank?
