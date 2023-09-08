@@ -5,7 +5,7 @@
 * [Step 1: Install Docker Desktop](#step-1-install-docker-desktop)
 * [Step 2: Download or Clone the GitHub Repository](#step-2-download-or-clone-the-github-repository)
   * [Using the Command Line/Terminal](#using-the-command-lineterminal)
-  * [Using GitHup Desktop](#using-github-desktop)
+  * [Using GitHub Desktop](#using-github-desktop)
 * [Step 3: Build the Docker Images](#step-3-build-the-docker-images)
   * [Troubleshooting](#troubleshooting)
 * [Step 4: First Time Setup and Starting/Running the Application](#step-4-first-time-setup-and-startingrunning-the-application)
@@ -41,14 +41,15 @@ or `ls`) would be helpful if you're unfamiliar. There are many tutorials and res
 #### Using GitHub Desktop
 
 1. Go to File > Clone Repository > URL
-2. Paste the following URL in: https://github.com/UVicLibrary/Vault (And change the local directory/folder if desired)
+2. Paste the following URL in: https://github.com/UVicLibrary/Vault and select a local directory
+    1. **If you're using Docker on Windows, we recommend creating or selecting a directory in the WSL 2 / Linux file system so Docker will run faster. See the [Speeding up Docker on Windows](./Speeding_up_Docker_on_Windows.md) section for more.**
 3. Click Clone
 4. [Switch](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/making-changes-in-a-branch/managing-branches#switching-between-branches) to the `docker_multitenant` branch
 
 ### Step 3: Build the Docker Images
 
-1. Open the terminal (bash/command line) on Mac, or Powershell on Windows (or open a Powershell tab in your 
-Windows Terminal).
+1. Open the terminal (bash/command line) on Mac, or in Ubuntu or Powershell on Windows (or open a Powershell/Ubuntu tab in your 
+Windows Terminal). We recommend using Ubuntu on Windows for better performance (see [Speeding up Docker on Windows](./Speeding_up_Docker_on_Windows.md)).
 2. Navigate to the folder/directory you downloaded Vault into (`cd file/path`)
 3. Run `docker-compose build` to build the application. This can take a while depending on your computer's specs.
 
@@ -159,4 +160,4 @@ And then swap out Hyrax's service with our own back in the collection indexer:
 Jeremy Friesen's blog post goes into more detail on [responsible and sustainable code overrides](https://takeonrules.com/2023/03/26/responsible-and-sustainable-overrides-in-ruby-and-samvera-in-general/). 
 The documentation on [Samvera design patterns](https://samvera.github.io/patterns-overview.html) may also be helpful.
 
-Next Page: [Multitenancy: Creating Your First Tenant >>](./Multitenancy.md)
+Next Page: [Speeding up Docker on Windows >>](./Speeding_up_Docker_on_Windows.md)
