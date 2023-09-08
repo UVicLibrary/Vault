@@ -4,6 +4,7 @@ RSpec.describe VaultWorkShowPresenter do
   let(:ability) { double Ability }
   let(:solr_document) { SolrDocument.new(attributes) }
   let(:request) { double(remote_ip: "111.11.11") }
+  let(:account) { Account.new }
 
   let(:attributes) do
     {
@@ -12,6 +13,12 @@ RSpec.describe VaultWorkShowPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "extent_tesim" => ["20 pages"]
     }
+  end
+
+  # We need to set the right value in Hyrax.config.iiif_metadata_fields
+  before do
+    allow(Account).to receive(:find_by).and_return(account)
+    allow(account).to receive(:cname).and_return("vault")
   end
 
   # Delegate "label" field methods

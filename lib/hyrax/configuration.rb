@@ -243,9 +243,7 @@ module Hyrax
     #
     # @return [#Array] fields
     def iiif_metadata_fields
-      if Settings.multitenancy.enabled? && Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("iaff")
-        @iiif_metadata_fields ||= Hyrax::Forms::WorkForm.required_fields
-      else
+      if Settings.multitenancy.enabled && Account.find_by(tenant: Apartment::Tenant.current)&.cname.include?("vault")
         @iiif_metadata_fields ||= [:creator_label, :creator, :contributor_label, :contributor,
                                    :subject_label, :subject, :publisher, :language, :identifier,
                                    :keyword, :date_created, :based_near_label, :related_url,
@@ -257,6 +255,8 @@ module Hyrax
                                    :sponsor, :genre_label, :genre, :format, :archival_item_identifier,
                                    :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier,
                                    :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+      else
+        @iiif_metadata_fields ||= Hyrax::Forms::WorkForm.required_fields
       end
 
     end

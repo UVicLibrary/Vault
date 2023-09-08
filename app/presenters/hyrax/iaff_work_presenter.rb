@@ -2,6 +2,7 @@
 #  `rails generate hyrax:work IaffWork`
 module Hyrax
   class IaffWorkPresenter < Hyku::WorkShowPresenter
+    Hyrax::MemberPresenterFactory.file_presenter_class = Hyrax::FileSetPresenter
 
     delegate :alternative_title, :geographic_coverage, :coordinates, :chronological_coverage, :extent,
              :additional_physical_characteristics, :has_format, :physical_repository, :provenance,

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
+# This file is identical to Hyku v. 3.0.0
+
 module Hyku
   class WorkShowPresenter < Hyrax::WorkShowPresenter
-
-    # VaultFilePresenter inherits from Hyrax::FileSetPresenter
-    Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+    Hyrax::MemberPresenterFactory.file_presenter_class = Hyrax::FileSetPresenter
 
     delegate :extent, to: :solr_document
 
@@ -25,13 +25,13 @@ module Hyku
 
     private
 
-    def extract_from_identifier(rgx)
-      if solr_document['identifier_tesim'].present?
-        ref = solr_document['identifier_tesim'].map do |str|
-          str.scan(rgx)
+      def extract_from_identifier(rgx)
+        if solr_document['identifier_tesim'].present?
+          ref = solr_document['identifier_tesim'].map do |str|
+            str.scan(rgx)
+          end
         end
+        ref
       end
-      ref
-    end
   end
 end

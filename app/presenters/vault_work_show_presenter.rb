@@ -10,6 +10,8 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     class_attribute :collection_presenter_class
     class_attribute :iiif_metadata_fields
 
+    Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+
     # modify this attribute to use an alternate presenter class for the collections
     self.collection_presenter_class = Hyrax::CollectionPresenter
 
