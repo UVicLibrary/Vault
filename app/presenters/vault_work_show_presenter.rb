@@ -67,7 +67,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     # @return [Array] array of metadata hashes
     def manifest_metadata
       metadata = []
-      byebug
       Hyrax.config.iiif_metadata_fields.each do |field|
           # This line catches empty strings in the creator field [""]
           next if Array.wrap(solr_document.public_send(field)).blank?
