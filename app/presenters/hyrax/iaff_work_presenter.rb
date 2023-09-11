@@ -30,6 +30,13 @@ module Hyrax
           end
     end
 
+    # @return [Hyrax::FileSetPresenter]
+    def member_presenter_factory
+      Hyrax::MemberPresenterFactory.file_presenter_class = Hyrax::FileSetPresenter
+      @member_presenter_factory ||=
+        Hyrax::MemberPresenterFactory.new(solr_document, current_ability, request)
+    end
+
     def manifest_url
       "#{manifest_helper.manifest_hyrax_iaff_work_url(self.solr_document.id, host: request.base_url)}"
     end

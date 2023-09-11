@@ -1,4 +1,5 @@
 class VaultWorkShowPresenter < Hyku::WorkShowPresenter
+
     # app/controllers/authorize_by_ip_address.rb
     include AuthorizeByIpAddress
 
@@ -9,8 +10,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
 
     class_attribute :collection_presenter_class
     class_attribute :iiif_metadata_fields
-
-    Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
 
     # modify this attribute to use an alternate presenter class for the collections
     self.collection_presenter_class = Hyrax::CollectionPresenter
@@ -98,6 +97,13 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
       ordered_ids.map do |id|
         { 'id' => id, 'visibility_ssi' => Hyrax::SolrService.search_by_id(id)['visibility_ssi'] }
       end
+    end
+
+    # @return [VaultFileSetPresenter]
+    def member_presenter_factory
+      Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
+      @member_presenter_factory ||=
+        Hyrax::MemberPresenterFactory.new(solr_document, current_ability, request)
     end
 
 end
