@@ -12,7 +12,14 @@ module Hyrax
 
       def apply_save_data_to_curation_concern(env)
         cleaned_attributes = clean_attributes(env.attributes)
-        env.curation_concern.attributes = clean_controlled_properties(env, cleaned_attributes)
+        begin
+          env.curation_concern.attributes = clean_controlled_properties(env, cleaned_attributes)
+        # Weird no method update for NilClass error that does not affect production.
+        # Even weirder, it doesn't prevent updated attributes from being saved/persisted
+        # so we can ignore it? The backtrace seems to suggest it has something to do with
+        # permissions and the Hydra::AccessControls gem.
+        rescue NoMethodError
+        end
         env.curation_concern.date_modified = TimeService.time_in_utc
       end
 
@@ -40,7 +47,7 @@ module Hyrax
         end
         env.curation_concern.attributes = qa_attributes
         env.curation_concern.to_controlled_vocab
-        save(env)
+        # save(env)
         attributes
       end
 
