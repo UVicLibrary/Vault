@@ -71,7 +71,7 @@ RSpec.describe VaultDataCiteRegistrar do
       end
     end
 
-    context "when the work's doi_when_public_status is findable and it is public" do
+    context "when the work's visibility is public" do
       before do
         work.visibility = 'open'
         allow(client).to receive(:register_url).with(any_args)
@@ -80,6 +80,31 @@ RSpec.describe VaultDataCiteRegistrar do
       it 'registers the URL and does not call delete_metadata' do
         expect(client).to receive(:register_url)
         expect(client).not_to receive(:delete_metadata)
+        registrar.register!(object: work)
+      end
+    end
+
+    context "when the work's visibility is institution-only" do
+      before do
+        work.visibility = 'authenticated'
+        allow(client).to receive(:register_url).with(any_args)
+      end
+
+      it 'registers the URL and does not call delete_metadata' do
+        expect(client).to receive(:register_url)
+        expect(client).not_to receive(:delete_metadata)
+        registrar.register!(object: work)
+      end
+    end
+
+    context "when the work's visibility is private" do
+      before do
+        work.visibility = 'restricted'
+        allow(client).to receive(:register_url).with(any_args)
+      end
+
+      it 'calls delete_metadata' do
+        expect(client).to receive(:delete_metadata)
         registrar.register!(object: work)
       end
     end

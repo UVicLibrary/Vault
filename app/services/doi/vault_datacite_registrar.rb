@@ -9,10 +9,10 @@ class VaultDataCiteRegistrar < Hyrax::DOI::DataCiteRegistrar
     # 2. Register a url with the DOI if it should be registered or findable
     client.register_url(doi, work_url(work)) if work.doi_status_when_public.in?(['registered', 'findable'])
 
-    # 3. Always call delete metadata unless findable and public
+    # 3. Always call delete metadata unless findable and public or institution-only
     # Do this because it has no real effect on the metadata and
     # the put_metadata or register_url above may have made it findable.
-    client.delete_metadata(doi) unless work.doi_status_when_public == 'findable' && public?(work)
+    client.delete_metadata(doi) unless work.doi_status_when_public == 'findable' && uvic_only_or_public?(work)
   end
 
   # @param [GenericWork]
@@ -24,6 +24,11 @@ class VaultDataCiteRegistrar < Hyrax::DOI::DataCiteRegistrar
   # @return [Array] - the mime types of file sets in the work
   def mime_types(work)
     work.file_sets.map(&:mime_type).uniq
+  end
+
+  def uvic_only_or_public?(work)
+    work.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC ||
+        work.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
   end
 
 end
