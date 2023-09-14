@@ -15,3 +15,23 @@ Hyrax.config.identifier_registrars = { datacite: VaultDataCiteRegistrar }
 # available on Bolognese::Metadata.new(...). Example:
 # Bolognese::Metadata.prepend Bolognese::Readers::CustomReader
 Bolognese::Metadata.prepend Bolognese::Readers::GenericWorkReader
+
+# OVERRIDE class from hyrax-upgrade branch of hyrax-doi gem
+Hyrax::Actors::DOIActor.class_eval do
+
+  def update(env)
+    # Commented out the following 3 lines because:
+    # 1. they don't update the DOI status when the work visibility changes, but we
+    #    want it to change.
+    # 2. Does we really need to update and save again when the previous actor
+    #    has already applied and saved changes? Resaving the work seems to slow down
+    #    the saving process unnecessarily.
+    #
+    # # Ensure that the work has any changed attributes persisted before we create the job
+    # apply_save_data_to_curation_concern(env)
+    # save(env)
+    #
+    create_or_update_doi(env.curation_concern) && next_actor.update(env)
+  end
+
+end
