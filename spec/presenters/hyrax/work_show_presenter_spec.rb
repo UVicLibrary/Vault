@@ -154,6 +154,12 @@ RSpec.describe Hyrax::WorkShowPresenter do
     end
   end
 
+  describe "#member_presenter_factory" do
+    it 'returns a factory that generates Hyrax::FileSetPresenters' do
+      expect(subject.send(:member_presenter_factory).file_presenter_class).to eq Hyrax::FileSetPresenter
+    end
+  end
+
   describe 'admin users' do
     let(:user)    { create(:admin) }
     let(:ability) { Ability.new(user) }
@@ -529,8 +535,12 @@ RSpec.describe Hyrax::WorkShowPresenter do
         presenter.manifest_metadata
       end
 
+      let(:account) { Account.new }
+
       before do
         work.title = ['Test title', 'Another test title']
+        allow(Account).to receive(:find_by).and_return(account)
+        allow(account).to receive(:cname).and_return("something")
       end
 
       it "returns an array of metadata values" do

@@ -55,6 +55,12 @@ RSpec.describe VaultWorkShowPresenter do
     end
   end
 
+  describe '#member_presenter_factory' do
+    it 'returns a factory that generates VaultFileSetPresenters' do
+      expect(subject.send(:member_presenter_factory).file_presenter_class).to eq VaultFileSetPresenter
+    end
+  end
+
   describe '#manifest_metadata' do
     it 'returns an array of hashes like { "label" => "...", "value" => "..." }' do
       result = [
