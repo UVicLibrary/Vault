@@ -22,6 +22,10 @@ class FileSetIndexer < Hyrax::FileSetIndexer
         solr_doc['creator_tesim'] = parent_doc['creator_tesim']
         solr_doc['creator_label_tesim'] = parent_doc['creator_label_tesim']
       end
+
+      if object.visibility == "open" && object.try(:parent).try(:downloadable)
+        solr_doc["download_access_group_ssim"] = ["public"]
+      end
     end
   end
 
