@@ -37,6 +37,17 @@ RSpec.describe GenericWorkIndexer do
     end
   end
 
+  context 'with public work that is downloadable' do
+    before do
+      allow(work).to receive(:visibility).and_return('open')
+      allow(work).to receive(:downloadable).and_return true
+    end
+
+    it 'indexes "public" in download groups' do
+      expect(solr_document['download_access_group_ssim']).to eq ['public']
+    end
+  end
+
   context "with child works" do
     let!(:work) { create(:work_with_one_file, user: user) }
     let!(:child_work) { create(:generic_work, user: user) }

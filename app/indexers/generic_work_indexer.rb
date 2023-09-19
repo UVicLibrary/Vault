@@ -26,6 +26,7 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
     end
 
     super.tap do |solr_doc|
+      # Index title sort field since we can't sort on a _tesim field
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index file sets' extracted text for display in search results
@@ -36,6 +37,13 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
       # Allow public users to discover items with institution visibility
       if object.visibility == "authenticated"
         solr_doc["discover_access_group_ssim"] = "public"
+      end
+
+      # Index public users into a download group. TO DO: remove the downloadable
+      # attribute entirely and manage download access with CanCan & Blacklight
+      # access controls gem
+      if object.visibility == "open" && object.downloadable
+        solr_doc["download_access_group_ssim"] = ["public"]
       end
 
       unless object.date_created.empty?

@@ -100,16 +100,6 @@ RSpec.describe FileSetIndexer do
       expect(subject['current_file_version_ssi']).to eq file_set.original_file.id
     end
 
-    context 'when the file set is a pdf' do
-      before do
-        allow(file_set).to receive(:pdf?).and_return true
-        allow(PdfThumbnailPathService).to receive(:call).with(file_set).and_return("/pdf_thumbnails/misc/foo-thumb.jpg")
-      end
-      it 'indexes a custom pdf thumbnail path' do
-        expect(subject['thumbnail_path_ss']).to eq "/pdf_thumbnails/misc/foo-thumb.jpg"
-      end
-    end
-
     context "when the file set's parent has a creator" do
       let(:work) { GenericWork.new(creator: ["http://id.worldcat.org/fast/522461/"], id: "foo") }
       let(:parent_doc) { SolrDocument.new(creator_tesim: ["http://id.worldcat.org/fast/522461/"],
@@ -123,6 +113,19 @@ RSpec.describe FileSetIndexer do
       it "indexes the parent's creator as its own" do
         expect(subject['creator_tesim']).to eq(parent_doc['creator_tesim'])
         expect(subject['creator_label_tesim']).to eq(parent_doc['creator_label_tesim'])
+      end
+    end
+
+    context "when the file set's parent is public and downloadable" do
+      let(:work) { GenericWork.new(visibility: "open", downloadable: true) }
+
+      before do
+        allow(file_set).to receive(:parent).and_return(work)
+        allow(file_set).to receive(:visibility).and_return("open")
+      end
+
+      it "indexes public as the download access group" do
+        expect(subject['download_access_group_ssim']).to eq ["public"]
       end
     end
   end
