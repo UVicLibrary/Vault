@@ -1,18 +1,22 @@
-class SortCollectionMembersByDateService < Hyrax::Collections::CollectionMemberService
+class SortCollectionMembersByDateService < Hyrax::Collections::CollectionMemberSearchService
 
   # @api public
   #
   # If no query or sort parameter is provided, sort works chronologically and then by title
   # @return [Blacklight::Solr::Response]
   def available_member_works
-    if !params.key?(:sort) && !params.key?(:cq)
+    if !user_params.key?(:sort) && !user_params.key?(:cq)
       response, _docs = search_results do |builder|
         builder.search_includes_models = :works
         builder.merge(sort: date_sort)
       end
       response
     else
-      super
+      # Fix bug where sorting parameters do not get passed in
+      response, _docs = search_results do |builder|
+        builder.merge(user_params.permit(:sort))
+      end
+      response
     end
   end
 
