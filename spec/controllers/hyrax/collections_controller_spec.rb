@@ -1,6 +1,7 @@
-RSpec.describe Hyrax::CollectionsController do
+# frozen_string_literal: true
+RSpec.describe Hyrax::CollectionsController, clean_repo: true do
   routes { Hyrax::Engine.routes }
-  let(:user)  { create(:admin) }
+  let(:user)  { create(:user) }
   let(:other) { build(:user) }
 
   let(:collection) do
@@ -31,19 +32,19 @@ RSpec.describe Hyrax::CollectionsController do
     end
 
     it "returns the collection and its members" do # rubocop:disable RSpec/ExampleLength
-       expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
-       expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
-       expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-       expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
-       get :show, params: { id: collection }
-       expect(response).to be_successful
-       expect(response).to render_template("layouts/hyrax/1_column")
-       expect(assigns[:presenter]).to be_kind_of Hyrax::CollectionPresenter
-       expect(assigns[:presenter].title).to match_array collection.title
-       expect(assigns[:member_docs].map(&:id)).to match_array [asset1, asset2, asset3].map(&:id)
-       expect(assigns[:subcollection_docs].map(&:id)).to match_array [asset4, asset5].map(&:id)
-       expect(assigns[:members_count]).to eq(3)
-       expect(assigns[:subcollection_count]).to eq(2)
+    expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
+    expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+    expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+    expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+    get :show, params: { id: collection }
+    expect(response).to be_successful
+    expect(response).to render_template("layouts/hyrax/1_column")
+    expect(assigns[:presenter]).to be_kind_of Hyrax::CollectionPresenter
+    expect(assigns[:presenter].title).to match_array collection.title
+    expect(assigns[:member_docs].map(&:id)).to match_array [asset1, asset2, asset3].map(&:id)
+    expect(assigns[:subcollection_docs].map(&:id)).to match_array [asset4, asset5].map(&:id)
+    expect(assigns[:members_count]).to eq(3)
+    expect(assigns[:subcollection_count]).to eq(2)
     end
 
     context "and searching" do
@@ -69,10 +70,6 @@ RSpec.describe Hyrax::CollectionsController do
 
     context "without a referer" do
       it "sets breadcrumbs" do
-        # expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
-        # expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
-        # get :show, params: { id: collection }
-        # expect(response).to be_successful
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))

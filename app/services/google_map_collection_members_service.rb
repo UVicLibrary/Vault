@@ -1,4 +1,4 @@
-class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberService
+class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberSearchService
 
   # @return [Blacklight::SolrResponse]
   # Member works of a collection that have something in the coordinates field.

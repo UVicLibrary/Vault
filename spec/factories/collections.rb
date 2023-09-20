@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FactoryBot.define do
   # Tests that create a Fedora Object are very slow.  This factory lets you control which parts of the object ecosystem
   # get built.
@@ -46,7 +47,7 @@ FactoryBot.define do
   #
   # @example Build a collection generating its collection type with specific settings. Light Weight.
   #          NOTE: Do not use this approach if you need access to the collection type in the test.
-  #          DEFAULT: If `collection_type_settings` and `collection_type_gid` are not specified, then the default
+  #          DEFAULT: If `collection_type_settings` and `collection_type` are not specified, then the default
   #          User Collection type will be used.
   #   # Any not specified default to ON.  At least one setting should be specified.
   #   let(:settings) { [
@@ -69,7 +70,7 @@ FactoryBot.define do
   #                      :allow_multiple_membership, # OR :not_allow_multiple_membership
   #                    ] }
   #   let(:collection_type) { create(:collection_lw_type, settings) }
-  #   let(:collection) { build(:collection_lw, collection_type_gid: collection_type.gid) }
+  #   let(:collection) { build(:collection_lw, collection_type: collection_type) }
   #
   # @example Build a collection with nesting fields set in the solr document.  Light weight.
   #          NOTE: The property `with_nesting_attributes` is only supported for building collections.  The attributes will
@@ -102,6 +103,7 @@ FactoryBot.define do
     transient do
       user { create(:user) }
 
+      collection_type { nil }
       collection_type_settings { nil }
       with_permission_template { false }
       with_nesting_attributes { nil }
@@ -110,6 +112,7 @@ FactoryBot.define do
     sequence(:title) { |n| ["Collection Title #{n}"] }
 
     after(:build) do |collection, evaluator|
+      collection.collection_type_gid = evaluator.collection_type.to_global_id if evaluator.collection_type&.id.present?
       collection.apply_depositor_metadata(evaluator.user.user_key)
 
       CollectionLwFactoryHelper.process_collection_type_settings(collection, evaluator)
@@ -162,14 +165,13 @@ FactoryBot.define do
   factory :user_collection_lw, class: Collection do
     transient do
       user { create(:user) }
+      collection_type { create(:user_collection_type) }
     end
 
     sequence(:title) { |n| ["User Collection Title #{n}"] }
 
     after(:build) do |collection, evaluator|
       collection.apply_depositor_metadata(evaluator.user.user_key)
-      collection_type = create(:user_collection_type)
-      collection.collection_type_gid = collection_type.gid
     end
   end
 
@@ -286,11 +288,11 @@ FactoryBot.define do
     def self.process_with_nesting_attributes(collection, evaluator)
       return unless evaluator.with_nesting_attributes.present? && collection.nestable?
       Hyrax::Adapters::NestingIndexAdapter.add_nesting_attributes(
-        solr_doc: solr_document_with_permissions(collection, evaluator),
-        ancestors: evaluator.with_nesting_attributes[:ancestors],
-        parent_ids: evaluator.with_nesting_attributes[:parent_ids],
-        pathnames: evaluator.with_nesting_attributes[:pathnames],
-        depth: evaluator.with_nesting_attributes[:depth]
+          solr_doc: solr_document_with_permissions(collection, evaluator),
+          ancestors: evaluator.with_nesting_attributes[:ancestors],
+          parent_ids: evaluator.with_nesting_attributes[:parent_ids],
+          pathnames: evaluator.with_nesting_attributes[:pathnames],
+          depth: evaluator.with_nesting_attributes[:depth]
       )
     end
 
@@ -302,7 +304,7 @@ FactoryBot.define do
     def self.process_with_solr_document(collection, evaluator)
       return unless evaluator.with_solr_document
       return if evaluator.with_nesting_attributes.present? && collection.nestable? # will create the solr document there instead
-      ActiveFedora::SolrService.add(solr_document_with_permissions(collection, evaluator), commit: true)
+      Hyrax::SolrService.add(solr_document_with_permissions(collection, evaluator), commit: true)
     end
 
     # Return the collection's solr document with permissions added, such that...
@@ -315,9 +317,9 @@ FactoryBot.define do
       collection.edit_users = user_managers(evaluator.with_permission_template, evaluator.user)
       collection.edit_groups = group_managers(evaluator.with_permission_template)
       collection.read_users = user_viewers(evaluator.with_permission_template) +
-        user_depositors(evaluator.with_permission_template)
+          user_depositors(evaluator.with_permission_template)
       collection.read_groups = group_viewers(evaluator.with_permission_template) +
-        group_depositors(evaluator.with_permission_template)
+          group_depositors(evaluator.with_permission_template)
       collection.to_solr
     end
     private_class_method :solr_document_with_permissions
