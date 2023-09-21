@@ -2,17 +2,17 @@ module AuthorizeByIpAddress
 
   # Allow public users who are on campus (detected using IP address) to access UVic-only works.
   # For all other users, run the usual authorization checks.
-  # @param [SolrDocument]
+  # @param [SolrDocument or Presenter]
   def authorize_by_ip(curation_concern)
     if authorized_by_ip?(curation_concern)
       current_ability.can(:read, curation_concern)
     else
-      authorize! :show, curation_concern
+      authorize! :read, curation_concern
     end
   end
 
   def authorized_by_ip?(doc_or_presenter)
-    visibility_of(doc_or_presenter) == "authenticated" && ip_on_campus?
+    visibility_of(doc_or_presenter) == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED && ip_on_campus?
   end
 
   def visibility_of(doc_or_presenter)
