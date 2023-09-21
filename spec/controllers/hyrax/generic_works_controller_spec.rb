@@ -24,7 +24,7 @@ RSpec.describe Hyrax::GenericWorksController do
       get :show, params: { id: work }
       expect(response.code).to eq '401'
       expect(response).to render_template(:unavailable)
-      # expect(assigns[:presenter]).to be_instance_of Hyrax::GenericWorkPresenter
+      expect(assigns[:presenter]).to be_instance_of VaultWorkShowPresenter
       expect(flash[:notice]).to eq 'The work is not currently available because it has not yet completed the approval process'
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe Hyrax::GenericWorksController do
       get :show, params: { id: work.id }
       expect(response.code).to eq '200'
       expect(response).to render_template(:show)
-      expect(assigns[:presenter]).to be_instance_of Hyrax::GenericWorkPresenter
+      expect(assigns[:presenter]).to be_instance_of VaultWorkShowPresenter
       expect(flash[:notice]).to be_nil
     end
   end
@@ -86,13 +86,48 @@ RSpec.describe Hyrax::GenericWorksController do
       end
     end
 
+    context 'with a work with institution-only visibility' do
+      let(:work) { create(:registered_generic_work, visibility: "authenticated") }
+
+      before do
+        sign_out user
+        allow(Settings).to receive(:allowed_ip_ranges).and_return(["111.11.11"])
+        allow(IPAddr).to receive(:new).with("111.11.11").and_return("111.11.11")
+      end
+
+      context 'with an IP address on campus' do
+
+        before { request.remote_ip = "111.11.11" }
+
+        it 'allows access' do
+          get :show, params: { id: work }
+          expect(response).to be_successful
+          expect(assigns(:presenter)).to be_kind_of VaultWorkShowPresenter
+        end
+      end
+
+      context 'with an IP address not on campus' do
+
+        before do
+          request.remote_ip = "222.22.22" # the IP address to compare with allowed list in settings
+          allow(IPAddr).to receive(:new).with("222.22.22").and_return("222.22.22")
+        end
+
+        it 'denies access and redirects to the sign in page' do
+          get :show, params: { id: work }
+          expect(response.code).to eq '302'
+          expect(response.location).to eq 'http://test.host/users/sign_in?locale=en'
+        end
+      end
+    end
+
     context 'my own private work' do
       let(:work) { create(:private_generic_work, user: user, title: ['test title']) }
 
       it 'shows me the page' do
         get :show, params: { id: work }
         expect(response).to be_successful
-        expect(assigns(:presenter)).to be_kind_of Hyrax::WorkShowPresenter
+        expect(assigns(:presenter)).to be_kind_of VaultWorkShowPresenter
       end
 
       context "without a referer" do
@@ -132,7 +167,7 @@ RSpec.describe Hyrax::GenericWorksController do
         it "sets the parent presenter" do
           get :show, params: { id: work, parent_id: parent }
           expect(response).to be_successful
-          expect(assigns[:parent_presenter]).to be_instance_of Hyrax::GenericWorkPresenter
+          expect(assigns[:parent_presenter]).to be_instance_of VaultWorkShowPresenter
         end
       end
 
@@ -208,59 +243,70 @@ RSpec.describe Hyrax::GenericWorksController do
       end
     end
 
-    context 'with work still in workflow' do
-      before do
-        allow(controller).to receive(:search_results).and_return([nil, document_list])
-      end
-      let(:work) { instance_double(GenericWork, id: '99999', to_global_id: '99999') }
-
-      context 'with a user lacking both workflow permission and read access' do
-        before do
-          allow(SolrDocument).to receive(:find).and_return(document)
-          allow(controller.current_ability).to receive(:can?).with(:read, document).and_return(false)
-        end
-        let(:document_list) { [] }
-        let(:document) { instance_double(SolrDocument, suppressed?: true) }
-
-        it 'shows the unauthorized message' do
-          get :show, params: { id: work.id }
-          expect(response.code).to eq '401'
-          expect(response).to render_template(:unauthorized)
-        end
-
-        context 'with a user who lacks workflow permission but has read access' do
-          before do
-            allow(SolrDocument).to receive(:find).and_return(document)
-            allow(controller.current_ability).to receive(:can?).with(:read, document).and_return(true)
-          end
-          let(:document_list) { [] }
-          let(:document) { instance_double(SolrDocument, suppressed?: true) }
-
-          it 'shows the unavailable message' do
-            get :show, params: { id: work.id }
-            expect(response.code).to eq '401'
-            expect(response).to render_template(:unavailable)
-            expect(flash[:notice]).to eq 'The work is not currently available because it has not yet completed the approval process'
-          end
-        end
-      end
-
-      context 'with a user granted workflow permission' do
-        let(:document) { SolrDocument.new(id: work.id, has_model_ssim: ["GenericWork"]) }
-        let(:document_list) { [document] }
-
-        it 'renders without the unauthorized message' do
-          get :show, params: { id: work.id }
-          expect(response.code).to eq '200'
-          expect(response).to render_template(:show)
-          expect(flash[:notice]).to be_nil
-        end
-      end
-    end
+    # We don't use workflow features so we only test for read access.
+    #
+    # context 'with work still in workflow' do
+    #   before do
+    #     allow(controller).to receive(:search_results).and_return([nil, document_list])
+    #   end
+    #   let(:work) { instance_double(GenericWork, id: '99999', to_global_id: '99999') }
+    #
+    #   context 'with a user lacking both workflow permission and read access' do
+    #     before do
+    #       allow(SolrDocument).to receive(:find).and_return(document)
+    #       allow(controller.current_ability).to receive(:can?).with(:read, document).and_return(false)
+    #     end
+    #     let(:document_list) { [] }
+    #     let(:document) { instance_double(SolrDocument, suppressed?: true) }
+    #
+    #     it 'shows the unauthorized message' do
+    #       get :show, params: { id: work.id }
+    #       expect(response.code).to eq '401'
+    #       expect(response).to render_template(:unauthorized)
+    #     end
+    #
+    #     context 'with a user who lacks workflow permission but has read access' do
+    #       before do
+    #         allow(SolrDocument).to receive(:find).and_return(document)
+    #         allow(controller.current_ability).to receive(:can?).with(:read, document).and_return(true)
+    #       end
+    #       let(:document_list) { [] }
+    #       let(:document) { instance_double(SolrDocument, suppressed?: true) }
+    #
+    #       it 'shows the unavailable message' do
+    #         get :show, params: { id: work.id }
+    #         expect(response.code).to eq '401'
+    #         expect(response).to render_template(:unavailable)
+    #         expect(flash[:notice]).to eq 'The work is not currently available because it has not yet completed the approval process'
+    #       end
+    #     end
+    #   end
+    #
+    #   context 'with a user granted workflow permission' do
+    #     let(:document) { SolrDocument.new(id: work.id, has_model_ssim: ["GenericWork"]) }
+    #     let(:document_list) { [document] }
+    #
+    #     before do
+    #       allow(Hyrax.query_service).to receive(:find_by_alternate_identifier).and_return(work)
+    #       # allow(controller.current_ability).to receive(:can?).with(:read, document).and_return(true)
+    #       allow(work).to receive(:visibility).and_return("restricted")
+    #     end
+    #
+    #     it 'renders without the unauthorized message' do
+    #       get :show, params: { id: work.id }
+    #       expect(response.code).to eq '200'
+    #       expect(response).to render_template(:show)
+    #       expect(flash[:notice]).to be_nil
+    #     end
+    #   end
+    # end
   end
 
   describe '#new' do
     context 'my work' do
+
+      before { user.site_roles = ["admin"] }
+
       it 'shows me the page' do
         get :new
         expect(response).to be_successful
@@ -278,6 +324,7 @@ RSpec.describe Hyrax::GenericWorksController do
     let(:create_status) { true }
 
     before do
+      user.site_roles = ["admin"]
       allow(Hyrax::CurationConcern).to receive(:actor).and_return(actor)
     end
 
@@ -337,7 +384,7 @@ RSpec.describe Hyrax::GenericWorksController do
             uploaded_files: ['777', '888']
         }
         expect(flash[:notice]).to be_html_safe
-        expect(flash[:notice]).to eq "Your files are being processed by Hyrax in the background. " \
+        expect(flash[:notice]).to eq "Your files are being processed by Hyku in the background. " \
                                      "The metadata and access controls you specified are being applied. " \
                                      "You may need to refresh this page to see these updates."
         expect(response).to redirect_to main_app.hyrax_generic_work_path(work, locale: 'en')
@@ -391,7 +438,7 @@ RSpec.describe Hyrax::GenericWorksController do
                 parent_id: work.id,
                 generic_work: { title: ['First title'] }
             }
-            expect(flash[:notice]).to eq "Your files are being processed by Hyrax in the background. " \
+            expect(flash[:notice]).to eq "Your files are being processed by Hyku in the background. " \
                                          "The metadata and access controls you specified are being applied. " \
                                          "You may need to refresh this page to see these updates."
             expect(response).to redirect_to main_app.hyrax_generic_work_path(work, locale: 'en')
@@ -443,7 +490,6 @@ RSpec.describe Hyrax::GenericWorksController do
     context 'when I am a repository manager' do
 
       before do
-        user.add_role(:admin)
         user.site_roles = ["admin"]
       end
 
@@ -487,9 +533,12 @@ RSpec.describe Hyrax::GenericWorksController do
 
       describe 'changing rights' do
         context 'when the work has file sets attached' do
+          let(:file_sets) { double(present?: true) }
+
           before do
             allow(GenericWork).to receive(:find).and_return(work)
-            allow(work).to receive(:file_sets).and_return(double(present?: true))
+            allow(work).to receive(:file_sets).and_return(file_sets)
+            allow(file_sets).to receive(:select).and_return([])
           end
 
           it 'prompts to change the files access' do
