@@ -91,13 +91,11 @@ RSpec.describe Hyrax::GenericWorksController do
 
       before do
         sign_out user
-        allow(Settings).to receive(:allowed_ip_ranges).and_return(["111.11.11"])
-        allow(IPAddr).to receive(:new).with("111.11.11").and_return("111.11.11")
+        allow(Settings).to receive(:allowed_ip_ranges).and_return(["111.111.11.11"])
       end
 
       context 'with an IP address on campus' do
-
-        before { request.remote_ip = "111.11.11" }
+        before { request.remote_ip = "111.111.11.11" }
 
         it 'allows access' do
           get :show, params: { id: work }
@@ -108,10 +106,7 @@ RSpec.describe Hyrax::GenericWorksController do
 
       context 'with an IP address not on campus' do
 
-        before do
-          request.remote_ip = "222.22.22" # the IP address to compare with allowed list in settings
-          allow(IPAddr).to receive(:new).with("222.22.22").and_return("222.22.22")
-        end
+        before { request.remote_ip = "222.222.22.22" }
 
         it 'denies access and redirects to the sign in page' do
           get :show, params: { id: work }
