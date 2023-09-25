@@ -1,4 +1,4 @@
-<%= presenter.attribute_to_html(:creator_label, render_as: :faceted) if presenter.creator_label.first.present? %>
+<%= presenter.attribute_to_html(:creator_label, render_as: :faceted) if presenter.try(:creator_label).present? %>
 <%= presenter.attribute_to_html(:contributor_label, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:subject_label, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:publisher, render_as: :faceted) %>
