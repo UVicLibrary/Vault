@@ -23,12 +23,8 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
 
     # @return [Array < GenericWork >] array of works to pass to fixity check
     def get_work_ids(start_date, end_date)
-      if Settings.multitenancy.enabled
-       # Get all works uploaded between the start date and end date
-        solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
-      else
-        solr = RSolr.connect url: Settings.solr.url
-      end
+      AccountElevator.switch! "vault.library.uvic.ca"
+      solr = RSolr.connect url: Blacklight.connection_config[:url]
       response = solr.get 'select', params: {
           q: "*:*",
           # Restrict this to non-private works because those are test objects

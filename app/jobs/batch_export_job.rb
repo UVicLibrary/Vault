@@ -35,8 +35,6 @@ class BatchExportJob < ExportFileJob
         end
       end
     end
-    # Move everything to narwhal
-    # Dir.glob("#{dirname}/*.7z").each { |f| FileUtils.mv(f, "/mnt/narwhal/#{File.basename(f)}") }
   end
 
   private
@@ -54,7 +52,7 @@ class BatchExportJob < ExportFileJob
   # @return [Array <GenericWork>]
   def get_recent_works
     # Get all works uploaded between the start date and end date
-    solr = RSolr.connect url: Account.find_by(tenant: Apartment::Tenant.current).solr_endpoint.url
+    solr = RSolr.connect url: Blacklight.connection_config[:url]
     response = solr.get 'select', params: {
       q: "*:*",
       fq: ["has_model_ssim:GenericWork","system_create_dtsi:[#{start_date} TO #{end_date}}"],
