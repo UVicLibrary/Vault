@@ -27,11 +27,11 @@ module Hyku
     config.paths.add "#{root}/app/services/doi", eager_load: true
     config.paths.add "#{root}/app/services/identifier", eager_load: true
 
-    # config.to_prepare do
-    #   Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
-    #     require_dependency(c)
-    #   end
-    # end
+    config.to_prepare do
+      Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
+        require_dependency(c)
+      end
+    end
 
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
