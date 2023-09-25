@@ -211,6 +211,10 @@ module Hyrax
         @hostname || 'localhost'
       end
 
+      def solr_document
+        model
+      end
+
       ##
       # @return [Boolean] false
       def work?
