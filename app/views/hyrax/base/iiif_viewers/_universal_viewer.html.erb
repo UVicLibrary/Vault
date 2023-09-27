@@ -8,13 +8,22 @@
     style="width:100%; height:480px;"
   ></iframe>
 </div>
-<% if pdf = presenter.file_set_presenters.find { |fs| fs.pdf? } %>
-    <% if Hyrax.config.display_media_download_link? && allow_downloads?(pdf) %>
-      <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link') + (pdf.title.first.downcase.include?("transcript") ? " transcription" : ""),
-                  hyrax.download_path(pdf),
-                  data: { turbolinks: false },
-                  target: :_blank,
-                  id: "pdf_download",
-                  data: { label: pdf.id } %>
-    <% end %>
+<%# Only render 'Download Image' link if there is only one image %>
+<% if display_media_download_link?(file_set: presenter.representative_presenter) \
+        && one_image?(presenter) %>
+  <%= link_to t('hyrax.file_set.show.downloadable_content.image_link'),
+              hyrax.download_path(presenter.representative_presenter),
+              data: { label: presenter.representative_presenter.id },
+              target: :_blank,
+              id: "file_download" %>
+<% end %>
+<%= '|' if display_pdf_download_link?(presenter) \
+            && one_image?(presenter) %>
+<% if display_pdf_download_link?(presenter) %>
+  <%= link_to pdf_link_text(presenter),
+              hyrax.download_path(pdf_file_set(presenter)),
+              data: { turbolinks: false },
+              target: :_blank,
+              id: "pdf_download",
+              data: { label: pdf_file_set(presenter).id } %>
 <% end %>

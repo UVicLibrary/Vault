@@ -1,9 +1,0 @@
-<% if presenter.representative_id.present? && presenter.representative_presenter.present? %>
-  <% if presenter.representative_presenter.image? %>
-    <%= iiif_viewer_display presenter %>
-  <% else %>
-    <%= media_display presenter.representative_presenter %>
-  <% end %>
-<% else %>
-  <%= image_tag 'default.png', class: "canonical-image" %>
-<% end %>

@@ -8,13 +8,17 @@
   </div>
   <div class="col-sm-12">
       <div class="col-sm-12 col-md-12">
-      <%= render 'representative_media', presenter: @presenter %>
-    </div>
+        <% if @presenter.iiif_viewer? %><%# returns true if image %>
+          <div class="col-sm-12">
+            <%= render 'representative_media', presenter: @presenter, viewer: true %>
+          </div>
+        <% else %>
+          <%= render 'representative_media', presenter: @presenter, viewer: false %>
+        <% end %>
+      </div>
     <%= render 'work_description', presenter: @presenter %>
     <%= render 'relationships', presenter: @presenter %>
     <%= render 'metadata', presenter: @presenter %>
-    <%= t('.last_modified', value: @presenter.date_modified) %>
-    <%= render 'social_media' %>
     <%= render 'citations', presenter: @presenter %>
   </div>
 </div>

@@ -1,24 +1,14 @@
-<% if Hyrax.config.display_media_download_link? %>
+<%# Override to use PDF viewer from pdfjs_viewer-rails gem %>
+<% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
         <iframe src="<%= pdfjs.full_path(file: hyrax.download_path(file_set)) %>#disableAutoFetch=true&disableStream=true"style='width: 100%; height: 100vw; overflow: hidden;' scrolling="yes">
-        <%#= pdfjs_viewer pdf_url:  hyrax.download_path(file_set), style: :full %>
         </iframe>
-      <% if request.base_url.include?("vault") && (can?(:edit, file_set.id) or file_set.parent.downloadable?) %>
-        <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
-                    hyrax.download_path(file_set),
-                    data: { turbolinks: false },
-                    target: :_blank,
-                    id: "file_download",
-                    data: { label: file_set.id } %>
-      <% elsif request.base_url.exclude?("vault") && can?(:download, file_set.id) %>
-          <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
-                      hyrax.download_path(file_set),
-                      data: { turbolinks: false },
-                      target: :_blank,
-                      id: "file_download",
-                      data: { label: file_set.id } %>
-      <% end %>
+      <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),
+                  hyrax.download_path(file_set),
+                  target: :_blank,
+                  id: "file_download",
+                  data: { label: file_set.id } %>
     </div>
 <% else %>
     <div>
