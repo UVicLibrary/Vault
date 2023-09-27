@@ -64,7 +64,8 @@ RSpec.describe AvTranscriptsHelper, type: :helper do
     let(:work) { create(:work_with_one_file) }
     let(:parent_doc) { SolrDocument.find(work.id) }
     let(:child_doc) { double("Video Document", id: work.file_sets.first.id, title: ["Video"]) }
-    let(:child) { Hyrax::FileSetPresenter.new(child_doc,"admin") }
+    let(:child) { Hyrax::FileSetPresenter.new(child_doc, Ability.new(admin)) }
+    let(:admin) { create(:admin) }
 
     describe "#parent_has_transcript?(file_set)" do
 
@@ -93,7 +94,7 @@ RSpec.describe AvTranscriptsHelper, type: :helper do
 
         let(:transcript) { create(:file_set) }
         let(:transcript_doc) { double("Transcript Document", id: transcript.id, title: ["Transcript"]) }
-        let(:transcript_presenter) { Hyrax::FileSetPresenter.new(transcript_doc,"admin") }
+        let(:transcript_presenter) { Hyrax::FileSetPresenter.new(transcript_doc, Ability.new(admin)) }
         let(:parent_presenter) { child.parent }
 
         before do
