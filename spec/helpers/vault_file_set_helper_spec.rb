@@ -13,24 +13,47 @@ RSpec.describe VaultFileSetHelper do
 
     context "with a video" do
       let(:mime_type) { 'video/webm' }
+      before { allow_any_instance_of(HykuHelper).to receive(:current_account).and_return(account) }
 
-      it { is_expected.to eq 'hyrax/file_sets/media_display/video' }
+      context 'when in Vault' do
+        let(:account) { Account.new(name: "vault") }
+
+        it { is_expected.to eq 'hyrax/file_sets/media_display/vault/video' }
+      end
+
+      context 'when not in Vault' do
+        let(:account) { Account.new(name: "iaff") }
+
+        it { is_expected.to eq 'hyrax/file_sets/media_display/video' }
+      end
     end
 
     context "with an audio" do
       let(:mime_type) { 'audio/wav' }
+      before { allow_any_instance_of(HykuHelper).to receive(:current_account).and_return(account) }
 
-      it { is_expected.to eq 'hyrax/file_sets/media_display/audio' }
+      context 'when in Vault' do
+        let(:account) { Account.new(name: "vault") }
+
+        it { is_expected.to eq 'hyrax/file_sets/media_display/vault/audio' }
+      end
+
+      context 'when not in Vault' do
+        let(:account) { Account.new(name: "iaff") }
+
+        it { is_expected.to eq 'hyrax/file_sets/media_display/audio' }
+      end
     end
 
     context "with an m4a file" do
-      let(:mime_type) { 'video/mp4' }
+      let(:mime_type) { 'video/m4a' }
 
       before do
         allow(file_set).to receive(:filename).and_return("File.m4a")
+        allow_any_instance_of(HykuHelper).to receive(:current_account).and_return(Account.new(name: "vault"))
       end
 
-      it { is_expected.to eq 'hyrax/file_sets/media_display/audio' }
+      it { is_expected.to eq 'hyrax/file_sets/media_display/vault/audio' }
     end
 
     context "with a pdf" do

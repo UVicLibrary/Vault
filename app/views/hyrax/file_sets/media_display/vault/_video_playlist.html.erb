@@ -1,9 +1,5 @@
 <div class="col-md-7 no-padding">
-  <% if !has_vtt?(video_files.first) && parent_has_transcript?(video_files.first) %>
-    <video id="video1" preload="auto" data-able-player data-skin="2020" data-transcript-text="transcript-text" playsinline width="600"></video>
-  <% else %>
-    <video id="video1" preload="auto" data-able-player data-skin="2020" playsinline width="600"></video>
-  <% end %>
+  <video id="video1" preload="auto" data-able-player data-skin="2020" <%= video_tag_settings(video_files.first) %> playsinline></video>
 </div>
 <div class="col-md-5 no-padding">
   <div id="video-playlist-container">
@@ -15,21 +11,7 @@
       <% video_files.each do |file| %>
         <li data-poster="<%= file.solr_document.thumbnail_path %>" data-width="600">
           <span class="able-source" data-src="<%= hyrax.download_path(file) %>"></span>
-          <% if has_vtt?(file) %>
-          <span class="able-track"
-                data-kind="captions"
-                data-src="<%= vtt_path_for(file) %>"
-                data-srclang="en"
-                data-label="English"></span>
-          <% elsif parent_has_transcript?(file) %>
-            <!-- This is just a dummy to trigger the Hide/Show transcript button, various controls (e.g. dragging, resizing
- that aren't available with the specified manual/external options. The transcript (PDF) text  -->
-            <span class="able-track"
-                data-kind="captions"
-                data-src="/able_player/transcripts/blank.vtt"
-                data-srclang="en"
-                data-label="English"></span>
-          <% end %>
+          <%= render_multi_track_tag(file) %>
           <button type="button">
             <img src="<%= file.solr_document.thumbnail_path %>" alt="">
             <%= file.title.first %>
@@ -40,10 +22,10 @@
     <div class="able-status-bar"></div>
   </div>
 </div>
-<% if parent_has_transcript?(video_files.first) %>
-  <div id="transcript-text" style="display: none;" aria-hidden="true"><%= sanitize(video_files.first.parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
+<% if has_transcript?(video_files.first) %>
+  <div id="transcript-text" style="display: none;" aria-hidden="true"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
 <% end %>
-<% if Hyrax.config.display_media_download_link? && allow_downloads?(video_files.first) %>
+<% if display_media_download_link?(file_set: video_files.first) %>
   <div class="download-links-container">
     <%= link_to "Download selected video",
                 hyrax.download_path(video_files.first),
@@ -59,13 +41,13 @@
                   target: :_blank,
                   id: "transcript_file_download",
                   data: { label: vtt_transcript_for(video_files.first).id } %>
-    <% elsif parent_has_transcript?(video_files.first) %>
+    <% elsif has_transcript?(video_files.first) %>
       <%= link_to "Download transcript (PDF)",
-                  hyrax.download_path(parent_transcript_for(video_files.first)),
+                  hyrax.download_path(transcript_for(video_files.first)),
                   data: { turbolinks: false },
                   target: :_blank,
                   id: "transcript_file_download",
-                  data: { label: parent_transcript_for(video_files.first).id } %>
+                  data: { label: transcript_for(video_files.first).id } %>
     <% end %>
   </div>
 <% end %>

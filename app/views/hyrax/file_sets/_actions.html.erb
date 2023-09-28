@@ -1,8 +1,4 @@
-<% if request.base_url.include? "vault" %>
-  <% user_can_perform_any_action = (can?(:edit, file_set.id) || can?(:destroy, file_set.id) || file_set.parent.downloadable?) %>
-<% else %>
-  <% user_can_perform_any_action = (can?(:edit, file_set.id) || can?(:destroy, file_set.id) || can?(:download, file_set.id)) %>
-<% end %>
+<% user_can_perform_any_action = (can?(:edit, file_set.id) || can?(:destroy, file_set.id) || display_media_download_link?(file_set: file_set)) %>
 <% if file_set and user_can_perform_any_action %><%# if false, there are no actions so no point rendering %>
     <div class="btn-group">
 

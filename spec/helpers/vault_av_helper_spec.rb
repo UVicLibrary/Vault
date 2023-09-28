@@ -1,4 +1,4 @@
-RSpec.describe AvTranscriptsHelper, type: :helper do
+RSpec.describe VaultAvHelper, type: :helper do
 
   describe "#has_vtt?(file_set)" do
 
@@ -67,11 +67,11 @@ RSpec.describe AvTranscriptsHelper, type: :helper do
     let(:child) { Hyrax::FileSetPresenter.new(child_doc, Ability.new(admin)) }
     let(:admin) { create(:admin) }
 
-    describe "#parent_has_transcript?(file_set)" do
+    describe "#has_transcript?(file_set)" do
 
       context "when parent does not have a transcript" do
         it "returns false" do
-          expect(helper.parent_has_transcript?(child)).to be(false)
+          expect(helper.has_transcript?(child)).to be(false)
         end
       end
 
@@ -82,13 +82,13 @@ RSpec.describe AvTranscriptsHelper, type: :helper do
           allow(helper).to receive(:params).and_return({ controller: "hyrax/generic_works" })
         end
         it "returns true" do
-          expect(helper.parent_has_transcript?(child)).to be(true)
+          expect(helper.has_transcript?(child)).to be(true)
         end
       end
 
     end
 
-    describe "#parent_transcript_for(file_set)" do
+    describe "#transcript_for(file_set)" do
 
       context "when work has a pdf file set" do
 
@@ -104,7 +104,7 @@ RSpec.describe AvTranscriptsHelper, type: :helper do
         end
 
         it "returns the transcript file for the file set's parent" do
-          expect(helper.parent_transcript_for(child)).to eq(transcript_presenter)
+          expect(helper.transcript_for(child)).to eq(transcript_presenter)
         end
       end
 
