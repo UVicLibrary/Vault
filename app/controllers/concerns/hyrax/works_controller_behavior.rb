@@ -152,114 +152,116 @@ module Hyrax
 
     private
 
-      def iiif_manifest_builder
-        self.class.iiif_manifest_builder ||
-            (Flipflop.cache_work_iiif_manifest? ? Hyrax::CachingIiifManifestBuilder.new : Hyrax::ManifestBuilderService.new)
-      end
+    def iiif_manifest_builder
+      self.class.iiif_manifest_builder ||
+          (Flipflop.cache_work_iiif_manifest? ? Hyrax::CachingIiifManifestBuilder.new : Hyrax::ManifestBuilderService.new)
+    end
 
-      def iiif_manifest_presenter
-        IiifManifestPresenter.new(search_result_document(id: params[:id])).tap do |p|
-          p.hostname = request.base_url
-          p.ability = current_ability
-        end
+    def iiif_manifest_presenter
+      IiifManifestPresenter.new(search_result_document(id: params[:id])).tap do |p|
+        p.hostname = request.base_url
+        p.ability = current_ability
       end
+    end
 
-      def user_collections
-        collections_service.search_results(:deposit)
-      end
+    def user_collections
+      collections_service.search_results(:deposit)
+    end
 
-      def collections_service
-        Hyrax::CollectionsService.new(self)
-      end
+    def collections_service
+      Hyrax::CollectionsService.new(self)
+    end
 
-      def admin_set_id_for_new
-        # admin_set_id is required on the client, otherwise simple_form renders a blank option.
-        # however it isn't a required field for someone to submit via json.
-        # Set the default admin set if it exists; otherwise, set to first admin_set they have access to.
-        admin_sets = Hyrax::AdminSetService.new(self).search_results(:deposit)
-        return nil if admin_sets.blank? # shouldn't happen
-        return AdminSet::DEFAULT_ID if admin_sets.map(&:id).include?(AdminSet::DEFAULT_ID)
-        admin_sets.first.id
-      end
+    def admin_set_id_for_new
+      # admin_set_id is required on the client, otherwise simple_form renders a blank option.
+      # however it isn't a required field for someone to submit via json.
+      # Set the default admin set if it exists; otherwise, set to first admin_set they have access to.
+      admin_sets = Hyrax::AdminSetService.new(self).search_results(:deposit)
+      return nil if admin_sets.blank? # shouldn't happen
+      return AdminSet::DEFAULT_ID if admin_sets.map(&:id).include?(AdminSet::DEFAULT_ID)
+      admin_sets.first.id
+    end
 
-      def build_form
-        @form = work_form_service.build(curation_concern, current_ability, self)
-      end
+    def build_form
+      @form = work_form_service.build(curation_concern, current_ability, self)
+    end
 
-      def actor
-        @actor ||= Hyrax::CurationConcern.actor
-      end
+    def actor
+      @actor ||= Hyrax::CurationConcern.actor
+    end
 
     ##
     # @return [#errors]
-      def create_work
-        case curation_concern
-        when ActiveFedora::Base
-          actor.create(actor_environment)
-        else
-          form = build_form
+    def create_work
+      case curation_concern
+      when ActiveFedora::Base
+        actor.create(actor_environment)
+      else
+        form = build_form
 
-          @curation_concern =
-              form.validate(params[hash_key_for_curation_concern]) &&
-                  transactions['change_set.create_work']
-                      .with_step_args('work_resource.add_file_sets' => { uploaded_files: uploaded_files },
-                                      'change_set.set_user_as_depositor' => { user: current_user })
-                      .call(form).value!
-        end
+        @curation_concern =
+          form.validate(params[hash_key_for_curation_concern]) &&
+          transactions['change_set.create_work']
+          .with_step_args('work_resource.add_to_parent' => { parent_id: params[:parent_id], user: current_user },
+                          # 'work_resource.add_file_sets' => { uploaded_files: uploaded_files },
+                          'work_resource.add_file_sets' => { uploaded_files: uploaded_files, file_set_params: params[hash_key_for_curation_concern][:file_set] },
+                          'change_set.set_user_as_depositor' => { user: current_user })
+          .call(form).value!
       end
+    end
 
-      def update_work
-        case curation_concern
-        when ActiveFedora::Base
-          actor.update(actor_environment)
-        else
-          form = build_form
+    def update_work
+      case curation_concern
+      when ActiveFedora::Base
+        actor.update(actor_environment)
+      else
+        form = build_form
 
-          @curation_concern =
-              form.validate(params[hash_key_for_curation_concern]) &&
-                  transactions['change_set.update_work']
-                      .with_step_args('work_resource.add_file_sets' => { uploaded_files: uploaded_files })
-                      .call(form).value!
-        end
+        @curation_concern =
+          form.validate(params[hash_key_for_curation_concern]) &&
+          transactions['change_set.update_work']          # .with_step_args('work_resource.add_file_sets' => { uploaded_files: uploaded_files })
+          .with_step_args('work_resource.add_file_sets' => { uploaded_files: uploaded_files, file_set_params: params[hash_key_for_curation_concern][:file_set] })
+          .call(form).value!
       end
+    end
 
-      def presenter
-        @presenter ||= show_presenter.new(search_result_document(id: params[:id]), current_ability, request)
-      end
+    def presenter
+      @presenter ||= show_presenter.new(search_result_document(id: params[:id]), current_ability, request)
+    end
 
-      def parent_presenter
-        return @parent_presenter unless params[:parent_id]
+    def parent_presenter
+      return @parent_presenter unless params[:parent_id]
 
-        @parent_presenter ||=
-            show_presenter.new(search_result_document(id: params[:parent_id]), current_ability, request)
-      end
+      @parent_presenter ||=
+        show_presenter.new(search_result_document(id: params[:parent_id]), current_ability, request)
+    end
 
     # Include 'hyrax/base' in the search path for views, while prefering
     # our local paths. Thus we are unable to just override `self.local_prefixes`
-      def _prefixes
-        @_prefixes ||= super + ['hyrax/base']
-      end
+    def _prefixes
+      @_prefixes ||= super + ['hyrax/base']
+    end
 
-      def actor_environment
-        Actors::Environment.new(curation_concern, current_ability, attributes_for_actor)
-      end
+    def actor_environment
+      Actors::Environment.new(curation_concern, current_ability, attributes_for_actor)
+    end
 
-      def hash_key_for_curation_concern
-        _curation_concern_type.model_name.param_key
-      end
+    def hash_key_for_curation_concern
+      _curation_concern_type.model_name.param_key
+    end
 
-      def contextual_path(presenter, parent_presenter)
-        ::Hyrax::ContextualPath.new(presenter, parent_presenter).show
-      end
+    def contextual_path(presenter, parent_presenter)
+      ::Hyrax::ContextualPath.new(presenter, parent_presenter).show
+    end
 
     # @deprecated
-      def curation_concern_from_search_results
-        Deprecation.warn("'##{__method__}' will be removed in Hyrax 4.0.  " /
-                             "Instead, use '#search_result_document'.")
-        search_params = params.deep_dup
-        search_params.delete :page
-        search_result_document(search_params)
-      end
+    def curation_concern_from_search_results
+      Deprecation.warn("'##{__method__}' will be removed in Hyrax 4.0.  " \
+                       "Instead, use '#search_result_document'.")
+      search_params = params.deep_dup
+      search_params.delete :page
+      search_result_document(search_params)
+    end
 
     ##
     # Only returns unsuppressed documents the user has read access to
@@ -292,148 +294,148 @@ module Hyrax
     #   comment indicates)
     #
     # @see #document_not_found!
-      def search_result_document(search_params)
-        _, document_list = search_results(search_params)
-        return document_list.first unless document_list.empty?
-        document_not_found!
-      end
+    def search_result_document(search_params)
+      _, document_list = search_results(search_params)
+      return document_list.first unless document_list.empty?
+      document_not_found!
+    end
 
-      def document_not_found!
-        doc = ::SolrDocument.find(params[:id])
-        raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
-        raise CanCan::AccessDenied.new(nil, :show)
-      end
+    def document_not_found!
+      doc = ::SolrDocument.find(params[:id])
+      raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
+      raise CanCan::AccessDenied.new(nil, :show)
+    end
 
-      def render_unavailable
-        message = I18n.t("hyrax.workflow.unauthorized")
-        respond_to do |wants|
-          wants.html do
-            unavailable_presenter
-            flash[:notice] = message
-            render 'unavailable', status: :unauthorized
-          end
-          wants.json { render plain: message, status: :unauthorized }
-          additional_response_formats(wants)
-          wants.ttl { render plain: message, status: :unauthorized }
-          wants.jsonld { render plain: message, status: :unauthorized }
-          wants.nt { render plain: message, status: :unauthorized }
+    def render_unavailable
+      message = I18n.t("hyrax.workflow.unauthorized")
+      respond_to do |wants|
+        wants.html do
+          unavailable_presenter
+          flash[:notice] = message
+          render 'unavailable', status: :unauthorized
         end
+        wants.json { render plain: message, status: :unauthorized }
+        additional_response_formats(wants)
+        wants.ttl { render plain: message, status: :unauthorized }
+        wants.jsonld { render plain: message, status: :unauthorized }
+        wants.nt { render plain: message, status: :unauthorized }
       end
+    end
 
-      def unavailable_presenter
-        @presenter ||= show_presenter.new(::SolrDocument.find(params[:id]), current_ability, request)
-      end
+    def unavailable_presenter
+      @presenter ||= show_presenter.new(::SolrDocument.find(params[:id]), current_ability, request)
+    end
 
-      def decide_layout
-        layout = case action_name
-                 when 'show'
-                   '1_column'
-                 else
-                   'dashboard'
-                 end
-        File.join(theme, layout)
-      end
+    def decide_layout
+      layout = case action_name
+               when 'show'
+                 '1_column'
+               else
+                 'dashboard'
+               end
+      File.join(theme, layout)
+    end
 
     ##
     # @todo should the controller know so much about browse_everything?
     #   hopefully this can be refactored to be more reusable.
     #
     # Add uploaded_files to the parameters received by the actor.
-      def attributes_for_actor # rubocop:disable Metrics/MethodLength
-        raw_params = params[hash_key_for_curation_concern]
-        attributes = if raw_params
-                       work_form_service.form_class(curation_concern).model_attributes(raw_params)
-                     else
-                       {}
-                     end
+    def attributes_for_actor # rubocop:disable Metrics/MethodLength
+      raw_params = params[hash_key_for_curation_concern]
+      attributes = if raw_params
+                     work_form_service.form_class(curation_concern).model_attributes(raw_params)
+                   else
+                     {}
+                   end
 
-        # If they selected a BrowseEverything file, but then clicked the
-        # remove button, it will still show up in `selected_files`, but
-        # it will no longer be in uploaded_files. By checking the
-        # intersection, we get the files they added via BrowseEverything
-        # that they have not removed from the upload widget.
-        uploaded_files = params.fetch(:uploaded_files, [])
-        selected_files = params.fetch(:selected_files, {}).values
-        browse_everything_urls = uploaded_files &
-            selected_files.map { |f| f[:url] }
+      # If they selected a BrowseEverything file, but then clicked the
+      # remove button, it will still show up in `selected_files`, but
+      # it will no longer be in uploaded_files. By checking the
+      # intersection, we get the files they added via BrowseEverything
+      # that they have not removed from the upload widget.
+      uploaded_files = params.fetch(:uploaded_files, [])
+      selected_files = params.fetch(:selected_files, {}).values
+      browse_everything_urls = uploaded_files &
+                               selected_files.map { |f| f[:url] }
 
-        # we need the hash of files with url and file_name
-        browse_everything_files = selected_files
-                                      .select { |v| uploaded_files.include?(v[:url]) }
-        attributes[:remote_files] = browse_everything_files
-        # Strip out any BrowseEverthing files from the regular uploads.
-        attributes[:uploaded_files] = uploaded_files -
-            browse_everything_urls
-        attributes
-      end
+      # we need the hash of files with url and file_name
+      browse_everything_files = selected_files
+                                .select { |v| uploaded_files.include?(v[:url]) }
+      attributes[:remote_files] = browse_everything_files
+      # Strip out any BrowseEverthing files from the regular uploads.
+      attributes[:uploaded_files] = uploaded_files -
+                                    browse_everything_urls
+      attributes
+    end
 
-      def after_create_response
-        respond_to do |wants|
-          wants.html do
-            # Calling `#t` in a controller context does not mark _html keys as html_safe
-            flash[:notice] = view_context.t('hyrax.works.create.after_create_html', application_name: view_context.application_name)
+    def after_create_response
+      respond_to do |wants|
+        wants.html do
+          # Calling `#t` in a controller context does not mark _html keys as html_safe
+          flash[:notice] = view_context.t('hyrax.works.create.after_create_html', application_name: view_context.application_name)
 
-            redirect_to [main_app, curation_concern]
-          end
-          wants.json { render :show, status: :created, location: polymorphic_path([main_app, curation_concern]) }
+          redirect_to [main_app, curation_concern]
         end
+        wants.json { render :show, status: :created, location: polymorphic_path([main_app, curation_concern]) }
       end
+    end
 
-      def after_update_response
-        return redirect_to hyrax.confirm_access_permission_path(curation_concern) if permissions_changed? && concern_has_file_sets?
+    def after_update_response
+      return redirect_to hyrax.confirm_access_permission_path(curation_concern) if permissions_changed? && concern_has_file_sets?
 
-        respond_to do |wants|
-          wants.html { redirect_to [main_app, curation_concern], notice: "Work \"#{curation_concern}\" successfully updated." }
-          wants.json { render :show, status: :ok, location: polymorphic_path([main_app, curation_concern]) }
-        end
+      respond_to do |wants|
+        wants.html { redirect_to [main_app, curation_concern], notice: "Work \"#{curation_concern}\" successfully updated." }
+        wants.json { render :show, status: :ok, location: polymorphic_path([main_app, curation_concern]) }
       end
+    end
 
-      def after_destroy_response(title)
-        respond_to do |wants|
-          wants.html { redirect_to hyrax.my_works_path, notice: "Deleted #{title}" }
-          wants.json { render_json_response(response_type: :deleted, message: "Deleted #{curation_concern.id}") }
-        end
+    def after_destroy_response(title)
+      respond_to do |wants|
+        wants.html { redirect_to hyrax.my_works_path, notice: "Deleted #{title}" }
+        wants.json { render_json_response(response_type: :deleted, message: "Deleted #{curation_concern.id}") }
       end
+    end
 
-      def additional_response_formats(format)
-        format.endnote do
-          send_data(presenter.solr_document.export_as_endnote,
-                    type: "application/x-endnote-refer",
-                    filename: presenter.solr_document.endnote_filename)
-        end
+    def additional_response_formats(format)
+      format.endnote do
+        send_data(presenter.solr_document.export_as_endnote,
+                  type: "application/x-endnote-refer",
+                  filename: presenter.solr_document.endnote_filename)
       end
+    end
 
-      def save_permissions
-        @saved_permissions =
-            case curation_concern
-            when ActiveFedora::Base
-              curation_concern.permissions.map(&:to_hash)
-            else
-              Hyrax::AccessControl.for(resource: curation_concern).permissions
-            end
-      end
-
-      def permissions_changed?
-        @saved_permissions !=
-            case curation_concern
-            when ActiveFedora::Base
-              curation_concern.permissions.map(&:to_hash)
-            else
-              Hyrax::AccessControl.for(resource: curation_concern).permissions
-            end
-      end
-
-      def concern_has_file_sets?
+    def save_permissions
+      @saved_permissions =
         case curation_concern
-        when ActiveFedora::Common
-          curation_concern.file_sets.present?
+        when ActiveFedora::Base
+          curation_concern.permissions.map(&:to_hash)
         else
-          Hyrax.custom_queries.find_child_fileset_ids(resource: curation_concern).any?
+          Hyrax::AccessControl.for(resource: curation_concern).permissions
         end
-      end
+    end
 
-      def uploaded_files
-        UploadedFile.find(params.fetch(:uploaded_files, []))
+    def permissions_changed?
+      @saved_permissions !=
+        case curation_concern
+        when ActiveFedora::Base
+          curation_concern.permissions.map(&:to_hash)
+        else
+          Hyrax::AccessControl.for(resource: curation_concern).permissions
+        end
+    end
+
+    def concern_has_file_sets?
+      case curation_concern
+      when ActiveFedora::Common
+        curation_concern.file_sets.present?
+      else
+        Hyrax.custom_queries.find_child_fileset_ids(resource: curation_concern).any?
+      end
+    end
+
+    def uploaded_files
+      UploadedFile.find(params.fetch(:uploaded_files, []))
       end
   end
 end
