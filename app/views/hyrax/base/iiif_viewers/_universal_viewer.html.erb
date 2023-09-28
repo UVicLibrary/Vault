@@ -10,7 +10,7 @@
 </div>
 <%# Only render 'Download Image' link if there is only one image %>
 <% if display_media_download_link?(file_set: presenter.representative_presenter) \
-        && presenter.member_presenters.select(&:image?).count == 1 %>
+        && one_image?(presenter) %>
   <%= link_to t('hyrax.file_set.show.downloadable_content.image_link'),
               hyrax.download_path(presenter.representative_presenter),
               data: { label: presenter.representative_presenter.id },
@@ -18,7 +18,7 @@
               id: "file_download" %>
 <% end %>
 <%= '|' if display_pdf_download_link?(presenter) \
-            && presenter.member_presenters.select(&:image?).count == 1 %>
+            && one_image?(presenter) %>
 <% if display_pdf_download_link?(presenter) %>
   <%= link_to pdf_link_text(presenter),
               hyrax.download_path(pdf_file_set(presenter)),

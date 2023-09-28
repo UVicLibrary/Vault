@@ -51,6 +51,10 @@ module VaultFileSetHelper
     file_set.filename.present? && file_set.filename.include?(".m4a")
   end
 
+  def one_image?(presenter)
+    presenter.member_presenters.select(&:image?).count == 1
+  end
+
   # CUSTOM METHODS for displaying PDF download links for image or
   # audio/visual works. Use cases: Medieval manuscripts with PDF
   # transcriptions, PDF transcripts of A/V files.
