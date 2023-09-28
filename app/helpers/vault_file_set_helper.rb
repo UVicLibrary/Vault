@@ -35,9 +35,17 @@ module VaultFileSetHelper
           'image'
         # .m4a files should be categorized as audio
         elsif file_set.audio? || m4a?(file_set)
-          'audio'
+          if current_account.name.include? "vault"
+            'vault/audio'
+          else
+            'audio'
+          end
         elsif file_set.video?
-          'video'
+          if current_account.name.include? "vault"
+            'vault/video'
+          else
+            'video'
+          end
         elsif file_set.pdf?
           'pdf'
         elsif file_set.office_document?
@@ -53,6 +61,14 @@ module VaultFileSetHelper
 
   def one_image?(presenter)
     presenter.member_presenters.select(&:image?).count == 1
+  end
+
+  def multiple_audio?(file_set)
+    file_set.parent.member_presenters.select(&:audio?).count > 1
+  end
+
+  def multiple_video?(file_set)
+    file_set.parent.member_presenters.select(&:video?).count > 1
   end
 
   # CUSTOM METHODS for displaying PDF download links for image or

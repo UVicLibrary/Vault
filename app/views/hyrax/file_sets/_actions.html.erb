@@ -1,4 +1,5 @@
-<% if file_set and file_set.user_can_perform_any_action? %><%# if false, there are no actions so no point rendering %>
+<% user_can_perform_any_action = (can?(:edit, file_set.id) || can?(:destroy, file_set.id) || display_media_download_link?(file_set: file_set)) %>
+<% if file_set and user_can_perform_any_action %><%# if false, there are no actions so no point rendering %>
     <div class="btn-group">
 
       <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" id="dropdownMenu_<%= file_set.id %>" aria-haspopup="true" aria-expanded="false">
@@ -40,6 +41,6 @@
 
   </ul>
   </div>
-<%# else %>
-<!--  File is still uploading, please check back later.-->
+<% else %>
+  File is still uploading, please check back later.
 <% end %>

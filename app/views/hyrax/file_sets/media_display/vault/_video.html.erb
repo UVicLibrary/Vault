@@ -1,33 +1,21 @@
 <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
 <script src="<%= request.base_url %>/able_player/build/ableplayer.js"></script>
-<% video_files = file_set.parent.member_presenters.select { |fsp| fsp.video? } %>
-<% if video_files.count > 1 and work_show_page? %>
-  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files, parent: file_set.parent %>
+<!-- methods defined in AvTranscriptsHelper -->
+<% if multiple_video?(file_set) and work_show_page? %>
+  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files(file_set.parent), parent: file_set.parent %>
 <% else %>
-  <% if has_vtt?(file_set) %>
-    <video preload="auto" width="750px" data-able-player data-skin="2020" playsinline>
-      <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
-      <track kind="captions" src="<%= vtt_path_for(file_set) %>" srclang="en" label="English">
-        Your browser does not support the video tag.
-    </video>
-  <% elsif parent_has_transcript?(file_set) %>
-    <video preload="auto" width="600px" data-able-player data-skin="2020" data-transcript-text="transcript-text" playsinline>
-      <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
-      <!-- This is just a dummy to trigger the Hide/Show transcript button, various controls (e.g. dragging, resizing
-       that aren't available with the specified manual/external options. The transcript (PDF) text  -->
-      <track kind="captions" src="/able_player/transcripts/blank.vtt" srclang="en" label="English">
-      Your browser does not support the video tag.
+  <video preload="auto" data-able-player data-skin="2020" <%= video_tag_settings(file_set) %> playsinline>
+    <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
+    <!-- Track tag and transcript div must be INSIDE the video tag -->
+    <%= render_track_tag(file_set) %>
+    <% if has_transcript?(file_set) && !has_vtt?(file_set) %>
       <div id="transcript-text"><%= sanitize(file_set.parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
-    </video>
-  <% else %>
-    <video preload="auto" width="750px" data-able-player data-skin="2020" playsinline>
-      <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  <% end %>
+    <% end %>
+    Your browser does not support the video tag.
+  </video>
   <br/>
 
-  <% if Hyrax.config.display_media_download_link? && allow_downloads?(file_set) %>
+  <% if display_media_download_link?(file_set: file_set) %>
     <div class="download-links-container">
     <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                 hyrax.download_path(file_set),
@@ -35,19 +23,16 @@
                 target: :_blank,
                 id: "file_download" %>
     <%# Include link to transcript %>
-    <% if parent_has_transcript?(file_set) %>
-      <% transcript = file_set.parent.member_presenters.find { |fs| fs.pdf? } %>
+    <% if display_pdf_download_link?(file_set) %>
       &ensp;|&ensp;
       <%= link_to "Download transcript (PDF)",
-                  hyrax.download_path(transcript),
+                  hyrax.download_path(pdf_file_set(file_set)),
                   data: { turbolinks: false },
                   target: :_blank,
                   id: "transcript_file_download",
-                  data: { label: transcript.id } %>
+                  data: { label: pdf_file_set(file_set).id } %>
     <% end %>
     </div>
   <% end %>
 
 <% end %>
-
-
