@@ -75,7 +75,7 @@ RSpec.describe VaultAvHelper, type: :helper do
         end
       end
 
-      context "when parent does have a transcript" do
+      context "when parent has a transcript" do
         before do
           allow(SolrDocument).to receive(:find).with(work.id).and_return(parent_doc)
           allow(parent_doc).to receive(:full_text).and_return("Some transcript text")
@@ -110,6 +110,58 @@ RSpec.describe VaultAvHelper, type: :helper do
 
     end
 
-  end
+    describe "#render_track_tag" do
+      let(:file_set) { FileSet.new(id: "foo") }
+      subject { helper.render_track_tag(file_set) }
 
+      context 'when there is a vtt transcript' do
+        before do
+          allow(File).to receive(:file?).with(Rails.root.join("public","able_player","transcripts", "#{file_set.id}.vtt")).and_return(true)
+        end
+
+        it { is_expected.to eq "<track kind='captions' src='/able_player/transcripts/foo.vtt' srclang='en' label='English'>" }
+      end
+
+      context 'when there is a PDF transcript' do
+        # Stub the method since it's covered by a test above
+        before { allow(helper).to receive(:has_transcript?).and_return true }
+
+        it { is_expected.to eq "<track kind='captions' src='/able_player/transcripts/blank.vtt' srclang='en' label='English'>" }
+      end
+
+      context 'when there is no transcript at all' do
+        before do
+          allow(helper).to receive(:has_vtt?).and_return false
+          allow(helper).to receive(:has_transcript?).and_return false
+        end
+
+        it { is_expected.to eq "" }
+      end
+    end
+
+    describe "#render_multi_track_tag" do
+      let(:file_set) { FileSet.new(id: "foo") }
+      subject { helper.render_multi_track_tag(file_set) }
+
+      context 'when there is a vtt transcript' do
+        before { allow(File).to receive(:file?).with(Rails.root.join("public","able_player","transcripts", "#{file_set.id}.vtt")).and_return(true) }
+
+        it { is_expected.to eq '<span class="able-track" data-kind="captions" data-src="/able_player/transcripts/foo.vtt" data-srclang="en" data-label="English"></span>' }
+      end
+
+      context 'when there is a PDF transcript' do
+        # Stub the method since it needs a lot of setup and is already covered by a test above
+        before { allow(helper).to receive(:has_transcript?).and_return true }
+
+        it { is_expected.to eq '<span class="able-track" data-kind="captions" data-src="/able_player/transcripts/blank.vtt" data-srclang="en" data-label="English"></span>' }
+      end
+
+      context 'when there is no transcript at all' do
+        # Stub the method since it needs a lot of setup and is already covered by a test above
+        before { allow(helper).to receive(:has_transcript?).and_return false }
+
+        it { is_expected.to eq "" }
+      end
+    end
+  end
 end

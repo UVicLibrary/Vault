@@ -52,30 +52,24 @@ module VaultAvHelper
   end
 
   def render_track_tag(file_set)
-    if has_vtt?(file_set)
-      track_source = vtt_path_for(file_set)
-    elsif has_transcript?(file_set)
-      # This is just a dummy to trigger the Hide/Show transcript button, various controls
-      # (e.g. dragging, resizing) that aren't available otherwise.
-      track_source = "/able_player/transcripts/blank.vtt"
-    else
-      return ""
-    end
-    "<track kind='captions' src='#{track_source}' srclang='en' label='English'>".html_safe
+    return "" unless track_source(file_set)
+    "<track kind='captions' src='#{track_source(file_set)}' srclang='en' label='English'>".html_safe
   end
 
   def render_multi_track_tag(file_set)
+    return "" unless track_source(file_set)
+    ['<span class="able-track" data-kind="captions" data-src="', track_source(file_set),
+     '" data-srclang="en" data-label="English"></span>'].join("").html_safe
+  end
+
+  def track_source(file_set)
     if has_vtt?(file_set)
-      track_source = vtt_path_for(file_set)
+      vtt_path_for(file_set)
     elsif has_transcript?(file_set)
       # This is just a dummy to trigger the Hide/Show transcript button, various controls
       # (e.g. dragging, resizing) that aren't available otherwise.
-      track_source = "/able_player/transcripts/blank.vtt"
-    else
-      return ""
+      "/able_player/transcripts/blank.vtt"
     end
-    ['<span class="able-track" data-kind="captions" data-src="', track_source,
-     '" data-srclang="en" data-label="English"></span>'].join("").html_safe
   end
 
 end
