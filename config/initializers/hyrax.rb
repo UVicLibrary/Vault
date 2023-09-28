@@ -173,3 +173,16 @@ Date::DATE_FORMATS[:standard] = "%m/%d/%Y"
 Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
 Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
 Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
+
+##
+# @!attribute [rw] sidebar_partials
+#   @return [Hash]
+#
+# @example Add a custom partial to the tasks sidebar block
+Hyrax::DashboardController.sidebar_partials[:tasks] += ["hyrax/dashboard/sidebar/batch_processing",
+                                                        "hyrax/dashboard/sidebar/replace_or_delete_fast_uris",
+                                                        "hyrax/dashboard/sidebar/review_transfers"]
+
+Hyrax::DownloadsController.class_eval do
+  skip_before_action :set_locale
+end
