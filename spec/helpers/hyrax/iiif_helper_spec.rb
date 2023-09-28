@@ -1,9 +1,11 @@
+# frozen_string_literal: true
 RSpec.describe Hyrax::IiifHelper, type: :helper do
   let(:solr_document) { SolrDocument.new }
-  let(:request) { double }
-  let(:ability) { nil }
-  let(:presenter) { Hyrax::WorkShowPresenter.new(solr_document, ability, request) }
+  let(:presenter) { Hyrax::WorkShowPresenter.new(solr_document, ability) }
   let(:uv_partial_path) { 'hyrax/base/iiif_viewers/universal_viewer' }
+  let(:ability) { double(Ability) }
+
+  before { allow(controller).to receive(:current_ability).and_return(ability) }
 
   describe '#iiif_viewer_display' do
     before do
@@ -42,40 +44,36 @@ RSpec.describe Hyrax::IiifHelper, type: :helper do
     end
   end
 
-  context "when work is downloadable" do
-    let(:work_object) { GenericWork.new(downloadable: true) }
+  context 'when in Vault' do
+    before { allow(controller.request).to receive(:base_url).and_return("http://vault.host") }
 
-    before do
-      allow(helper).to receive(:class_name).with(presenter).and_return(GenericWork)
-      allow(GenericWork).to receive(:find).with(presenter.id).and_return(work_object)
-    end
+    context "when work is downloadable" do
+      let(:presenter) { VaultWorkShowPresenter.new(solr_document, ability) }
 
-    describe '#universal_viewer_base_url' do
-      it 'returns the path for uv.html' do
-        expect(helper.universal_viewer_base_url(presenter)).to eq "http://test.host/uv/uv.html"
-      end
-    end
-
-    describe 'universal_viewer_config_url' do
-      it 'returns the path for regular uv-config' do
-        expect(helper.universal_viewer_config_url(presenter)).to eq "http://test.host/uv/uv-config.json"
-      end
-    end
-  end
-
-  context "when work is not downloadable" do
-
-    let(:work_object) { GenericWork.new(downloadable: false) }
-
-    before do
-      allow(helper).to receive(:class_name).with(presenter).and_return(GenericWork)
-      allow(GenericWork).to receive(:find).with(presenter.id).and_return(work_object)
-      allow(helper).to receive(:can?).with(:edit, presenter.id).and_return(false)
-    end
-
-    context 'and in Vault' do
       before do
-        allow_any_instance_of(ActionDispatch::Request).to receive(:base_url).and_return("http://vault.host")
+        allow(presenter).to receive(:downloadable?).and_return(true)
+        allow(helper).to receive(:can?).with(:edit, presenter.id).and_return(false )
+      end
+
+      describe '#universal_viewer_base_url' do
+        it 'returns the path for uv.html' do
+          expect(helper.universal_viewer_base_url(presenter)).to eq "http://vault.host/uv/uv.html"
+        end
+      end
+
+      describe 'universal_viewer_config_url' do
+        it 'returns the path for regular uv-config' do
+          expect(helper.universal_viewer_config_url(presenter)).to eq "http://vault.host/uv/uv-config.json"
+        end
+      end
+    end
+
+    context "when work is not downloadable" do
+      let(:presenter) { VaultWorkShowPresenter.new(solr_document, ability) }
+
+      before do
+        allow(presenter).to receive(:downloadable?).and_return(false)
+        allow(helper).to receive(:can?).with(:edit, presenter.id).and_return(false)
       end
 
       describe '#universal_viewer_base_url' do
@@ -107,10 +105,22 @@ RSpec.describe Hyrax::IiifHelper, type: :helper do
           end
         end
       end
+    end
+  end
 
+  context 'when not in Vault' do
+    let(:request) { ActionController::TestRequest.new(base_url: "http://test.host") }
+
+    describe '#universal_viewer_base_url' do
+      it 'returns the path for uv.html' do
+        expect(helper.universal_viewer_base_url(presenter)).to eq "http://test.host/uv/uv.html"
+      end
     end
 
-
-
+    describe 'universal_viewer_config_url' do
+      it 'returns the path for regular uv-config' do
+        expect(helper.universal_viewer_config_url(presenter)).to eq "http://test.host/uv/uv-config.json"
+      end
+    end
   end
 end
