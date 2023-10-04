@@ -288,11 +288,11 @@ FactoryBot.define do
     def self.process_with_nesting_attributes(collection, evaluator)
       return unless evaluator.with_nesting_attributes.present? && collection.nestable?
       Hyrax::Adapters::NestingIndexAdapter.add_nesting_attributes(
-          solr_doc: solr_document_with_permissions(collection, evaluator),
-          ancestors: evaluator.with_nesting_attributes[:ancestors],
-          parent_ids: evaluator.with_nesting_attributes[:parent_ids],
-          pathnames: evaluator.with_nesting_attributes[:pathnames],
-          depth: evaluator.with_nesting_attributes[:depth]
+        solr_doc: solr_document_with_permissions(collection, evaluator),
+        ancestors: evaluator.with_nesting_attributes[:ancestors],
+        parent_ids: evaluator.with_nesting_attributes[:parent_ids],
+        pathnames: evaluator.with_nesting_attributes[:pathnames],
+        depth: evaluator.with_nesting_attributes[:depth]
       )
     end
 
@@ -317,9 +317,9 @@ FactoryBot.define do
       collection.edit_users = user_managers(evaluator.with_permission_template, evaluator.user)
       collection.edit_groups = group_managers(evaluator.with_permission_template)
       collection.read_users = user_viewers(evaluator.with_permission_template) +
-          user_depositors(evaluator.with_permission_template)
+                              user_depositors(evaluator.with_permission_template)
       collection.read_groups = group_viewers(evaluator.with_permission_template) +
-          group_depositors(evaluator.with_permission_template)
+                               group_depositors(evaluator.with_permission_template)
       collection.to_solr
     end
     private_class_method :solr_document_with_permissions

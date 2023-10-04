@@ -1,11 +1,12 @@
+# frozen_string_literal: true
 FactoryBot.define do
   factory :collection do
     # DEPRECATION: This factory is being replaced by collection_lw defined in collections.rb.  New tests should use the
     # light weight collection factory.  DO NOT ADD tests using this factory.
     #
-    # rubocop:disable Metrics/LineLength
+    # rubocop:disable Layout/LineLength
     # @example let(:collection) { build(:collection, collection_type_settings: [:not_nestable, :discoverable, :sharable, :allow_multiple_membership], with_nesting_attributes: {ancestors: [], parent_ids: [], pathnames: [], depth: 1}) }
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
 
     # Regarding testing nested collections:
     # To get the nested collection solr fields in the solr document for query purposes there are two options:
@@ -40,11 +41,11 @@ FactoryBot.define do
       # create and :with_nested_indexing for nested collection testing
       if evaluator.with_nesting_attributes.present? && collection.nestable?
         Hyrax::Adapters::NestingIndexAdapter.add_nesting_attributes(
-          solr_doc: evaluator.to_solr,
-          ancestors: evaluator.with_nesting_attributes[:ancestors],
-          parent_ids: evaluator.with_nesting_attributes[:parent_ids],
-          pathnames: evaluator.with_nesting_attributes[:pathnames],
-          depth: evaluator.with_nesting_attributes[:depth]
+            solr_doc: evaluator.to_solr,
+            ancestors: evaluator.with_nesting_attributes[:ancestors],
+            parent_ids: evaluator.with_nesting_attributes[:parent_ids],
+            pathnames: evaluator.with_nesting_attributes[:pathnames],
+            depth: evaluator.with_nesting_attributes[:depth]
         )
       end
     end
@@ -86,14 +87,13 @@ FactoryBot.define do
   factory :user_collection, class: Collection do
     transient do
       user { create(:user) }
+      collection_type { create(:user_collection_type) }
     end
 
     sequence(:title) { |n| ["User Collection Title #{n}"] }
 
     after(:build) do |collection, evaluator|
       collection.apply_depositor_metadata(evaluator.user.user_key)
-      collection_type = create(:user_collection_type)
-      collection.collection_type_gid = collection_type.gid
     end
   end
 
