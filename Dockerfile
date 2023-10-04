@@ -5,6 +5,8 @@ RUN apt-get update -qq && \
         ghostscript \
         imagemagick \
         libpq-dev \
+        libvips \
+        ffmpeg \
         nodejs \
         npm \
         libreoffice \

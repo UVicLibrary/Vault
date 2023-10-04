@@ -76,6 +76,8 @@ group :test do
   gem 'selenium-webdriver'
   gem 'webmock'
   gem 'carrierwave-aws'
+  gem 'rspec-sidekiq'
+  # gem 'rspec-its'
 end
 
 group :development do
@@ -101,10 +103,13 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-# This has been updated to 11.0.7 in Hyrax 3
-# gem 'hydra-access-controls', '~>10.7.0'
+gem 'hyrax', '3.1.0' # 3.0.2
 
-gem 'hyrax', '3.0.2' #'2.9.6'
+# Loading the env fails if psych > 3.0
+gem 'psych', '3.3.4'
+# ActiveFedora::Cleaner.clean! fails with addressable > 2.8.1
+gem 'addressable', '2.8.1'
+
 gem 'hyrax-doi', git: 'https://github.com/samvera-labs/hyrax-doi.git', branch: 'hyrax_upgrade'
 gem 'rsolr', '~> 2.0'
 
