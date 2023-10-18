@@ -229,5 +229,16 @@ module Hyrax
             .where('sipity_workflow_roles.role_id' => approving_role.id).any?
       end
     end
+
+    def extract_subjects(subject)
+      case subject
+      when Hyrax::WorkShowPresenter, FileSetPresenter, Hyrax::CollectionPresenter
+        extract_subjects(subject.solr_document)
+      when Draper::Decorator
+        extract_subjects(subject.model)
+      else
+        super
+      end
+    end
   end
 end
