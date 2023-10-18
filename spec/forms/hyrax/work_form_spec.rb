@@ -1,8 +1,16 @@
-RSpec.shared_examples "a Hyrax work form" do
+# frozen_string_literal: true
+RSpec.describe Hyrax::Forms::WorkForm do
+  let(:work) { GenericWork.new }
+  let(:form) { described_class.new(work, nil, controller) }
+  let(:works) { [GenericWork.new, FileSet.new, GenericWork.new] }
+  let(:controller) { instance_double(Hyrax::GenericWorksController) }
 
-  # The following variables must be defined in your work form spec:
-  # works, work, controller, form
-  # see spec/forms/hyrax/forms/generic_work_form.rb for an example
+  # This class is an abstract class, so we have to set model_class
+  # TODO: merge with generic_work_form_spec
+  before do
+    allow(described_class).to receive(:model_class).and_return(GenericWork)
+    allow(form).to receive(:model_class).and_return(GenericWork)
+  end
 
   describe "#version" do
     before do
@@ -100,9 +108,95 @@ RSpec.shared_examples "a Hyrax work form" do
     end
   end
 
+  describe ".model_attributes" do
+    let(:params) { ActionController::Parameters.new(attributes) }
+    let(:attributes) do
+      {
+          title: ['a', 'b'],
+          alternative_title: ['c', 'd'],
+          description: [''],
+          abstract: [''],
+          visibility: 'open',
+          parent_id: '123',
+          representative_id: '456',
+          thumbnail_id: '789',
+          keyword: ['penguin'],
+          source: ['related'],
+          rights_statement: 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+          rights_notes: ['Notes on the rights'],
+          license: ['http://creativecommons.org/licenses/by/3.0/us/'],
+          access_right: ['Only accessible via login.']
+      }
+    end
+
+    subject { described_class.model_attributes(params) }
+
+    it 'permits metadata parameters' do
+      expect(subject['title']).to eq ['a', 'b']
+      expect(subject['alternative_title']).to eq ['c', 'd']
+      expect(subject['description']).to be_empty
+      expect(subject['abstract']).to be_empty
+      expect(subject['visibility']).to eq 'open'
+      expect(subject['keyword']).to eq ['penguin']
+      expect(subject['source']).to eq ['related']
+    end
+
+    it 'permits rights parameters' do
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC-EDU/1.0/'
+      expect(subject['rights_notes']).to eq ['Notes on the rights']
+      expect(subject['access_right']).to eq ['Only accessible via login.']
+    end
+
+    it 'excludes non-permitted params' do
+      expect(subject).not_to have_key 'parent_id'
+    end
+
+    context "when a user is granted edit access" do
+      let(:admin_set) { create(:admin_set) }
+
+      context "and a admin_set that allows grants has been selected" do
+        let(:attributes) { { admin_set_id: admin_set.id, permissions_attributes: [{ type: 'person', name: 'justin', access: 'edit' }] } }
+        let(:permission_template) { create(:permission_template, source_id: admin_set.id) }
+        let!(:workflow) { create(:workflow, allows_access_grant: true, active: true, permission_template_id: permission_template.id) }
+
+        it do
+          is_expected.to eq ActionController::Parameters.new(admin_set_id: admin_set.id,
+                                                             permissions_attributes: [ActionController::Parameters.new(type: 'person', name: 'justin', access: 'edit')]).permit!
+        end
+      end
+
+      context "and no admin_set has been selected" do
+        let(:attributes) { { permissions_attributes: [{ type: 'person', name: 'justin', access: 'edit' }] } }
+
+        it { is_expected.to eq ActionController::Parameters.new.permit! }
+      end
+
+      context "and an admin_set that doesn't allow grants has been selected" do
+        let(:attributes) { { admin_set_id: admin_set.id, permissions_attributes: [{ type: 'person', name: 'justin', access: 'edit' }] } }
+        let(:permission_template) { create(:permission_template, source_id: admin_set.id) }
+        let!(:workflow) { create(:workflow, allows_access_grant: false, active: true, permission_template_id: permission_template.id) }
+
+        it { is_expected.to eq ActionController::Parameters.new(admin_set_id: admin_set.id).permit! }
+      end
+    end
+
+    context "without permissions being set" do
+      let(:attributes) { {} }
+
+      it { is_expected.to eq ActionController::Parameters.new.permit! }
+    end
+  end
+
   describe "initialized fields" do
     context "for :description" do
       subject { form[:description] }
+
+      it { is_expected.to eq [''] }
+    end
+
+    context "for :abstract" do
+      subject { form[:abstract] }
 
       it { is_expected.to eq [''] }
     end
@@ -118,6 +212,51 @@ RSpec.shared_examples "a Hyrax work form" do
     subject { form.visibility }
 
     it { is_expected.to eq 'restricted' }
+  end
+
+  describe '#primary_terms' do
+    it 'contains the required fields' do
+      expect(form.primary_terms).to include(*form.required_fields)
+    end
+
+    context 'with a field that is not in terms' do
+      let(:bad_term) { :BadWorkFormSpecTerm }
+
+      before { form.class.required_fields += [bad_term] }
+      after  { form.class.required_fields -= [bad_term] }
+
+      it 'logs a warning' do
+        expect(Rails.logger).to receive(:warn).with(/#{bad_term}/)
+        form.primary_terms
+      end
+
+      it 'does not include the errant term' do
+        expect(form.primary_terms).not_to include bad_term
+      end
+    end
+  end
+
+  describe '#secondary_terms' do
+    it 'does not contain the primary terms' do
+      expect(form.secondary_terms).not_to include(*form.primary_terms)
+    end
+
+    context 'with a new non-primary term' do
+      let(:new_term) { :WorkFormSpecTerm }
+
+      before { form.class.terms += [new_term] }
+      after  { form.class.terms -= [new_term] }
+
+      it 'adds the term to secondary' do
+        expect(form.secondary_terms).to include new_term
+      end
+    end
+  end
+
+  describe '#human_readable_type' do
+    subject { form.human_readable_type }
+
+    it { is_expected.to eq 'Generic Work' }
   end
 
   describe "#open_access?" do
@@ -233,29 +372,4 @@ RSpec.shared_examples "a Hyrax work form" do
       end
     end
   end
-
-  describe "#[]" do
-    subject { form[term] }
-
-    context "for member_of_collection_ids" do
-      let(:term) { :member_of_collection_ids }
-
-      it { is_expected.to eq [] }
-
-      context "when the model has collection ids" do
-        before do
-          allow(work).to receive(:member_of_collection_ids).and_return(['col1', 'col2'])
-        end
-        # This allows the edit form to show collections the work is already a member of.
-        it { is_expected.to eq ['col1', 'col2'] }
-      end
-    end
-  end
-
-  subject { form }
-
-  it { is_expected.to delegate_method(:on_behalf_of).to(:model) }
-  it { is_expected.to delegate_method(:depositor).to(:model) }
-  it { is_expected.to delegate_method(:permissions).to(:model) }
-
 end
