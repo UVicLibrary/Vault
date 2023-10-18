@@ -9,9 +9,24 @@ module Hyrax
     include Hyrax::FormTerms
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions
-    self.terms += [:resource_type, :alternative_title, :license, :edition, :geographic_coverage, :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics, :has_format, :physical_repository, :collection, :provenance, :provider, :sponsor, :genre, :format, :archival_item_identifier, :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year, :downloadable]
-    self.required_fields += [:provider] 
-    self.required_fields -= [:keyword]
+
+    self.terms += [:resource_type, :edition, :geographic_coverage,
+                   :coordinates, :chronological_coverage, :extent, :additional_physical_characteristics,
+                   :has_format, :physical_repository, :collection, :provenance, :provider,
+                   :sponsor, :genre, :format,:archival_item_identifier, :fonds_title, :fonds_creator,
+                   :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized,
+                   :transcript, :technical_note, :year, :downloadable]
+
+    self.terms -= [:abstract, :access_right, :rights_notes]
+
+    def self.required_fields
+      [:title, :rights_statement, :provider]
+    end
+
+    def self.primary_terms
+      [:title, :rights_statement, :provider, :license]
+    end
+
     def self.secondary_terms
         terms - required_fields -
           [:files, :visibility_during_embargo, :embargo_release_date,
@@ -34,14 +49,7 @@ module Hyrax
           }
       ]
     end
-      
-#    self.terms += [:resource_type, :rendering_ids]
 
-#    def secondary_terms
-#      super - [:rendering_ids]
-#    end
-
-  #self.rendering_ids = self.required_fields
   def rendering_ids
     to_param
   end
