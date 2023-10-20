@@ -96,7 +96,12 @@ RSpec.describe VaultThumbnailPathService do
       end
 
       context "that is an m4a file" do
-        let(:representative) { FileSet.new(label: 'foo.m4a') }
+        let(:representative) { create(:file_set, id: "999") }
+        let(:file) { Hydra::PCDM::File.new }
+        before do
+          allow(representative).to receive(:files).and_return([file])
+          allow(representative.files.first).to receive(:original_name).and_return("foo.m4a")
+        end
 
         it "returns the same result as for an audio thumbnail" do
           expect(subject).to match %r{collection(.+)?\.png}
