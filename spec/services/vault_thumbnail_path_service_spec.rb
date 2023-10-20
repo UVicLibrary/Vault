@@ -4,16 +4,24 @@ RSpec.describe VaultThumbnailPathService do
   subject { described_class.call(object) }
 
   context "with a FileSet" do
-    let(:object) { build(:file_set, id: '999') }
 
     before do
+      allow(ActiveFedora::Base).to receive(:find).with('999').and_return(object)
       allow(object).to receive(:original_file).and_return(original_file)
       # https://github.com/samvera/active_fedora/issues/1251
       allow(object).to receive(:persisted?).and_return(true)
     end
 
+    let(:object) { build(:file_set, id: '999') }
+
     context "that has an image thumbnail" do
-      let(:original_file) { mock_file_factory(mime_type: 'image/jpeg') }
+      before do
+        allow(ActiveFedora::Base).to receive(:find).with('999').and_return(object)
+        allow(object).to receive(:original_file).and_return(original_file)
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return(original_file.id)
+      end
+
+      let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
 
       before { allow(File).to receive(:exist?).and_return(true) }
       it { is_expected.to eq IIIFWorkThumbnailPathService.call(object) }
@@ -22,19 +30,15 @@ RSpec.describe VaultThumbnailPathService do
     context "that has no thumbnail" do
       let(:original_file) { mock_file_factory(mime_type: nil) }
 
-      it { is_expected.to match %r{/assets/default-.+.png} }
+      it { is_expected.to match %r{/assets/work-.+.png} }
     end
   end
 
   context "with a Work" do
 
     let(:object)         { GenericWork.new(thumbnail_id: '999') }
-    let(:representative) { build(:file_set, id: '999') }
-
-    before do
-      allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
-      allow(representative).to receive(:original_file).and_return(original_file)
-    end
+    let(:representative) { FileSet.new(id: '999') }
+    let(:collection) { Collection.new(id: "foo-bar", title: ["Collection Title"]) }
 
     context "that doesn't have a representative" do
       let(:object) { FileSet.new }
@@ -44,22 +48,20 @@ RSpec.describe VaultThumbnailPathService do
     end
 
     context "that has an image thumbnail" do
-      let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
 
       before do
-        allow(described_class).to receive(:thumbnail?).with(representative).and_return true
+        allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
+        allow(representative).to receive(:original_file).and_return(original_file)
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return(original_file.id)
       end
+
+      let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
 
       it { is_expected.to eq "/images/#{original_file.id}/full/!150,300/0/default.jpg" }
 
       context "and has more than one version" do
 
-        let(:version) { ActiveFedora::VersionsGraph::ResourceVersion.new }
-
-        before do
-          allow(representative).to receive(:latest_content_version).and_return(version)
-          version.label = "version2"
-        end
+        before { allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return("#{original_file.id}/fcr:versions/version2") }
 
         it "returns the path to the latest version" do
           expect(subject).to eq "/images/#{original_file.id}%2Ffcr:versions%2Fversion2/full/!150,300/0/default.jpg"
@@ -68,41 +70,60 @@ RSpec.describe VaultThumbnailPathService do
       end
     end
 
-    context "that has an audio thumbnail" do
-      let(:original_file)  { mock_file_factory(mime_type: 'audio/mp3') }
-
-      context "and is not in any collection" do
-        it { is_expected.to match %r{audio(.+)?\.png} }
-      end
-
-      context "and is in a collection" do
-        let(:collection) { Collection.new(id: "foo-bar") }
-
-        before do
-          allow(representative).to receive(:parent).and_return(object)
-          allow(object).to receive(:member_of_collections).and_return([collection])
-        end
-
-        it { is_expected.to eq CollectionThumbnailPathService.call(collection) }
-      end
-    end
-
-    context "that has an m4a thumbnail" do
-      let(:representative) { build(:file_set, label: 'foo.m4a') }
-      let(:original_file)  { mock_file_factory(mime_type: 'video/m4a') }
-
-      it { is_expected.to match %r{audio(.+)?\.png} }
-    end
-
-    context "that has a pdf thumbnail" do
-      let(:original_file)  { mock_file_factory(mime_type: 'application/pdf') }
+    context "with an audio or pdf thumbnail" do
 
       before do
-        allow(described_class).to receive(:thumbnail?).with(representative).and_return true
+        allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
+        allow(representative).to receive(:parent).and_return(object)
+        allow(object).to receive(:member_of_collections).and_return([collection])
       end
 
-      it { is_expected.to eq(PdfThumbnailPathService.call(representative)) }
+      context "and has an audio thumbnail" do
+
+        before do
+          allow(representative).to receive(:audio?).and_return true
+        end
+
+        context "and is not in any collection" do
+          before { allow(representative).to receive(:parent).and_return nil }
+
+          it { is_expected.to match %r{audio(.+)?\.png} }
+        end
+
+        context "and is in a collection" do
+          it { is_expected.to match %r{collection(.+)?\.png} }
+        end
+      end
+
+      context "that is an m4a file" do
+        let(:representative) { create(:file_set, id: "999") }
+        let(:file) { Hydra::PCDM::File.new }
+        before do
+          allow(representative).to receive(:files).and_return([file])
+          allow(representative.files.first).to receive(:original_name).and_return("foo.m4a")
+        end
+
+        it "returns the same result as for an audio thumbnail" do
+          expect(subject).to match %r{collection(.+)?\.png}
+        end
+      end
+
+      context "and has a pdf thumbnail" do
+
+        before do
+          allow(representative).to receive(:pdf?).and_return true
+          # Stub this so that byebug will still work
+          allow(File).to receive(:exist?).with(any_args).and_call_original
+          allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/pdf_thumbnails/collection_title/999-thumb.jpg").and_return true
+        end
+
+        it { is_expected.to eq("/pdf_thumbnails/collection_title/999-thumb.jpg") }
+      end
+
+
     end
+
+
   end
 
 

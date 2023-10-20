@@ -34,7 +34,7 @@ RSpec.describe GenericWorkIndexer do
     end
 
     it 'allows public users to discover the work' do
-      expect(solr_document['discover_access_group_ssim']).to eq 'public'
+      expect(solr_document['discover_access_group_ssim']).to eq ['public']
     end
   end
 

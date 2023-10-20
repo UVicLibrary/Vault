@@ -20,6 +20,16 @@
 
       private
 
+      # For now we go back to the ActiveFedora FileSet because Hyrax::FileSet
+      # doesn't have the method .parent or .files.first.original_file_name,
+      # which we need for pdf and audio thumbnails. Eventually this becomes
+      # Hyrax.custom_queries.find_parent_work(resource: file_set) in v.3.5
+      # https://github.com/samvera/hyrax/blob/main/app/models/hyrax/file_set.rb
+      def fetch_thumbnail(object)
+        # return object if object.thumbnail_id == object.id
+        ActiveFedora::Base.find(object.thumbnail_id)
+      end
+
       # Returns the value for the thumbnail path to put into the solr document
       def thumbnail_path(object)
         if pdf?(object)
@@ -33,11 +43,12 @@
       end
 
       def m4a_file?(object)
-        object.label && object.label.include?(".m4a")
+        # For a Hyrax::FileSet, .files.first.original_name can be replaced with
+        # Hyrax.custom_queries.find_file_metadata_by(id: object.original_file_id).original_filename
+        object.files.any? ? object.files.first.original_name.include?("m4a") : false
       end
 
       def audio_thumbnail_path(object)
-        object = ::FileSet.find(object.id.to_s)
         return audio_image unless (object.parent && object.parent.member_of_collections.any?)
         collection = object.parent.member_of_collections.first
         CollectionThumbnailPathService.call(collection)
