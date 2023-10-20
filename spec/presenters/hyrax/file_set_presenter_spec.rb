@@ -22,6 +22,7 @@ RSpec.describe Hyrax::FileSetPresenter do
     before do
       # https://github.com/samvera/active_fedora/issues/1251
       allow(file).to receive(:persisted?).and_return(true)
+      allow(ActiveFedora::Base).to receive(:find).with(file.id).and_return(file)
       allow(FileSet).to receive(:find).with(file.id).and_return(file)
     end
     it { expect(presenter.stats_path).to eq Hyrax::Engine.routes.url_helpers.stats_file_path(id: file.id, locale: 'en') }

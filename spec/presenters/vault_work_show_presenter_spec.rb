@@ -18,7 +18,7 @@ RSpec.describe VaultWorkShowPresenter do
   # We need to set the right value in Hyrax.config.iiif_metadata_fields
   before do
     allow(Account).to receive(:find_by).and_return(account)
-    allow(account).to receive(:cname).and_return("vault")
+    allow(account).to receive(:name).and_return("vault")
   end
 
   # Delegate "label" field methods
