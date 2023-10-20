@@ -65,13 +65,13 @@ RSpec.describe Hyrax::WorkShowPresenter do
       presenter.member_presenter_factory = member_presenter_factory
 
       allow(member_presenter_factory)
-          .to receive(:member_presenters)
-                  .with(['representative-123'])
-                  .and_return([representative_presenter])
+        .to receive(:member_presenters)
+        .with(['representative-123'])
+        .and_return([representative_presenter])
 
       allow(member_presenter_factory)
-          .to receive(:file_set_presenters)
-                  .and_return(file_set_presenters)
+        .to receive(:file_set_presenters)
+        .and_return(file_set_presenters)
 
       allow(ability).to receive(:can?).with(:read, solr_document.id).and_return(read_permission)
       allow(Hyrax.config).to receive(:iiif_image_server?).and_return(iiif_enabled)
@@ -159,8 +159,8 @@ RSpec.describe Hyrax::WorkShowPresenter do
     let(:ability) { Ability.new(user) }
     let(:attributes) do
       {
-          "read_access_group_ssim" => ["public"],
-          'id' => '99999'
+        "read_access_group_ssim" => ["public"],
+        'id' => '99999'
       }
     end
 
@@ -217,8 +217,25 @@ RSpec.describe Hyrax::WorkShowPresenter do
     let(:attributes) { obj.to_solr }
 
     it "filters out members that are file sets" do
-      expect(presenter.work_presenters.size).to eq 1
+      expect(presenter.work_presenters.count).to eq 1
       expect(presenter.work_presenters.first).to be_instance_of(described_class)
+    end
+  end
+
+  describe "#member_count" do
+    let(:obj) { FactoryBot.create(:work_with_file_and_work) }
+    let(:attributes) { obj.to_solr }
+
+    it "returns the member count" do
+      expect(presenter.member_count).to eq 2
+    end
+
+    context "with empty members" do
+      let(:obj) { FactoryBot.create(:work) }
+
+      it "returns 0" do
+        expect(presenter.member_count).to eq 0
+      end
     end
   end
 
@@ -227,7 +244,7 @@ RSpec.describe Hyrax::WorkShowPresenter do
     let(:attributes) { obj.to_solr }
 
     it "returns appropriate classes for each" do
-      expect(presenter.member_presenters.size).to eq 2
+      expect(presenter.member_presenters.count).to eq 2
       expect(presenter.member_presenters.first).to be_instance_of(Hyrax::FileSetPresenter)
       expect(presenter.member_presenters.last).to be_instance_of(described_class)
     end
