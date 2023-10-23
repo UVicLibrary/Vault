@@ -124,7 +124,7 @@
       # @return [Array] array of metadata hashes
       def manifest_metadata
         metadata = []
-        Hyrax.config.iiif_metadata_fields.each do |field|
+        metadata_fields.each do |field|
           # This line catches empty strings in the creator field [""]
           next if Array.wrap(solr_document.public_send(field)).blank?
           # Use .public_send because .send raises ArgumentError due to namespace collision

@@ -30,6 +30,45 @@ Hyrax.config do |config|
   # Specify a date you wish to start collecting Google Analytic statistics for.
   # config.analytic_start_date = DateTime.new(2014,9,10)
 
+  # The group name to use for registered users, which CanCan uses to check
+  # permissions for the "Institution" visibility option. The default value
+  # is "registered" (comes from and is used by Hydra Access Controls). Any user
+  # that can sign in is automatically placed in the "registered" group.
+  # However, we changed it to "uvic" because there are cases where registered
+  # users should not have access to institution-only works and collections.
+  config.registered_user_group_name = 'uvic'
+
+  # URL that resolves to an info.json file provided by a IIIF image server
+  config.iiif_info_url_builder = ->(_file_id, _base_url) { "#{_base_url}/images/#{ActionDispatch::Journey::Router::Utils.escape_segment(_file_id)}" }
+
+  config.rights_statement_service_class = ->() {
+    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
+    when "iaff"
+      IaffRightsStatementService
+    else
+      Hyrax::RightsStatementService
+    end
+  }
+
+  config.iiif_metadata_fields = ->() {
+    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
+    when "vault"
+      [:creator_label, :creator, :contributor_label, :contributor,
+       :subject_label, :subject, :publisher, :language, :identifier,
+       :keyword, :date_created, :based_near_label, :related_url,
+       :resource_type, :source, :rights_statement, :license, :extent,
+       :alternative_title, :edition, :geographic_coverage_label,
+       :geographic_coverage, :coordinates, :chronological_coverage,
+       :additional_physical_characteristics, :has_format, :physical_repository_label,
+       :physical_repository, :collection, :provenance, :provider_label, :provider,
+       :sponsor, :genre_label, :genre, :format, :archival_item_identifier,
+       :fonds_title, :fonds_creator, :fonds_description, :fonds_identifier,
+       :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+    else
+      Hyrax::Forms::WorkForm.required_fields
+    end
+  }
+
   # Enables a link to the citations page for a generic_file.
   # Default is false
   # config.citations = false

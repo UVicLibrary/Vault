@@ -55,30 +55,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
       GenericWork.find(@solr_document.id).downloadable
     end
 
-    # alias universal_viewer? iiif_viewer?
-    # deprecation_deprecate universal_viewer?: "use iiif_viewer? instead"
-
-    # delegate :member_presenters, :ordered_ids, :file_set_presenters, :work_presenters, to: :member_presenter_factory
-
-    # IIIF metadata for inclusion in the manifest
-    #  Called by the `iiif_manifest` gem to add metadata
-    #
-    # @return [Array] array of metadata hashes
-    def manifest_metadata
-      metadata = []
-      Hyrax.config.iiif_metadata_fields.each do |field|
-          # This line catches empty strings in the creator field [""]
-          next if Array.wrap(solr_document.public_send(field)).blank?
-          # Use .public_send because .send raises ArgumentError due to namespace collision
-          # https://bugs.ruby-lang.org/issues/12136
-          metadata << {
-              'label' => "#{field.to_s.capitalize.gsub('_', ' ')}",
-              'value' => Array.wrap(solr_document.public_send(field))
-          }
-        end
-      metadata
-    end
-
     private
 
     def authorized_item_ids(filter_unreadable: Flipflop.hide_private_items?)
