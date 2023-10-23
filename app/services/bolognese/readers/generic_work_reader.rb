@@ -240,7 +240,7 @@ module Bolognese
       def read_hyrax_work_rights_list(attrs)
         rights_statement = attrs.fetch('rights_statement', nil)
         return [] unless rights_statement.present?
-        label = Hyrax.config.rights_statement_service_class.new.label(rights_statement.first)
+        label = Hyrax.config.rights_statement_service_class.call.new.label(rights_statement.first)
         { "rights" => label, "rightsUri" => rights_statement.first }
       end
 

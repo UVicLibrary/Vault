@@ -46,7 +46,7 @@ module Hyrax
         image['resource']['label'] = fsp.title.first
         image['resource']['description'] = fsp.description.first if fsp.description
 
-        metadata = Hyrax.config.iiif_metadata_fields.each_with_object([]) do |field, array|
+        metadata = Hyrax.config.iiif_metadata_fields.call.each_with_object([]) do |field, array|
             label = field.to_s.humanize.capitalize
             unless fsp.try(field).all?("") || fsp.try(field).blank?
               if single_value_field?(field)

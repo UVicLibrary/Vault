@@ -4,7 +4,7 @@
 <% elsif request.base_url.include? 'vault' %>
   <%= render 'records/edit_fields/vault/rights_statement', f: f, key: key %>
 <% else %>
-	<% rights_statements = Hyrax.config.rights_statement_service_class.new %>
+	<% rights_statements = Hyrax.config.rights_statement_service_class.call.new %>
 	<%= f.input :rights_statement,
 		collection: rights_statements.select_active_options,
 		include_blank: true,
