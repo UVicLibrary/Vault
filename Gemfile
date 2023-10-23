@@ -114,22 +114,18 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-# This has been updated to 11.0.7 in Hyrax 3
-# gem 'hydra-access-controls', '~>10.7.0'
-
-# gem 'hydra-access-controls', '~>10.7.0'
 gem 'hydra-derivatives', '~> 3.5'
 
-gem 'hyrax', '3.0.2' # '2.9.6'
-gem 'rsolr', '2.2.1' #'~> 2.0'
+gem 'hyrax', '3.1.0' # '3.0.2'
+gem 'rsolr', '2.2.1'
 
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
-gem 'devise_invitable' , '~> 1.6' # '~> 2.0.6'
+gem 'devise_invitable' , '~> 1.6'
 
 gem 'apartment'
-gem 'config', '~> 2.2' #, '~> 1.5'
+gem 'config', '~> 2.2'
 gem 'is_it_working'
 gem 'rolify'
 
@@ -145,6 +141,7 @@ gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
 gem 'sidekiq', '~> 6.0.7'
+gem 'redis', '4.6'
 gem 'sidekiq-cron'
 
 gem 'cdm_migrator', path: '/home/sufia/.rvm/gems/ruby-2.6.8/gems/cdm_migrator-3.2.1'
@@ -156,8 +153,6 @@ gem 'honeybadger', '~> 3.0'
 
 gem 'pdfjs_viewer-rails', '~> 0.2.0'
 
-# https://github.com/mislav/will_paginate
-# gem 'will_paginate', '3.1.5'
 # https://github.com/yrgoldteeth/bootstrap-will_paginate
 gem 'bootstrap-will_paginate', '1.0.0'
 
