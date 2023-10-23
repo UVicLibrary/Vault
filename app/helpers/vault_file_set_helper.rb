@@ -8,23 +8,8 @@ module VaultFileSetHelper
       can?(:edit, file_set.id) or file_set.parent.downloadable?
     else
       Hyrax.config.display_media_download_link? &&
-          can?(:download, file_set)
+          can?(:read, file_set)
     end
-  end
-
-  ##
-  # @deprecated use render(media_display_partial(file_set), file_set: file_set)
-  #   instead
-  #
-  # @param presenter [Object]
-  # @param locals [Hash{Symbol => Object}]
-  def media_display(presenter, locals = {})
-    Deprecation.warn("the helper `media_display` renders a partial name " \
-                     "provided by `media_display_partial`. Callers " \
-                     "should render `media_display_partial(file_set) directly
-                     instead.")
-
-    render(media_display_partial(presenter), locals.merge(file_set: presenter))
   end
 
   # Override Hyrax::FileSetHelper in Hyrax v. 3.1
