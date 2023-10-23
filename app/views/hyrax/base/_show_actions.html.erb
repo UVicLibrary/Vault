@@ -13,9 +13,9 @@
       <%= render_featured_help_message(presenter) %>
     <% end %>
 
-    <% if Hyrax.config.analytics? %>
-      <%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default' %>
-    <% end %>
+    <%# if Hyrax.config.analytics? %>
+      <%#= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default' %>
+    <%# end %>
   </div>
 
   <div class="col-sm-6 text-right">
@@ -26,7 +26,7 @@
                     data: { toggle: "modal", target: "#collection-list-container" } %>
     <% end %>
     <% if presenter.editor? %>
-      <%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default', method: :get %>
+      <%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default', method: :get, data: { turbolinks: false } %>
       <% if presenter.member_count > 1 %>
           <%= link_to t("hyrax.file_manager.link_text"), polymorphic_path([main_app, :file_manager, presenter]), class: 'btn btn-default' %>
       <% end %>
