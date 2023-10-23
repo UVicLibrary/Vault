@@ -23,4 +23,16 @@ Hyrax::IiifManifestPresenter::DisplayImagePresenter.class_eval do
         Hyrax.config.iiif_metadata_fields
   end
 
+  def display_image
+    return nil unless solr_document.image?
+    return nil unless latest_file_id
+
+    IIIFManifest::DisplayImage
+      .new(display_image_url(hostname),
+      format: 'jpg', # image_format(alpha_channels),
+      width: width,
+      height: height,
+      iiif_endpoint: iiif_endpoint(latest_file_id))
+  end
+
 end
