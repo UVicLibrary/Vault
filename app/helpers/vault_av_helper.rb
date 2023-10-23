@@ -44,7 +44,9 @@ module VaultAvHelper
   end
 
   def video_tag_settings(file_set)
-    if has_transcript?(file_set)
+    if has_vtt?(file_set)
+      sanitize('width="600px"')
+    elsif has_transcript?(file_set)
       sanitize('width="600px" data-transcript-text="transcript-text"')
     else
       sanitize('width="750px"')
