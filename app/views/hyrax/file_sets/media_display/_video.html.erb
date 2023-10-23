@@ -7,7 +7,7 @@
       <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
     </video>
 
-  <% if allow_downloads?(file_set) %>
+  <% if display_media_download_link?(file_set: file_set) %>
     <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                 hyrax.download_path(file_set),
                 data: { label: file_set.id },
