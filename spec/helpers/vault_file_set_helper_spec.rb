@@ -186,6 +186,13 @@ RSpec.describe VaultFileSetHelper do
         it { is_expected.to eq("Download PDF") }
       end
     end
+
+    describe '#iiif_image_path' do
+      before { allow(presenter).to receive(:latest_file_id).and_return("foo/fcr:versions/version1") }
+
+      subject { helper.iiif_image_path(presenter, "900,") }
+      it { is_expected.to eq "/images/foo%2Ffcr:versions%2Fversion1/full/900,/0/default.jpg" }
+    end
   end
 
   context 'when not in Vault' do

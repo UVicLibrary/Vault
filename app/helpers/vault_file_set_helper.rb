@@ -16,7 +16,8 @@ module VaultFileSetHelper
   def media_display_partial(file_set)
     'hyrax/file_sets/media_display/' +
         if file_set.image?
-        # actually renders base/hyrax/iiif_viewers/_unversal_viewer instead
+        # renders base/hyrax/iiif_viewers/_unversal_viewer on a work page
+        # and hyrax/file_sets/media_display/image on a file set page
           'image'
         # .m4a files should be categorized as audio
         elsif file_set.audio? || m4a?(file_set)
@@ -87,4 +88,18 @@ module VaultFileSetHelper
       presenter.parent.member_presenters.find { |fs| fs.pdf? }
     end
   end
+
+  def iiif_image_path(file_set, size)
+    # latest_file_id is defined in app/presenters/hyrax/displays_image.rb
+    path = file_set.send(:latest_file_id)
+    Riiif::Engine.routes.url_helpers.image_path(
+        path,
+        size: size
+    )
+  end
+
+  def default_image
+    ActionController::Base.helpers.image_path 'work.png'
+  end
+
 end

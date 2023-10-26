@@ -2,10 +2,12 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12 col-sm-3">
-      <%= image_tag @presenter.solr_document.thumbnail_path,
-                    class: "representative-media",
-                    alt: "",
-                    role: "presentation" %>
+      <% if !@presenter.image? %>
+        <%= image_tag @presenter.solr_document.thumbnail_path,
+                      class: "representative-media",
+                      alt: "",
+                      role: "presentation" %>
+      <% end %>
       <%= render 'show_actions', presenter: @presenter %>
       <%= render 'single_use_links', presenter: @presenter if @presenter.editor? %>
     </div>
@@ -13,7 +15,7 @@
       <header>
         <%= render 'file_set_title', presenter: @presenter %>
       </header>
-      <%= media_display @presenter %>
+      <%= render media_display_partial(@presenter), file_set: @presenter %>
       <%# TODO: render 'show_descriptions' See https://github.com/samvera/hyrax/issues/1481 %>
       <%= render 'show_details' %>
       <%= render 'file_set_description', presenter: @presenter %>

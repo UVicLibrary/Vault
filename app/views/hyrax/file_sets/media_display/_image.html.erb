@@ -1,0 +1,21 @@
+<% if display_media_download_link?(file_set: file_set) %>
+  <div>
+    <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
+    <%= image_tag iiif_image_path(file_set, '900,'),
+                  class: "representative-media",
+                  alt: "",
+                  role: "presentation" %>
+    <%= link_to t('hyrax.file_set.show.downloadable_content.image_link'),
+                hyrax.download_path(file_set),
+                data: { label: file_set.id },
+                target: :_blank,
+                id: "file_download" %>
+  </div>
+<% else %>
+  <div>
+    <%= image_tag iiif_image_path(file_set, '900,'),
+                  class: "representative-media",
+                  alt: "",
+                  role: "presentation" %>
+  </div>
+<% end %>
