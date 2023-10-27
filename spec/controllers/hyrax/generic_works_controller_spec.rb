@@ -91,7 +91,7 @@ RSpec.describe Hyrax::GenericWorksController do
 
       before do
         sign_out user
-        allow(Settings).to receive(:allowed_ip_ranges).and_return(["111.111.11.11"])
+        allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: ["111.111.11.11"] })
       end
 
       context 'with an IP address on campus' do
