@@ -143,6 +143,8 @@ gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
 
+gem 'honeybadger', '~> 3.0'
+
 gem 'pdfjs_viewer-rails'
 
 # https://github.com/mislav/will_paginate
