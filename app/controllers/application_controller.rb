@@ -24,20 +24,12 @@ class ApplicationController < ActionController::Base
   before_action :set_account_specific_connections!
   skip_after_action :discard_flash_if_xhr
 
-  before_action :add_honeybadger_context
-
   rescue_from Apartment::TenantNotFound do
     raise ActionController::RoutingError, 'Not Found'
   end
 
   ALLOWED_LOCALES = %w( de en es fr it zh ).freeze
   DEFAULT_LOCALE = 'en'.freeze
-
-  #def create_work_presenter
-  #   @create_work_presenter ||= Hyrax::SelectTypeListPresenter.new(current_user)
-  #end
-  #helper_method :create_work_presenter
-  #
 
   def set_locale
     I18n.locale = extract_locale_from_headers
@@ -86,10 +78,6 @@ class ApplicationController < ActionController::Base
       payload[:request_id] = request.uuid
       payload[:user_id] = current_user.id if current_user
       payload[:account_id] = current_account.cname if current_account
-    end
-
-    def add_honeybadger_context
-      Honeybadger.context(user_email: current_user.email) if current_user
     end
 
     def ssl_configured?

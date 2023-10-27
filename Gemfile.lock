@@ -419,7 +419,6 @@ GEM
     hashie (5.0.0)
     highline (2.0.3)
     hiredis (0.6.3)
-    honeybadger (3.3.1)
     htmlentities (4.3.4)
     http_logger (0.7.0)
     http_parser.rb (0.8.0)
@@ -1188,7 +1187,6 @@ DEPENDENCIES
   factory_bot_rails
   fcrepo_wrapper (~> 0.4)
   flipflop (~> 2.3)
-  honeybadger (~> 3.0)
   http_parser.rb
   hyrax (= 3.1.0)
   hyrax-doi!
