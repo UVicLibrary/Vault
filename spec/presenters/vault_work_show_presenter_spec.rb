@@ -98,7 +98,8 @@ RSpec.describe VaultWorkShowPresenter do
       let(:fake_ip) { "111.11.11" }
 
       before do
-        allow(Settings).to receive(:allowed_ip_ranges).and_return(Array.wrap(fake_ip))
+        # allow(Settings).to receive(:allowed_ip_ranges).and_return(Array.wrap(fake_ip))
+        allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: [fake_ip] })
         allow(IPAddr).to receive(:new).with(any_args).and_return(fake_ip)
       end
 
@@ -113,7 +114,8 @@ RSpec.describe VaultWorkShowPresenter do
       let(:fake_ip2) { "222.22.22" }
 
       before do
-        allow(Settings).to receive(:allowed_ip_ranges).and_return(Array.wrap(fake_ip2))
+        # allow(Settings).to receive(:allowed_ip_ranges).and_return(Array.wrap(fake_ip2))
+        allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: [fake_ip2] })
         allow(IPAddr).to receive(:new).with(fake_ip1).and_return(fake_ip1)
         allow(IPAddr).to receive(:new).with(fake_ip2).and_return(fake_ip2)
       end
