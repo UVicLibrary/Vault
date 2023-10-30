@@ -46,6 +46,7 @@ module Hyrax
       # to authorize by IP
       if request.format.symbol == :html or request.format.symbol == :json
         @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+        raise Blacklight::Exceptions::RecordNotFound if @curation_concern.nil?
       end
 
       respond_to do |wants|
