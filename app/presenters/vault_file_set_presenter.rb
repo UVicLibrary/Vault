@@ -59,7 +59,7 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
     private
 
       def fetch_parent_presenter
-        ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field)
+        ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field, rows: 1)
                   .map { |x| x.fetch(Hyrax.config.id_field) }
         Hyrax.logger.warn("Couldn't find a parent work for FileSet: #{id}.") if ids.empty?
         ids.each do |id|
