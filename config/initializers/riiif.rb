@@ -20,6 +20,8 @@ Riiif::Image.file_resolver.id_to_uri = lambda do |id|
 end
 Riiif::Image.file_resolver.basic_auth_credentials = [ActiveFedora.fedora.user, ActiveFedora.fedora.password]
 
+require Rails.root.join('app', 'controllers', 'authorize_by_ip_address.rb')
+Riiif::ImagesController.prepend(AuthorizeByIpAddress)
 Riiif::Image.authorization_service = IIIFAuthorizationService
 
 Riiif.not_found_image = 'app/assets/images/us_404.svg'
