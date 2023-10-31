@@ -1,12 +1,9 @@
 RSpec.describe Hyrax::CollectionPresenter do
   describe ".terms" do
     subject { described_class.terms }
-
-    it do
-      is_expected.to eq [:total_viewable_items,
-                         :size,
-                         :modified_date]
-    end
+    it { is_expected.to eq [:total_viewable_items,
+                            :size,
+                            :modified_date] }
   end
 
   let(:collection) do
@@ -74,18 +71,17 @@ RSpec.describe Hyrax::CollectionPresenter do
   end
 
   describe "#terms_with_values" do
-    subject { presenter.terms_with_values }
     let(:user) { create(:user) }
 
     before do
       allow(ability).to receive(:user_groups).and_return(['public'])
       allow(ability).to receive(:current_user).and_return(user)
+      allow(ability).to receive(:admin?).and_return(false)
     end
 
-    it do
-      is_expected.to eq [:total_viewable_items,
-                         :size,
-                         :modified_date]
+    it 'gives the list of terms that have values' do
+      expect(presenter.terms_with_values)
+          .to contain_exactly(:total_viewable_items, :size, :modified_date)
     end
   end
 
@@ -168,6 +164,7 @@ RSpec.describe Hyrax::CollectionPresenter do
     before do
       allow(ability).to receive(:user_groups).and_return(['public'])
       allow(ability).to receive(:current_user).and_return(user)
+      allow(ability).to receive(:admin?).and_return(false)
     end
 
     context "empty collection" do
@@ -220,6 +217,7 @@ RSpec.describe Hyrax::CollectionPresenter do
     before do
       allow(ability).to receive(:user_groups).and_return(['public'])
       allow(ability).to receive(:current_user).and_return(user)
+      allow(ability).to receive(:admin?).and_return(false)
     end
 
     context "empty collection" do
@@ -260,6 +258,7 @@ RSpec.describe Hyrax::CollectionPresenter do
     before do
       allow(ability).to receive(:user_groups).and_return(['public'])
       allow(ability).to receive(:current_user).and_return(user)
+      allow(ability).to receive(:admin?).and_return(false)
     end
 
     context "empty collection" do
@@ -363,38 +362,36 @@ RSpec.describe Hyrax::CollectionPresenter do
   end
 
   describe "banner_file" do
+    let(:solr_doc) { SolrDocument.new(id: '123') }
+
     let(:banner_info) do
       CollectionBrandingInfo.new(
-        collection_id: "123",
-        filename: "banner.gif",
-        role: "banner",
-        target_url: ""
+          collection_id: "123",
+          filename: "banner.gif",
+          role: "banner",
+          target_url: ""
       )
     end
 
     let(:logo_info) do
       CollectionBrandingInfo.new(
-        collection_id: "123",
-        filename: "logo.gif",
-        role: "logo",
-        alt_txt: "This is the logo",
-        target_url: "http://logo.com"
+          collection_id: "123",
+          filename: "logo.gif",
+          role: "logo",
+          alt_txt: "This is the logo",
+          target_url: "http://logo.com"
       )
     end
 
-    before do
-      allow(presenter).to receive(:id).and_return('123')
-      allow(CollectionBrandingInfo).to receive(:where).with(collection_id: '123', role: 'banner').and_return([banner_info])
-      allow(banner_info).to receive(:local_path).and_return("/temp/public/branding/123/banner/banner.gif")
-      allow(CollectionBrandingInfo).to receive(:where).with(collection_id: '123', role: 'logo').and_return([logo_info])
-      allow(logo_info).to receive(:local_path).and_return("/temp/public/branding/123/logo/logo.gif")
-    end
-
     it "banner check" do
+      tempfile = Tempfile.new('my_file')
+      banner_info.save(tempfile.path)
       expect(presenter.banner_file).to eq("/branding/123/banner/banner.gif")
     end
 
     it "logo check" do
+      tempfile = Tempfile.new('my_file')
+      logo_info.save(tempfile.path)
       expect(presenter.logo_record).to eq([{ file: "logo.gif", file_location: "/branding/123/logo/logo.gif", alttext: "This is the logo", linkurl: "http://logo.com" }])
     end
   end
