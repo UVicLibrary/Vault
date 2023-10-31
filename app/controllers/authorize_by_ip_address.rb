@@ -16,7 +16,7 @@ module AuthorizeByIpAddress
   end
 
   def visibility_of(doc_or_presenter)
-    doc_or_presenter.respond_to?(:visibility) ? doc_or_presenter.visibility : doc_or_presenter['visibility_ssi']
+    doc_or_presenter.respond_to?(:visibility) ? doc_or_presenter.visibility : doc_or_presenter.fetch('visibility_ssi')
   end
 
   def ip_address
