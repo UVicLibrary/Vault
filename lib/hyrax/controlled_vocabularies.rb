@@ -4,6 +4,7 @@ module Hyrax
 
     eager_autoload do
       autoload :Location
+      autoload :ResourceLabelCaching
       autoload :Creator
       autoload :Contributor
       autoload :PhysicalRepository
