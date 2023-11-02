@@ -564,12 +564,16 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     end
 
     context 'in Vault tenant' do
-      before { request.env['HTTP_HOST'] = "vault.host" }
+      before do
+        request.env['HTTP_HOST'] = "vault.host"
+        allow(Apartment::Tenant).to receive(:current).and_return("vault")
+        allow(Account).to receive(:find_by).with(tenant: "vault").and_return(Account.new(name: "vault"))
+      end
 
       it "is successful" do
         get :edit, params: { id: collection }
         expect(response).to be_successful
-        expect(assigns[:form]).to be_instance_of Hyrax::Forms::CollectionForm
+        expect(assigns[:form]).to be_instance_of VaultCollectionForm
         expect(flash[:notice]).to be_nil
       end
 
