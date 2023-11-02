@@ -11,8 +11,7 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     class_attribute :collection_presenter_class
     class_attribute :iiif_metadata_fields
 
-    # modify this attribute to use an alternate presenter class for the collections
-    self.collection_presenter_class = Hyrax::CollectionPresenter
+    self.collection_presenter_class = VaultCollectionPresenter
 
         # Methods used by blacklight helpers
     # delegate :has?, :first, :fetch, :export_formats, :export_as, to: :solr_document

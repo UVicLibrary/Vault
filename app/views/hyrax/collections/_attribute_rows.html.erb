@@ -1,5 +1,5 @@
 <%= presenter.attribute_to_html(:resource_type, render_as: :resource_type) %>
-<%= presenter.attribute_to_html(:creator_label, render_as: :faceted) if presenter.creator_label.first.present? %>
+<%= presenter.attribute_to_html(:creator_label, render_as: :faceted) if presenter.try(:creator_label).try(:first) %>
 <%= presenter.attribute_to_html(:contributor_label, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:licence, render_as: :rights_statement) %>

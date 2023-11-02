@@ -9,9 +9,24 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   # actions: index, create, new, edit, show, update, destroy, permissions, citation
   before_action :authenticate_user!, except: [:index, :copy_permissions]
 
-  self.membership_service_class = ::SortCollectionMembersByDateService # Collections::CollectionMemberService
+  self.membership_service_class = ::SortCollectionMembersByDateService
+
+  self.presenter_class = ->() {
+    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
+    when "vault"
+      VaultCollectionPresenter
+    else
+      Hyrax::CollectionPresenter
+    end
+  }
 
   load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
+
+  def presenter
+    @presenter ||= begin
+                     presenter_class.call.new(curation_concern, current_ability)
+                   end
+  end
 
   def not_found
     # Sets alert to display once redirected page has loaded

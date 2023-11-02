@@ -93,6 +93,76 @@ RSpec.describe Hyrax::CollectionsController, clean_repo: true do
         expect(response).to be_successful
       end
     end
+
+    context 'in Vault tenant' do
+      before do
+        allow(Apartment::Tenant).to receive(:current).and_return("vault")
+        allow(Account).to receive(:find_by).with(tenant: "vault").and_return(Account.new(name: "vault"))
+      end
+
+      it "returns the collection and its members" do # rubocop:disable RSpec/ExampleLength
+      expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
+      expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+      expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+      expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+      get :show, params: { id: collection }
+      expect(response).to be_successful
+      expect(response).to render_template("layouts/hyrax/1_column")
+      expect(assigns[:presenter]).to be_kind_of VaultCollectionPresenter
+      expect(assigns[:presenter].title).to match_array collection.title
+      expect(assigns[:member_docs].map(&:id)).to match_array [asset1, asset2, asset3].map(&:id)
+      expect(assigns[:subcollection_docs].map(&:id)).to match_array [asset4, asset5].map(&:id)
+      expect(assigns[:members_count]).to eq(3)
+      expect(assigns[:subcollection_count]).to eq(2)
+      end
+
+      context "and searching" do
+        it "returns some works and subcollections" do
+          # "/collections/4m90dv529?utf8=%E2%9C%93&cq=King+Louie&sort="
+          get :show, params: { id: collection, cq: "Second" }
+          expect(assigns[:presenter]).to be_kind_of VaultCollectionPresenter
+          expect(assigns[:member_docs].map(&:id)).to match_array [asset2].map(&:id)
+          expect(assigns[:subcollection_docs].map(&:id)).to match_array [asset5].map(&:id)
+          expect(assigns[:members_count]).to eq(1)
+          expect(assigns[:subcollection_count]).to eq(1)
+        end
+      end
+
+      context 'when the page parameter is passed' do
+        it 'loads the collection (paying no attention to the page param)' do
+          get :show, params: { id: collection, page: '2' }
+          expect(response).to be_successful
+          expect(assigns[:presenter]).to be_kind_of VaultCollectionPresenter
+          expect(assigns[:presenter].to_s).to eq 'My collection'
+        end
+      end
+
+      context "without a referer" do
+        it "sets breadcrumbs" do
+          expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          get :show, params: { id: collection }
+          expect(response).to be_successful
+        end
+      end
+
+      context "with a referer" do
+        before do
+          request.env['HTTP_REFERER'] = 'http://test.host/foo'
+        end
+
+        it "sets breadcrumbs" do
+          expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
+          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          get :show, params: { id: collection }
+          expect(response).to be_successful
+        end
+      end
+    end
   end
 
   context "not signed in" do

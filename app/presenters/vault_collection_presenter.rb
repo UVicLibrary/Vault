@@ -1,7 +1,4 @@
-require_dependency Hyrax::Engine.root.join('app/presenters/hyrax/collection_presenter.rb')
-
-# OVERRIDE class from Hyrax v. 3.1.0
-Hyrax::CollectionPresenter.class_eval do
+class VaultCollectionPresenter < Hyrax::CollectionPresenter
 
   # delegate fields from Hyrax::Works::Metadata to solr_document
   delegate :provider_label, :creator_label, :based_near_label, :subject_label,

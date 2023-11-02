@@ -1,4 +1,4 @@
-RSpec.describe Hyrax::CollectionPresenter do
+RSpec.describe VaultCollectionPresenter do
   describe ".terms" do
     subject { described_class.terms }
     it { is_expected.to eq [:total_viewable_items,
