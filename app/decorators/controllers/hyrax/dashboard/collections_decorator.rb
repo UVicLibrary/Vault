@@ -9,8 +9,11 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   # actions: index, create, new, edit, show, update, destroy, permissions, citation
   before_action :authenticate_user!, except: [:index, :copy_permissions]
 
+  load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
+
   self.membership_service_class = ::SortCollectionMembersByDateService
 
+  # Tenant-specific class overrides
   self.presenter_class = ->() {
     case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
     when "vault"
@@ -20,12 +23,31 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     end
   }
 
-  load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
+  self.form_class = ->() {
+    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
+    when "vault"
+      VaultCollectionForm
+    else
+      Hyrax::Forms::CollectionForm
+    end
+  }
 
+  # Add .call because presenter_class.is_a? Proc
   def presenter
     @presenter ||= begin
                      presenter_class.call.new(curation_concern, current_ability)
                    end
+  end
+
+  # Add .call because form_class.is_a? Proc
+  def form
+    @form ||= form_class.call.new(@collection, current_ability, repository)
+  end
+
+  # Add .call because form_class.is_a? Proc
+  def collection_params
+    @participants = extract_old_style_permission_attributes(params[:collection])
+    form_class.call.model_attributes(params[:collection])
   end
 
   def not_found
