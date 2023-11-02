@@ -9,6 +9,15 @@ Hyrax::CollectionsController.class_eval do
   # inherits from Collections::CollectionMemberService
   self.membership_service_class = ::SortCollectionMembersByDateService
 
+  self.presenter_class = ->() {
+    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
+    when "vault"
+      VaultCollectionPresenter
+    else
+      Hyrax::CollectionPresenter
+    end
+  }
+
   # app/controllers/hyrax/google_map_behavior.rb
   include Hyrax::GoogleMapBehavior
 
@@ -24,7 +33,13 @@ Hyrax::CollectionsController.class_eval do
     @curation_concern ||= Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
     presenter
     query_collection_members
-    set_google_map_coordinates
+    set_google_map_coordinates if presenter_class.call == VaultCollectionPresenter
+  end
+
+  def presenter
+    @presenter ||= begin
+                     presenter_class.call.new(curation_concern, current_ability)
+                   end
   end
 
   def not_found

@@ -16,7 +16,7 @@ module Hyrax
 
       self.model_class = ::Collection
 
-      self.membership_service_class = Collections::CollectionMemberService
+      self.membership_service_class = Collections::CollectionMemberSearchService
 
       delegate :blacklight_config, to: Hyrax::CollectionsController
 
