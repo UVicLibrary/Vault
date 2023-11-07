@@ -91,7 +91,6 @@ RSpec.describe Hyrax::GenericWorksController do
 
       before do
         sign_out user
-        allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: ["111.111.11.11"] })
       end
 
       context 'with an IP address on campus' do
@@ -112,6 +111,17 @@ RSpec.describe Hyrax::GenericWorksController do
           get :show, params: { id: work }
           expect(response.code).to eq '302'
           expect(response.location).to eq 'http://test.host/users/sign_in?locale=en'
+        end
+      end
+
+      context 'with an admin user' do
+        let(:admin) { create(:admin) }
+        before { sign_in admin }
+
+        it 'allows access' do
+          get :show, params: { id: work }
+          expect(response).to be_successful
+          expect(assigns(:presenter)).to be_kind_of VaultWorkShowPresenter
         end
       end
     end
@@ -214,8 +224,7 @@ RSpec.describe Hyrax::GenericWorksController do
         end
 
         it 'renders a turtle file' do
-          get :show, params: { id: '99999999', format: :ttl }
-
+          get :show, params: { id: work.id, format: :ttl }
           expect(response).to be_successful
           expect(response.body).to eq "ttl graph"
           expect(response.content_type).to eq 'text/turtle'

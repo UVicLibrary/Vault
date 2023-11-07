@@ -93,38 +93,5 @@ RSpec.describe VaultWorkShowPresenter do
 
       allow(Hyrax::SolrService).to receive(:search_by_id).with(any_args).and_return({ 'visibility_ssi' => "authenticated" })
     end
-
-    context 'when IP is on campus' do
-      let(:fake_ip) { "111.11.11" }
-
-      before do
-        # allow(Settings).to receive(:allowed_ip_ranges).and_return(Array.wrap(fake_ip))
-        allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: [fake_ip] })
-        allow(IPAddr).to receive(:new).with(any_args).and_return(fake_ip)
-      end
-
-      it "allows access to items it can't read otherwise" do
-        expect(subject.size).to eq 6
-        expect(subject).to eq ids_list
-      end
-    end
-
-    context 'when IP is off campus' do
-      let(:fake_ip1) { "111.11.11" }
-      let(:fake_ip2) { "222.22.22" }
-
-      before do
-        # allow(Settings).to receive(:allowed_ip_ranges).and_return(Array.wrap(fake_ip2))
-        allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: [fake_ip2] })
-        allow(IPAddr).to receive(:new).with(fake_ip1).and_return(fake_ip1)
-        allow(IPAddr).to receive(:new).with(fake_ip2).and_return(fake_ip2)
-      end
-
-      it "does not allow access to items it can't read" do
-        expect(subject.size).to eq 4
-        expect(subject).to include('item0','item2','item4', 'item5')
-        expect(subject).not_to include('item1','item3')
-      end
-    end
   end
 end

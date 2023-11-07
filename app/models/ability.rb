@@ -2,6 +2,11 @@ class Ability
   include Hydra::Ability
   include Hyrax::Ability
 
+  # Defined in hydra-head gem
+  # hydra-head/hydra-access-controls/app/models/concerns/hydra/ip_based_ability.rb
+  # Adds "uvic" group to users whose IPs are on campus
+  include Hydra::IpBasedAbility
+
   self.ability_logic += %i[
     group_permissions
     superadmin_permissions
@@ -13,7 +18,7 @@ class Ability
   def custom_permissions
     return unless admin? || cataloguer?
     #can [:create], Account
-    
+
     if can? [:manage, :create], Collection
       can [:create, :destroy, :update], FeaturedCollection
     end

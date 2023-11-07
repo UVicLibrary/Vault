@@ -445,30 +445,29 @@ RSpec.describe Hyrax::FileSetsController do
         expect(response).to be_successful
       end
 
-      describe '#authorize_by_ip' do
+      context 'with file with institutional visibility' do
         let(:inst_file_set) { FactoryBot.create(:file_set, visibility: "authenticated") }
 
         before do
-          allow(Settings).to receive(:to_hash).and_return({ allowed_ip_ranges: ["111.111.11.11"] })
           work.ordered_members = [inst_file_set]
           work.save!
           inst_file_set.save!
         end
 
-        context 'when IP is from a campus computer' do
+        context 'with an authorized IP' do
           before { request.remote_ip = "111.111.11.11" }
 
-          it 'allows access to institution-only files' do
+          it 'allows access' do
             get :show, params: { id: inst_file_set }
             expect(response).to be_successful
             expect(assigns(:presenter)).to be_kind_of VaultFileSetPresenter
           end
         end
 
-        context 'when IP is not from a campus computer' do
+        context 'without an authorized IP' do
           before { request.remote_ip = "222.222.22.22" }
 
-          it 'denies access to institution-only files and redirects to sign in page' do
+          it 'denies access and redirects to sign in page' do
             get :show, params: { id: inst_file_set }
             expect(response.code).to eq '302'
             expect(response.location).to eq 'http://test.host/users/sign_in?locale=en'

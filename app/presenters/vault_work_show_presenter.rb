@@ -1,8 +1,5 @@
 class VaultWorkShowPresenter < Hyku::WorkShowPresenter
 
-    # app/controllers/authorize_by_ip_address.rb
-    include AuthorizeByIpAddress
-
     include Hyrax::DOI::DOIPresenterBehavior
     include Hyrax::DOI::DataCiteDOIPresenterBehavior
 
@@ -60,7 +57,7 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
       @member_item_list_ids ||=
           if filter_unreadable
             ordered_ids_with_visibility.reject do |hash|
-              !current_ability.can?(:read, hash['id']) and !authorized_by_ip?(hash)
+              !current_ability.can?(:read, hash['id'])
             end.pluck('id')
           else
             ordered_ids
