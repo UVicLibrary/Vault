@@ -21,6 +21,10 @@ Hyrax::CollectionsController.class_eval do
   # app/controllers/hyrax/google_map_behavior.rb
   include Hyrax::GoogleMapBehavior
 
+  # Defined in the hydra-head gem
+  # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
+  include Hydra::Controller::IpBasedAbility
+  
   # You can override this method if you need to provide additional inputs to the search
   # builder. For example:
   #   search_field: 'all_fields'
@@ -31,7 +35,7 @@ Hyrax::CollectionsController.class_eval do
 
   def show
     @curation_concern ||= Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-    presenter
+    authorize! :read, curation_concern
     query_collection_members
     set_google_map_coordinates if presenter_class.call == VaultCollectionPresenter
   end

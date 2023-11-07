@@ -173,6 +173,34 @@ RSpec.describe Hyrax::CollectionsController, clean_repo: true do
     end
   end
 
+  context "with a collection with institution-only visibility" do
+    before do
+      collection.visibility = "authenticated"
+      collection.save!
+    end
+
+    context 'with an authorized IP' do
+      before { request.remote_ip = "111.111.11.11" }
+
+      it 'allows access' do
+        expect(controller).to receive(:query_collection_members)
+        get :show, params: { id: collection }
+        expect(response).to be_successful
+        expect(assigns[:presenter]).to be_kind_of Hyrax::CollectionPresenter
+      end
+    end
+
+    context 'without an authorized IP' do
+      before { request.remote_ip = "222.222.22.22" }
+
+      it 'denies access and redirects to sign in page' do
+        get :show, params: { id: collection }
+        expect(response.code).to eq '302'
+        expect(response.location).to eq 'http://test.host/users/sign_in?locale=en'
+      end
+    end
+  end
+
   context "without a referer" do
     it "sets breadcrumbs" do
       expect(controller).not_to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))

@@ -20,11 +20,15 @@ Riiif::Image.file_resolver.id_to_uri = lambda do |id|
 end
 Riiif::Image.file_resolver.basic_auth_credentials = [ActiveFedora.fedora.user, ActiveFedora.fedora.password]
 
-require Rails.root.join('app', 'controllers', 'authorize_by_ip_address.rb')
-Riiif::ImagesController.prepend(AuthorizeByIpAddress)
-Riiif::Image.authorization_service = IIIFAuthorizationService
+Riiif::Image.authorization_service = Hyrax::IIIFAuthorizationService
 
 Riiif.not_found_image = 'app/assets/images/us_404.svg'
 Riiif.unauthorized_image = 'app/assets/images/us_404.svg'
 
 Riiif::Engine.config.cache_duration_in_days = 365
+
+Riiif::ImagesController.class_eval do
+  # Defined in the hydra-head gem
+  # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
+  include Hydra::Controller::IpBasedAbility
+end

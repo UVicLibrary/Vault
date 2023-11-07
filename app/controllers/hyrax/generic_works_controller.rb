@@ -3,29 +3,14 @@ module Hyrax
     # Adds Hyrax behaviors to the controller.
     include Hyrax::WorksControllerBehavior
     include Hyrax::BreadcrumbsForWorks
-    # app/controllers/authorize_by_ip_address
-    include AuthorizeByIpAddress
+
+    # Defined in the hydra-head gem
+    # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
+    include Hydra::Controller::IpBasedAbility
 
     self.curation_concern_type = GenericWork
     self.show_presenter = VaultWorkShowPresenter
     self.iiif_manifest_builder = Hyrax::CustomManifestBuilderService.new
-
-    module ClassMethods
-      def curation_concern_type=(curation_concern_type)
-        # Show is an exception because we will authorize based on IP first for certain works, then
-        # run other authorization checks later
-        load_and_authorize_resource class: curation_concern_type, instance_name: :curation_concern, except: [:file_manager, :inspect_work, :manifest, :show]
-
-        # Load the fedora resource to get the etag.
-        # No need to authorize for the file manager, because it does authorization via the presenter.
-        load_resource class: curation_concern_type, instance_name: :curation_concern, only: :file_manager
-
-        self._curation_concern_type = curation_concern_type
-        # We don't want the breadcrumb action to occur until after the concern has
-        # been loaded and authorized
-        before_action :save_permissions, only: :update
-      end
-    end
 
     # Catch deleted work
     rescue_from Blacklight::Exceptions::RecordNotFound, with: :not_found
@@ -41,29 +26,26 @@ module Hyrax
     # @raise CanCan::AccessDenied if the document is not found or the user doesn't have access to it.
     def show
       @user_collections = user_collections
-
-      # load @curation_concern manually because it's skipped for html and we need it
-      # to authorize by IP
-      if request.format.symbol == :html or request.format.symbol == :json
-        @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-        raise Blacklight::Exceptions::RecordNotFound if @curation_concern.nil?
-      end
+      @document = search_result_document(id: params[:id])
 
       respond_to do |wants|
         wants.html {
-          # @curation_concern is a Hyrax::Work but we need the doc to authorize by IP
-          authorize_by_ip(search_result_document(id: @curation_concern.id))
+          raise Blacklight::Exceptions::RecordNotFound unless @document
+          # Authorizing based on the curation_concern currently fails for admins
+          authorize! :read, @document
           presenter && parent_presenter
         }
         wants.json do
-          # @curation_concern is a Hyrax::Work but we need the doc to authorize by IP
-          authorize_by_ip(search_result_document(id: @curation_concern.id))
-          curation_concern # This is here for authorization checks (we could add authorize! but let's use the same method for CanCanCan)
-          render :show, status: :ok
+          @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+          raise Blacklight::Exceptions::RecordNotFound unless @document && @curation_concern
+
+          if can? :read, @document
+            render :show, status: :ok
+          else
+            render status: :unauthorized, json: { error: "You are not authorized to access this resource." }
+          end
         end
         additional_response_formats(wants)
-        # These formats only display metadata that we want to be public even if the work's
-        # visibility is UVic-only, so no need to authorize by IP
         wants.ttl { render body: presenter.export_as_ttl, mime_type: Mime[:ttl] }
         wants.jsonld { render body: presenter.export_as_jsonld, mime_type: Mime[:jsonld] }
         wants.nt { render body: presenter.export_as_nt, mime_type: Mime[:nt] }
@@ -106,6 +88,10 @@ module Hyrax
 
     private
 
+    def set_default_response_format
+      request.format = :html unless params[:format]
+    end
+
     def downloadable_to_boolean
       if params[:generic_work] && params[:generic_work][:downloadable].present?
         params[:generic_work][:downloadable] = ActiveModel::Type::Boolean.new.cast(params[:generic_work][:downloadable])
@@ -130,7 +116,6 @@ module Hyrax
       FullMetadataIiifManifestPresenter.new(search_result_document(id: params[:id])).tap do |p|
         p.hostname = request.base_url
         p.ability = current_ability
-        p.ip_address = request.remote_ip
       end
     end
 

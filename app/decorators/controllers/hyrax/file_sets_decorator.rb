@@ -2,7 +2,11 @@ require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/file_sets_cont
 
 # OVERRIDE class from Hyrax v. 3.1.0
 Hyrax::FileSetsController.class_eval do
-  include AuthorizeByIpAddress
+  # include AuthorizeByIpAddress
+
+  # Defined in the hydra-head gem
+  # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
+  include Hydra::Controller::IpBasedAbility
 
   self.form_class = Hyrax::FileSetForm
 
@@ -13,18 +17,6 @@ Hyrax::FileSetsController.class_eval do
     original = @file_set.original_file
     @version_list = Hyrax::VersionListPresenter.new(original ? original.versions.all : [])
     @groups = current_user.groups
-  end
-
-  def presenter
-    @presenter ||= begin
-                     # We can't use #curation_concern_document because the search results
-                     # would normally exclude institution-only documents for public users
-                     document = ::SolrDocument.find(params[:id])
-                     authorize_by_ip(document)
-                     presenter = show_presenter.new(document, current_ability, request)
-                     raise WorkflowAuthorizationException if presenter.parent.blank?
-                     presenter
-                   end
   end
 
   def show_presenter

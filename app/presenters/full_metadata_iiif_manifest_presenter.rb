@@ -25,10 +25,6 @@
     # @!attribute [w] hostname
     #   @return [String]
     attr_writer :ability, :hostname
-    attr_accessor :ip_address
-
-    # app/controllers/authorize_by_ip_address.rb
-    include AuthorizeByIpAddress
 
     class << self
       ##
@@ -66,9 +62,7 @@
     # @return [Array<IiifManifestPresenter>]
     def member_presenters
       @member_presenters_cache ||= Factory.build_for(ids: ordered_member_ids, presenter_class: self.class).map do |presenter|
-        presenter.ip_address = @ip_address
-        # app/controllers/authorize_by_ip_address.rb
-        next unless ability.can?(:read, presenter.model) or authorized_by_ip?(presenter.model)
+        next unless ability.can?(:read, presenter.model)
         presenter.hostname = hostname
         presenter.ability  = ability
         presenter
@@ -85,7 +79,6 @@
       # @!attribute [w] hostname
       #   @return [String]
       attr_writer :ability, :hostname
-      attr_accessor :ip_address
 
 
       ##
