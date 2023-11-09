@@ -73,4 +73,60 @@ class Ability
   	  role = Role.where(name: "cataloguer", resource_type: "Site").first
   	  @cataloguer ||= current_user.site_roles.include? role rescue false
   end
+
+  #####################################
+  # Here lies modified methods from Hyrax::Ability
+  #####################################
+
+  def extract_subjects(subject)
+    case subject
+    when Hyrax::WorkShowPresenter, Hyrax::FileSetPresenter, Hyrax::CollectionPresenter,
+        VaultWorkShowPresenter, VaultFileSetPresenter, VaultCollectionPresenter
+      extract_subjects(subject.solr_document)
+    when Draper::Decorator
+      extract_subjects(subject.model)
+    else
+      super
+    end
+  end
+
+  # Returns true if can create at least one type of work and they can deposit
+  # into at least one AdminSet
+  def can_create_any_work?
+    Hyrax.config.curation_concerns.any? do |curation_concern_type|
+      can?(:create, curation_concern_type)
+    end #&& admin_set_with_deposit?
+  end
+
+  def editor_abilities
+    can :read, ContentBlock
+    return unless admin?
+
+    can :read, :admin_dashboard
+    can :update, ContentBlock
+    can :edit, ::SolrDocument
+    can :edit, Hyrax::SolrDocument::OrderedMembers
+  end
+
+  # Restore Blacklight Access Controls default. Default Hyrax makes this
+  # an alias for :read, but we need to separate them to enable/disable
+  # downloads at the collection level
+
+  def download_groups(id)
+    doc = permissions_doc(id)
+    return [] if doc.nil?
+    # Also grant all groups with edit access permission to download
+    dg = Array(doc[self.class.download_group_field]) + Array(doc[self.class.edit_group_field])
+    Rails.logger.debug("[CANCAN] download_groups: #{dg.inspect}")
+    dg
+  end
+
+  def download_users(id)
+    doc = permissions_doc(id)
+    return [] if doc.nil?
+    # Also grant all users with edit access permission to download
+    users = Array(doc[self.class.download_user_field]) + Array(doc[self.class.edit_user_field])
+    Rails.logger.debug("[CANCAN] download_users: #{users.inspect}")
+    users
+  end
 end
