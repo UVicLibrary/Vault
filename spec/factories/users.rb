@@ -12,12 +12,23 @@ FactoryBot.define do
       after(:create) { |user| user.add_role(:admin) }
     end
 
+    factory :uvic do
+      after(:create) do |user|
+        user.add_role(:uvic)
+        user.site_roles = ["uvic"]
+      end
+    end
+
     factory :superadmin do
       after(:create) { |user| user.add_role(:superadmin) }
     end
 
     factory :invited_user do
       after(:create, &:invite!)
+    end
+
+    trait :guest do
+      guest { true }
     end
   end
 end
