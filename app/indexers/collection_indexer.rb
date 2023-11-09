@@ -29,17 +29,18 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       object.save!
     end
 
-      super.tap do |solr_doc|
+    super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index the size of the collection in bytes
       solr_doc['bytes_lts'] = object.bytes
 
-      # Allow public users to discover items with institution visibility
+      # Set the read group to public to allow object to pass BlacklightAccessControls
+      # initially. The collections controller will include an extra check to deny access
+      # if the current_user's IP address is not on campus
       if object.visibility == "authenticated"
-        solr_doc["discover_access_group_ssim"] = "public"
+        solr_doc["discover_access_group_ssim"] = ["public"]
       end
-
       solr_doc['in_scua_bsi'] = object.in_scua
       solr_doc['location_sort_tesim'] = object.based_near.map { |val| GeonamesHierarchyService.call(val.id) }.flatten.uniq if object.based_near.present?
     end
