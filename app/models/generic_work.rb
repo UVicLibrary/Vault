@@ -4,8 +4,13 @@ class GenericWork < ActiveFedora::Base
   include Hyrax::DOI::DOIBehavior
   # Adds behaviors for DataCite DOIs via hyrax-doi plugin.
   include Hyrax::DOI::DataCiteDOIBehavior
-  
-  
+
+  # Only define properties specific to file sets here, or to file sets
+  # and one other model type. Any property included in all Vault models
+  # (collections, works, file sets) goes in app/models/concerns/vault_basic_metadata.
+
+  property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
+
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
 	index.as :stored_searchable, :facetable
   end
@@ -13,9 +18,7 @@ class GenericWork < ActiveFedora::Base
   property :edition, predicate: ::RDF::Vocab::SCHEMA.bookEdition do |index|
 	index.as :stored_searchable, :facetable
   end
-  
-  property :geographic_coverage, predicate: ::RDF::Vocab::DC.spatial, class_name: Hyrax::ControlledVocabularies::GeographicCoverage
-  
+
   property :coordinates, predicate: ::RDF::Vocab::SCHEMA.geo do |index|
 	index.as :stored_searchable, :facetable
   end
@@ -35,9 +38,7 @@ class GenericWork < ActiveFedora::Base
   property :has_format, predicate: ::RDF::Vocab::DC.hasFormat do |index|
 	index.as :stored_searchable, :facetable
   end
-  
-  property :physical_repository, predicate: ::RDF::Vocab::PROV.atLocation, class_name: Hyrax::ControlledVocabularies::PhysicalRepository
-  
+
   property :collection, predicate: ::RDF::Vocab::PROV.Collection do |index|
 	index.as :stored_searchable, :facetable
   end
@@ -45,15 +46,11 @@ class GenericWork < ActiveFedora::Base
   property :provenance, predicate: ::RDF::Vocab::DC.provenance do |index|
 	index.as :stored_searchable, :facetable
   end
-  
-  property :provider, predicate: ::RDF::Vocab::EDM.provider, class_name: Hyrax::ControlledVocabularies::Provider
-  
+
   property :sponsor, predicate: ::RDF::Vocab::SCHEMA.sponsor do |index|
 	index.as :stored_searchable, :facetable
   end
-  
-  property :genre, predicate: ::RDF::Vocab::SCHEMA.genre, class_name: Hyrax::ControlledVocabularies::Genre
-  
+
   property :format, predicate: ::RDF::Vocab::DC.format do |index|
 	index.as :stored_searchable, :facetable
   end
@@ -93,21 +90,14 @@ class GenericWork < ActiveFedora::Base
   property :technical_note, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#technicalNote') do |index|
 	index.as :stored_searchable, :facetable
   end
-  
-  property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year') do |index|
-	index.as :stored_searchable, :facetable
-  end
-  
-  
-  include ::Hyrax::BasicMetadata
-  
-  property :creator, predicate: ::RDF::Vocab::DC11.creator, class_name: Hyrax::ControlledVocabularies::Creator
-      
-  property :contributor, predicate: ::RDF::Vocab::DC11.contributor, class_name: Hyrax::ControlledVocabularies::Contributor
-  
-  property :subject, predicate: ::RDF::Vocab::DC11.subject, class_name: Hyrax::ControlledVocabularies::Subject
-  
-  #include ::Hyrax::BasicMetadata
+
+  property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
+
+  # These lines must appear AFTER all custom properties are declared.
+  # include ::Hyrax::BasicMetadata
+  include ::VaultBasicMetadata
+
+
   include HasRendering
   validates :title, presence: { message: 'Your work must have a title.' }
 
@@ -116,25 +106,7 @@ class GenericWork < ActiveFedora::Base
     to_param
   end
   
-  
   # This indexer uses IIIF thumbnails:
   self.indexer = GenericWorkIndexer
-  #self.human_readable_type = 'Work'
-  
-  #def date_created=(value)
-  #		super
-  #		set_value(:year, value)
-  #end
-  
-  id_blank = proc { |attributes| attributes[:id].blank? }
-  
-  self.controlled_properties += [:creator, :contributor, :physical_repository, :provider, :subject, :geographic_coverage, :genre]
-  accepts_nested_attributes_for :creator, reject_if: id_blank, allow_destroy: true
-  accepts_nested_attributes_for :contributor, reject_if: id_blank, allow_destroy: true
-  accepts_nested_attributes_for :physical_repository, reject_if: id_blank, allow_destroy: true
-  accepts_nested_attributes_for :provider, reject_if: id_blank, allow_destroy: true
-  accepts_nested_attributes_for :subject, reject_if: id_blank, allow_destroy: true
-  accepts_nested_attributes_for :geographic_coverage, reject_if: id_blank, allow_destroy: true
-  accepts_nested_attributes_for :genre, reject_if: id_blank, allow_destroy: true
   
 end

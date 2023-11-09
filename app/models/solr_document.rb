@@ -2,8 +2,9 @@
 
 class SolrDocument
   include Blacklight::Solr::Document
-  include Blacklight::Gallery::OpenseadragonSolrDocument
   include BlacklightOaiProvider::SolrDocument
+
+  include Blacklight::Gallery::OpenseadragonSolrDocument
 
   # Adds Hyrax behaviors to the SolrDocument.
   include Hyrax::SolrDocumentBehavior
@@ -32,6 +33,24 @@ class SolrDocument
 
   attribute :extent, Solr::Array, 'extent_tesim'
   attribute :rendering_ids, Solr::Array, 'hasFormat_ssim'
+
+  # Add controlled vocabulary fields
+  attribute :creator, Solr::Array, "creator_tesim"
+  attribute :creator_label, Solr::Array, "creator_label_tesim"
+  # Contributor and Subject are already default fields
+  attribute :contributor_label, Solr::Array, "contributor_label_tesim"
+  attribute :subject_label, Solr::Array, "subject_label_tesim"
+  attribute :provider, Solr::Array, "provider_tesim"
+  attribute :provider_label, Solr::Array, "provider_label_tesim"
+  attribute :physical_repository, Solr::Array, "physical_repository_tesim"
+  attribute :physical_repository_label, Solr::Array, "physical_repository_label_tesim"
+  attribute :geographic_coverage, Solr::Array, "geographic_coverage_tesim"
+  attribute :geographic_coverage_label, Solr::Array, "geographic_coverage_label_tesim"
+  attribute :genre, Solr::Array, "genre_tesim"
+  attribute :genre_label, Solr::Array, "genre_label_tesim"
+
+  # This replaces original_file_id in Hyrax
+  attribute :current_file_version, Solr::String, "current_file_version_ssi"
 
   field_semantics.merge!(
       contributor: 'contributor_label_tesim',
@@ -175,6 +194,18 @@ class SolrDocument
 
   def doi
     fetch('doi_ssi', [])
+  end
+
+  # Override methods from Hyrax::SolrDocument::Characterization
+
+  ##
+  # @todo this might not be indexed normally. deprecate?
+  def filename
+    File.basename(self["import_url_ssim"].first) if self['import_url_ssim']
+  end
+
+  def last_modified
+    self["date_modified_dtsi"]
   end
 
 end
