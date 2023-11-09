@@ -39,7 +39,9 @@ class IaffWork < ActiveFedora::Base
   property :type_of_resource, predicate: ::RDF::Vocab::SCHEMA.additionalType, multiple: false
   
   property :year, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#year')
-  
+
+  property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
+
   self.indexer = IaffWorkIndexer
   # Change this to restrict which works can be added as a child.
   # self.valid_child_concerns = []

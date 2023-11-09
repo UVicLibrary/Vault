@@ -31,7 +31,7 @@ module Hyrax
       respond_to do |wants|
         wants.html {
           raise Blacklight::Exceptions::RecordNotFound unless @document
-          # Authorizing based on the curation_concern currently fails for admins
+          # Authorizing based on the curation_concern currently fails
           authorize! :read, @document
           presenter && parent_presenter
         }
