@@ -22,8 +22,8 @@ RSpec.describe Ability do
     describe "#user_groups" do
       subject { ability.user_groups }
 
-      it "does have the uvic group as they are created on this tenant" do
-        expect(subject).to include 'uvic'
+      it "does not have the uvic group or the registered group" do
+        expect(subject).not_to include('uvic', 'registered')
       end
 
       it "does not have the admin group" do
@@ -44,7 +44,39 @@ RSpec.describe Ability do
     describe "#user_groups" do
       subject { ability.user_groups }
 
-      it "does have the uvic group" do
+      it "does not have the uvic group" do
+        expect(subject).not_to include 'uvic'
+      end
+
+      it "does not have the admin group" do
+        expect(subject).not_to include 'admin'
+      end
+    end
+  end
+
+  describe 'a uvic user' do
+    let(:user) { FactoryBot.create(:uvic) }
+
+    describe '#user_groups' do
+      subject { ability.user_groups }
+
+      it 'has the uvic group' do
+        expect(subject).to include 'uvic'
+      end
+
+      it "does not have the admin group" do
+        expect(subject).not_to include 'admin'
+      end
+    end
+  end
+
+  describe 'a user with an authorized IP address' do
+    let(:ability) { described_class.new(user, remote_ip: "111.111.11.11") }
+
+    describe '#user_groups' do
+      subject { ability.user_groups }
+
+      it 'has the uvic group' do
         expect(subject).to include 'uvic'
       end
 
