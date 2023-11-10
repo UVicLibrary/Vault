@@ -17,6 +17,8 @@ module VaultBasicMetadata
 
     property :description, predicate: ::RDF::Vocab::DC11.description
 
+    property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
+
     property :identifier, predicate: ::RDF::Vocab::DC.identifier
 
     property :keyword, predicate: ::RDF::Vocab::DC11.relation

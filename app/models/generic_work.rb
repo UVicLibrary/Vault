@@ -9,8 +9,6 @@ class GenericWork < ActiveFedora::Base
   # and one other model type. Any property included in all Vault models
   # (collections, works, file sets) goes in app/models/concerns/vault_basic_metadata.
 
-  property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
-
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
 	index.as :stored_searchable, :facetable
   end
