@@ -29,18 +29,16 @@
           </li>
         <% end %>
 
-
-        <li role="menuitem" tabindex="-1">
-          <%= link_to t('.download'),
-                      hyrax.download_path(file_set),
-                      title: t('.download_title', file_set: file_set),
-                      target: "_blank",
-                      id: "file_download",
-                      data: { label: file_set.id } %>
-        </li>
-
-  </ul>
+        <% if display_media_download_link?(file_set: file_set) %>
+            <li role="menuitem" tabindex="-1">
+              <%= link_to t('.download'),
+                          hyrax.download_path(file_set),
+                          title: t('.download_title', file_set: file_set),
+                          target: "_blank",
+                          id: "file_download",
+                          data: { label: file_set.id } %>
+            </li>
+         <% end %>
+      </ul>
   </div>
-<% else %>
-  File is still uploading, please check back later.
 <% end %>
