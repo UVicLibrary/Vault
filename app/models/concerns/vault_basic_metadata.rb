@@ -9,6 +9,10 @@ module VaultBasicMetadata
     # the Hyrax module has some extra properties that we don't want
     # at this time.
 
+    property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+      index.as :stored_searchable, :facetable
+    end
+
     property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation
 
     property :date_created, predicate: ::RDF::Vocab::DC.created do |index|
@@ -20,6 +24,8 @@ module VaultBasicMetadata
     property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
 
     property :identifier, predicate: ::RDF::Vocab::DC.identifier
+
+    property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
 
     property :keyword, predicate: ::RDF::Vocab::DC11.relation
 
