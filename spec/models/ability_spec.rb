@@ -6,7 +6,7 @@ RSpec.describe Ability do
   subject { ability }
 
   let(:ability) { described_class.new(user) }
-  let(:user) { FactoryBot.create(:user) }
+  let(:user) { FactoryBot.create(:user) } 
 
   describe 'an anonymous user' do
     let(:user) { nil }
@@ -32,7 +32,7 @@ RSpec.describe Ability do
     end
   end
 
-  describe 'an ordinary user with a role on this tenant' do
+  describe 'a registered user who was invited by email' do
     let(:user) do
       u = FactoryBot.create(:user)
       u.add_role(:depositor)
@@ -157,17 +157,55 @@ RSpec.describe Ability do
   # TO DO: Our current solr config doesn't add the required fields
   # into the permissions query to actually yield the correct results.
   # Return to this once we've had the opportunity to edit solrconfig.xml.
-
   describe '#download_groups' do
-    # it 'includes edit groups' do
-      pending
-    # end
+    let(:id) { "foo" }
+    let(:doc) {
+      { 'id' => id,
+        'visibility_ssi' => 'open',
+        'edit_access_group_ssim' => ['group1'],
+        'download_access_group_ssim' => ['group2']
+      }
+    }
+    subject { ability.download_groups(id) }
+
+    before { allow(Account).to receive(:find_by).with(any_args).and_return(Account.new(name: 'vault')) }
+    before { allow(SolrDocument).to receive(:find).with('foo').and_return(doc) }
+
+    it 'includes edit groups and download groups' do
+      expect(subject).to include "group1"
+      expect(subject).to include "group2"
+    end
+
+    context 'in the iaff tenant' do
+      before { allow(Account).to receive(:find_by).with(any_args).and_return(Account.new(name: 'iaff')) }
+
+      it 'includes edit groups and the public group' do
+        expect(subject).to include "group1"
+        expect(subject).to include "public"
+      end
+    end
   end
 
+  # TO DO: Our current solr config doesn't add the required fields
+  # into the permissions query to actually yield the correct results.
+  # Return to this once we've had the opportunity to edit solrconfig.xml.
   describe 'download_users' do
-    # it 'includes edit users' do
-      pending
-    # end
+    let(:id) { "foo" }
+    let(:doc) {
+      { 'id' => id,
+        'visibility_ssi' => 'open',
+        'edit_access_person_ssim' => ['user1'],
+        'download_access_person_ssim' => ['user2']
+      }
+    }
+
+    subject { ability.download_users(id) }
+    before { allow(SolrDocument).to receive(:find).with('foo').and_return(doc) }
+
+    it 'includes edit users' do
+      expect(subject).to include "user1"
+      expect(subject).to include "user2"
+    end
   end
 
   context 'with a WorkShowPresenter' do
