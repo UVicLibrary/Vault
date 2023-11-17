@@ -22,7 +22,6 @@ class Ability
     if can? [:manage, :create], Collection
       can [:create, :destroy, :update], FeaturedCollection
     end
-
   end
 
   def admin_permissions
@@ -114,19 +113,34 @@ class Ability
 
   def download_groups(id)
     doc = permissions_doc(id)
-    return [] if doc.nil?
-    # Also grant all groups with edit access permission to download
-    dg = Array(doc[self.class.download_group_field]) + Array(doc[self.class.edit_group_field])
-    Rails.logger.debug("[CANCAN] download_groups: #{dg.inspect}")
-    dg
+    if Account.find_by(tenant: Apartment::Tenant.current).name == "iaff"
+      dg =  Array(doc[self.class.download_group_field]) +
+          Array(doc[self.class.edit_group_field])
+      dg << "public" if doc['visibility_ssi'] == "open"
+      dg
+    else # Vault
+      return [] if doc.nil?
+      # Also grant all groups with edit access permission to download
+      dg =  Array(doc[self.class.download_group_field]) +
+            Array(doc[self.class.edit_group_field])
+      Rails.logger.debug("[CANCAN] download_groups: #{dg.inspect}")
+      dg
+    end
   end
 
   def download_users(id)
     doc = permissions_doc(id)
     return [] if doc.nil?
     # Also grant all users with edit access permission to download
-    users = Array(doc[self.class.download_user_field]) + Array(doc[self.class.edit_user_field])
+    users = Array(doc[self.class.download_user_field]) +
+            Array(doc[self.class.edit_user_field])
     Rails.logger.debug("[CANCAN] download_users: #{users.inspect}")
     users
+  end
+
+  # Return the whole document for now since the Solr query doesn't
+  # actually capture download groups or download users
+  def permissions_doc(id)
+    SolrDocument.find(id)
   end
 end
