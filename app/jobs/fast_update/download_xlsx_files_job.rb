@@ -16,7 +16,14 @@ module FastUpdate
       table = document.search('table').first
       # Omit the first row since it's actually a header
       rows = table.search('tr')[1...]
-      recent_changes = rows.select { |row| Time.zone.parse(row.children[1].text).between?(start_date, end_date) }
+      
+      recent_changes = rows.select do |row|
+        Time.zone.parse(row.children[1].text).between?(start_date, end_date)
+      rescue ArgumentError
+        Rails.logger.warn "Cannot parse date from #{row.children[1].text}. Skipping..."
+        false
+      end
+
       recent_changes.each do |row|
         filename = row.search('a')[0][:href]
         dest = "#{download_dir}/#{filename}"
@@ -24,6 +31,7 @@ module FastUpdate
         open(dest,'wb') do |file|
           file << URI.open("#{fast_url}/#{filename}").read
         end
+        ParseChangesJob.perform_later(dest)
       end
     end
   end
