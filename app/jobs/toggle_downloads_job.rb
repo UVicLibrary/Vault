@@ -9,7 +9,7 @@ class ToggleDownloadsJob < Hyrax::ApplicationJob
       next if work.downloadable == ActiveModel::Type::Boolean.new.cast(downloadable)
       work.downloadable = ActiveModel::Type::Boolean.new.cast(downloadable)
       work.save!
-      work.file_sets.each { |fs| fs.update_index }
+      work.file_sets.each(&:update_index)
     end
     DownloadsMailer.with(user_email: user_email.gsub('-dot-', '.'), id: collection_id, downloadable: downloadable).send_email.deliver_now
   end
