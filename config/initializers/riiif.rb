@@ -20,7 +20,7 @@ Riiif::Image.file_resolver.id_to_uri = lambda do |id|
 end
 Riiif::Image.file_resolver.basic_auth_credentials = [ActiveFedora.fedora.user, ActiveFedora.fedora.password]
 
-Riiif::Image.authorization_service = Hyrax::IIIFAuthorizationService
+Riiif::Image.authorization_service = IIIFAuthorizationService # Hyrax::IIIFAuthorizationService
 
 Riiif.not_found_image = 'app/assets/images/us_404.svg'
 Riiif.unauthorized_image = 'app/assets/images/us_404.svg'
