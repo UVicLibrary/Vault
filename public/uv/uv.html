@@ -95,14 +95,16 @@
 
     if (window.location.toString().includes('vault')) {
 
-        var manifestUrl = window.location.hash.split('&')[0].replace('#?manifest=', '') + '.json';
         // console.log(manifestUrl);
-        $.get(manifestUrl).done(function(data) {
+        document.addEventListener('thumbsLoaded', function (e) { // See public/uv/lib/iiif-gallery-component.js
 
-            var manifest = data;
-            // console.log(manifest);
+            var manifestUrl = window.location.hash.split('&')[0].replace('#?manifest=', '') + '.json';
 
-            document.addEventListener('thumbsLoaded', function (e) { // See public/uv/lib/iiif-gallery-component.js
+            $.get(manifestUrl).done(function(data) {
+
+                var manifest = data;
+                // console.log(manifest);
+
                 // Delete everything currently in the metadata panel and replace it with our template
                 $('.iiif-metadata-component').empty();
                 var template = '<div class="groups"><div class="group"><div class="header">About this image</div><div class="items"></div></div></div>';
