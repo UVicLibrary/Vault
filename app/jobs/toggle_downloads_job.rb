@@ -6,8 +6,10 @@ class ToggleDownloadsJob < Hyrax::ApplicationJob
     collection = Collection.find(collection_id)
     works = GenericWork.where(member_of_collection_ids_ssim: collection_id)
     works.each do |work|
+      next if work.downloadable == ActiveModel::Type::Boolean.new.cast(downloadable)
       work.downloadable = ActiveModel::Type::Boolean.new.cast(downloadable)
-      work.save
+      work.save!
+      work.file_sets.each { |fs| fs.update_index }
     end
     DownloadsMailer.with(user_email: user_email.gsub('-dot-', '.'), id: collection_id, downloadable: downloadable).send_email.deliver_now
   end
