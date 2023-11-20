@@ -98,11 +98,11 @@
         document.addEventListener('thumbsLoaded', function (e) {
 
             var manifestUrl = window.location.hash.split('&')[0].replace('#?manifest=', '') + '.json';
-            // console.log(manifestUrl);
-
+			
             $.get(manifestUrl).done(function(data) {
 
                 var manifest = data;
+                // console.log(manifest);
 
                 // Delete everything currently in the metadata panel and replace it with our template
                 $('.iiif-metadata-component').empty();
