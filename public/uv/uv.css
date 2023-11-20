@@ -16,5 +16,5 @@
 
 .uv .overlay.download .middle ol.options li.group.canvas,
 .uv .overlay.download .middle ol.options li.group.manifest {
-    display: none;
+    display: none !important;
 }
