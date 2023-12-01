@@ -131,6 +131,22 @@ RSpec.describe FileSetIndexer do
     end
   end
 
+  context 'with controlled vocabulary fields' do
+    before do
+      file_set.geographic_coverage = ["http://id.worldcat.org/fast/1243522"]
+      file_set.subject = ["http://id.worldcat.org/fast/124399"]
+    end
+
+    subject { indexer.generate_solr_document }
+
+    it 'indexes the URI and label' do
+      expect(subject['geographic_coverage_tesim']).to eq(["http://id.worldcat.org/fast/1243522"])
+      expect(subject['geographic_coverage_label_tesim']).to eq(["United States--Pacific Coast"])
+      expect(subject['subject_tesim']).to eq(["http://id.worldcat.org/fast/124399"])
+      expect(subject['subject_label_tesim']).to eq(["Hammond, Charlie, 1870-1953"])
+    end
+  end
+
   describe '#file_format' do
     subject { indexer.send(:file_format) }
 

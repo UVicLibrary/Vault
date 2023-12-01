@@ -66,10 +66,11 @@ module VaultBasicMetadata
     property :subject, predicate: ::RDF::Vocab::DC11.subject, class_name: Hyrax::ControlledVocabularies::Subject
 
     class_attribute :controlled_properties
-    self.controlled_properties = [:creator, :contributor, :physical_repository, :provider, :subject, :geographic_coverage, :genre]
+    self.controlled_properties = [:based_near, :creator, :contributor, :physical_repository, :provider, :subject, :geographic_coverage, :genre]
 
     id_blank = proc { |attributes| attributes[:id].blank? }
 
+    accepts_nested_attributes_for :based_near, reject_if: id_blank, allow_destroy: true
     accepts_nested_attributes_for :creator, reject_if: id_blank, allow_destroy: true
     accepts_nested_attributes_for :contributor, reject_if: id_blank, allow_destroy: true
     accepts_nested_attributes_for :physical_repository, reject_if: id_blank, allow_destroy: true
@@ -84,15 +85,15 @@ module VaultBasicMetadata
     # (where object.id == 'http://id.worldcat.org/fast/1333924')
     def to_controlled_vocab
       controlled_properties.each do |field|
-        if field.to_s == "based_near"
-          class_name = "Hyrax::ControlledVocabularies::Location".constantize
-        else
-          class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
-        end
-        output =  self.send(field.to_s).map do |val|
+        # model.properties returns an array of arrays where the first
+        # element of the nested array is the field name (a String)
+        property = self.class.properties.find { |prop| prop.first.to_sym == field }
+        class_name = property.last.class_name
+        # Convert Strings (URIs) to the proper classes
+        values =  self[field].map do |val|
           val.include?("http") ? class_name.new(val.strip) : val
         end
-        self.send(field.to_s+"=", output)
+        self.send(field.to_s + "=", values)
       end
     end
   end # included do
