@@ -18,6 +18,8 @@ class Ability
   def custom_permissions
     return unless admin? || cataloguer?
     #can [:create], Account
+    can :create, [Hyrax::UploadedFile, BatchUploadItem]
+    can :destroy, Hyrax::UploadedFile, user: current_user
 
     if can? [:manage, :create], Collection
       can [:create, :destroy, :update], FeaturedCollection
@@ -113,7 +115,7 @@ class Ability
 
   def download_groups(id)
     doc = permissions_doc(id)
-    if Account.find_by(tenant: Apartment::Tenant.current).name == "iaff"
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name) == "iaff"
       dg =  Array(doc[self.class.download_group_field]) +
           Array(doc[self.class.edit_group_field])
       dg << "public" if doc['visibility_ssi'] == "open"
@@ -141,6 +143,6 @@ class Ability
   # Return the whole document for now since the Solr query doesn't
   # actually capture download groups or download users
   def permissions_doc(id)
-    SolrDocument.find(id)
+    Hydra::PermissionsSolrDocument.new(SolrDocument.find(id))
   end
 end
