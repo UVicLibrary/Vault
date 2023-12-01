@@ -47,7 +47,7 @@ RSpec.describe CollectionIndexer do
     end
 
     it 'allows public users to discover the collection' do
-      expect(solr_document['discover_access_group_ssim']).to eq 'public'
+      expect(solr_document['discover_access_group_ssim']).to eq ['public']
     end
   end
 
@@ -73,7 +73,7 @@ RDFXML
 
     before do
       allow(service).to receive(:rdf_service).and_return(Hyrax::DeepIndexingService)
-      collection.based_near_attributes = [{ id: 'http://sws.geonames.org/5037649/' }]
+      collection.based_near = ['http://sws.geonames.org/5037649/']
       stub_request(:get, "http://sws.geonames.org/5037649/")
         .to_return(status: 200, body: mpls,
                    headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })

@@ -16,11 +16,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
   def generate_solr_document
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
     # This is needed for Hyrax::DeepIndexingService
-    object.attribute_names.each do |field|
-      if object.controlled_properties.include?(field.to_sym) and object[field].present?
-        to_controlled_vocab(field)
-      end
-    end
+    object.to_controlled_vocab
 
     # This is any ugly patch to stop something (Active Fedora?) sometimes stuffing the Geonames' rdfs:seeAlso
     # attribute into the document's related_url field
@@ -35,32 +31,13 @@ class CollectionIndexer < Hyrax::CollectionIndexer
       # Index the size of the collection in bytes
       solr_doc['bytes_lts'] = object.bytes
 
-      # Set the read group to public to allow object to pass BlacklightAccessControls
-      # initially. The collections controller will include an extra check to deny access
-      # if the current_user's IP address is not on campus
+      # Allow public users to see the metadata (so they can decide to request access or not)
       if object.visibility == "authenticated"
         solr_doc["discover_access_group_ssim"] = ["public"]
       end
+
       solr_doc['in_scua_bsi'] = object.in_scua
       solr_doc['location_sort_tesim'] = object.based_near.map { |val| GeonamesHierarchyService.call(val.id) }.flatten.uniq if object.based_near.present?
     end
   end
-
-
-  private
-
-  # field is a symbol/controlled property
-  # returns an array of Hyrax::ControlledVocabularies::[field]
-  def to_controlled_vocab(field)
-    if field.to_s == "based_near"
-      class_name = "Hyrax::ControlledVocabularies::Location".constantize
-    else
-      class_name = "Hyrax::ControlledVocabularies::#{field.to_s.camelize}".constantize
-    end
-    object[field] =  object[field].map do |val|
-      val.include?("http") ? class_name.new(val.strip) : val
-    end
-  end
-
-
 end

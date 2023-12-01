@@ -357,4 +357,16 @@ RSpec.describe Collection, type: :model do
       collection.save!
     end
   end
+
+  describe '#properties' do
+    subject { described_class.properties.map(&:first).map(&:to_sym) }
+    it { is_expected.to match_array([:has_model, :create_date, :modified_date, :depositor, :title,
+                                     :date_uploaded, :date_modified, :head, :tail, :collection_type_gid,
+                                     :alternative_title, :creator, :contributor, :subject, :provider,
+                                     :physical_repository, :geographic_coverage, :genre, :year, :in_scua,
+                                     :label, :downloadable, :relative_path, :import_url, :part_of,
+                                     :resource_type, :description, :keyword, :license, :rights_statement,
+                                     :publisher, :date_created, :language, :identifier, :based_near,
+                                     :related_url, :bibliographic_citation, :source]) }
+  end
 end
