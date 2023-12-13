@@ -1,5 +1,7 @@
 module LargeIIIFThumbnailPaths
   extend ActiveSupport::Concern
+  # #iiif_thumbnail_path is defined in app/services/concerns/iiif_thumbnail_paths.rb
+  LARGE_THUMBNAIL_SIZE = '!500,900'.freeze
 
   class_methods do
     # @param [FileSet] file_set
@@ -7,9 +9,10 @@ module LargeIIIFThumbnailPaths
     #                      wider than 150px and no taller than 300px
     # @return the IIIF url for the thumbnail if it's an image, otherwise gives
     #         the thumbnail download path
-    def thumbnail_path(file_set, size = '!500,900'.freeze)
-	#iiif_thumbnail_path is defined in app/services/concerns/iiif_thumbnail_paths.rb
-      iiif_thumbnail_path(file_set, '!500,900')
+    def thumbnail_path(file_set, size = LARGE_THUMBNAIL_SIZE)
+      # return super(file_set) unless file_set.image?
+      iiif_thumbnail_path(file_set, size)
     end
   end
+
 end
