@@ -2,13 +2,15 @@ module IIIFThumbnailPaths
   extend ActiveSupport::Concern
   # Customized to use the latest version if a thumbnail has multiple versions
 
+  THUMBNAIL_SIZE = '!150,300'.freeze
+
   class_methods do
     # @param [FileSet] file_set
     # @param [String] size ('!150,300') an IIIF image size defaults to an image no
     #                      wider than 150px and no taller than 300px
     # @return the IIIF url for the thumbnail if it's an image, otherwise gives
     #         the thumbnail download path
-    def thumbnail_path(file_set, size = '!150,300'.freeze)
+    def thumbnail_path(file_set, size = THUMBNAIL_SIZE)
       iiif_thumbnail_path(file_set, size)
     end
 
