@@ -89,13 +89,16 @@ module VaultFileSetHelper
     end
   end
 
-  def iiif_image_path(file_set, size)
-    # latest_file_id is defined in app/presenters/hyrax/displays_image.rb
-    path = file_set.send(:latest_file_id)
+  def iiif_image_path(solr_doc, size)
+    path = latest_file_id(solr_doc)
     Riiif::Engine.routes.url_helpers.image_path(
         path,
         size: size
     )
+  end
+
+  def latest_file_id(solr_doc)
+    solr_doc.current_file_version || Hyrax::VersioningService.versioned_file_id(FileSet.find(solr_doc.id).original_file)
   end
 
   def default_image
