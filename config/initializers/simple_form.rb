@@ -187,3 +187,13 @@ SimpleForm.setup do |config|
     end
   end
 end
+
+# Fix weird autoloading issue
+SimpleForm::FormBuilder.class_eval do
+  def attempt_mapping(mapping, at)
+    return if SimpleForm.inputs_discovery == false && at == Object
+    # These classes are defined in the hyrax and hydra-editor gem
+    mapping.constantize if ["ControlledVocabularyInput", "MultiValueInput"].include?(mapping)
+    at.const_get(mapping) if at.const_defined?(mapping)
+  end
+end
