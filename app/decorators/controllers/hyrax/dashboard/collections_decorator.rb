@@ -153,6 +153,38 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     qa_attributes
   end
 
+  # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
+  # checks if an uploaded thumbnail exists in the public folder before indexing the thumbnail path.
+  def delete_uploaded_thumbnail
+    FileUtils.rm_rf(uploaded_thumbnail_files)
+    @collection.update_index
+
+    respond_to do |format|
+      format.html
+      format.js # renders delete_uploaded_thumbnail.js.erb, which updates _current_thumbnail.html.erb
+    end
+  end
+
+  def process_uploaded_thumbnail(uploaded_file)
+    dir_name = ::CollectionThumbnailPathService.upload_dir(@collection)
+    saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
+    # Create directory if it doesn't already exist
+    unless File.directory?(dir_name)
+      FileUtils.mkdir_p(dir_name)
+    else # clear contents
+      delete_uploaded_thumbnail
+    end
+    File.open(saved_file, 'wb') do |file|
+      file.write(uploaded_file.read)
+    end
+    image = MiniMagick::Image.open(saved_file)
+    # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
+    image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
+    image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
+    File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
+    File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
+  end
+
   def update
     unless params[:update_collection].nil?
       process_banner_input
@@ -173,38 +205,6 @@ Hyrax::Dashboard::CollectionsController.class_eval do
       after_update
     else
       after_update_error
-    end
-
-    # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
-    # checks if an uploaded thumbnail exists in the public folder before indexing the thumbnail path.
-    def delete_uploaded_thumbnail
-      FileUtils.rm_rf(uploaded_thumbnail_files)
-      @collection.update_index
-
-      respond_to do |format|
-        format.html
-        format.js # renders delete_uploaded_thumbnail.js.erb, which updates _current_thumbnail.html.erb
-      end
-    end
-
-    def process_uploaded_thumbnail(uploaded_file)
-      dir_name = ::CollectionThumbnailPathService.upload_dir(@collection)
-      saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
-      # Create directory if it doesn't already exist
-      unless File.directory?(dir_name)
-        FileUtils.mkdir_p(dir_name)
-      else # clear contents
-      delete_uploaded_thumbnail
-      end
-      File.open(saved_file, 'wb') do |file|
-        file.write(uploaded_file.read)
-      end
-      image = MiniMagick::Image.open(saved_file)
-      # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
-      image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
-      image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
-      File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
-      File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
     end
 
   end
