@@ -13,13 +13,24 @@ module Hyrax
     self.iiif_manifest_builder = Hyrax::CustomManifestBuilderService.new
 
     # Catch deleted work
-    rescue_from Blacklight::Exceptions::RecordNotFound, with: :not_found
+    rescue_from Blacklight::Exceptions::RecordNotFound, Ldp::Gone, with: :not_found
 
     def not_found
       # Sets alert to display once redirected page has loaded
       flash.alert = "The work you're looking for may have moved or does not exist. Try searching for it in the search bar."
       redirect_to help_path
       return
+    end
+
+    def need_single_use_links?
+      work = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+      representative = ::ActiveFedora::Base.find(work.representative_id.to_s)
+      !current_ability.can?(:download, params[:id]) && !representative.image?
+    end
+
+    # @return [Array <VaultFileSetPresenter or Array <Hyrax::FileSetPresenter>]
+    def available_file_sets
+      presenter.member_presenters.select { |fsp| can? :show, fsp }
     end
 
     # Finds a solr document matching the id and sets @presenter
@@ -34,6 +45,14 @@ module Hyrax
           # Authorizing based on the curation_concern currently fails
           authorize! :read, @document
           presenter && parent_presenter
+          if need_single_use_links?
+            available_file_sets.each do |file_set|
+              # Create a single use link to be used immediately by the viewer
+              @su_download_key = SingleUseLink.create(
+                  item_id: file_set.id, path: hyrax.download_path(id: file_set.id)
+              ).download_key
+            end
+          end
         }
         wants.json do
           @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
