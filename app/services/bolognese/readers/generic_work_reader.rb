@@ -185,7 +185,7 @@ module Bolognese
       # @param [String] - the FAST URI
       # @return [Array <String>] - the latitude and longitude coordinates
       def get_coordinates(uri)
-        data = open(uri).read
+        data = URI.open(uri).read
         latitude = data.match(/<schema:latitude>(.+)<\/schema:latitude>/)[1]
         longitude = data.match(/<schema:longitude>(.+)<\/schema:longitude>/)[1]
         # Omit coordinates if one is "?"
@@ -259,7 +259,7 @@ module Bolognese
       # Get the RDF label from FAST. We could use the ActiveTriples gem to fetch
       # the label but this is faster.
       def get_label(uri)
-        open(uri).read.match(/<skos:prefLabel>(.+)<\/skos:prefLabel>/)[1]
+        URI.open(uri).read.match(/<skos:prefLabel>(.+)<\/skos:prefLabel>/)[1]
       end
 
       def fst_identifier(uri)
