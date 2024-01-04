@@ -35,27 +35,18 @@ RSpec.describe Hyrax::CollectionsHelper do
     end
 
     it 'gives an empty set for a missing collection' do
-      expect(helper.available_child_collections(collection: nil)).to be_empty
-    end
-
-    it 'gives a list of available collections' do
-      FactoryBot.create(:collection) # other collection
-      current_collection = FactoryBot.create(:collection)
-
-      expect(helper.available_child_collections(collection: current_collection))
-        .not_to be_empty
+      expect(JSON.parse(helper.available_child_collections(collection: nil))).to be_empty
     end
 
     # Sometimes fails as collections are numbered differently ('Collection Title 4' etc...)
-    # TODO make the titles of all 3 child collections be '... Title 1' to '... Title 3'
     it 'gives a list of available child collections in alphabetical order' do
-      FactoryBot.create(:collection)
-      FactoryBot.create(:collection)
-      FactoryBot.create(:collection)
+      FactoryBot.create(:collection, title: ['Test Title 1'])
+      FactoryBot.create(:collection, title: ['Test Title 2'])
+      FactoryBot.create(:collection, title: ['Test Title 3'])
       current_collection = FactoryBot.create(:collection)
       
-      expect(helper.available_child_collections(collection: current_collection).map(&:title).flatten)
-        .to eq ['Collection Title 1', 'Collection Title 2', 'Collection Title 3']
+      expect(JSON.parse(helper.available_child_collections(collection: current_collection)).map{|val| val.values[1]})
+        .to eq ["Test Title 1", "Test Title 2", "Test Title 3"]
 
     end
 
