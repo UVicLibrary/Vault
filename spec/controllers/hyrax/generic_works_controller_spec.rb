@@ -510,7 +510,7 @@ RSpec.describe Hyrax::GenericWorksController do
     let(:work) { FactoryBot.create(:work, :public) }
 
     context "when the user has write access to the file" do
-      let(:work) { FactoryBot.create(:work, :public, user: user) }
+      let(:work) { FactoryBot.create(:work, :public, user: user, with_admin_set: true) }
       let(:file_set) { FactoryBot.create(:file_set, user: user) }
 
       context "when the work has no file sets" do
@@ -589,7 +589,7 @@ RSpec.describe Hyrax::GenericWorksController do
         user.site_roles = ["admin"]
       end
 
-      let(:work) { create(:private_generic_work) }
+      let(:work) { create(:private_generic_work, with_admin_set: true) }
 
       it 'someone elses private work should update the work' do
         patch :update, params: { id: work, generic_work: {} }
