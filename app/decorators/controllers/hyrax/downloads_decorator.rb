@@ -3,19 +3,46 @@ require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/downloads_cont
 # OVERRIDE class from Hyrax v. 3.2.0
 Hyrax::DownloadsController.class_eval do
 
+  protected
+
   # Customize the :read ability in your Ability class, or override this method.
   # Hydra::Ability#download_permissions can't be used in this case because it assumes
   # that files are in a LDP basic container, and thus, included in the asset's uri.
   def authorize_download!
-    # Allow users to see thumbnails
     begin
-      if params[:file] != "thumbnail"
-        authorize! :download, params[asset_param_key]
-      end
+      # Allow users to see thumbnails
+      authorize! :download, params[asset_param_key] if params[:file] != "thumbnail"
     rescue CanCan::AccessDenied
       unauthorized_image = Rails.root.join("app", "assets", "images", "unauthorized.png")
       send_file unauthorized_image, status: :unauthorized
     end
+  end
+
+  # Overrides hydra-core/app/controllers/concerns/hydra/controller/download_behavior.rb
+  # and, in later versions of Hyrax, Hyrax::StreamFileDownloadsControllerBehavior
+  def prepare_file_headers
+    super
+    # Add/modify response headers to work with the pdfjs_viewer-rails gem
+    prepare_pdf_file_headers if enable_pdfjs_range_requests?
+  end
+
+  # asset is the ::FileSet whereas file is the Active Fedora file.
+  # Don't use range requests for single-use downloads (this
+  # typically happens if a pdf is viewable but non-downloadable).
+  def enable_pdfjs_range_requests?
+    asset.pdf? && request.original_url.exclude?("single_use_link")
+  end
+
+  # We need to set specific headers to allow range requests from the
+  # pdfjs viewer. Otherwise, response.headers['Content-Encoding']
+  # would == 'gzip', which causes pdfjs to download the whole file
+  # at once instead of requesting a content range. Also, Rack::Deflater
+  # would erase the Content-Length header, which the viewer/browser
+  # needs for range requests. See
+  # https://github.com/rack/rack/blob/main/lib/rack/deflater.rb#L65
+  def prepare_pdf_file_headers
+    response.headers['Cache-Control'] = "no-transform"
+    response.headers['Content-Encoding'] = "identity"
   end
 
 end

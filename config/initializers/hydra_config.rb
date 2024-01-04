@@ -22,26 +22,3 @@ Hydra.configure do |config|
 
   config.user_key_field = Devise.authentication_keys.first
 end
-
-Hydra::Controller::DownloadBehavior.module_eval do
-
-  def send_file_contents
-    response.headers['Access-Control-Expose-Headers'] = 'Content-Range, Accept-Ranges, Content-Length, Content-Encoding'
-    response.headers['Content-Range'] = "0-#{file.size-1}/#{file.size}"
-    self.status = 200
-    prepare_file_headers
-    stream_body file.stream
-  end
-
-  def prepare_file_headers
-    send_file_headers! content_options
-    response.headers['Content-Type'] = file.mime_type
-    response.headers['Content-Length'] ||= file.size.to_s
-    # Prevent Rack::ETag from calculating a digest over body
-    response.headers['Last-Modified'] = asset.modified_date.utc.strftime("%a, %d %b %Y %T GMT")
-    self.content_type = file.mime_type
-    response.headers['Custom-Header'] = "#{file.size}"
-    response.headers['Content-Encoding'] = "identity"
-  end
-
-end
