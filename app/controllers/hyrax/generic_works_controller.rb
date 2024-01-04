@@ -24,6 +24,7 @@ module Hyrax
 
     def need_single_use_links?
       work = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+      return false unless work.representative_id.presence
       representative = ::ActiveFedora::Base.find(work.representative_id.to_s)
       !current_ability.can?(:download, params[:id]) && !representative.image?
     end
