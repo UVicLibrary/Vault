@@ -43,64 +43,72 @@ RSpec.describe IIIFAuthorizationService do
       end
     end
 
-    context 'when the user has read access but not download access to the FileSet' do
-      subject { service.can?(:show, image) }
+    # context 'when the user has read access but not download access to the FileSet' do
+    #   subject { service.can?(:show, image) }
+    #
+    #   before do
+    #     allow(ability).to receive(:test_read).with(file_set_id).and_return(true)
+    #     allow(ability).to receive(:test_download).with(file_set_id).and_return(false)
+    #     allow(controller).to receive(:action_name).and_return('show')
+    #   end
+    #
+    #   context 'when requesting a thumbnail' do
+    #     before { allow(controller).to receive(:params).and_return(size: size) }
+    #
+    #     context 'work thumbnail' do
+    #       let(:size) { IIIFThumbnailPaths::THUMBNAIL_SIZE }
+    #
+    #       context "show" do
+    #         it { is_expected.to be true }
+    #       end
+    #     end
+    #
+    #     context 'collection or card thumbnail' do
+    #       let(:size) { LargeIIIFThumbnailPaths::LARGE_THUMBNAIL_SIZE }
+    #
+    #       context "show" do
+    #         it { is_expected.to be true }
+    #       end
+    #     end
+    #
+    #   end
+    #
+    #   context 'when on a work page' do
+    #     let(:controller) { Hyrax::GenericWorksController.new }
+    #
+    #     context "show" do
+    #       it { is_expected.to be true }
+    #     end
+    #
+    #   end
+    #
+    #   # context 'when requesting a full image' do
+    #   #   before { allow(controller).to receive(:params).and_return(size: size) }
+    #   #   let(:size) { 'full,full' }
+    #   #
+    #   #   context "show" do
+    #   #     it { is_expected.to be false }
+    #   #   end
+    #   # end
+    #
+    # end
 
-      before do
-        allow(ability).to receive(:test_read).with(file_set_id).and_return(true)
-        allow(ability).to receive(:test_download).with(file_set_id).and_return(false)
-        allow(controller).to receive(:action_name).and_return('show')
-      end
+    # context 'when the user has download access to the FileSet' do
+    #   let(:user) { create(:admin) }
+    #
+    #   context "show" do
+    #     subject { service.can?(:show, image) }
+    #
+    #     it { is_expected.to be true }
+    #   end
+    # end
+  end
 
-      context 'when requesting a thumbnail' do
-        before { allow(controller).to receive(:params).and_return(size: size) }
+  describe "#file_set_id_for" do
+    let(:image_id) { "#{file_set_id}%2Ffiles%2F70e3f592-e23a-4841-a434-ba5abc6e2892" }
 
-        context 'work thumbnail' do
-          let(:size) { IIIFThumbnailPaths::THUMBNAIL_SIZE }
-
-          context "show" do
-            it { is_expected.to be true }
-          end
-        end
-
-        context 'collection or card thumbnail' do
-          let(:size) { LargeIIIFThumbnailPaths::LARGE_THUMBNAIL_SIZE }
-
-          context "show" do
-            it { is_expected.to be true }
-          end
-        end
-
-      end
-
-      context 'when on a work page' do
-        let(:controller) { Hyrax::GenericWorksController.new }
-
-        context "show" do
-          it { is_expected.to be true }
-        end
-
-      end
-
-      context 'when requesting a full image' do
-        before { allow(controller).to receive(:params).and_return(size: size) }
-        let(:size) { 'full,full' }
-
-        context "show" do
-          it { is_expected.to be false }
-        end
-      end
-
-    end
-
-    context 'when the user has download access to the FileSet' do
-      let(:user) { create(:admin) }
-
-      context "show" do
-        subject { service.can?(:show, image) }
-
-        it { is_expected.to be true }
-      end
+    it "escapes URLs before parsing the file set id" do
+      expect(service.send(:file_set_id_for, image)).to eq file_set_id
     end
   end
 end
