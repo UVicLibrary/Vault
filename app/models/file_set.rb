@@ -6,7 +6,6 @@ class FileSet < ActiveFedora::Base
 
   property :creator, predicate: ::RDF::Vocab::DC11.creator, class_name: Hyrax::ControlledVocabularies::Creator
 
-
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_searchable, :facetable
   end
@@ -77,17 +76,12 @@ class FileSet < ActiveFedora::Base
 
   property :last_fixity_check, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#last_fixity_check'), multiple: false
 
+  # This line must go below any custom properties
   include ::Hyrax::FileSetBehavior
-
-  property :creator, predicate: ::RDF::Vocab::DC11.creator, class_name: Hyrax::ControlledVocabularies::Creator
 
   property :contributor, predicate: ::RDF::Vocab::DC11.contributor, class_name: Hyrax::ControlledVocabularies::Contributor
 
   property :subject, predicate: ::RDF::Vocab::DC11.subject, class_name: Hyrax::ControlledVocabularies::Subject
-
-  property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
-
-  property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
 
   before_destroy :remove_rendering_relationship
 
