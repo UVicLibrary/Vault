@@ -1,4 +1,4 @@
-FROM ruby:2.6.8
+FROM ruby:2.7.4
 RUN apt-get update -qq && \
     apt-get install -y \
         build-essential \
@@ -11,7 +11,6 @@ RUN apt-get update -qq && \
         npm \
         libreoffice \
         libsasl2-dev \
-        netcat \
         nano \
         lsof \
         yarn \
