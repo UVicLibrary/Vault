@@ -1,8 +1,7 @@
 <%# Override to use PDF viewer from pdfjs_viewer-rails gem %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-      <% @su_download_key.presence ? filepath = hyrax.download_single_use_link_path(@su_download_key) : filepath = hyrax.download_path(file_set) %>
-      <iframe src="<%= pdfjs.full_path(file: filepath) %>#disableAutoFetch=true&disableStream=true"style='width: 100%; height: 100vw; overflow: hidden;' scrolling="yes">
+      <iframe src="<%= pdfjs.full_path(file: hyrax.download_path(file_set)) %>#disableAutoFetch=true&disableStream=true"style='width: 100%; height: 100vw; overflow: hidden;' scrolling="yes">
         </iframe>
       <% if display_media_download_link?(file_set: file_set) %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.pdf_link'),

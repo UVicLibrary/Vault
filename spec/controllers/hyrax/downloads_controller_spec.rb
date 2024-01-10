@@ -161,17 +161,10 @@ RSpec.describe Hyrax::DownloadsController do
           get :show, params: { id: file_set }
           expect(response.headers['Cache-Control']).to eq "private, no-transform"
           expect(response.headers['Content-Encoding']).to eq "identity"
-        end
-
-        context "and user requests the file with a single-use link" do
-          it "uses the default headers" do
-            request.headers['ORIGINAL_FULLPATH'] = "/single_use_link/download/#{file_set.id}"
-            get :show, params: { id: file_set }
-            expect(response.headers["Accept-Ranges"]).to eq "bytes"
-            expect(response.headers["Content-Type"]).to eq "application/pdf"
-            expect(response.headers["Content-Disposition"]).to eq "attachment; filename=\"issue_01_combined.pdf\""
-            expect(response.headers["Content-Length"]).to eq "4770591"
-          end
+          expect(response.headers["Accept-Ranges"]).to eq "bytes"
+          expect(response.headers["Content-Type"]).to eq "application/pdf"
+          expect(response.headers["Content-Disposition"]).to eq "attachment; filename=\"issue_01_combined.pdf\""
+          expect(response.headers["Content-Length"]).to eq "4770591"
         end
       end
 
@@ -179,6 +172,85 @@ RSpec.describe Hyrax::DownloadsController do
         expect do
           get :show, params: { id: file_set, file: 'non-existant' }
         end.to raise_error Hyrax::ObjectNotFoundError
+      end
+    end
+
+    context "when the user has show access but not download access" do
+      let(:file_set) do
+        create(:file_with_work, user: user, content: File.open(fixture_path + '/image.png'))
+      end
+      let(:parent) { create(:public_generic_work) }
+
+      before do
+        parent.ordered_members << file_set
+        parent.downloadable = false
+        parent.save!
+      end
+
+      context "and visits a work show page" do
+        let(:url) { "http://test.localhost/concern/generic_works/#{parent.id}?locale=en" }
+
+        it "allows access and returns the expected content" do
+          expect(controller).to receive(:authorize!).with(:show, file_set.id)
+          request.env['HTTP_REFERER'] = url
+          get :show, params: { id: file_set.to_param }
+          expect(response).to be_successful
+          expect(response.body).to eq file_set.original_file.content
+        end
+      end
+
+      context "and visits a parent file set page" do
+        let(:url) { "http://test.localhost/concern/parent/#{parent.id}/file_sets/#{file_set.id}?locale=en" }
+
+        it "allows access and returns the expected content" do
+          expect(controller).to receive(:authorize!).with(:show, file_set.id)
+          request.env['HTTP_REFERER'] = url
+          get :show, params: { id: file_set.to_param }
+          expect(response).to be_successful
+          expect(response.body).to eq file_set.original_file.content
+        end
+      end
+
+      context "and visits a file set page" do
+        let(:url) { "http://test.localhost/concern/file_sets/#{file_set.id}?locale=en" }
+
+        it "allows access and returns the expected content" do
+          expect(controller).to receive(:authorize!).with(:show, file_set.id)
+          request.env['HTTP_REFERER'] = url
+          get :show, params: { id: file_set.to_param }
+          expect(response).to be_successful
+          expect(response.body).to eq file_set.original_file.content
+        end
+      end
+
+      context "and visits a pdf viewer page" do
+        let(:url) { "http://test.localhost/pdfjs/full?file=/downloads/#{file_set.id}?locale=en" }
+
+        it "allows access and returns the expected content" do
+          expect(controller).to receive(:authorize!).with(:show, file_set.id)
+          request.env['HTTP_REFERER'] = url
+          get :show, params: { id: file_set.to_param }
+          expect(response).to be_successful
+          expect(response.body).to eq file_set.original_file.content
+        end
+      end
+
+      context "and visits the download link directly" do
+        it 'returns :unauthorized status with image content' do
+          get :show, params: { id: file_set.to_param }
+          expect(response).to have_http_status(:unauthorized)
+          expect(response.content_type).to eq 'image/png'
+        end
+      end
+    end
+
+    context "in the iaff tenant" do
+      it "allows access and returns the expected content" do
+        expect(controller).to receive(:authorize!).with(:show, file_set.id)
+        request.host = "iaff.localhost"
+        get :show, params: { id: file_set.to_param }
+        expect(response).to be_successful
+        expect(response.body).to eq file_set.original_file.content
       end
     end
   end
