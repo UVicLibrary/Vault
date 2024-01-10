@@ -10,12 +10,42 @@ Hyrax::DownloadsController.class_eval do
   # that files are in a LDP basic container, and thus, included in the asset's uri.
   def authorize_download!
     begin
-      # Allow users to see thumbnails
-      authorize! :download, params[asset_param_key] if params[:file] != "thumbnail"
+      if request.base_url.include?("iaff") or
+          work_or_file_set_page? or params[:file] == "thumbnail"
+        authorize! :show, params[asset_param_key]
+      else
+        authorize! :download, params[asset_param_key]
+      end
     rescue CanCan::AccessDenied
       unauthorized_image = Rails.root.join("app", "assets", "images", "unauthorized.png")
       send_file unauthorized_image, status: :unauthorized
     end
+  end
+
+  def work_or_file_set_page?
+    return false unless request.referer.presence
+    referer = Addressable::URI.parse(request.referer).path
+    accepted_paths.any? { |path| path == referer }
+  end
+
+  def accepted_paths
+    [work_path, file_set_path, file_set_parent_path, pdf_viewer_path]
+  end
+
+  def pdf_viewer_path
+    "#{Addressable::URI.parse(main_app.pdfjs_path).path}/full"
+  end
+
+  def work_path
+    Addressable::URI.parse(main_app.polymorphic_path(asset.parent)).path
+  end
+
+  def file_set_parent_path
+    Addressable::URI.parse(main_app.hyrax_parent_file_set_path(asset.parent, asset)).path
+  end
+
+  def file_set_path
+    Addressable::URI.parse(main_app.polymorphic_path(asset)).path
   end
 
   # Overrides hydra-core/app/controllers/concerns/hydra/controller/download_behavior.rb
@@ -23,14 +53,7 @@ Hyrax::DownloadsController.class_eval do
   def prepare_file_headers
     super
     # Add/modify response headers to work with the pdfjs_viewer-rails gem
-    prepare_pdf_file_headers if enable_pdfjs_range_requests?
-  end
-
-  # asset is the ::FileSet whereas file is the Active Fedora file.
-  # Don't use range requests for single-use downloads (this
-  # typically happens if a pdf is viewable but non-downloadable).
-  def enable_pdfjs_range_requests?
-    asset.pdf? && request.original_url.exclude?("single_use_link")
+    prepare_pdf_file_headers if asset.pdf?
   end
 
   # We need to set specific headers to allow range requests from the

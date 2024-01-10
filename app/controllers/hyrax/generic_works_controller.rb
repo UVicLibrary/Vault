@@ -22,18 +22,6 @@ module Hyrax
       return
     end
 
-    def need_single_use_links?
-      work = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-      return false unless work.representative_id.presence
-      representative = ::ActiveFedora::Base.find(work.representative_id.to_s)
-      !current_ability.can?(:download, params[:id]) && !representative.image?
-    end
-
-    # @return [Array <VaultFileSetPresenter or Array <Hyrax::FileSetPresenter>]
-    def available_file_sets
-      presenter.member_presenters.select { |fsp| can? :show, fsp }
-    end
-
     # Finds a solr document matching the id and sets @presenter
     # @raise CanCan::AccessDenied if the document is not found or the user doesn't have access to it.
     def show
@@ -46,14 +34,6 @@ module Hyrax
           # Authorizing based on the curation_concern currently fails
           authorize! :read, @document
           presenter && parent_presenter
-          if need_single_use_links?
-            available_file_sets.each do |file_set|
-              # Create a single use link to be used immediately by the viewer
-              @su_download_key = SingleUseLink.create(
-                  item_id: file_set.id, path: hyrax.download_path(id: file_set.id)
-              ).download_key
-            end
-          end
         }
         wants.json do
           @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
