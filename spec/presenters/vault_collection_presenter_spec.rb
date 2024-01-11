@@ -14,11 +14,9 @@ RSpec.describe VaultCollectionPresenter do
           title: ['A clever title'],
           keyword: ['neologism'],
           resource_type: ['http://purl.org/dc/dcmitype/Collection'],
-          related_url: related_url,
           date_created: ['some date'])
   end
   let(:ability) { double }
-  let(:related_url) { ['http://example.com/'] }
   let(:presenter) { described_class.new(solr_doc, ability) }
   let(:solr_doc) { SolrDocument.new(collection.to_solr) }
 
@@ -107,21 +105,6 @@ RSpec.describe VaultCollectionPresenter do
     subject { presenter.based_near }
 
     it { is_expected.to eq ["https://sws.geonames.org/6174041/"] }
-  end
-
-  describe "#related_url" do
-    context 'without a dbpedia or ActiveTriples url' do
-      subject { presenter.related_url }
-      it { is_expected.to eq ['http://example.com/'] }
-    end
-
-    context 'with a dbpedia or ActiveTriples url' do
-      let(:related_url) { ["http://dbpedia.org/"] }
-      it 'removes the url' do
-        expect(presenter.related_url).to eq([])
-      end
-    end
-
   end
 
   describe '#to_key' do
@@ -400,7 +383,6 @@ RSpec.describe VaultCollectionPresenter do
 
   it { is_expected.to delegate_method(:resource_type).to(:solr_document) }
   it { is_expected.to delegate_method(:based_near).to(:solr_document) }
-  it { is_expected.to delegate_method(:related_url).to(:solr_document) }
   it { is_expected.to delegate_method(:identifier).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
 

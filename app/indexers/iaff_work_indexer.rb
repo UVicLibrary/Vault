@@ -13,6 +13,8 @@ class IaffWorkIndexer < Hyrax::WorkIndexer
    def generate_solr_document
     super.tap do |solr_doc|
       solr_doc['genre_tesim'] = object.genre
+      solr_doc['identifier_tesim'] = object.identifier
+      solr_doc['related_url_tesim'] = object.related_url
     end
    end
 end

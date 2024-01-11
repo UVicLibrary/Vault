@@ -68,7 +68,11 @@ class GenericWork < ActiveFedora::Base
   property :fonds_identifier, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#fondsIdentifier') do |index|
 	  index.as :stored_searchable, :facetable
   end
-  
+
+  property :identifier, predicate: ::RDF::Vocab::DC.identifier
+
+  property :related_url, predicate: ::RDF::RDFS.seeAlso
+
   property :is_referenced_by, predicate: ::RDF::Vocab::DC.isReferencedBy do |index|
 	  index.as :stored_searchable, :facetable
   end
@@ -86,6 +90,8 @@ class GenericWork < ActiveFedora::Base
   end
 
   property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
+
+  property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
 
   # These lines must appear AFTER all custom properties are declared.
   # include ::Hyrax::BasicMetadata

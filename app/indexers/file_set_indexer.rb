@@ -9,6 +9,8 @@ class FileSetIndexer < Hyrax::FileSetIndexer
     object.to_controlled_vocab
 
     super.tap do |solr_doc|
+      solr_doc['identifier_tesim'] = object.identifier
+
       solr_doc['hasFormat_ssim'] = object.rendering_ids
       # File sets should inherit the creators of their parents. Otherwise, the default "creator"
       # is indexed as the depositor instead of the work's creator.

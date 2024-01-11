@@ -21,12 +21,16 @@ RSpec.describe FileSet do
                                      :technical_note, :year, :head, :tail,
                                      :depositor, :title, :date_uploaded,
                                      :date_modified, :label, :last_fixity_check,
-                                     :downloadable, :relative_path, :import_url,
-                                     :part_of, :resource_type, :contributor,
-                                     :description, :keyword, :license,
+                                     :relative_path, :import_url, :resource_type,
+                                     :contributor, :description, :keyword, :license,
                                      :rights_statement, :publisher, :date_created,
                                      :subject, :language, :identifier, :based_near,
-                                     :related_url, :bibliographic_citation, :source,
-                                     :abstract, :access_right, :rights_notes]) }
+                                     :bibliographic_citation, :source]) }
+  end
+
+  describe 'included and excluded modules' do
+    subject { described_class }
+    it { is_expected.not_to include Hyrax::BasicMetadata }
+    it { is_expected.to include VaultBasicMetadata }
   end
 end

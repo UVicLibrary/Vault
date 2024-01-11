@@ -3,9 +3,8 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
   # delegate fields from Hyrax::Works::Metadata to solr_document
   delegate :provider_label, :creator_label, :based_near_label, :subject_label,
            :contributor_label, :physical_repository_label, :genre_label,
-           :geographic_coverage, :genre, :related_url, :identifier,
-           :resource_type, :keyword, :geographic_coverage_label,
-           :chronological_coverage, :thumbnail_path,
+           :geographic_coverage, :genre, :resource_type, :keyword,
+           :geographic_coverage_label, :chronological_coverage, :thumbnail_path,
            to: :solr_document
 
   # Terms is the list of fields displayed by
