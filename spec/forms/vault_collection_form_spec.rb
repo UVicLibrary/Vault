@@ -23,9 +23,7 @@ RSpec.describe VaultCollectionForm do
                          :language,
                          :representative_id,
                          :thumbnail_id,
-                         :identifier,
                          :based_near,
-                         :related_url,
                          :visibility,
                          :genre,
                          :geographic_coverage,
@@ -56,9 +54,7 @@ RSpec.describe VaultCollectionForm do
                             :genre,
                             :geographic_coverage,
                             :language,
-                            :identifier,
                             :based_near,
-                            :related_url,
                             :resource_type
                         ]
     end
@@ -149,9 +145,7 @@ RSpec.describe VaultCollectionForm do
                          { language: [] },
                          :representative_id,
                          :thumbnail_id,
-                         { identifier: [] },
                          { based_near: [] },
-                         { related_url: [] },
                          :visibility,
                          {genre: []},
                          {geographic_coverage: []},

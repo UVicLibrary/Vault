@@ -18,8 +18,7 @@ RSpec.describe FileSetIndexer do
       rights_statement: ['No Known Copyright'],
       resource_type: ['Book'],
       identifier: ['urn:isbn:1234567890'],
-      based_near: ['Medina, Saudi Arabia'],
-      related_url: ['http://example.org/TheWork/']
+      based_near: ['Medina, Saudi Arabia']
     )
   end
 
@@ -70,7 +69,6 @@ RSpec.describe FileSetIndexer do
       expect(subject['date_modified_dtsi']).to eq '2012-01-01T00:00:00Z'
       expect(subject['license_tesim']).to eq ['Wide open, buddy.']
       expect(subject['rights_statement_tesim']).to eq ['No Known Copyright']
-      expect(subject['related_url_tesim']).to eq ['http://example.org/TheWork/']
       expect(subject['contributor_tesim']).to eq ['Mohammad']
       expect(subject['creator_tesim']).to eq ['Allah']
       expect(subject['title_tesim']).to eq ['The Work']

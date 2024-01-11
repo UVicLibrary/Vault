@@ -364,9 +364,8 @@ RSpec.describe Collection, type: :model do
                                      :date_uploaded, :date_modified, :head, :tail, :collection_type_gid,
                                      :alternative_title, :creator, :contributor, :subject, :provider,
                                      :physical_repository, :geographic_coverage, :genre, :year, :in_scua,
-                                     :label, :downloadable, :relative_path, :import_url, :part_of,
-                                     :resource_type, :description, :keyword, :license, :rights_statement,
-                                     :publisher, :date_created, :language, :identifier, :based_near,
-                                     :related_url, :bibliographic_citation, :source]) }
+                                     :label, :relative_path, :import_url, :resource_type, :description,
+                                     :keyword, :license, :rights_statement, :publisher, :date_created,
+                                     :language, :based_near, :bibliographic_citation, :source]) }
   end
 end

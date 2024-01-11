@@ -7,7 +7,7 @@ module VaultBasicMetadata
     # (Collections, GenericWork, and FileSets) here. This module
     # is intended as a replacement for Hyrax::BasicMetadata, since
     # the Hyrax module has some extra properties that we don't want
-    # at this time.
+    # at this time. We've also added our own custom properties.
 
     property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
       index.as :stored_searchable, :facetable
@@ -21,10 +21,6 @@ module VaultBasicMetadata
 
     property :description, predicate: ::RDF::Vocab::DC11.description
 
-    property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
-
-    property :identifier, predicate: ::RDF::Vocab::DC.identifier
-
     property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
 
     property :keyword, predicate: ::RDF::Vocab::DC11.relation
@@ -35,11 +31,7 @@ module VaultBasicMetadata
 
     property :license, predicate: ::RDF::Vocab::DC.rights
 
-    property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
-
     property :publisher, predicate: ::RDF::Vocab::DC11.publisher
-
-    property :related_url, predicate: ::RDF::RDFS.seeAlso
 
     property :relative_path, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#relativePath'), multiple: false
 

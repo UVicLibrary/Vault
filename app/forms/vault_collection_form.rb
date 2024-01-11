@@ -20,9 +20,7 @@ class VaultCollectionForm < Hyrax::Forms::CollectionForm
                 :language,
                 :representative_id,
                 :thumbnail_id,
-                :identifier,
                 :based_near,
-                :related_url,
                 :visibility,
                 :genre,
                 :geographic_coverage,
@@ -42,9 +40,7 @@ class VaultCollectionForm < Hyrax::Forms::CollectionForm
         :genre,
         :geographic_coverage,
         :language,
-        :identifier,
         :based_near,
-        :related_url,
         :resource_type
     ]
   end

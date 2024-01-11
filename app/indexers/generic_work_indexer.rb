@@ -29,6 +29,9 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
         solr_doc['full_text_tsi'] = full_text_contents.map {|fs| fs.extracted_text.content }.join("")
       end
 
+      solr_doc['identifier_tesim'] = object.identifier
+      solr_doc['related_url_tesim'] = object.related_url
+
       # Allow public users to discover items with institution visibility
       if object.visibility == "authenticated"
         solr_doc["discover_access_group_ssim"] = ["public"]

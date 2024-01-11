@@ -4,8 +4,10 @@
       # @param [Work, FileSet] object - to get the thumbnail for
       # @return [String] a path to the thumbnail
       def call(object)
-        return default_image unless object.thumbnail_id
+        return default_image if object.try(:thumbnail_id).blank?
+
         thumb = fetch_thumbnail(object)
+
         return unless thumb
         return call(thumb) unless thumb.file_set?
 
