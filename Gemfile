@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'ruby-vips'
+
 gem 'simple_xlsx_reader'
 
 gem 'omniauth-cas'
@@ -77,7 +79,7 @@ group :test do
   gem 'webmock'
   gem 'carrierwave-aws'
   gem 'rspec-sidekiq'
-  # gem 'rspec-its'
+  gem 'rspec-its'
 end
 
 group :development do
@@ -103,7 +105,8 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '3.1.0' # 3.0.2
+gem 'hyrax', '3.2' # 3.0.2
+gem 'dry-monads', '< 1.5'
 
 # Loading the env fails if psych > 3.0
 gem 'psych', '3.3.4'
