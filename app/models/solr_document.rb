@@ -35,9 +35,9 @@ class SolrDocument
   attribute :rendering_ids, Solr::Array, 'hasFormat_ssim'
 
   # Add controlled vocabulary fields
+  # Contributor and Subject are already default fields
   attribute :creator, Solr::Array, "creator_tesim"
   attribute :creator_label, Solr::Array, "creator_label_tesim"
-  # Contributor and Subject are already default fields
   attribute :contributor_label, Solr::Array, "contributor_label_tesim"
   attribute :subject_label, Solr::Array, "subject_label_tesim"
   attribute :provider, Solr::Array, "provider_tesim"
@@ -205,7 +205,7 @@ class SolrDocument
   end
 
   def last_modified
-    self["date_modified_dtsi"]
+    self["timestamp"]
   end
 
 end
