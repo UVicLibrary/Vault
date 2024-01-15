@@ -8,6 +8,7 @@ module Hyrax
                    :additional_physical_characteristics, :has_format,
                    :physical_repository, :provenance, :provider, :sponsor, :genre,
                    :format, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+    self.terms -= [:related_url]
 
     # Only required field should be :title
     self.required_fields -= [:keyword, :license, :creator]
