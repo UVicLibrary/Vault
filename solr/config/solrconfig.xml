@@ -28,12 +28,11 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>6.0.0</luceneMatchVersion>
+  <luceneMatchVersion>9.0</luceneMatchVersion>
 
-  <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" />
-  <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" />
-  <lib dir="${solr.install.dir:../../../..}/contrib/extraction/lib" regex=".*\.jar" />
-  <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-cell-\d.*\.jar" />
+  <!-- solr lib dirs -->
+  <lib dir="${solr.install.dir:../../../..}/modules/analysis-extras/lib" />
+  <lib dir="${solr.install.dir:../../../..}/modules/extraction/lib" regex=".*\.jar" />
 
   <directoryFactory name="DirectoryFactory"
                     class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}">
@@ -103,17 +102,23 @@
           id
           active_fedora_model_ssi
           title_tesim
-          author_tesim
-          subject_tesim
+          contributor_label_tesim
+          creator_label_tesim
+          subject_label_tesim
         </str>
         <str name="pf">
           all_text_timv^10
         </str>
 
-       <str name="author_qf">
-          author_tesim
+       <str name="creator_qf">
+          creator_label_tesim
        </str>
-       <str name="author_pf">
+       <str name="creator_pf">
+       </str>
+       <str name="contributor_qf">
+         creator_label_tesim
+       </str>
+       <str name="contributor_pf">
        </str>
        <str name="title_qf">
           title_tesim
@@ -121,7 +126,7 @@
        <str name="title_pf">
        </str>
        <str name="subject_qf">
-          subject_tesim
+          subject_label_tesim
        </str>
        <str name="subject_pf">
        </str>
@@ -157,6 +162,7 @@
         id,
         access_ssim,
         discover_access_group_ssim,discover_access_person_ssim,
+        download_access_group_ssim, download_access_person_ssim,
         read_access_group_ssim,read_access_person_ssim,
         edit_access_group_ssim,edit_access_person_ssim,
         depositor_ti,
@@ -168,6 +174,56 @@
         inheritable_embargo_release_date_dtsi
       </str>
     </lst>
+  </requestHandler>
+
+  <requestHandler name="show_fields" class="solr.SearchHandler">
+    <lst name="defaults">
+      <str name="echoParams">explicit</str>
+      <str name="defType">lucene</str>
+    </lst>
+    <str name="fl">
+      title_tesim,
+      alternative_title_tesim,
+      description_tesim,
+      keyword_tesim,
+      subject_label_tesim,
+      creator_label_tesim,
+      contributor_label_tesim,
+      publisher_tesim,
+      based_near_label_tesim,
+      language_tesim,
+      date_uploaded_tesim,
+      date_modified_tesim,
+      date_created_tesim,
+      rights_statement_tesim,
+      license_tesim,
+      resource_type_tesim,
+      format_tesim,
+      identifier_tesim,
+      extent_tesim,
+      edition_tesim,
+      geographic_coverage_label_tesim,
+      coordinates_tesim,
+      chronological_coverage_tesim,
+      additional_physical_characteristics_tesim,
+      has_format_tesim,
+      physical_repository_label_tesim,
+      collection_tesim,
+      provenance_tesim,
+      provider_label_tesim,
+      sponsor_tesim,
+      genre_label_tesim,
+      archival_item_identifier_tesim,
+      fonds_title_tesim,
+      fonds_creator_tesim,
+      fonds_description_tesim,
+      fonds_identifier_tesim,
+      is_referenced_by_tesim,
+      date_digitized_tesim,
+      transcript_tesim,
+      technical_note_tesim,
+      year_tesim
+    </str>
   </requestHandler>
 
   <requestHandler name="standard" class="solr.SearchHandler">
