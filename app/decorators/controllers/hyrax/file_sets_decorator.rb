@@ -32,22 +32,10 @@ Hyrax::FileSetsController.class_eval do
     end
   end
 
-  def need_single_use_link?
-    !current_ability.can?(:download, params[:id]) &&
-      current_ability.can?(:show, params[:id]) &&
-        !@presenter.image?
-  end
-
   # GET /concern/parent/:parent_id/file_sets/:id
   def show
     @presenter = presenter
     guard_for_workflow_restriction_on!(parent: parent(file_set: @presenter))
-    if need_single_use_link?
-      @su_download_key = SingleUseLink.create(
-          item_id: params[:id],
-          path: hyrax.download_path(id: params[:id])
-      ).download_key
-    end
     respond_to do |wants|
       wants.html
       wants.json
