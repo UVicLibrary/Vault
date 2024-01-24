@@ -166,10 +166,14 @@ RSpec.describe Ability do
         'download_access_group_ssim' => ['group2']
       }
     }
-    subject { ability.download_groups(id) }
 
-    before { allow(Account).to receive(:find_by).with(any_args).and_return(Account.new(name: 'vault')) }
-    before { allow(SolrDocument).to receive(:find).with('foo').and_return(doc) }
+    subject { ability.download_groups(id) }
+    before { allow(ability).to receive(:permissions_doc).and_return(doc) }
+
+    it 'includes download and edit groups' do
+      expect(subject).to include "group1"
+      expect(subject).to include "group2"
+    end
   end
 
   # TO DO: Our current solr config doesn't add the required fields
@@ -186,7 +190,7 @@ RSpec.describe Ability do
     }
 
     subject { ability.download_users(id) }
-    before { allow(SolrDocument).to receive(:find).with('foo').and_return(doc) }
+    before { allow(ability).to receive(:permissions_doc).and_return(doc) }
 
     it 'includes download and edit users' do
       expect(subject).to include "user1"

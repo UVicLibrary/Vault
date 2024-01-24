@@ -117,7 +117,7 @@ RSpec.describe VaultFileSetHelper do
       end
     end
 
-    let(:file_set) { FileSet.new(id: "foo") }
+    let(:file_set) { SolrDocument.new(id: "foo") }
     let(:presenter) { VaultFileSetPresenter.new(file_set, "admin") }
     let(:work) { double(GenericWork) }
     let(:parent) { VaultWorkShowPresenter.new(work, "admin") }
@@ -188,7 +188,7 @@ RSpec.describe VaultFileSetHelper do
     end
 
     describe '#iiif_image_path' do
-      before { allow(presenter).to receive(:latest_file_id).and_return("foo/fcr:versions/version1") }
+      before { allow(file_set).to receive(:current_file_version).and_return("foo/fcr:versions/version1") }
 
       subject { helper.iiif_image_path(presenter, "900,") }
       it { is_expected.to eq "/images/foo%2Ffcr:versions%2Fversion1/full/900,/0/default.jpg" }
