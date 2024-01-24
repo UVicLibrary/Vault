@@ -8,14 +8,29 @@ class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
   # RIIIF gem docs on authorization:
   # https://github.com/sul-dlss/riiif#authorization
 
+  # @note we ignore the `action` param here in favor of the `:show` action for all permissions
+  def can?(_action, object)
+    # Allow all users to see thumbnails, like the downloads_controller
+    return true if thumbnail?
+    if uv_page?(controller.request)
+      controller.current_ability.can?(:show, file_set_id_for(object))
+    else
+      controller.current_ability.can?(:download, file_set_id_for(object))
+    end
+  end
+
   private
 
   def file_set_id_for(object)
     URI.decode_www_form_component(object.id).to_s.split('/').first
   end
 
-  # def thumbnail?
-  #   @controller.params[:size] == IIIFThumbnailPaths::THUMBNAIL_SIZE ||
-  #       @controller.params[:size] == LargeIIIFThumbnailPaths::LARGE_THUMBNAIL_SIZE
-  # end
+  def thumbnail?
+    controller.params[:size] == IIIFThumbnailPaths::THUMBNAIL_SIZE
+  end
+
+  def uv_page?(request)
+    return false unless request.referer.presence
+    (Addressable::URI.parse(request.referer).path =~ /^\/uv\/uv(-no-download)?\.html/).present?
+  end
 end
