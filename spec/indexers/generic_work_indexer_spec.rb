@@ -7,10 +7,19 @@ RSpec.describe GenericWorkIndexer do
   let(:work) { create(:generic_work, creator: ["http://id.worldcat.org/fast/549011"],
                       geographic_coverage: ["http://id.worldcat.org/fast/1243522"],
                       chronological_coverage: ["1943/1945"],
+                      date_created: ["1943/1945"],
                       resource_type:["http://purl.org/dc/dcmitype/StillImage"]) }
 
   it 'indexes a title field for sorting alphabetically' do
     expect(solr_document['title_sort_ssi']).to eq 'Test title'
+  end
+
+  it 'indexes other metadata fields' do
+    expect(solr_document['creator_tesim']).to eq ["http://id.worldcat.org/fast/549011"]
+    expect(solr_document['geographic_coverage_tesim']).to eq ["http://id.worldcat.org/fast/1243522"]
+    expect(solr_document['chronological_coverage_tesim']).to eq ["1943/1945"]
+    expect(solr_document['date_created_tesim']).to eq ["1943/1945"]
+    expect(solr_document['resource_type_tesim']).to eq ["http://purl.org/dc/dcmitype/StillImage"]
   end
 
   it 'indexes OAI-PMH fields' do
