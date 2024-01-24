@@ -35,9 +35,14 @@ RSpec.describe Hyrax::DownloadsController do
           allow(Hyrax::DerivativePath).to receive(:derivative_path_for_reference).and_return(fixture_path + '/world.png')
         end
 
-        it 'skips authorization' do
+        it 'skips authorization and shows thumbnail' do
           expect(controller).not_to receive(:authorize!).with(:download, file_set.id)
+          expect(controller).not_to receive(:authorize!).with(:show, file_set.id)
           get :show, params: { id: file_set, file: "thumbnail" }
+          expect(response).to be_successful
+          expect(response.body).to eq content
+          expect(response.headers['Content-Length']).to eq "4218"
+          expect(response.headers['Accept-Ranges']).to eq "bytes"
         end
       end
     end
@@ -241,16 +246,6 @@ RSpec.describe Hyrax::DownloadsController do
           expect(response).to have_http_status(:unauthorized)
           expect(response.content_type).to eq 'image/png'
         end
-      end
-    end
-
-    context "in the iaff tenant" do
-      it "allows access and returns the expected content" do
-        expect(controller).to receive(:authorize!).with(:show, file_set.id)
-        request.host = "iaff.localhost"
-        get :show, params: { id: file_set.to_param }
-        expect(response).to be_successful
-        expect(response.body).to eq file_set.original_file.content
       end
     end
   end

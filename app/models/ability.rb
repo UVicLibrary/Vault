@@ -112,22 +112,14 @@ class Ability
   # Restore Blacklight Access Controls default. Default Hyrax makes this
   # an alias for :read, but we need to separate them to enable/disable
   # downloads at the collection level
-
   def download_groups(id)
     doc = permissions_doc(id)
-    if Account.find_by(tenant: Apartment::Tenant.current).try(:name) == "iaff"
-      dg =  Array(doc[self.class.download_group_field]) +
+    return [] if doc.nil?
+    # Also grant all groups with edit access permission to download
+    dg =  Array(doc[self.class.download_group_field]) +
           Array(doc[self.class.edit_group_field])
-      dg << "public" if doc['visibility_ssi'] == "open"
-      dg
-    else # Vault
-      return [] if doc.nil?
-      # Also grant all groups with edit access permission to download
-      dg =  Array(doc[self.class.download_group_field]) +
-            Array(doc[self.class.edit_group_field])
-      Rails.logger.debug("[CANCAN] download_groups: #{dg.inspect}")
-      dg
-    end
+    Rails.logger.debug("[CANCAN] download_groups: #{dg.inspect}")
+    dg
   end
 
   def download_users(id)
@@ -140,9 +132,4 @@ class Ability
     users
   end
 
-  # Return the whole document for now since the Solr query doesn't
-  # actually capture download groups or download users
-  def permissions_doc(id)
-    Hydra::PermissionsSolrDocument.new(SolrDocument.find(id))
-  end
 end

@@ -10,8 +10,9 @@ Hyrax::DownloadsController.class_eval do
   # that files are in a LDP basic container, and thus, included in the asset's uri.
   def authorize_download!
     begin
-      if request.base_url.include?("iaff") or
-          work_or_file_set_page? or params[:file] == "thumbnail"
+      # Allow users to see thumbnails
+      return if params[:file] == "thumbnail"
+      if work_or_file_set_page?
         authorize! :show, params[asset_param_key]
       else
         authorize! :download, params[asset_param_key]

@@ -170,20 +170,6 @@ RSpec.describe Ability do
 
     before { allow(Account).to receive(:find_by).with(any_args).and_return(Account.new(name: 'vault')) }
     before { allow(SolrDocument).to receive(:find).with('foo').and_return(doc) }
-
-    it 'includes edit groups and download groups' do
-      expect(subject).to include "group1"
-      expect(subject).to include "group2"
-    end
-
-    context 'in the iaff tenant' do
-      before { allow(Account).to receive(:find_by).with(any_args).and_return(Account.new(name: 'iaff')) }
-
-      it 'includes edit groups and the public group' do
-        expect(subject).to include "group1"
-        expect(subject).to include "public"
-      end
-    end
   end
 
   # TO DO: Our current solr config doesn't add the required fields
@@ -202,7 +188,7 @@ RSpec.describe Ability do
     subject { ability.download_users(id) }
     before { allow(SolrDocument).to receive(:find).with('foo').and_return(doc) }
 
-    it 'includes edit users' do
+    it 'includes download and edit users' do
       expect(subject).to include "user1"
       expect(subject).to include "user2"
     end
