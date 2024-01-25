@@ -126,6 +126,28 @@ RSpec.describe FileSetIndexer do
         expect(subject['download_access_group_ssim']).to eq ["public"]
       end
     end
+
+    context 'with a parent with specified download permissions' do
+      let(:work) { GenericWork.new }
+      let(:permissions) do
+        [ Hydra::AccessControls::Permission.new(name: "group1",
+                                                type: "group",
+                                                access: "download"),
+          Hydra::AccessControls::Permission.new(name: "user1",
+                                                type: "person",
+                                                access: "download")]
+      end
+
+      before do
+        allow(file_set).to receive(:parent).and_return(work)
+        allow(work).to receive(:permissions).and_return(permissions)
+      end
+
+      it 'indexes download permissions' do
+        expect(subject['download_access_group_ssim']).to eq ['group1']
+        expect(subject['download_access_user_ssim']).to eq ['user1']
+      end
+    end
   end
 
   context 'with controlled vocabulary fields' do

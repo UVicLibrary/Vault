@@ -22,7 +22,7 @@
   <div class="col-sm-9 form-inline">
     <label for="new_group_name_skel" class="sr-only">Group</label>
     <% if current_ability.admin? %>
-      <% admin_group_options = (Role.all.map(&:name).uniq - ["superadmin"]).each_with_object([]) do |group_id, array| %>
+      <% admin_group_options = (Role.all.map(&:name).uniq - ["superadmin"] + ["public"]).each_with_object([]) do |group_id, array| %>
         <% option = [group_id.titleize, group_id] %>
         <% array.push(option) %>
       <% end %>
@@ -70,8 +70,10 @@
     </td>
   </tr>
   <%= f.fields_for :permissions do |permission_fields| %>
-    <%# skip the public, registered, and depositor perms as they are displayed first at the top %>
-    <% next if ['public', 'uvic', depositor].include? permission_fields.object.agent_name.downcase %>
+    <%# skip the registered, and depositor permissions as they are displayed first at the top %>
+    <% next if ['uvic', depositor].include? permission_fields.object.agent_name.downcase %>
+    <%# skip public read access because it's already specified in the visibility section %>
+    <% next if permission_fields.object.agent_name == "public" && permission_fields.object.access == "read" %>
     <tr>
       <td>
         <%= permission_fields.select :access, Hyrax.config.permission_levels, {}, class: 'form-control select_perm' %>

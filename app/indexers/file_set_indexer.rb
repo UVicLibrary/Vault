@@ -1,6 +1,7 @@
  class FileSetIndexer < Hyrax::FileSetIndexer
   include Hyrax::IndexesLinkedMetadata
   include Hyrax::IndexesBasicMetadata
+  include IndexesDownloadPermissions
   self.thumbnail_path_service = VaultThumbnailPathService
 
   def generate_solr_document
@@ -16,10 +17,6 @@
         parent_doc = SolrDocument.find(object.parent.id)
         solr_doc['creator_tesim'] = parent_doc['creator_tesim']
         solr_doc['creator_label_tesim'] = parent_doc['creator_label_tesim']
-      end
-
-      if object.visibility == "open" && object.try(:parent).try(:downloadable)
-        solr_doc["download_access_group_ssim"] = ["public"]
       end
     end
   end

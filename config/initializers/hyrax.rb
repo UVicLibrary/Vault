@@ -7,6 +7,15 @@ Hyrax.config do |config|
 
   config.iiif_image_server = true
 
+  config.permission_levels = { 'View' => "read",
+                               'Download' => "download",
+                               'Edit' => "edit" }
+
+  config.permission_options = { 'Choose Access' => "none",
+                                'View' => "read",
+                                'Download' => "download",
+                                'Edit' => "edit" }
+
   # Email recipient of messages sent via the contact form
   config.contact_email = Settings.contact_email
 

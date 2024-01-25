@@ -1,3 +1,5 @@
+require File.join("#{Rails.root}","app","models","ability.rb")
+
 RSpec.describe GenericWorkIndexer do
   subject(:solr_document) { service.generate_solr_document }
 
@@ -54,6 +56,23 @@ RSpec.describe GenericWorkIndexer do
 
     it 'indexes "public" in download groups' do
       expect(solr_document['download_access_group_ssim']).to eq ['public']
+    end
+  end
+
+  context 'with specified download permissions' do
+    let(:permissions) do
+      [ Hydra::AccessControls::Permission.new(name: "group1",
+                                               type: "group",
+                                               access: "download"),
+      Hydra::AccessControls::Permission.new(name: "user1",
+                                             type: "person",
+                                             access: "download")]
+    end
+    before { allow(work).to receive(:permissions).and_return(permissions) }
+
+    it 'indexes download permissions' do
+      expect(solr_document['download_access_group_ssim']).to eq ['group1']
+      expect(solr_document['download_access_user_ssim']).to eq ['user1']
     end
   end
 
