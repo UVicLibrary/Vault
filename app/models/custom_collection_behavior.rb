@@ -60,12 +60,6 @@ module CustomCollectionBehavior
     self.visibility == "authenticated"
   end
 
-  # @return [Array <Integer>] - [number of downloadable works, number of total works]
-  def count_downloadable
-    works = GenericWork.where(member_of_collection_ids_ssim: self.id)
-    [ works.select(&:downloadable).count, works.count ]
-  end
-
   def authenticated_only?
     return false if open_access?
     has_permission_text_for?(PERMISSION_TEXT_VALUE_AUTHENTICATED) ||

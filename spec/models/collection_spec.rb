@@ -11,24 +11,6 @@ RSpec.describe Collection, type: :model do
     end
   end
 
-  describe '#count_downloadable' do
-    let(:work1) { create(:work, downloadable: true) }
-    let(:work2) { create(:work, downloadable: false) }
-
-    let(:collection) {  create(:collection_lw) }
-
-    before do
-      Hyrax::Collections::CollectionMemberService.add_members(collection_id: collection.id,
-                                                              new_members: [work1.valkyrie_resource,
-                                                                            work2.valkyrie_resource],
-                                                              user: nil)
-    end
-
-    it "returns the number of downloadable works and the total number of works" do
-      expect(collection.count_downloadable).to eq([1, 2])
-    end
-  end
-
   describe "#validates_with" do
     before { collection.title = nil }
     it "ensures the collection has a title" do
