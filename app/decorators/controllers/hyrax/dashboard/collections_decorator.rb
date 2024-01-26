@@ -91,8 +91,21 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     end
   end
 
+  # Used to display how many works in the collection are downloadable,
+  # i.e. X works out of Y total in the collection
+  def count_downloadable
+    # The number of member works that are downloadable
+    @downloadable_count = DownloadableCollectionMembersService.new(scope: self,
+                                                                   collection: collection,
+                                                                   params: {}).downloadable_work_count
+    # This sets @members_count: the total number of works in
+    # the collection
+    member_works
+  end
+
   def edit
     form
+    count_downloadable
     if request.base_url.include?("vault")
       document = ::SolrDocument.find(params[:id])
       @all_labels = Collection.controlled_properties.each_with_object({}) do |prop, hash|

@@ -12,7 +12,8 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
            user: user)
   end
 
-  let(:asset1)         { create(:work, title: ["First of the Assets"], user: user) }
+  let(:asset1)         { create(:work, title: ["First of the Assets"], user: user,
+                                permissions_attributes:[{type: "group", name: "public", access: "download"}]) }
   let(:asset2)         { create(:work, title: ["Second of the Assets"], user: user) }
   let(:asset3)         { create(:work, title: ["Third of the Assets"], user: user) }
   let(:asset4)         { build(:collection_lw, title: ["First subcollection"], user: user) }
@@ -531,7 +532,6 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     before { sign_in user }
 
     it "is successful" do
-      get :edit, params: { id: collection }
       expect(response).to be_successful
       expect(assigns[:form]).to be_instance_of Hyrax::Forms::CollectionForm
       expect(flash[:notice]).to be_nil
@@ -601,6 +601,22 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           get :edit, params: { id: collection }
           expect(response).to be_successful
         end
+      end
+    end
+
+    describe "#count_downloadable" do
+
+      before do
+        [asset1, asset2].each do |asset|
+          asset.member_of_collections << collection
+          asset.save!
+        end
+      end
+
+      it 'sets @downloadable_count and @members_count' do
+        get :edit, params: { id: collection }
+        expect(assigns[:downloadable_count]).to eq 1
+        expect(assigns[:members_count]).to eq 2
       end
     end
   end

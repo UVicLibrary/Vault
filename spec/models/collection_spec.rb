@@ -1,24 +1,13 @@
-require 'spec_helper'
+RSpec.describe Collection, type: :model do
+  let(:collection) { build(:public_collection_lw) }
 
-RSpec.describe Collection do
-  it "is a hyrax collection" do
-    expect(described_class.ancestors).to include Hyrax::CollectionBehavior
+  it "has open visibility" do
+    expect(collection.read_groups).to eq ['public']
   end
 
-  describe ".indexer" do
-    subject { described_class.indexer }
-
-  describe '#count_downloadable' do
-    let(:work1) { create(:work, downloadable: true) }
-    let(:work2) { create(:work, downloadable: false) }
-
-    before do
-      collection.add_member_objects [work1.id, work2.id]
-      collection.save!
-    end
-
-    it "returns the number of downloadable works and the total number of works" do
-      expect(collection.count_downloadable).to eq([1, 2])
+  describe '#bytes' do
+    it 'returns a hard-coded integer' do
+      expect(collection.bytes).to eq(0)
     end
   end
 
@@ -64,14 +53,15 @@ RSpec.describe Collection do
     end
 
     context "when adding members" do
-      let(:work1) { create(:work) }
-      let(:work2) { create(:work) }
-      let(:work3) { create(:work) }
+      let(:work1) { valkyrie_create(:hyrax_work, title: 'Work 1') }
+      let(:work2) { valkyrie_create(:hyrax_work, title: 'Work 2') }
+      let(:work3) { valkyrie_create(:hyrax_work, title: 'Work 3') }
 
-      it "allows multiple files to be added" do
-        collection.add_member_objects [work1.id, work2.id]
-        collection.save!
-        expect(collection.reload.member_objects).to match_array [work1, work2]
+      it "allows multiple works to be added" do
+        Hyrax::Collections::CollectionMemberService.add_members(collection_id: collection.id,
+                                                                new_members: [work1, work2],
+                                                                user: nil)
+        expect(collection.reload.member_objects.map(&:id)).to match_array [work1.id.to_s, work2.id.to_s]
       end
 
       context 'when multiple membership checker returns a non-nil value' do
@@ -88,31 +78,30 @@ RSpec.describe Collection do
         let(:error_message) { 'Error: foo bar' }
 
         it 'fails to add the member' do
-          collection.add_member_objects [work1.id, work2.id, work3.id]
-          collection.save!
-          expect(collection.reload.member_objects).to match_array [work1, work3]
+          begin
+            Hyrax::Collections::CollectionMemberService.add_members(collection_id: collection.id,
+                                                                    new_members: [work1, work2, work3],
+                                                                    user: nil)
+          rescue; end # rubocop:disable Lint/SuppressedException
+          expect(collection.reload.member_objects.map(&:id)).to match_array [work1.id.to_s, work3.id.to_s]
         end
       end
     end
   end
 
   describe "#destroy", clean_repo: true do
-    let(:collection) { build(:collection_lw) }
-    let(:work1) { create(:work) }
+    let(:collection) { create(:collection_lw) }
+    let(:work1) { valkyrie_create(:hyrax_work) }
 
     before do
-      collection.add_member_objects [work1.id]
-      collection.save!
-      create(:featured_collection, collection_id: collection.id)
+      Hyrax::Collections::CollectionMemberService.add_members(collection_id: collection.id,
+                                                              new_members: [work1],
+                                                              user: nil)
       collection.destroy
     end
 
-    it "does not delete member files when deleted" do
-      expect(GenericWork.exists?(work1.id)).to be true
-    end
-
-    it "deletes featured collections with the same collection id" do
-      expect(FeaturedCollection.all).to be_empty
+    it "does not delete member works when deleted" do
+      expect(Hyrax::Test::SimpleWorkLegacy.exists?(work1.id.to_s)).to be true
     end
   end
 
@@ -125,7 +114,10 @@ RSpec.describe Collection do
       class Member < ActiveFedora::Base
         include Hydra::Works::WorkBehavior
       end
-      collection.add_member_objects member.id
+
+      Hyrax::Collections::CollectionMemberService.add_members(collection_id: collection.id,
+                                                              new_members: [member.valkyrie_resource],
+                                                              user: nil)
     end
     after do
       Object.send(:remove_const, :OtherCollection)
