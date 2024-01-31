@@ -3,7 +3,7 @@ require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/collections_co
 # OVERRIDE class from Hyrax v. 3.1.0
 Hyrax::CollectionsController.class_eval do
   # Catch deleted collection
-  rescue_from Ldp::Gone, ActiveFedora::ObjectNotFoundError, with: :not_found
+  rescue_from Ldp::Gone, ActiveFedora::ObjectNotFoundError, Blacklight::Exceptions::RecordNotFound, with: :not_found
 
   # The search builder to find the collections' members
   # inherits from Collections::CollectionMemberService
