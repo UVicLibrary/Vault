@@ -15,6 +15,10 @@ module Hyrax
     # Catch deleted work
     rescue_from Blacklight::Exceptions::RecordNotFound, Ldp::Gone, with: :not_found
 
+    rescue_from ActionController::UnknownFormat do
+      render json: { response: 'Requested format (or blank format) is not supported.', status: 406 }
+    end
+
     def not_found
       # Sets alert to display once redirected page has loaded
       flash.alert = "The work you're looking for may have moved or does not exist. Try searching for it in the search bar."
@@ -103,11 +107,6 @@ module Hyrax
         send_data(presenter.solr_document.export_as_endnote,
                   type: "application/x-endnote-refer",
                   filename: presenter.solr_document.endnote_filename)
-      end
-      format.ris do
-        send_data(presenter.solr_document.export_as_ris(request),
-                  type: "application/x-research-info-systems",
-                  filename: presenter.solr_document.ris_filename)
       end
     end
 
