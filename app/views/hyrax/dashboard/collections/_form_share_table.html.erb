@@ -25,9 +25,9 @@
             <td><%= g.agent_type.titleize %></td>
             <td>
               <% if g.admin_group? %>
-                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'discovery'), method: :delete, class: 'btn btn-sm btn-danger', title: t('hyrax.admin.admin_sets.form.permission_destroy_errors.admin_group'), data: { disable_with: "Removing, please wait..." } %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, referer_anchor: '#discovery'), method: :delete, class: 'btn btn-sm btn-danger', title: t('hyrax.admin.admin_sets.form.permission_destroy_errors.admin_group'), data: { disable_with: "Removing, please wait..." } %>
               <% else %>
-                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, current_tab: 'discovery'), method: :delete, class: 'btn btn-sm btn-danger', data: { disable_with: 'Removing, please wait...' } %>
+                <%= link_to t(".#{access}.remove"), hyrax.admin_permission_template_access_path(g, referer_anchor: '#discovery'), method: :delete, class: 'btn btn-sm btn-danger', data: { disable_with: 'Removing, please wait...' } %>
               <% end %>
             </td>
           </tr>

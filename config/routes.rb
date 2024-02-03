@@ -27,9 +27,8 @@ Rails.application.routes.draw do
   post '/dashboard/collections/:id/toggle_downloads', to: 'hyrax/dashboard/collections#toggle_downloads', as: 'toggle_downloads'
 
   # For copying collection permissions to its member works
-  get '/dashboard/collections/:id/confirm', to: 'hyrax/dashboard/collections#confirm', as: 'confirm_permissions'
+  get '/dashboard/collections/:id/confirm_access', to: 'hyrax/dashboard/collections#confirm_access', as: 'confirm_collection_access_permission'
   post '/dashboard/collections/:id/copy_permissions', to: 'hyrax/dashboard/collections#copy_permissions', as: 'copy_collection_permissions'
-  get '/dashboard/collections/:id/no_copy_permissions', to: 'hyrax/dashboard/collections#no_copy_permissions', as: 'no_copy_permissions'
 
   # For contacting users directly from the user#show page
   post 'hyrax/contact_user' => 'hyrax/contact_user_form#create', as: :contact_user_form_index
