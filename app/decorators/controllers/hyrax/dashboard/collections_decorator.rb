@@ -32,6 +32,10 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     end
   }
 
+  def confirm_access
+    flash[:notice] = t('hyrax.dashboard.my.action.collection_update_success')
+  end
+
   # Add .call because presenter_class.is_a? Proc
   def presenter
     @presenter ||= begin
@@ -55,18 +59,6 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     flash.alert = "The collection you're looking for may have moved or does not exist. Try searching for it in the search bar."
     redirect_to help_path
     return
-  end
-
-  def copy_permissions
-    user_email = current_user.email
-    Hyrax::InheritCollectionPermissionsJob.perform_later(params[:id], user_email, request.base_url)
-    flash_message = 'Updating permissions of collection contents. You will receive an email when the update is finished.'
-    redirect_to edit_dashboard_collection_path(params[:id], anchor: session[:current_tab]), notice: flash_message
-  end
-
-  def no_copy_permissions
-    flash_message = "Collection was successfully updated."
-    redirect_to edit_dashboard_collection_path(params[:id], anchor: session[:current_tab]), notice: flash_message
   end
 
   def inherit_visibility
@@ -199,6 +191,8 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def update
+    # Add redirect to confirm_access to the after_update action
+    # but only if params[:permission_template]
     unless params[:update_collection].nil?
       process_banner_input
       process_logo_input
@@ -219,6 +213,27 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     else
       after_update_error
     end
+  end
 
+  def after_update
+    # If access grants have changed
+    if params[:permission_template] && params[:permission_template]['access_grants_attributes'].keys.any?
+      # Redirect to a confirm access/permissions page that
+      # allows users to copy collection permissions to member works
+      redirect_to main_app.confirm_collection_access_permission_path(params[:id], referer: update_referer)
+    else
+      respond_to do |format|
+        format.html { redirect_to update_referer, notice: t('hyrax.dashboard.my.action.collection_update_success') }
+        format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
+      end
+    end
+  end
+
+  # Triggers a job for copying collection permissions to member works
+  def copy_permissions
+    user_email = current_user.email
+    Hyrax::InheritCollectionPermissionsJob.perform_later(params[:id], user_email, request.base_url)
+    flash_message = 'Updating permissions of collection contents. You will receive an email when the update is finished.'
+    redirect_to params[:referer], notice: flash_message
   end
 end

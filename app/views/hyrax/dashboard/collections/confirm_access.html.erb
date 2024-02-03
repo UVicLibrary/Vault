@@ -8,7 +8,7 @@
     <p style="font-weight: bold">Warning: This will overwrite any permissions for individual works in this collection.</p>
   </div>
   <div class="form-actions panel-footer">
-    <%= button_to "Yes please.", main_app.copy_collection_permissions_path(@collection.id, anchor: session[:current_tab]), class: 'btn btn-primary', data: { turbolinks: false } %>
-    <%= link_to "No. I'll update it manually.", "/dashboard/collections/#{@collection.id}/no_copy_permissions", class: 'btn', data: { turbolinks: false } %>
+    <%= button_to "Yes please.", main_app.copy_collection_permissions_path(@collection.id, referer: params[:referer]), class: 'btn btn-primary', data: { turbolinks: false } %>
+    <%= link_to "No. I'll update it manually.", params[:referer], class: 'btn', data: { turbolinks: false } %>
   </div>
 </div>

@@ -532,6 +532,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     before { sign_in user }
 
     it "is successful" do
+      get :edit, params: { id: collection }
       expect(response).to be_successful
       expect(assigns[:form]).to be_instance_of Hyrax::Forms::CollectionForm
       expect(flash[:notice]).to be_nil
@@ -629,6 +630,36 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       expect(response).to be_successful
     end
   end
+
+  context 'with custom non-Hyrax routes' do
+    # For routes outside the hyrax namespace
+    routes { Rails.application.routes }
+
+    let(:hyrax) { Hyrax::Engine.routes.url_helpers }
+    let(:referer) { CGI.escape("/dashboard/collections/#{collection.id}/edit?locale=en#discovery") }
+
+    before { sign_in user }
+
+    describe "#confirm_access" do
+      it 'is successful' do
+        get :confirm_access, params: { referer: referer, id: collection.id }
+        expect(response).to be_successful
+        expect(assigns[:collection]).to be_instance_of Collection
+      end
+    end
+
+    describe '#copy_permissions' do
+      it 'spawns Hyrax::InheritCollectionPermissionsJob and redirects' do
+        expect do
+          post :copy_permissions, params: { referer: referer, id: collection.id }
+        end.to have_enqueued_job(Hyrax::InheritCollectionPermissionsJob).exactly(:once)
+        expect(response).to redirect_to(referer)
+        expect(flash[:notice]).to eq 'Updating permissions of collection contents. You will receive an email when the update is finished.'
+      end
+    end
+  end
+
+
 
 end
 
