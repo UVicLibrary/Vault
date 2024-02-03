@@ -34,8 +34,9 @@ Hyrax::CollectionsController.class_eval do
   end
 
   def show
-    @curation_concern ||= Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
+    @curation_concern = @collection # we must populate curation_concern
     authorize! :read, curation_concern
+    presenter
     query_collection_members
     set_google_map_coordinates if presenter_class.call == VaultCollectionPresenter
   end
