@@ -2,7 +2,6 @@ require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/file_sets_cont
 
 # OVERRIDE class from Hyrax v. 3.1.0
 Hyrax::FileSetsController.class_eval do
-  # include AuthorizeByIpAddress
 
   # Defined in the hydra-head gem
   # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
