@@ -56,19 +56,12 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     def authorized_item_ids(filter_unreadable: Flipflop.hide_private_items?)
       @member_item_list_ids ||=
           if filter_unreadable
-            ordered_ids_with_visibility.reject do |hash|
+            ordered_ids.reject do |hash|
               !current_ability.can?(:read, hash['id'])
             end.pluck('id')
           else
             ordered_ids
           end
-    end
-
-    # Creates a hash with 'visibility_ssi' key needed for the AuthorizeByIpAddress module
-    def ordered_ids_with_visibility
-      ordered_ids.map do |id|
-        { 'id' => id, 'visibility_ssi' => Hyrax::SolrService.search_by_id(id)['visibility_ssi'] }
-      end
     end
 
     # @return [VaultFileSetPresenter]
