@@ -45,13 +45,25 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   # Add .call because form_class.is_a? Proc
   def form
-    @form ||= form_class.call.new(@collection, current_ability, repository)
+    @form ||=
+        case @collection
+        when Valkyrie::Resource
+          Hyrax::Forms::ResourceForm.for(@collection)
+        else
+          form_class.call.new(@collection, current_ability, repository)
+        end
   end
 
   # Add .call because form_class.is_a? Proc
   def collection_params
-    @participants = extract_old_style_permission_attributes(params[:collection])
-    form_class.call.model_attributes(params[:collection])
+    if Hyrax.config.collection_class < ActiveFedora::Base
+      @participants = extract_old_style_permission_attributes(params[:collection])
+      form_class.call.model_attributes(params[:collection])
+    else
+      params.permit(collection: {})[:collection]
+          .merge(params.permit(:collection_type_gid))
+          .merge(member_of_collection_ids: Array(params[:parent_id]))
+    end
   end
 
   def not_found
@@ -100,7 +112,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     count_downloadable
     if request.base_url.include?("vault")
       document = ::SolrDocument.find(params[:id])
-      @all_labels = Collection.controlled_properties.each_with_object({}) do |prop, hash|
+      @all_labels = Hyrax.config.collection_class.controlled_properties.each_with_object({}) do |prop, hash|
         labels = document.send("#{prop.to_s}_label")
         values = document.send(prop)
 
@@ -130,7 +142,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   def extract_controlled_properties
     attributes = {}
-    Collection.controlled_properties.each do |prop|
+    Hyrax.config.collection_class.controlled_properties.each do |prop|
       attribute_key = "#{prop}_attributes"
       if params[:collection].has_key?(attribute_key)
         if params[:collection].has_key?(attribute_key)
@@ -197,18 +209,24 @@ Hyrax::Dashboard::CollectionsController.class_eval do
       process_banner_input
       process_logo_input
     end
+
     process_uploaded_thumbnail(params[:collection][:thumbnail_upload]) if params[:collection][:thumbnail_upload] # Save the image in the proper dimensions to public folder
     if params[:collection][:in_scua]
       params[:collection][:in_scua] = ActiveModel::Type::Boolean.new.cast(params[:collection][:in_scua])
     end
+
     process_member_changes
+
+    return valkyrie_update if @collection.is_a?(Valkyrie::Resource)
+
     @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
     # @collection.attributes = controlled_properties
     @collection.attributes = collection_params.merge(clean_controlled_properties(extract_controlled_properties))
     @collection.to_controlled_vocab
     # we don't have to reindex the full graph when updating collection
     @collection.reindex_extent = Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX
-    if @collection.save!
+
+    if @collection.update(collection_params.except(:members))
       after_update
     else
       after_update_error
@@ -216,17 +234,24 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def after_update
-    # If access grants have changed
-    if params[:permission_template] && params[:permission_template]['access_grants_attributes'].keys.any?
-      # Redirect to a confirm access/permissions page that
-      # allows users to copy collection permissions to member works
-      redirect_to main_app.confirm_collection_access_permission_path(params[:id], referer: update_referer)
-    else
-      respond_to do |format|
-        format.html { redirect_to update_referer, notice: t('hyrax.dashboard.my.action.collection_update_success') }
-        format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
+      # If access grants have changed (Note: permission deletion is handled by
+      # app/decorators/controllers/hyrax/admin/permission_template_accesses_decorator)
+      if new_permissions.any?
+        # Redirect to a confirm access/permissions page that
+        # allows users to copy collection permissions to member works
+        redirect_to main_app.confirm_collection_access_permission_path(params[:id], referer: update_referer)
+      else
+        respond_to do |format|
+          format.html { redirect_to update_referer, notice: t('hyrax.dashboard.my.action.collection_update_success') }
+          format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
+        end
       end
     end
+
+  def new_permissions
+    # Reject blank attributes
+    return [] unless params['permission_template']
+    params['permission_template']['access_grants_attributes'].values.map(&:to_h).reject { |hash| hash.values.include? "" }
   end
 
   # Triggers a job for copying collection permissions to member works

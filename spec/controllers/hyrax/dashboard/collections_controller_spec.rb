@@ -29,7 +29,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
     it 'assigns @collection' do
       get :new
-      expect(assigns(:collection)).to be_kind_of(Collection)
+      expect(assigns(:collection)).to be_kind_of(Hyrax.config.collection_class)
     end
   end
 
@@ -50,7 +50,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
                                        access: 'edit' }]
           )
      }
-      end.to change { Collection.count }.by(1)
+      end.to change { Hyrax.config.collection_class.count }.by(1)
       expect(assigns[:collection].visibility).to eq 'open'
       expect(assigns[:collection].edit_users).to contain_exactly "archivist1", user.email
       expect(flash[:notice]).to eq "Collection was successfully created."
@@ -61,7 +61,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         post :create, params: {
             collection: collection_attrs.merge(creator: [''])
         }
-      end.to change { Collection.count }.by(1)
+      end.to change { Hyrax.config.collection_class.count }.by(1)
       expect(assigns[:collection].title).to eq ["My First Collection"]
       expect(assigns[:collection].creator).to eq []
     end
@@ -89,7 +89,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           post :create, params: {
             collection: collection_attrs
           }
-        end.to change { Collection.count }.by(1)
+        end.to change { Hyrax.config.collection_class.count }.by(1)
         expect(assigns[:collection].collection_type.machine_id).to eq Hyrax::CollectionType::USER_COLLECTION_MACHINE_ID
       end
 
@@ -98,7 +98,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           post :create, params: {
             collection: collection_attrs, collection_type_gid: collection_type.gid
           }
-        end.to change { Collection.count }.by(1)
+        end.to change { Hyrax.config.collection_class.count }.by(1)
         expect(assigns[:collection].collection_type_gid).to eq collection_type.gid
       end
     end
@@ -112,17 +112,17 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           post :create, params: {
             collection: collection_attrs, parent_id: parent_collection.id
           }
-        end.to change { Collection.count }.by(1)
+        end.to change { Hyrax.config.collection_class.count }.by(1)
         expect(assigns[:collection].reload.member_of_collections).to eq [parent_collection]
       end
     end
 
     context "when create fails" do
-      let(:collection) { Collection.new }
+      let(:collection) { Hyrax.config.collection_class.new }
 
       before do
         allow(controller).to receive(:authorize!)
-        allow(Collection).to receive(:new).and_return(collection)
+        allow(Hyrax.config.collection_class).to receive(:new).and_return(collection)
         allow(collection).to receive(:save).and_return(false)
       end
 
@@ -263,8 +263,8 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
 
       before do
         sign_in user
-        allow(Collection).to receive(:find).and_return(collection)
-        allow(collection).to receive(:save!).and_return(false)
+        allow(Hyrax.config.collection_class).to receive(:find).and_return(collection)
+        allow(collection).to receive(:update).and_return(false)
         allow(controller).to receive(:repository).and_return(repository)
       end
 
@@ -512,7 +512,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     context "when an error occurs" do
       before do
         # rubocop:disable RSpec/AnyInstance
-        allow_any_instance_of(Collection).to receive(:destroy).and_return(nil)
+        allow_any_instance_of(Hyrax.config.collection_class).to receive(:destroy).and_return(nil)
       end
       it "renders the edit view" do
         delete :destroy, params: { id: collection }
@@ -644,7 +644,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       it 'is successful' do
         get :confirm_access, params: { referer: referer, id: collection.id }
         expect(response).to be_successful
-        expect(assigns[:collection]).to be_instance_of Collection
+        expect(assigns[:collection]).to be_instance_of Hyrax.config.collection_class
       end
     end
 
