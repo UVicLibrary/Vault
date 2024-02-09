@@ -45,7 +45,6 @@ query_registration_target =
   query_registration_target.register_query_handler(handler)
 end
 
-
 RSpec.configure do |config|
   config.before(:suite) do
     # WebMock.disable_net_connect!(allow_localhost: true, allow: 'hyku-carrierwave-test.s3.amazonaws.com')
@@ -215,5 +214,9 @@ RSpec.configure do |config|
     example.run
     Hyrax.config.nested_relationship_reindexer = original_indexer
   end
+
+  # A search for collection members returns empty without this line because
+  # of the way CollectionMemberSearchBuilder filters by work models
+  Hyrax.config.register_curation_concern Hyrax::Test::SimpleWorkLegacy
 
 end
