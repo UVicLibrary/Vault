@@ -11,7 +11,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   load_and_authorize_resource except: [:index, :create, :copy_permissions], instance_name: :collection
 
-  self.membership_service_class = ::SortCollectionMembersByDateService
+  self.membership_service_class = ::NestedWorksSearchService
 
   # Tenant-specific class overrides
   self.presenter_class = ->() {

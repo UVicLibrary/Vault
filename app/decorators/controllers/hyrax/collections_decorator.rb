@@ -7,7 +7,7 @@ Hyrax::CollectionsController.class_eval do
 
   # The search builder to find the collections' members
   # inherits from Collections::CollectionMemberService
-  self.membership_service_class = ::SortCollectionMembersByDateService
+  self.membership_service_class = ::NestedWorksSearchService
 
   self.presenter_class = ->() {
     case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
