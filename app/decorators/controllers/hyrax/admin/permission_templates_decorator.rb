@@ -16,15 +16,21 @@ Hyrax::Admin::PermissionTemplatesController.class_eval do
   def update
     update_info = form.update(update_params)
     if update_info[:updated] == true # Ensure we redirect to currently active tab with the appropriate notice
-      redirect_to(main_app.confirm_collection_access_permission_path(params[:collection_id], referer: update_referer),
+      if collection?
+        redirect_to(main_app.confirm_collection_access_permission_path(params[:collection_id], referer: update_referer),
                   notice: translate('sharing', scope: 'hyrax.dashboard.collections.form.permission_update_notices'))
+      elsif admin_set?
+        redirect_to_edit_path(update_info)
+      end
     else
       redirect_to_edit_path_with_error(update_info)
     end
   end
 
+  # The tab that user was previously on before updating permissions
   def update_referer
-    request.referer + params[:referer_anchor]
+    edit_dashboard_collection_path(params[:collection_id]) +
+        (params[:referer_anchor] || '')
   end
 
 end
