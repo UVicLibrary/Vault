@@ -60,7 +60,6 @@
                                        access_options,
                                        { prompt: "Select access..." },
                                        class: 'form-control' %>
-
                     <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', disabled: true, onclick: "this.disabled=true;this.value='Adding group, please wait...';this.form.submit();" %>
                   </div>
                 </div>
@@ -88,7 +87,7 @@
                                        access_options,
                                        { prompt: "Select access..." },
                                        class: 'form-control' %>
-
+                    <%= hidden_field_tag(:referer_anchor, '#discovery') %>
                     <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', disabled: true, onclick: "this.disabled=true;this.value='Adding user, please wait...';this.form.submit();" %>
                   </div>
                 </div>

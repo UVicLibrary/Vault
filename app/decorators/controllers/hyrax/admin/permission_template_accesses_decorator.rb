@@ -8,6 +8,12 @@ Hyrax::Admin::PermissionTemplateAccessesController.class_eval do
   # if they'd like to apply the collection's permissions
   # to all its member works.
 
+  # Note: Only removing a user or group from the list of viewers
+  # redirects to #after_destroy_success. Adding a group redirects
+  # to dashboard/collections_controller#update, and removing a user
+  # or group redirects to admin/permission_template_accesses#destroy.
+  # Weird.
+
   def after_destroy_success
     if source.admin_set?
       redirect_to hyrax.edit_admin_admin_set_path(source_id,
