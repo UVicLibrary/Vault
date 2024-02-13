@@ -2,6 +2,8 @@ module CustomCollectionBehavior
   PERMISSION_TEXT_VALUE_AUTHENTICATED = 'uvic'.freeze
   VISIBILITY_TEXT_VALUE_AUTHENTICATED = 'authenticated'.freeze
 
+  include AsyncCollectionNesting
+
   # Compute the sum of each file in the collection using Solr to
   # avoid having to access Fedora. This was deprecated in main Hyrax
   #
