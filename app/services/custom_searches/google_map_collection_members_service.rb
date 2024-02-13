@@ -1,4 +1,4 @@
-class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberSearchService
+class GoogleMapCollectionMembersService < NestedWorksSearchService
 
   # @return [Blacklight::SolrResponse]
   # Member works of a collection that have something in the coordinates field.
@@ -9,7 +9,7 @@ class GoogleMapCollectionMembersService < Hyrax::Collections::CollectionMemberSe
       builder.search_includes_models = :works
       builder.merge(
           fl: filter_fields,
-          fq: add_coordinates_filter(builder.query['fq']),
+          fq: add_coordinates_filter(add_descendants(builder.query['fq'])),
           rows: 3000)
     end
     response
