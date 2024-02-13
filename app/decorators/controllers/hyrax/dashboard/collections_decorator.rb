@@ -32,6 +32,9 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     end
   }
 
+  # A page that asks the user if they want to update member
+  # works' permissions with the same permissions they just
+  # specified for the collection.
   def confirm_access
     flash[:notice] = t('hyrax.dashboard.my.action.collection_update_success')
   end
@@ -203,8 +206,6 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def update
-    # Add redirect to confirm_access to the after_update action
-    # but only if params[:permission_template]
     unless params[:update_collection].nil?
       process_banner_input
       process_logo_input
@@ -234,18 +235,19 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def after_update
-      # If access grants have changed (Note: permission deletion is handled by
-      # app/decorators/controllers/hyrax/admin/permission_template_accesses_decorator)
-      if new_permissions.any?
-        # Redirect to a confirm access/permissions page that
-        # allows users to copy collection permissions to member works
-        redirect_to main_app.confirm_collection_access_permission_path(params[:id], referer: update_referer)
-      else
-        respond_to do |format|
-          format.html { redirect_to update_referer, notice: t('hyrax.dashboard.my.action.collection_update_success') }
-          format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
-        end
+    # If access grants have changed (Note: permission deletion is handled by
+    # app/decorators/controllers/hyrax/admin/permission_template_accesses_decorator,
+    # and adding a user access grant redirects to decorators/hyrax/admin/permission_templates_decorator)
+    if new_permissions.any?
+      # Redirect to a confirm access/permissions page that
+      # allows users to copy collection permissions to member works
+      redirect_to main_app.confirm_collection_access_permission_path(params[:id], referer: update_referer)
+    else
+      respond_to do |format|
+        format.html { redirect_to update_referer, notice: t('hyrax.dashboard.my.action.collection_update_success') }
+        format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
       end
+    end
     end
 
   def new_permissions
