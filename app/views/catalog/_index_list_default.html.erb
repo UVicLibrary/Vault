@@ -4,7 +4,7 @@
       <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
       <% doc_presenter = index_presenter(document) %>
       <% if document.collection? %>
-        <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
+        <% collection_presenter = VaultCollectionPresenter.new(document, current_ability) %>
         <div class="col-sm-12" style="padding-left: 0px;">
           <div class="collection-counts-wrapper">
             <div class="collection-counts-item">
