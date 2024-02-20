@@ -45,6 +45,32 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
     @featured
   end
 
+  def total_viewable_items
+    Hyrax::SolrService.get(fq: "nesting_collection__ancestors_ssim:*#{id.to_s}")['response']['numFound']
+  end
+
+  def total_viewable_works
+    members_query = [
+      "nesting_collection__ancestors_ssim:*#{id.to_s}",
+      "member_of_collection_ids_ssim: #{id.to_s}"
+    ].join(" OR ")
+
+    filter_query = "(#{members_query}) AND has_model_ssim:GenericWork"
+
+    Hyrax::SolrService.get(fq: filter_query)['response']['numFound']
+  end
+
+  def total_viewable_collections
+    members_query = [
+        "nesting_collection__ancestors_ssim:*#{id.to_s}",
+        "member_of_collection_ids_ssim: #{id.to_s}"
+    ].join(" OR ")
+
+    filter_query = "(#{members_query}) AND has_model_ssim:Collection"
+
+    Hyrax::SolrService.get(fq: filter_query)['response']['numFound']
+  end
+
   ##
   # @deprecated this implementation requires an extra db round trip, had a
   #   buggy cacheing mechanism, and was largely duplicative of other code.
