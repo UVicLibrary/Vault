@@ -34,7 +34,7 @@ class NestedWorksSearchService < Hyrax::Collections::CollectionMemberSearchServi
 
   def ancestors_filter
     ancestors_field = Samvera::NestingIndexer.configuration.solr_field_name_for_storing_ancestors
-    "#{ancestors_field}:#{collection.id}"
+    "#{ancestors_field}:*#{collection.id}"
   end
 
 end
