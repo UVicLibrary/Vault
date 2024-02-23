@@ -29,6 +29,7 @@
           </div>
         <% end %>
 
+        <%= render 'shared/read_only' if Flipflop.read_only? %>
         <%= content_for?(:content) ? yield(:content) : yield %>
       </div>
 

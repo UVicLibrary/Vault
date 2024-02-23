@@ -7,6 +7,7 @@ module Hyrax::Controller
     # Adds Hydra behaviors into the application controller
     include Hydra::Controller::ControllerBehavior
     before_action :set_locale
+    before_action :check_read_only, except: [:show, :index]
   end
   
   #def create_work_presenter
@@ -70,4 +71,12 @@ module Hyrax::Controller
         wants.json { render_json_response(response_type: :unauthorized, message: json_message) }
       end
     end
+
+  # Redirect all deposit and edit requests with warning message when in read only mode
+  def check_read_only
+    return unless Flipflop.read_only?
+    # Allows feature to be turned off
+    return if self.class.to_s == Hyrax::Admin::StrategiesController.to_s
+    redirect_to root_path, flash: { error: t('hyrax.read_only') }
+  end
 end
