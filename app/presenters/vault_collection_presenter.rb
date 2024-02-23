@@ -46,48 +46,31 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
   end
 
   def total_viewable_items
-    Hyrax::SolrService.get(fq: "nesting_collection__ancestors_ssim:*#{id.to_s}")['response']['numFound']
+    Hyrax::SolrService.get(query_for_ability,
+                           fq: nested_members_query)['response']['numFound']
   end
 
   def total_viewable_works
-    members_query = [
-      "nesting_collection__ancestors_ssim:*#{id.to_s}",
-      "member_of_collection_ids_ssim: #{id.to_s}"
-    ].join(" OR ")
+    filter_query = "(#{nested_members_query}) AND has_model_ssim:GenericWork"
 
-    filter_query = "(#{members_query}) AND has_model_ssim:GenericWork"
-
-    Hyrax::SolrService.get(fq: filter_query)['response']['numFound']
+    Hyrax::SolrService.get(query_for_ability,
+                           fq: filter_query)['response']['numFound']
   end
 
   def total_viewable_collections
-    members_query = [
-        "nesting_collection__ancestors_ssim:*#{id.to_s}",
-        "member_of_collection_ids_ssim: #{id.to_s}"
-    ].join(" OR ")
+    filter_query = "(#{nested_members_query}) AND has_model_ssim:Collection"
 
-    filter_query = "(#{members_query}) AND has_model_ssim:Collection"
-
-    Hyrax::SolrService.get(fq: filter_query)['response']['numFound']
+    Hyrax::SolrService.get(query_for_ability,
+                           fq: filter_query)['response']['numFound']
   end
 
-  ##
-  # @deprecated this implementation requires an extra db round trip, had a
-  #   buggy cacheing mechanism, and was largely duplicative of other code.
-  #   all versions of this code are replaced by
-  #   {CollectionsHelper#available_parent_collections_data}.
-  def available_parent_collections(scope:)
-    Deprecation.warn("#{self.class}#available_parent_collections is " \
-                       "deprecated. Use available_parent_collections_data " \
-                       "helper instead.")
-    return @available_parents if @available_parents.present?
-    collection = ::Collection.find(id)
-    colls = Hyrax::Collections::NestedCollectionQueryService
-                .available_parent_collections(child: collection, scope: scope, limit_to_id: nil)
-                .sort_by{ |coll| coll["title_sort_ssi"] }
-    @available_parents = colls.map do |col|
-      { "id" => col.id, "title_first" => col.title.first }
-    end.to_json
+  def nested_members_query
+    ["nesting_collection__ancestors_ssim:*#{id.to_s}",
+     "member_of_collection_ids_ssim:#{id.to_s}"].join(" OR ")
+  end
+
+  def query_for_ability
+    Hyrax::SolrQueryService.new.accessible_by(ability: current_ability).query.first
   end
 
 end
