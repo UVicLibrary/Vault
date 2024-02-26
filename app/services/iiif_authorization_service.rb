@@ -29,7 +29,7 @@ class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
     @controller.params[:size] == IIIFThumbnailPaths::THUMBNAIL_SIZE ||
       @controller.params[:size] == LargeIIIFThumbnailPaths::LARGE_THUMBNAIL_SIZE ||
       # The size for thumbnails in search results view
-      @controller.params[:size] == '!150,300'
+      @controller.params[:size] == '!150,300' || @controller.params[:size] == '!300,300'
   end
 
   def uv_page?(request)
