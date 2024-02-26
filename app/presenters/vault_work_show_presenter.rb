@@ -53,17 +53,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
 
     private
 
-    def authorized_item_ids(filter_unreadable: Flipflop.hide_private_items?)
-      @member_item_list_ids ||=
-          if filter_unreadable
-            ordered_ids.reject do |hash|
-              !current_ability.can?(:read, hash['id'])
-            end.pluck('id')
-          else
-            ordered_ids
-          end
-    end
-
     # @return [VaultFileSetPresenter]
     def member_presenter_factory
       Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
