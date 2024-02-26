@@ -22,6 +22,9 @@ Riiif::Image.file_resolver.basic_auth_credentials = [ActiveFedora.fedora.user, A
 
 Riiif::Image.authorization_service = IIIFAuthorizationService # Hyrax::IIIFAuthorizationService
 
+Riiif::ImagemagickCommandFactory.external_command = "gm convert"
+Riiif::ImageMagickInfoExtractor.external_command = "gm identify"
+
 Riiif.not_found_image = 'app/assets/images/us_404.svg'
 Riiif.unauthorized_image = 'app/assets/images/us_404.svg'
 
