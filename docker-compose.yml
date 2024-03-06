@@ -36,7 +36,7 @@ services:
       interval: "5s"
       timeout: "8"
   solr:
-    image: solr:7.5
+    image: solr:9.4.1
     command: solr -c -f -z zoo1:2181
     environment:
       - OOM=script
@@ -118,7 +118,8 @@ services:
       - app:/home/app/webapp/tmp/uploads
       - assets:/home/app/webapp/public/assets
       - cache:/home/app/webapp/tmp/cache
-      - .:/home/app/webapp
+#      - .:/home/app/webapp
+      - ~/Vault:/home/app/webapp
     networks:
       internal:
 
@@ -139,7 +140,8 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - .:/home/app/webapp:consistent
+#      - .:/home/app/webapp:consistent
+      - ~/Vault:/home/app/webapp:consistent
 
   workers:
     extends:
@@ -153,7 +155,7 @@ services:
       - zoo1
 
   redis:
-    image: redis:5
+    image: redis:7.0.4
     command: redis-server
     volumes:
       - redis:/data
