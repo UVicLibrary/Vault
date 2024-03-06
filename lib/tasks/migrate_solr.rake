@@ -15,7 +15,7 @@
 #
 # 4. Depending on the changes between your old and new versions
 #    of Solr, your collections may not appear, or may be
-#    non-functioning. Run migrate_solr:export to delete/recreate
+#    non-functioning. Run rake migrate_solr:import to delete/recreate
 #    the collection and import documents from the previous version.
 #    If there are problems, you can troubleshoot using the Solr
 #    Dashboard at localhost:8983.
@@ -67,8 +67,8 @@ namespace :migrate_solr do
       # Delete and recreate the collection. If this doesn't work, you
       # may have to delete and recreate the collection using the collections
       # tab in the Solr Dashboard.
-      `curl "#{Settings.solr.url}solr/admin/collections?action=DELETE&name=#{collection_name}"`
-      `curl "#{Settings.solr.url}solr/admin/collections?action=CREATE&name=#{collection_name}&collection.configName=#{config_name}&numShards=1"`
+      `curl "#{Settings.solr.url}admin/collections?action=DELETE&name=#{collection_name}"`
+      `curl "#{Settings.solr.url}admin/collections?action=CREATE&name=#{collection_name}&collection.configName=#{config_name}&numShards=1"`
 
       # Import the documents
       file = Dir.glob("#{export_dir}/*").find { |file| file.include? collection_name }

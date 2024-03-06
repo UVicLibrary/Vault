@@ -19,8 +19,7 @@ redis:
   default_namespace: hyku
 
 solr:
-  url: "http://127.0.0.1:8983/solr/"
-  url: "http://127.0.0.1:8983/solr/"
+  url: "http://solr:8983/solr/"
   configset: hyku
   configset_source_path: <%= File.join(Rails.root, 'solr', 'config') %>
   collection_options:
@@ -43,7 +42,7 @@ zookeeper:
   connection_str: "localhost:9983/configs"
 
 active_job:
-  queue_adapter: :async
+  queue_adapter: :sidekiq
 
 active_job_queue:
   url:
@@ -61,12 +60,12 @@ google_analytics_id:
 geonames_username: 'jcoyne'
 
 # The address to which the contact form is submitted
-contact_email: "tjychan@uvic.ca"
+contact_email: "user@example.com"
 #
 devise:
   account_signup: true
   # The address from which user invitations are sent
-  invitation_from_email: "tjychan@uvic.ca"
+  invitation_from_email: "user@example.com"
 
 oai:
   name: Vault
@@ -74,3 +73,13 @@ oai:
   prefix: oai:hyku
   email: change-me-in-hyku-settings@example.org
   sample_id: 806bbc5e-8ebe-468c-a188-b7c14fbe34df
+
+# An array of IPs and IP ranges that should be allowed to access institution-only objects
+allowed_ip_ranges: ["111.111.111.1"]
+
+fast_update:
+  other_changes_email: "user@example.com"
+
+fixity_email: "user@example.com"
+
+cache_filesystem_root: "tmp/cache"
