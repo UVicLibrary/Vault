@@ -162,7 +162,7 @@ module Hyrax
 
       def thumbnail_dir
         if @file_set.parent.member_of_collection_ids.present?
-          collection = Collection.find(@file_set.parent.member_of_collection_ids.first)
+          collection = Hyrax.config.collection_class.find(@file_set.parent.member_of_collection_ids.first)
           collection_title = collection.title.first.parameterize.underscore
           # If directory doesn't already exist, create one
           "./public/pdf_thumbnails/#{collection_title}"

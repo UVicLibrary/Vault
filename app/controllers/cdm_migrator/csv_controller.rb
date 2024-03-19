@@ -29,7 +29,7 @@ module CdmMigrator
 
     def upload
       @admin_sets  = AdminSet.all.map { |as| [as.title.first, as.id] }
-      @collections = Collection.all.map { |col| [col.title.first, col.id] }
+      @collections = Hyrax.config.collection_class.all.map { |col| [col.title.first, col.id] }
     end
 
     def create
@@ -88,7 +88,7 @@ module CdmMigrator
     end
 
     def edit
-      @collections = ::Collection.all.map { |c| [c.title.first, c.id] }
+      @collections = Hyrax.config.collection_class.all.map { |c| [c.title.first, c.id] }
     end
 
     def update

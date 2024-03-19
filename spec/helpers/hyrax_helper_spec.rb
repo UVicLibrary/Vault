@@ -24,7 +24,7 @@ RSpec.describe HyraxHelper, type: :helper do
     end
 
     it 'interoperates with CollectionForm' do
-      collection = ::Collection.new
+      collection = Hyrax.config.collection_class.new
       collection.thumbnail = ::FileSet.create(title: ["thumbnail"])
 
       form = Hyrax::Forms::CollectionForm.new(collection,

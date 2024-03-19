@@ -76,7 +76,7 @@ class ImportWorkFromPurlJob < ActiveJob::Base
       id = collection[:id]
       begin
         retries ||= 0
-        Collection.create!(collection) unless Collection.exists?(id)
+        Hyrax.config.collection_class.create!(collection) unless Hyrax.config.collection_class.exists?(id)
       rescue Ldp::Conflict => e
         ## Another process has likely beat us to the punch. Wait a bit and try again.
         sleep(3)

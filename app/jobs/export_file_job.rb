@@ -102,7 +102,7 @@ class ExportFileJob < ActiveJob::Base
       File.open("collection_uuids_and_titles.txt", "a") do |file|
         parent = file_set.parent
         parent.member_of_collection_ids.each do |c_id|
-          file.puts "#{c_id} \t #{Collection.find(c_id).title.first}"
+          file.puts "#{c_id} \t #{Hyrax.config.collection_class.find(c_id).title.first}"
         end
       end
     end

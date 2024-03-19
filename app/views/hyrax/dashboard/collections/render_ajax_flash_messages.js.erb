@@ -1,4 +1,4 @@
 $(document.getElementById("flash-msg")).append("<%= j (render partial: 'processing_alert') %>")
-<% if Collection.where(member_of_collection_ids_ssim: params[:id]).any? %>
+<% if Hyrax.config.collection_class.where(member_of_collection_ids_ssim: params[:id]).any? %>
    $(document.getElementById("flash-msg")).append("<%= j (render partial: 'subcollection_warning') %>")
 <% end %>

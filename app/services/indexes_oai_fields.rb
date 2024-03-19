@@ -38,7 +38,7 @@ module IndexesOAIFields
       if collections = solr_doc['member_of_collections_ssim']
         solr_doc[relation_field] = collections.map { |val| "IsPartOf #{val}" }
       end
-    elsif object.class == Collection
+    elsif object.class == Hyrax.config.collection_class
       # dc:relation = titles of parent or child collections if any exist
       if object.parent_collections or object.child_collections
         parents = object.parent_collections.map { |c| "IsPartOf #{c.title.first}" }
