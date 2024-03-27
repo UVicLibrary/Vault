@@ -105,7 +105,7 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '3.2' # 3.0.2
+gem 'hyrax', '3.3'#'3.2' # 3.0.2
 gem 'dry-monads', '< 1.5'
 
 # Loading the env fails if psych > 3.0

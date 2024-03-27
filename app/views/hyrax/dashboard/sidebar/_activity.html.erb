@@ -42,10 +42,11 @@
     <% end %>
   </li>
 
-  <% if can? :read, :admin_dashboard %>
-    <%= menu.nav_link(hyrax.admin_stats_path) do %>
-      <span class="fa fa-bar-chart" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('hyrax.admin.sidebar.statistics') %></span>
-    <% end %>
-  <% end %>
+<!--  Commenting out the Statistics option from the dashboard sidebar. Will need to be looked at again in Hyrax 3.6"
+  <%# if can? :read, :admin_dashboard %>
+    <%#= menu.nav_link(hyrax.admin_stats_path) do %>
+      <span class="fa fa-bar-chart" aria-hidden="true"></span> <span class="sidebar-action-text"><%#= t('hyrax.admin.sidebar.statistics') %></span>
+    <%# end %>
+  <%# end %>-->
 
 <%= render 'hyrax/dashboard/sidebar/menu_partials', menu: menu, section: :activity %>
