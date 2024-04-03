@@ -23,10 +23,5 @@ Hyrax::WorkShowPresenter.class_eval do
     end.select(&:present?)
   end
 
-  def member_presenter_factory
-    Hyrax::MemberPresenterFactory.file_presenter_class = Hyrax::FileSetPresenter
-      @member_presenter_factory ||=
-          Hyrax::MemberPresenterFactory.new(solr_document, current_ability, request)
-  end
 end
 

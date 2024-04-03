@@ -9,6 +9,7 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     class_attribute :iiif_metadata_fields
 
     self.collection_presenter_class = VaultCollectionPresenter
+    self.presenter_factory_class = VaultMemberPresenterFactory
 
         # Methods used by blacklight helpers
     # delegate :has?, :first, :fetch, :export_formats, :export_as, to: :solr_document
@@ -53,11 +54,15 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
 
     private
 
-    # @return [VaultFileSetPresenter]
-    def member_presenter_factory
-      Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
-      @member_presenter_factory ||=
-        Hyrax::MemberPresenterFactory.new(solr_document, current_ability, request)
+    def authorized_item_ids(filter_unreadable: Flipflop.hide_private_items?)
+      @member_item_list_ids ||=
+          if filter_unreadable
+            ordered_ids.reject do |hash|
+              !current_ability.can?(:read, hash['id'])
+            end.pluck('id')
+          else
+            ordered_ids
+          end
     end
 
 end
