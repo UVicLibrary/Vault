@@ -9,6 +9,7 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
     class_attribute :iiif_metadata_fields
 
     self.collection_presenter_class = VaultCollectionPresenter
+    self.presenter_factory_class = VaultMemberPresenterFactory
 
         # Methods used by blacklight helpers
     # delegate :has?, :first, :fetch, :export_formats, :export_as, to: :solr_document
@@ -62,13 +63,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
           else
             ordered_ids
           end
-    end
-
-    # @return [VaultFileSetPresenter]
-    def member_presenter_factory
-      Hyrax::MemberPresenterFactory.file_presenter_class = VaultFileSetPresenter
-      @member_presenter_factory ||=
-        Hyrax::MemberPresenterFactory.new(solr_document, current_ability, request)
     end
 
 end
