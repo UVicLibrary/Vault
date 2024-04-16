@@ -14,7 +14,7 @@ class AssignWorkDOIJob < ActiveJob::Base
     # Blacklight::Exceptions::ECONNREFUSED, Errno::ECONNRESET, Faraday::TimeoutError), we want
     # to retry it as usual. However, for metadata errors, we want to send an email instead of
     # retrying to avoid making tons of draft DOIs.
-  rescue Hyrax::DOI::Error, EdtfDateService::InvalidEdtfDateError, Hyrax::DOI::DataCiteClient::Error => e
+  rescue Hyrax::DOI::Error, EdtfDateService::InvalidEdtfDateError, Hyrax::DOI::DataCiteClient::Error, OpenURI::HTTPError, Errno::ENOENT => e
     NotificationMailer.with(user_email: Settings.fixity_email, failures: [work.id], job_class: self.class).failures.deliver
   end
 
