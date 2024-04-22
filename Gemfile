@@ -1,16 +1,19 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
 
+gem 'json-canonicalization', '0.4.0'
+
 gem 'hyrax-doi', git: 'https://github.com/samvera-labs/hyrax-doi.git', branch: 'hyrax_upgrade'
 
 gem 'simple_xlsx_reader'
 
 gem 'omniauth-cas'
 gem 'signet', '0.17.0'
+gem 'stringio', '3.1.0'
 
 # Pin psych to avoid "Unknown alias: default (Psych::BadAlias)" error
 # https://stackoverflow.com/questions/71191685/visit-psych-nodes-alias-unknown-alias-default-psychbadalias
-gem 'psych', '< 4'
+# gem 'psych', '< 4'
 
 # Pin tinymce-rails to avoid uglifier gem error
 gem 'tinymce-rails', '4.9.11'
@@ -18,7 +21,7 @@ gem 'tinymce-rails', '4.9.11'
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
 gem 'combine_pdf'
 gem 'pdftoimage'
-gem 'iconv' , '~> 1.0'
+gem 'iconv' , '~> 1.0.8'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '5.2.6'
@@ -51,7 +54,7 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
-gem 'active-fedora', '~> 13.1'  # '~> 12.1.1'
+gem 'active-fedora', '~> 13.1'
 gem 'solrizer', '>= 3.4'
 
 # Use Capistrano for deployment
@@ -64,7 +67,7 @@ group :development, :test do
   gem 'i18n-debug', require: false
   gem 'i18n-tasks'
   gem 'rspec'
-  gem 'rspec-rails', '5.1.2' #'>= 3.6.0'
+  gem 'rspec-rails', '5.1.2'
 
   #gem 'coveralls', require: false
   gem 'simplecov', require: false
@@ -116,7 +119,7 @@ gem 'bagit'
 
 gem 'hydra-derivatives', '~> 3.5'
 
-gem 'hyrax', '3.1.0' # '3.0.2'
+gem 'hyrax', '3.2.0'
 gem 'rsolr', '2.2.1'
 
 gem 'devise'
@@ -151,7 +154,7 @@ gem 'secure_headers'
 
 gem 'honeybadger', '~> 3.0'
 
-gem 'pdfjs_viewer-rails', '~> 0.2.0'
+gem 'pdfjs_viewer-rails'
 
 # https://github.com/yrgoldteeth/bootstrap-will_paginate
 gem 'bootstrap-will_paginate', '1.0.0'
