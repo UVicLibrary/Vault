@@ -6,6 +6,10 @@ gem 'simple_xlsx_reader'
 
 gem 'omniauth-cas'
 
+# Pin to 5.10.7 to avoid 'PermissionsControl is not a constructor' error
+# DO NOT USE 5.10.9
+gem 'tinymce-rails', '5.10.7'
+
 # For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
 gem 'combine_pdf'
 gem 'pdftoimage'
@@ -105,7 +109,7 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '3.3'#'3.2' # 3.0.2
+gem 'hyrax', '3.4.2'
 gem 'dry-monads', '< 1.5'
 
 # Loading the env fails if psych > 3.0

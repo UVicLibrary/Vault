@@ -20,6 +20,7 @@
 //= require blacklight_range_limit
 // require browse_collections
 //= require masonry
+//= require turbolinks
 
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
 // a pattern found in ScholarSphere)
@@ -31,11 +32,4 @@
 //= require hyrax
 //= require fast_update
 //= require handlebars-v4.0.5
-//= require jquery.flot.pie
-//= require flot_graph
-//= require statistics_tab_manager
 //= require google_map
-
-//= require turbolinks
-
-
