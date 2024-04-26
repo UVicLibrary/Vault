@@ -56,8 +56,7 @@ class FastUpdateFieldManager extends ControlledVocabulary {
         this._appendControls();
         this._attachEvents();
         this._addCallbacks();
-        this._formatStringsAndLabels();
-        this.addAutocompleteToEditor($('#new-label'));
+        this.addAutocompleteToEditor($('#new_labels_and_uris_0'));
     }
 
     _attachEvents() {

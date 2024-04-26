@@ -9,7 +9,7 @@ Hyrax::DeepIndexingService.class_eval do
   # @param [Hash] field_info
   # @param [Array] val an array of two elements, first is a string (the uri) and the second is a hash with one key: `:label`
   def append_label_and_uri(solr_doc, solr_field_key, field_info, val)
-    val = solrize(val)
+    val = val.solrize
     ActiveFedora::Indexing::Inserter.create_and_insert_terms(solr_field_key,
                                                             val.first,
                                                             field_info.behaviors, solr_doc)

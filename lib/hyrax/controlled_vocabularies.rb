@@ -5,6 +5,8 @@ module Hyrax
     eager_autoload do
       autoload :Location
       autoload :ResourceLabelCaching
+      autoload :FastResourceLabelCaching
+      autoload :GettyAatLabelCaching
       autoload :Creator
       autoload :Contributor
       autoload :PhysicalRepository

@@ -1,11 +1,3 @@
-<%# Add a data attribute with all the labels for this field. We will use
-these to display text fields for strings and autocomplete fields for URIs.
-See assets/javascripts/hyrax/editor/controlled_vocabulary.es6 %>
-<%# Add a data attribute with all the labels for this field. We will use
-these to display text fields for strings and autocomplete fields for URIs.
-See assets/javascripts/hyrax/editor/controlled_vocabulary.es6 %>
-<%# Example: [{"string":"Test provider"},{"label":"Tiffany and Company"}] %>
-<% json = @all_labels["#{key}_label"].to_json if @all_labels %>
 <%= f.input key,
             as: :controlled_vocabulary,
             placeholder: 'Search for a person',
@@ -18,6 +10,5 @@ See assets/javascripts/hyrax/editor/controlled_vocabulary.es6 %>
             },
             ### Required for the ControlledVocabulary javascript:
             wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
-                                    'label-values' => "#{json}",
                                     'field-name' => key }},
             required: f.object.required?(key) %>

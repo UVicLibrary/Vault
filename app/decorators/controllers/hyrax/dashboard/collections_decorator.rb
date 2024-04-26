@@ -113,22 +113,6 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   def edit
     form
     count_downloadable
-    if request.base_url.include?("vault")
-      document = ::SolrDocument.find(params[:id])
-      @all_labels = Hyrax.config.collection_class.controlled_properties.each_with_object({}) do |prop, hash|
-        labels = document.send("#{prop.to_s}_label")
-        values = document.send(prop)
-
-        hash["#{prop.to_s}_label"] = []
-        values.each do |val|
-          if val.include?("http")
-            hash["#{prop.to_s}_label"].push({label: "#{labels[values.index(val)]}", uri: "#{val}" })
-          elsif val.present?
-            hash["#{prop.to_s}_label"].push({string: "#{labels[values.index(val)]}" })
-          end
-        end
-      end
-    end
     # Gets original filename of an uploaded thumbnail. See #update
     if ::SolrDocument.find(@collection.id).thumbnail_path.include? "uploaded_collection_thumbnails" and uploaded_thumbnail?
       @thumbnail_filename = File.basename(uploaded_thumbnail_files.reject { |f| File.basename(f).include? @collection.id }.first)
