@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 #
-#
 # Delete me once we reach Hyrax 3.4
 #
 module Hyrax
@@ -14,7 +13,8 @@ module Hyrax
     #
     # @see Hyrax::DeepIndexingService
     module ResourceLabelCaching
-      CACHE_KEY_PREFIX = "hy_label-v1-"
+      CACHE_KEY_PREFIX = 'hy_label-v1-'
+      CACHE_EXPIRATION = 1.week
 
       ##
       # @note uses the Rails cache to avoid repeated lookups.
@@ -23,7 +23,6 @@ module Hyrax
         # only cache if this rdf source is represented by a URI;
         # i.e. don't cache for blank nodes
         return super unless uri?
-
         Rails.cache.fetch(cache_key) { super }
       end
 
@@ -31,7 +30,7 @@ module Hyrax
       # @note adds behavior to clear the cache whenever a manual fetch of data
       #   is performed.
       # @see ActiveTriples::Resource#fetch
-      def fetch(*, **)
+      def fetch(*)
         Rails.cache.delete(cache_key)
         super
       end
