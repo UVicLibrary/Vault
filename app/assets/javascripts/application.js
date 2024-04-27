@@ -31,5 +31,4 @@
 //= require navbar
 //= require hyrax
 //= require fast_update
-//= require handlebars-v4.0.5
 //= require google_map
