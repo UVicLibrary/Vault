@@ -15,11 +15,8 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require js.cookie
-// Required by Blacklight
-//= require blacklight/blacklight
 //= require blacklight_range_limit
 // require browse_collections
-//= require masonry
 //= require turbolinks
 
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
