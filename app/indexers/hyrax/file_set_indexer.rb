@@ -29,6 +29,7 @@ module Hyrax
         solr_doc['original_checksum_tesim'] = object.original_checksum
         # solr_doc['alpha_channels_ssi']      = object.alpha_channels
         solr_doc['current_file_version_ssi'] = latest_file_id
+        solr_doc['generic_type_si'] = 'FileSet'
           # In later versions of Hyrax, the above field gets collapsed into
           # solr_doc['original_file_id_ssi']    = original_file_id
           # But I prefer current_file_version because it's less confusing
