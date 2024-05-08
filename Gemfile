@@ -10,10 +10,6 @@ gem 'omniauth-cas'
 # DO NOT USE 5.10.9
 gem 'tinymce-rails', '5.10.7'
 
-# For PDF thumbnail generation. See services/file_set_derivatives_service#create_pdf_derivatives
-gem 'combine_pdf'
-gem 'pdftoimage'
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~>5.2.4.6'
 # Use sqlite3 as the database for Active Record
@@ -79,7 +75,7 @@ group :test do
   gem 'rack-test', '0.7.0'
   gem 'rails-controller-testing'
   gem 'rspec-activemodel-mocks'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '~> 3.142.7'
   gem 'webmock'
   gem 'carrierwave-aws'
   gem 'rspec-sidekiq'

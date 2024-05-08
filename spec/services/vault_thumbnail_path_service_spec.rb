@@ -110,19 +110,11 @@ RSpec.describe VaultThumbnailPathService do
 
       context "and has a pdf thumbnail" do
 
-        before do
-          allow(representative).to receive(:pdf?).and_return true
-          # Stub this so that byebug will still work
-          allow(File).to receive(:exist?).with(any_args).and_call_original
-          allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/pdf_thumbnails/collection_title/999-thumb.jpg").and_return true
-        end
+        before { allow(representative).to receive(:pdf?).and_return true }
 
-        it { is_expected.to eq("/pdf_thumbnails/collection_title/999-thumb.jpg") }
+        it { is_expected.to eq("/pdf_thumbnails/999-thumb.jpg") }
       end
-
-
     end
-
 
   end
 
