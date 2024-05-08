@@ -35,7 +35,7 @@
       # Returns the value for the thumbnail path to put into the solr document
       def thumbnail_path(object)
         if pdf?(object)
-          PdfThumbnailPathService.call(object)
+          Hyrax::FileSetDerivativesService.new(object).pdf_thumbnail_url
         elsif video?(object)
           Hyrax::Engine.routes.url_helpers.download_path(object.id,
                                                          file: 'thumbnail')
