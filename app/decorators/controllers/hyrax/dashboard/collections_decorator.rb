@@ -112,6 +112,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   def edit
     form
+    collection_type
     count_downloadable
     # Gets original filename of an uploaded thumbnail. See #update
     if ::SolrDocument.find(@collection.id).thumbnail_path.include? "uploaded_collection_thumbnails" and uploaded_thumbnail?
