@@ -4,7 +4,7 @@ class VaultMemberPresenterFactory < Hyrax::MemberPresenterFactory
   self.file_presenter_class = VaultFileSetPresenter
 
   # modify this attribute to use an alternate presenter class for the child works
-  self.work_presenter_class = Hyrax::WorkShowPresenter
+  self.work_presenter_class = VaultWorkShowPresenter
 
   def initialize(work, ability, request = nil)
     @work = Hyrax::SolrDocument::OrderedMembers.decorate(work)
@@ -43,13 +43,18 @@ class VaultMemberPresenterFactory < Hyrax::MemberPresenterFactory
   # These are the file sets that belong to this work, but not necessarily
   # in order.
   # Arbitrarily maxed at 10 thousand; had to specify rows due to solr's default of 10
+  #
+  # This assumes that all members of a work are file sets, which is true in Vault.
   def file_set_ids
     @file_set_ids ||= begin
-                        Hyrax::SolrService.query("{!field f=has_model_ssim}FileSet",
-                                                 rows: 10_000,
-                                                 fl: Hyrax.config.id_field,
-                                                 fq: "{!join from=ordered_targets_ssim to=id}id:\"#{id}/list_source\"")
-                                          .flat_map { |x| x.fetch(Hyrax.config.id_field, []) }
+                        proxy_field = 'proxy_in_ssi'
+                        target_field = 'ordered_targets_ssim'
+                        Hyrax::SolrService.query(
+                                                  "#{proxy_field}:#{id}",
+                                                  rows: 10_000,
+                                                  fl: target_field
+                                                 )
+                                          .flat_map { |x| x.fetch(target_field, []) }
                       end
   end
 
