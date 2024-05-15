@@ -10,6 +10,10 @@
     super.tap do |solr_doc|
       solr_doc['identifier_tesim'] = object.identifier
 
+      # Transparency for images
+      solr_doc['channels_tesim'] = object.characterization_proxy.alpha_channels
+      solr_doc['alpha_channels_ssi'] = object.characterization_proxy.alpha_channels.first
+
       solr_doc['hasFormat_ssim'] = object.rendering_ids
       # File sets should inherit the creators of their parents. Otherwise, the default "creator"
       # is indexed as the depositor instead of the work's creator.
