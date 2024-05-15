@@ -24,7 +24,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
 
   # If the parent work was created more than 3 months before the file set, export the newly-attached file
   def export_new_files(file_set)
-    if file_set.parent.create_date < 3.months.ago
+    if file_set.parent.present? && file_set.parent.create_date < 3.months.ago
       ExportFileJob.perform_later(file_set)
     end
   end
