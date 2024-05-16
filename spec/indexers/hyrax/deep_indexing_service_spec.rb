@@ -33,7 +33,7 @@ RDFXML
     context 'with genre field' do
       let(:field_info) { double('field_info') }
       let(:uri) { "http://vocab.getty.edu/aat/300020605" }
-      let(:resource) { ActiveTriples::Resource.new(uri).fetch }
+      let(:resource) { Hyrax::ControlledVocabularies::Genre.new(uri).fetch }
       let(:solr_doc) { {} }
 
       before do
