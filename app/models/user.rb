@@ -18,6 +18,9 @@ class User < ApplicationRecord
 
   before_create :add_default_roles
 
+  mount_uploader :avatar, VipsAvatarUploader, mount_on: :avatar_file_name
+  validates_with Hyrax::AvatarValidator
+
   # When a user authenticates via CAS (UVic login), find
   # an existing user by email or create a new user and
   # populate the model's attributes with info from
@@ -70,6 +73,18 @@ class User < ApplicationRecord
   def groups
     #return ['admin'] if has_role?(:admin, Site.instance)
     site_roles.map {|r| r.name }
+  end
+
+  ##
+  # @return [String] a name for the user
+  def name
+    return display_name if display_name.present?
+    # regex for email addresses
+    if user_key.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/)
+      user_key.split("@").first
+    else
+      user_key
+    end
   end
 
   private
