@@ -48,10 +48,6 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
              :sponsor, :format, :transcript, :archival_item_identifier,
              to: :solr_document
 
-    def downloadable?
-      GenericWork.find(@solr_document.id).downloadable
-    end
-
     private
 
     def authorized_item_ids(filter_unreadable: Flipflop.hide_private_items?)

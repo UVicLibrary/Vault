@@ -1,18 +1,6 @@
 module VaultFileSetHelper
 
   # Override Hyrax::FileSetHelper in Hyrax v. 3.1
-  def display_media_download_link?(file_set:)
-    if current_account.name.include? "vault"
-      # We currently check a work attribute for this with plans
-      # to refactor it to can?(:download, ...) only
-      can?(:edit, file_set.id) or file_set.parent.downloadable?
-    else
-      Hyrax.config.display_media_download_link? &&
-          can?(:download, file_set)
-    end
-  end
-
-  # Override Hyrax::FileSetHelper in Hyrax v. 3.1
   def media_display_partial(file_set)
     'hyrax/file_sets/media_display/' +
         if file_set.image?

@@ -79,57 +79,23 @@ RSpec.describe VaultFileSetHelper do
     let(:account) { Account.new(name: "vault") }
     before { allow_any_instance_of(HykuHelper).to receive(:current_account).and_return(account) }
 
-    let(:ability)  { double(Ability) }
-
-
-    describe '#display_media_download_link?' do
-      let(:parent_work) { GenericWork.new(downloadable: true) }
-      let(:file_set) { FileSet.new }
-      subject { helper.display_media_download_link?(file_set: file_set) }
-
-      before do
-        allow(controller).to receive(:current_ability).and_return(ability)
-        allow(ability).to receive(:can?).with(:edit, "foo").and_return(false)
-        allow(file_set).to receive(:parent).and_return(parent_work)
-        allow(file_set).to receive(:id).and_return("foo")
-      end
-
-      context 'when parent is downloadable' do
-        it { is_expected.to eq true }
-      end
-
-      context 'when parent is not downloadable' do
-        before do
-          parent_work.downloadable = false
-        end
-
-        context 'and user can edit' do
-          before do
-            allow(ability).to receive(:can?).with(:edit, "foo").and_return(true)
-          end
-
-          it { is_expected.to eq true }
-        end
-
-        context 'and user cannot edit' do
-          it { is_expected.to eq false }
-        end
-      end
-    end
-
-    let(:file_set) { SolrDocument.new(id: "foo") }
-    let(:presenter) { VaultFileSetPresenter.new(file_set, "admin") }
     let(:work) { double(GenericWork) }
-    let(:parent) { VaultWorkShowPresenter.new(work, "admin") }
+    let(:parent) { VaultWorkShowPresenter.new(work, ability) }
+    let(:ability) { Ability.new(user) }
+    let(:file_set) { FactoryBot.create(:file_set, user: user) }
+    let(:presenter) { VaultFileSetPresenter.new(solr_document, ability) }
+    let(:solr_document) { SolrDocument.new(file_set.to_solr) }
+    let(:user) { FactoryBot.create(:user) }
 
     describe '#display_pdf_download_link?' do
       subject { helper.display_pdf_download_link?(presenter) }
 
       before do
         allow(presenter).to receive(:parent).and_return(parent)
+        allow(helper).to receive(:workflow_restriction?).and_return false
         allow(parent).to receive(:member_presenters).and_return([presenter])
         allow(controller).to receive(:current_ability).and_return(ability)
-        allow(ability).to receive(:can?).with(:edit, "foo").and_return(true)
+        allow(ability).to receive(:can?).with(:download, presenter).and_return(true)
       end
 
       context 'when work has a pdf file set' do
@@ -188,7 +154,7 @@ RSpec.describe VaultFileSetHelper do
     end
 
     describe '#iiif_image_path' do
-      before { allow(file_set).to receive(:current_file_version).and_return("foo/fcr:versions/version1") }
+      before { allow(solr_document).to receive(:current_file_version).and_return("foo/fcr:versions/version1") }
 
       subject { helper.iiif_image_path(presenter, "900,") }
       it { is_expected.to eq "/images/foo%2Ffcr:versions%2Fversion1/full/900,/0/default.jpg" }

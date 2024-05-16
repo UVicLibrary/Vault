@@ -19,7 +19,7 @@ Hyrax::IiifHelper.module_eval do
   # @param [VaultWorkShowPresenter or Hyrax::WorkShowPresenter]
   def universal_viewer_base_url(work_presenter)
     if request.base_url.include? "vault"
-      if work_presenter.try(:downloadable?) or can?(:edit, work_presenter.id)
+      if can?(:download, work_presenter.id)
         "#{request&.base_url}/uv/uv.html"
       else
         "#{request&.base_url}/uv/uv-no-download.html"
@@ -32,7 +32,7 @@ Hyrax::IiifHelper.module_eval do
   # @param [VaultWorkShowPresenter or Hyrax::WorkShowPresenter]
   def universal_viewer_config_url(work_presenter)
     if request.base_url.include? "vault"
-      if work_presenter.try(:downloadable?) or can?(:edit, work_presenter.id)
+      if can?(:download, work_presenter.id)
         "#{request&.base_url}/uv/uv-config.json"
       else
         "#{request&.base_url}/uv/uv-config-no-download.json"

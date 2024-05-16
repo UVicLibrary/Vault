@@ -45,15 +45,16 @@ RSpec.describe Hyrax::IiifHelper, type: :helper do
   end
 
   context 'when in Vault' do
-    before { allow(controller.request).to receive(:base_url).and_return("http://vault.host") }
+    before do
+      allow(controller.request).to receive(:base_url).and_return("http://vault.host")
+      allow(presenter).to receive(:id).and_return "foo"
+      allow(helper).to receive(:can?).with(:edit, "foo").and_return(false)
+    end
 
     context "when work is downloadable" do
       let(:presenter) { VaultWorkShowPresenter.new(solr_document, ability) }
 
-      before do
-        allow(presenter).to receive(:downloadable?).and_return(true)
-        allow(helper).to receive(:can?).with(:edit, presenter.id).and_return(false )
-      end
+      before { allow(helper).to receive(:can?).with(:download, "foo").and_return(true) }
 
       describe '#universal_viewer_base_url' do
         it 'returns the path for uv.html' do
@@ -71,10 +72,7 @@ RSpec.describe Hyrax::IiifHelper, type: :helper do
     context "when work is not downloadable" do
       let(:presenter) { VaultWorkShowPresenter.new(solr_document, ability) }
 
-      before do
-        allow(presenter).to receive(:downloadable?).and_return(false)
-        allow(helper).to receive(:can?).with(:edit, presenter.id).and_return(false)
-      end
+      before { allow(helper).to receive(:can?).with(:download, "foo").and_return(false) }
 
       describe '#universal_viewer_base_url' do
         it 'returns the path for uv.html with no download icon' do
@@ -85,24 +83,6 @@ RSpec.describe Hyrax::IiifHelper, type: :helper do
       describe 'universal_viewer_config_url' do
         it 'returns the path for regular uv-config' do
           expect(helper.universal_viewer_config_url(presenter)).to eq "http://vault.host/uv/uv-config-no-download.json"
-        end
-      end
-
-      context "when user can edit the work" do
-        before do
-          allow(helper).to receive(:can?).with(:edit, presenter.id).and_return(true)
-        end
-
-        describe '#universal_viewer_base_url' do
-          it 'returns the path for uv.html' do
-            expect(helper.universal_viewer_base_url(presenter)).to eq "http://vault.host/uv/uv.html"
-          end
-        end
-
-        describe 'universal_viewer_config_url' do
-          it 'returns the path for regular uv-config' do
-            expect(helper.universal_viewer_config_url(presenter)).to eq "http://vault.host/uv/uv-config.json"
-          end
         end
       end
     end

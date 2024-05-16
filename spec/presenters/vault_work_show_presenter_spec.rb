@@ -46,15 +46,6 @@ RSpec.describe VaultWorkShowPresenter do
     expect(presenter.class.ancestors).to include(Hyrax::DOI::DOIPresenterBehavior, Hyrax::DOI::DataCiteDOIPresenterBehavior)
   end
 
-  describe '#downloadable?' do
-    let(:work) { GenericWork.new(downloadable: true) }
-    before { allow(GenericWork).to receive(:find).and_return(work) }
-
-    it "returns the downloadable attribute of the work" do
-      expect(subject.downloadable?).to be true
-    end
-  end
-
   describe '#member_presenter_factory' do
     it 'returns a factory that generates VaultFileSetPresenters' do
       expect(subject.send(:member_presenter_factory).file_presenter_class).to eq VaultFileSetPresenter
