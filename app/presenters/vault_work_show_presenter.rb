@@ -48,8 +48,4 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
              :sponsor, :format, :transcript, :archival_item_identifier,
              to: :solr_document
 
-    def downloadable?
-      GenericWork.find(@solr_document.id).downloadable
-    end
-
 end

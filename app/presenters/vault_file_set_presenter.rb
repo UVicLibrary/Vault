@@ -26,15 +26,6 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
              :provider, :sponsor, :genre, :format, :is_referenced_by, :date_digitized, :transcript,
              :technical_note, :year, to: :solr_document
 
-    def single_use_links
-      @single_use_links ||= SingleUseLink.where(item_id: id).map { |link| link_presenter_class.new(link) }
-    end
-
-    def user_can_perform_any_action?
-      Deprecation.warn("We're removing Hyrax::FileSetPresenter.user_can_perform_any_action? in Hyrax 4.0.0; Instead use can? in view contexts.")
-      current_ability.can?(:edit, id) || current_ability.can?(:destroy, id) || parent.downloadable?
-    end
-
     # IIIF metadata for inclusion in the manifest
     #  Called by the `iiif_manifest` gem to add metadata
     #

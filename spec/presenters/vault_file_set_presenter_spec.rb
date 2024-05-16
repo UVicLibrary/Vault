@@ -32,7 +32,7 @@ RSpec.describe VaultFileSetPresenter do
     before do
       expect(current_ability).to receive(:can?).with(:edit, presenter.id).and_return false
       expect(current_ability).to receive(:can?).with(:destroy, presenter.id).and_return false
-      allow(parent_presenter).to receive(:downloadable?).and_return true
+      allow(current_ability).to receive(:can?).with(:download, presenter.id).and_return true
     end
 
     it 'is deprecated' do
@@ -47,7 +47,7 @@ RSpec.describe VaultFileSetPresenter do
     before do
       expect(current_ability).to receive(:can?).with(:edit, presenter.id).and_return false
       expect(current_ability).to receive(:can?).with(:destroy, presenter.id).and_return false
-      allow(parent_presenter).to receive(:downloadable?).and_return false
+      allow(current_ability).to receive(:can?).with(:download, presenter.id).and_return false
     end
 
     it { is_expected.to be false }

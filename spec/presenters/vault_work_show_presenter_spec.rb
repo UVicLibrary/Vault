@@ -46,12 +46,9 @@ RSpec.describe VaultWorkShowPresenter do
     expect(presenter.class.ancestors).to include(Hyrax::DOI::DOIPresenterBehavior, Hyrax::DOI::DataCiteDOIPresenterBehavior)
   end
 
-  describe '#downloadable?' do
-    let(:work) { GenericWork.new(downloadable: true) }
-    before { allow(GenericWork).to receive(:find).and_return(work) }
-
-    it "returns the downloadable attribute of the work" do
-      expect(subject.downloadable?).to be true
+  describe '#member_presenter_factory' do
+    it 'returns a factory that generates VaultFileSetPresenters' do
+      expect(subject.send(:member_presenter_factory).file_presenter_class).to eq VaultFileSetPresenter
     end
   end
 
@@ -60,7 +57,8 @@ RSpec.describe VaultWorkShowPresenter do
       result = [
           { "label" => "Creator label", "value" => ['University of Victoria (B.C.). Library'] },
           { "label" => "Creator", "value" => ['http://id.worldcat.org/fast/522461'] },
-          { "label" => "Extent", "value" => ['20 pages'] }
+          { "label" => "Extent", "value" => ['20 pages'] },
+          { "label" => "Date created", "value" => ['an unformatted date'] }
       ]
       expect(subject.manifest_metadata).to match_array(result)
     end
