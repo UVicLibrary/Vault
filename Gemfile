@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'ruby-vips'
+gem 'carrierwave-vips'
 
 gem 'simple_xlsx_reader'
 
