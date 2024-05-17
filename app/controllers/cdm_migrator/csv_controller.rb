@@ -118,6 +118,7 @@ module CdmMigrator
       solr = RSolr.connect url: Blacklight.connection_config[:url]
       response = solr.get 'select', params: {
           q: "member_of_collection_ids_ssim:#{params[:collection_id]}",
+          fq: ["has_model_ssim:FileSet OR has_model_ssim:*Work"],
           rows: 3400,
           fl: "id"
       }
@@ -230,7 +231,7 @@ module CdmMigrator
         if file_path.present? && File.file?(file_path) && @max_file_size
           if File.size(file_path.gsub("file://", "")) > @max_file_size
             @error_list[row_number] = { "file size" => "The file at #{file_path} is too large to be uploaded. Please compress the file or split it into parts.
-                                                      Each part should be under #{helpers.number_to_human_size(@max_file_size)}." }
+                                                    Each part should be under #{helpers.number_to_human_size(@max_file_size)}." }
           end
         end
       end
