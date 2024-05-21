@@ -49,9 +49,15 @@ RSpec.describe GenericWorkIndexer do
   end
 
   context 'with public work that is downloadable' do
+    let(:permissions) {
+      [ Hydra::AccessControls::Permission.new(name: "public",
+                                              type: "group",
+                                              access: "download")]
+    }
+
     before do
       allow(work).to receive(:visibility).and_return('open')
-      allow(work).to receive(:downloadable).and_return true
+      allow(work).to receive(:permissions).and_return(permissions)
     end
 
     it 'indexes "public" in download groups' do
