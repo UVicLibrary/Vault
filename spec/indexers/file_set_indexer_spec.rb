@@ -115,17 +115,41 @@ RSpec.describe FileSetIndexer do
       end
     end
 
-    context "when the file set's parent is public and downloadable" do
-      let(:work) { GenericWork.new(visibility: "open", downloadable: true) }
+    context "when the parent work is public and downloadable" do
+
+      let(:work) { GenericWork.new }
+      let(:permissions) do
+        [ Hydra::AccessControls::Permission.new(name: "public",
+                                                type: "group",
+                                                access: "download"),
+          Hydra::AccessControls::Permission.new(name: "user1",
+                                                type: "person",
+                                                access: "download")]
+      end
+      let(:visibility) { "restricted" }
 
       before do
+        allow(work).to receive(:permissions).and_return(permissions)
         allow(file_set).to receive(:parent).and_return(work)
-        allow(file_set).to receive(:visibility).and_return("open")
+        allow(file_set).to receive(:visibility).and_return(visibility)
       end
 
-      it "indexes public as the download access group" do
-        expect(subject['download_access_group_ssim']).to eq ["public"]
+      context 'and file set is private' do
+        it "does not index the public download access group" do
+          expect(subject['download_access_group_ssim']).to be_empty
+          expect(subject['download_access_user_ssim']).to eq ['user1']
+        end
       end
+
+      context 'and file set is public' do
+        let(:visibility) { "open" }
+
+        it "indexes the public download access group" do
+          expect(subject['download_access_group_ssim']).to eq ["public"]
+          expect(subject['download_access_user_ssim']).to eq ['user1']
+        end
+      end
+
     end
 
     context 'with a parent with specified download permissions' do
