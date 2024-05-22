@@ -1,6 +1,15 @@
 module VaultFileSetHelper
 
   # Override Hyrax::FileSetHelper in Hyrax v. 3.1
+  def display_media_download_link?(file_set:)
+    if current_account.name.include? "vault"
+      can?(:download, file_set.id)
+    else
+      Hyrax.config.display_media_download_link? &&
+          can?(:read, file_set)
+    end
+  end
+
   def media_display_partial(file_set)
     'hyrax/file_sets/media_display/' +
         if file_set.image?
