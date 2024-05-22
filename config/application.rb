@@ -38,18 +38,19 @@ module Hyku
     config.action_dispatch.rescue_responses.merge!(
       "I18n::InvalidLocale" => :not_found
     )
-
+    
     if Rails.env.development?
       config.middleware.use WebConsole::Middleware
     end
 
-    if defined? ActiveElasticJob
-      Rails.application.configure do
-        config.active_elastic_job.process_jobs = Settings.worker == 'true'
-        config.active_elastic_job.aws_credentials = lambda { Aws::InstanceProfileCredentials.new }
-        config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
-      end
-    end
+    # config.middleware.use WebConsole::Middleware
+    #     if defined? ActiveElasticJob
+    #       Rails.application.configure do
+    #         config.active_elastic_job.process_jobs = Settings.worker == 'true'
+    #         config.active_elastic_job.aws_credentials = lambda { Aws::InstanceProfileCredentials.new }
+    #         config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
+    #       end
+    # end
 
     config.to_prepare do
     	#Hyrax::ApplicationController.helper CdmMigrator::Application.helpers
