@@ -7,6 +7,8 @@ gem 'simple_xlsx_reader'
 
 gem 'omniauth-cas'
 
+gem 'redlock', '~> 1.3.2'
+
 # Pin to 5.10.7 to avoid 'PermissionsControl is not a constructor' error
 # DO NOT USE 5.10.9
 gem 'tinymce-rails', '5.10.7'
