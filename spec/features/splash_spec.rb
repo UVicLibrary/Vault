@@ -1,4 +1,4 @@
-RSpec.describe "The splash page", multitenant: true do
+RSpec.describe "The splash page", multitenant: true, pending: 'blocked because we require login for this page' do
   before do
     Capybara.default_host = "http://#{Account.admin_host}"
   end

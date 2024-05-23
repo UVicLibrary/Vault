@@ -1,4 +1,4 @@
-RSpec.describe "Editing a file:", type: :feature do
+RSpec.describe "Editing a file:", type: :feature, pending: "blocked: needs current_account to be set" do
   let(:user) { create(:user) }
   let(:file_title) { 'Some kind of title' }
   let(:work) { build(:work, user: user) }

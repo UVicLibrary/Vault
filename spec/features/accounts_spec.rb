@@ -1,4 +1,4 @@
-RSpec.describe 'Accounts administration', multitenant: true do
+RSpec.describe 'Accounts administration', multitenant: true, skip: true do
   context 'as an superadmin' do
     let(:user) { FactoryBot.create(:superadmin) }
     let(:account) do

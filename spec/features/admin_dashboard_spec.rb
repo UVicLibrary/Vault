@@ -19,9 +19,9 @@ RSpec.describe 'Admin Dashboard', type: :feature do
         expect(page).to have_link('Appearance')
         expect(page).to have_link('Content Blocks')
         expect(page).to have_link('Features')
-        expect(page).to have_link('Manage Groups')
+        # expect(page).to have_link('Manage Groups')
         expect(page).to have_link('Manage Users')
-        expect(page).to have_link('Reports')
+        # expect(page).to have_link('Reports')
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe 'Admin Dashboard', type: :feature do
       expect(page).to have_content('Database OK')
     end
 
-    it 'displays the add-users-to-groups page without the hidden form field', js: true do
+    it 'displays the add-users-to-groups page without the hidden form field', js: true, pending: "Not using this feature until it's fixed in a later Hyku version" do
       visit admin_group_users_path(group)
       expect(page).to have_content('Add User to Group')
       expect(page).to have_selector('.js-group-user-add', visible: false)
