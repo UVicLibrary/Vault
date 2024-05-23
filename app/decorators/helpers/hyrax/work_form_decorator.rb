@@ -10,13 +10,6 @@ Hyrax::WorkFormHelper.module_eval do
     end
   end
 
-  # Add "downloadable" checkbox
-  # @param form [Hyrax::Forms::WorkForm]
-  # @return [Array<String>] the list of names of sections to be rendered in the form_progress panel
-  def form_progress_sections_for(*)
-    ["downloads"]
-  end
-
   ##
   # Constructs a hash for a form `select`.
   #
