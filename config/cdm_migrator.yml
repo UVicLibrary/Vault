@@ -1,0 +1,58 @@
+tenant_settings:
+  vault.library.uvic.ca:
+    csv_checker:
+      date_indexing_service:
+        - EdtfDateService
+      edtf_fields:
+        - date_created
+        - chronological_coverage
+      valid_uri_fields:
+        - rights_statement
+        - genre
+      separator_fields:
+        - based_near
+        - creator
+        - contributor
+        - genre
+        - geographic_coverage
+        - resource_type
+        - subject
+      multi_value_separator: '|'
+      path_to_drive: '/mnt/qdrive'
+      max_file_size: 17179869184
+  default:
+    csv_checker:
+      edtf_fields:
+      # - date_created
+      valid_uri_fields:
+      # - rights_statement
+      # - genre
+      separator_fields:
+      # - subject
+      multi_value_separator: '|'
+      path_to_drive: '/mnt/qdrive'
+default_fields:
+  - title
+  - creator
+  - keyword
+  - license
+  - resource_type
+  - contributor
+  - description
+  - publisher
+  - date_created
+  - subject
+  - language
+  - identifier
+  - based_near
+  - related_url
+# Set the work to be downloadable by default. Note that the work still won't
+# be publicly downloadable as long as it is still set to private. This is
+# because the policy also needs to be indexed to the SolrDocument at
+# the file set level by app/services/indexes_download_permissions.rb
+default_work_permissions:
+  GenericWork:
+    edit:
+      - admin
+    download:
+      - public
