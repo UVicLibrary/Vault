@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
+# New for himalia
 gem 'ruby-vips'
 gem 'carrierwave-vips'
+gem 'redlock', '1.3.2'
 
 gem 'simple_xlsx_reader'
 
@@ -142,7 +144,7 @@ gem 'sidekiq', '~> 6.0.0'
 gem 'redis', '4.6'
 gem 'sidekiq-cron'
 
-gem 'cdm_migrator', '3.3.2'
+gem 'cdm_migrator', '3.4.2'
 gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers', '3.6.5'
