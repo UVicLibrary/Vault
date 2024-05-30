@@ -3,11 +3,16 @@ module VaultFileSetHelper
   # Override Hyrax::FileSetHelper in Hyrax v. 3.1
   def display_media_download_link?(file_set:)
     if current_account.name.include? "vault"
-      can?(:download, file_set.id)
+      Hyrax.config.display_media_download_link? &&
+        can?(:download, file_set.id)
     else
       Hyrax.config.display_media_download_link? &&
           can?(:read, file_set)
     end
+  end
+
+  def work_show_page?
+    params[:controller].present? && params[:controller].include?("generic_works")
   end
 
   def media_display_partial(file_set)
@@ -65,7 +70,7 @@ module VaultFileSetHelper
   def display_pdf_download_link?(presenter)
     return false unless current_account.name.include? "vault"
     pdf = pdf_file_set(presenter)
-    pdf.present? && display_media_download_link?(file_set: pdf)
+    pdf.present? && display_media_download_link?(file_set: pdf) && work_show_page?
   end
 
   # @param [VaultFileSetPresenter]
