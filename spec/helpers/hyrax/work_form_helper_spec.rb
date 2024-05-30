@@ -46,8 +46,8 @@ RSpec.describe Hyrax::WorkFormHelper do
       let(:work) { build(:hyrax_work) }
       let(:form) { Hyrax::Forms::ResourceForm.for(work) }
 
-      it 'includes a section for downloadable' do
-        expect(form_progress_sections_for(form: form)).to eq ["downloads"]
+      it 'returns an empty list' do
+        expect(form_progress_sections_for(form: form)).to eq []
       end
     end
 
@@ -56,8 +56,8 @@ RSpec.describe Hyrax::WorkFormHelper do
       let(:ability) { double }
       let(:form) { Hyrax::GenericWorkForm.new(work, ability, controller) }
 
-      it 'includes a section for downloadable' do
-        expect(form_progress_sections_for(form: form)).to eq ["downloads"]
+      it 'returns an empty list' do
+        expect(form_progress_sections_for(form: form)).to eq []
       end
     end
 
@@ -66,8 +66,8 @@ RSpec.describe Hyrax::WorkFormHelper do
       let(:ability) { double }
       let(:form) { Hyrax::Forms::BatchUploadForm.new(work, ability, controller) }
 
-      it 'includes a section for downloadable' do
-        expect(form_progress_sections_for(form: form)).to eq ["downloads"]
+      it 'returns an empty list' do
+        expect(form_progress_sections_for(form: form)).to eq []
       end
     end
   end
