@@ -1,31 +1,44 @@
-  <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
-  <script src="<%= request.base_url %>/able_player/build/ableplayer.min.js"></script>
-    <div>
-      <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-    <% if multiple_audio?(file_set) and work_show_page? %>
-        <%= render 'hyrax/file_sets/media_display/vault/audio_playlist', audio_files: audio_files(file_set.parent), parent: file_set.parent %>
-    <% else %>
-        <audio id="audio1" data-able-player data-skin="2020" preload="auto" width="600">
-          <source type="<%= file_set.mime_type %>" src="<%= hyrax.download_path(file_set) %>"/>
-        </audio>
-        <% if display_media_download_link?(file_set: file_set) %>
-          <div class="download-links-container">
-          <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
-                      hyrax.download_path(file_set),
-                      data: { label: file_set.id },
-                      target: :_blank,
-                      id: "file_download" %>
-        <%# Include link to transcript %>
-        <% if display_pdf_download_link?(file_set.parent) and work_show_page? %>
-          &ensp;|&ensp;&ensp;
-          <%= link_to "Download transcript (PDF)",
-                      hyrax.download_path(pdf_file_set(file_set)),
-                      data: { turbolinks: false },
-                      target: :_blank,
-                      id: "transcript_file_download",
-                      data: { label: pdf_file_set(file_set).id } %>
-        <% end %>
-          </div>
-        <% end %>
+<!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
+<script src="<%= request.base_url %>/able_player/build/ableplayer.min.js"></script>
+<div>
+  <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
+<% if multiple_audio?(file_set) and work_show_page? %>
+    <%= render 'hyrax/file_sets/media_display/vault/audio_playlist', audio_files: audio_files(parent), parent: parent %>
+<% else %>
+    <audio id="audio1" data-able-player data-skin="2020" preload="auto" width="600">
+      <source type="<%= file_set.mime_type %>" src="<%= hyrax.download_path(file_set) %>"/>
+      <!-- Track tag and transcript div must be INSIDE the audio tag -->
+      <%= render_track_tag(file_set) %>
+      <% if has_transcript?(parent) && !has_vtt?(file_set) %>
+        <div id="transcript-text"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
+      <% end %>
+    </audio>
+    <br/>
+
+    <% if display_media_download_link?(file_set: file_set) %>
+      <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
+                  hyrax.download_path(file_set),
+                  data: { label: file_set.id },
+                  target: :_blank,
+                  id: "file_download" %>
     <% end %>
-    </div>
+    <%# Include link to transcript %>
+    <% if display_pdf_download_link?(parent) && work_show_page? %>
+      <% if has_vtt?(file_set) %>
+        &ensp;|&ensp;
+        <%= link_to "Download selected transcript (PDF)",
+                    hyrax.download_path(vtt_transcript_for(file_set)),
+                    target: :_blank,
+                    id: "transcript_file_download",
+                    data: { turbolinks: false, label: vtt_transcript_for(file_set).id } %>
+      <% elsif has_transcript?(parent) %>
+        &ensp;|&ensp;
+        <%= link_to "Download transcript (PDF)",
+                    hyrax.download_path(transcript_for(parent).id),
+                    target: :_blank,
+                    id: "transcript_file_download",
+                    data: { turbolinks: false, label: transcript_for(parent).id } %>
+      <% end %>
+    <% end %>
+<% end %>
+</div>

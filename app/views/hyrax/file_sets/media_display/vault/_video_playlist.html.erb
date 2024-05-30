@@ -22,7 +22,7 @@
     <div class="able-status-bar"></div>
   </div>
 </div>
-<% if has_transcript?(video_files.first) %>
+<% if has_transcript?(parent) && !has_vtt?(file_set) %>
   <div id="transcript-text" style="display: none;" aria-hidden="true"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
 <% end %>
 <% if display_media_download_link?(file_set: video_files.first) %>
@@ -33,21 +33,22 @@
                 target: :_blank,
                 id: "current_file_download" %>
     <%# Include link to transcript %>
-    &ensp;|&ensp;
-    <% if has_vtt?(video_files.first) %>
-      <%= link_to "Download selected transcript (PDF)",
-                  hyrax.download_path(vtt_transcript_for(video_files.first)),
-                  data: { turbolinks: false },
-                  target: :_blank,
-                  id: "transcript_file_download",
-                  data: { label: vtt_transcript_for(video_files.first).id } %>
-    <% elsif has_transcript?(video_files.first) %>
-      <%= link_to "Download transcript (PDF)",
-                  hyrax.download_path(transcript_for(video_files.first)),
-                  data: { turbolinks: false },
-                  target: :_blank,
-                  id: "transcript_file_download",
-                  data: { label: transcript_for(video_files.first).id } %>
+    <% if display_pdf_download_link?(parent) && work_show_page? %>
+      <% if has_vtt?(video_files.first) %>
+        &ensp;|&ensp;
+        <%= link_to "Download selected transcript (PDF)",
+                    hyrax.download_path(vtt_transcript_for(video_files.first)),
+                    target: :_blank,
+                    id: "transcript_file_download",
+                    data: { turbolinks: false, label: vtt_transcript_for(video_files.first).id } %>
+      <% elsif has_transcript?(parent) %>
+        &ensp;|&ensp;
+        <%= link_to "Download transcript (PDF)",
+                    hyrax.download_path(transcript_for(parent)),
+                    target: :_blank,
+                    id: "transcript_file_download",
+                    data: { turbolinks: false, label: transcript_for(parent).id } %>
+      <% end %>
     <% end %>
   </div>
 <% end %>

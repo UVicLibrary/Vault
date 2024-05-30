@@ -1,5 +1,6 @@
-<% if request.base_url.include? "vault" %>
-  <%= render 'hyrax/file_sets/media_display/vault/audio', file_set: file_set %>
+<%# if request.base_url.include? "vault" %>
+<% if current_account.name.include? "vault" %>
+  <%= render 'hyrax/file_sets/media_display/vault/audio', file_set: file_set, parent: file_set.parent %>
 <% else %>
   <div>
     <audio controls="controls" class="audiojs" controlsList="nodownload" preload="auto" style="max-width:100%;">

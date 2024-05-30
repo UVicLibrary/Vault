@@ -4,10 +4,14 @@
   <% audio_files.each do |file| %>
     <li>
       <span class="able-source" data-type="audio/mpeg" data-src="<%= hyrax.download_path(file) %>"></span>
+      <%= render_multi_track_tag(file) %>
       <button><%= file.title.first %></button>
     </li>
   <% end %>
 </ul>
+<% if has_transcript?(parent) && !has_vtt?(audio_files.first) %>
+  <div id="transcript-text" style="display: none;" aria-hidden="true"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
+<% end %>
 <div class="download-links-container">
 <% if display_media_download_link?(file_set: audio_files.first) %>
     <div class="download-links-container">
@@ -17,14 +21,22 @@
                 target: :_blank,
                 id: "file_download" %>
   <%# Include link to transcript %>
-  <% if display_pdf_download_link?(parent) and work_show_page? %>
-    &ensp;|&ensp;
-        <%= link_to "Download transcript (PDF)",
-                    hyrax.download_path(pdf_file_set(parent)),
-                    data: { turbolinks: false },
-                    target: :_blank,
-                    id: "transcript_file_download",
-                    data: { label: pdf_file_set(parent).id } %>
+  <% if display_pdf_download_link?(parent) && work_show_page? %>
+        <% if has_vtt?(audio_files.first) %>
+          &ensp;|&ensp;
+          <%= link_to "Download selected transcript (PDF)",
+                      hyrax.download_path(vtt_transcript_for(audio_files.first)),
+                      target: :_blank,
+                      id: "transcript_file_download",
+                      data: { turbolinks: false, label: vtt_transcript_for(audio_files.first).id } %>
+        <% elsif has_transcript?(parent) %>
+          &ensp;|&ensp;
+          <%= link_to "Download transcript (PDF)",
+                      hyrax.download_path(transcript_for(parent)),
+                      target: :_blank,
+                      id: "transcript_file_download",
+                      data: { turbolinks: false, label: transcript_for(parent).id } %>
+        <% end %>
   <% end %>
     </div>
 <% end %>
