@@ -127,7 +127,9 @@ RSpec.configure do |config|
 
   config.after do
     DatabaseCleaner.clean
-    ActiveFedora::Cleaner.clean!
+    unless self.class.metadata[:skip_af_cleaner]
+      ActiveFedora::Cleaner.clean!
+    end
     # Ensuring we have a clear queue between each spec.
     ActiveJob::Base.queue_adapter.enqueued_jobs  = []
     ActiveJob::Base.queue_adapter.performed_jobs = []
