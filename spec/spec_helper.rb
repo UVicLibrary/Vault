@@ -183,6 +183,17 @@ RSpec.configure do |config|
     ActiveJob::Base.queue_adapter.perform_enqueued_at_jobs = false
   end
 
+  config.after(:example, :cleanup_accounts) do |example|
+    FcrepoEndpoint.all.each(&:remove!)
+    SolrEndpoint.all.each(&:remove!)
+    RedisEndpoint.all.each(&:remove!)
+
+    Account.all.each do |account|
+      Apartment::Tenant.drop(account.tenant) rescue nil  # ignore if account.tenant missing
+      account.destroy
+    end
+  end
+
   config.before(:example, :index_adapter) do |example|
     allow(Hyrax.config)
         .to receive(:query_index_from_valkyrie)

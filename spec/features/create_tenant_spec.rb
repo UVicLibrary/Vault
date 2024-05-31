@@ -10,7 +10,7 @@ RSpec.describe 'creating a new tenant', multitenant: true do
     Capybara.default_host = "http://#{Account.admin_host}"
   end
 
-  it 'sets up the new tenant' do
+  it 'sets up the new tenant', :cleanup_accounts do
     visit '/'
     click_link 'Get Started'
 
@@ -26,4 +26,12 @@ RSpec.describe 'creating a new tenant', multitenant: true do
       expect(AdminSet.count).to eq 1
     end
   end
+
+  after do
+    account = Account.find_by(cname: 'some-random-name.localhost')
+    ActiveJob::Base.queue_adapter.perform_enqueued_jobs = true
+    CleanupAccountJob.perform_now(account)
+    ActiveJob::Base.queue_adapter.perform_enqueued_jobs = false
+  end
+
 end

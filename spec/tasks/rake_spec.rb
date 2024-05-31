@@ -5,6 +5,8 @@ RSpec.describe "Rake tasks" do
     Rails.application.load_tasks
   end
 
+  # This screws up the db/migrate folder and there's no easy way to delete migrations
+  # installed by this test
   # describe "hyku:upgrade:clean_migrations" do
   #   it 'requires a datesub argument'
   #
@@ -49,32 +51,22 @@ RSpec.describe "Rake tasks" do
   end
 
   describe 'tenantize:task' do
-    # Creating full-fledged accounts because switching into a factory
-    # account leads to: One of the following schema(s) is invalid:
-    # "3af179cd-d433-43ab-9a53-23c38750cf45" "public"
-    # This is expensive.
-    before(:all) do
-      CreateAccount.new(Account.new(name: 'first')).save
-      CreateAccount.new(Account.new(name: 'second')).save
-    end
 
-    after(:all) do
-      Account.find_by(name: 'first').destroy
-      Account.find_by(name: 'second').destroy
-    end
+    let(:account1) { Account.new(name: 'first') }
+    let(:account2) { Account.new(name: 'second') }
 
     before do
       # This omits a tenant that appears automatically created and is not switch-intoable
       allow(Account).to receive(:tenants).and_return(accounts)
     end
 
-    let(:accounts) { Account.where(name: ['first', 'second']) }
+    let(:accounts) { [account1, account2] }
     let(:task) { double('task') }
 
-    it 'requires at least one argument' do
+    it 'requires at least one argument'  do
       expect { run_task('tenantize:task') }.to raise_error(ArgumentError, /rake task name is required/)
     end
-    it 'requires first argument to be a valid rake task' do
+    it 'requires first argument to be a valid rake task'  do
       expect { run_task('tenantize:task', 'foobar') }.to raise_error(ArgumentError, /Rake task not found\: foobar/)
     end
     it 'runs against all tenants' do
@@ -87,11 +79,10 @@ RSpec.describe "Rake tasks" do
       run_task('tenantize:task', 'hyrax:count')
     end
     context 'when run against specified tenants' do
-      let(:accounts) { [account] }
-      let(:account) { Account.find_by(name: 'first') }
+      let(:accounts) { [account1] }
 
       before do
-        ENV['tenants'] = "garbage_value #{account.cname} other_garbage_value"
+        ENV['tenants'] = "garbage_value #{account1.cname} other_garbage_value"
       end
 
       after do
@@ -99,12 +90,13 @@ RSpec.describe "Rake tasks" do
       end
 
       it 'runs against a single tenant and ignores bogus tenants' do
-        expect(account).to receive(:switch).once.and_call_original
+        expect(account1).to receive(:switch).once.and_call_original
         allow(Rake::Task).to receive(:[]).with('hyrax:count').and_return(task)
         expect(task).to receive(:invoke).once
         expect(task).to receive(:reenable).once
         run_task('tenantize:task', 'hyrax:count')
       end
     end
+
   end
 end
