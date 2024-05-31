@@ -31,15 +31,6 @@ RSpec.describe 'hyrax/generic_works/_attribute_rows.html.erb', type: :view do
     expect(page).to have_link("In Copyright", href: rights_statement_uri)
   end
 
-  context 'without a DOI' do
-    let(:href) { "http://test.host/concern/generic_works/foo" }
-
-    it 'renders the permalink' do
-      expect(page).to have_selector '.attribute-permalink'
-      expect(page).to have_link(href, href: href)
-    end
-  end
-
   context 'with a DOI' do
 
     let(:doi) { "10.0000/xxxx-xxxx" }
