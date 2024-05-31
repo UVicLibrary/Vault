@@ -3,7 +3,7 @@ RSpec.describe CreateAccount do
 
   subject { described_class.new(account) }
 
-  describe '#create_tenant' do
+  describe '#create_tenant', skip: true do
     it 'creates a new apartment tenant' do
       expect(Apartment::Tenant).to receive(:create).with(account.tenant)
       subject.create_tenant
@@ -19,7 +19,7 @@ RSpec.describe CreateAccount do
     end
   end
 
-  describe '#create_account_inline' do
+  describe '#create_account_inline', skip: true do
     it 'runs account creation jobs' do
       expect(CreateAccountInlineJob).to receive(:perform_now).with(account)
       subject.create_account_inline

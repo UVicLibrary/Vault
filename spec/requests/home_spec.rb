@@ -1,4 +1,4 @@
-RSpec.describe 'Home page', type: :request, pending: "Blocked due to ActiveFedora trying to clean a nil solr and nil fedora endpoint" do
+RSpec.describe 'Home page', type: :request, skip: "Blocked due to ActiveFedora trying to clean a nil solr and nil fedora endpoint" do
   context 'with multitenancy' do
     describe 'GET /' do
       context 'on the primary host' do

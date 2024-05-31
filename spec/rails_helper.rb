@@ -138,7 +138,7 @@ RSpec.configure do |config|
 
   config.after do
     DatabaseCleaner.clean
-    unless self.class.metadata[:skip_af_cleaner]
+    unless self.class.metadata[:skip_af_clean]
       ActiveFedora::Cleaner.clean!
     end
     # Ensuring we have a clear queue between each spec.

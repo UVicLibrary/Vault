@@ -55,6 +55,10 @@ RSpec.configure do |config|
   # Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
   Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
+  # Exclude certain directories that are known to be failing
+  # config.exclude_pattern = 'spec/{features,requests,tasks,views}/**/*_spec.rb'
+  # config.exclude_pattern = 'spec/features/**/*_spec.rb'
+
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Capybara::RSpecMatchers, type: :input
   config.include InputSupport, type: :input

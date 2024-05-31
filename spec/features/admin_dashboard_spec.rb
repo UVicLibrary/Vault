@@ -33,7 +33,7 @@ RSpec.describe 'Admin Dashboard', type: :feature do
       expect(page).to have_content('Database OK')
     end
 
-    it 'displays the add-users-to-groups page without the hidden form field', js: true, pending: "Not using this feature until it's fixed in a later Hyku version" do
+    it 'displays the add-users-to-groups page without the hidden form field', js: true, skip: "Not using this feature until it's fixed in a later Hyku version" do
       visit admin_group_users_path(group)
       expect(page).to have_content('Add User to Group')
       expect(page).to have_selector('.js-group-user-add', visible: false)
