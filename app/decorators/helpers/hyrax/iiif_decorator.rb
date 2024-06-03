@@ -2,9 +2,7 @@ Hyrax::IiifHelper.module_eval do
   # Override Hyrax 3.1 - Hyrax::IIIFHelper
   #
   # Toggles the download button based on:
-  #   1. If current tenant is Vault
-  #         a. whether the work is downloadable (TO DO: Refactor to check can? :download)
-  #         b. whether the user has edit permissions (i.e. is an admin/cataloguer)
+  #   1. If current tenant is Vault, check whether the user has download permissions
   #   2. If tenant is not Vault, allow anyone who can read the work to download
 
   def iiif_viewer_display(work_presenter, locals = {})

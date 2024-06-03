@@ -33,8 +33,7 @@ RSpec.describe Hyrax::IaffWorkForm do
                             :member_of_collection_ids, :admin_set_id,
                             :provider, :genre, :geographic_coverage,
                             :provenance, :type_of_resource, :coordinates,
-                            :gps_or_est, :year, :date_digitized, :technical_note,
-                            :downloadable]
+                            :gps_or_est, :year, :date_digitized, :technical_note]
     }
   end
 

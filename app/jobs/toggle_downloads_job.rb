@@ -15,10 +15,10 @@ class ToggleDownloadsJob < Hyrax::ApplicationJob
       if setting == true
         # For idempotency: no need to resave the object if permissions
         # are already what they're supposed to be
-        next if permissions_hash.include?(public_download_access) && work.downloadable == setting
+        next if permissions_hash.include?(public_download_access)
         permissions_hash.push(public_download_access)
-      elsif setting == false
-        next if permissions_hash.exclude?(public_download_access) && work.downloadable == setting
+      else # setting == false
+        next if permissions_hash.exclude?(public_download_access)
         permissions_hash.delete(public_download_access)
       end
 
@@ -26,9 +26,6 @@ class ToggleDownloadsJob < Hyrax::ApplicationJob
       # creating duplicate relationships
       work.permissions = []
       work.permissions_attributes = permissions_hash.uniq
-      # For now we set both #downloadable and the permissions attributes.
-      # Later, we'll remove #downloadable entirely.
-      work.downloadable = setting
       work.save!
 
       # File sets also need to reindex the download_access_groups_ssim key

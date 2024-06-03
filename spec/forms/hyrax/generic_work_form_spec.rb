@@ -42,7 +42,7 @@ RSpec.describe Hyrax::GenericWorkForm do
                          :genre, :format, :archival_item_identifier, :fonds_title,
                          :fonds_creator, :fonds_description, :fonds_identifier,
                          :is_referenced_by, :date_digitized, :transcript,
-                         :technical_note, :year, :downloadable]
+                         :technical_note, :year]
     end
   end
 
@@ -66,7 +66,7 @@ RSpec.describe Hyrax::GenericWorkForm do
                             :provider, :sponsor, :genre, :format, :archival_item_identifier,
                             :fonds_title, :fonds_creator, :fonds_description,
                             :fonds_identifier, :is_referenced_by, :date_digitized,
-                            :transcript, :technical_note, :year, :downloadable] }
+                            :transcript, :technical_note, :year] }
   end
 
   describe '.model_attributes' do
