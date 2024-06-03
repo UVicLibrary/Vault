@@ -25,7 +25,7 @@ Rails.application.config.to_prepare do
     end
 
     def id_to_uri(id)
-      "http://id.worldcat.org/fast/#{id.gsub('fst','').gsub(/^0+/, '')}"
+      id.is_a?(Array) ? "http://id.worldcat.org/fast/#{id.first.gsub('fst','').gsub(/^0+/, '')}" : "http://id.worldcat.org/fast/#{id.gsub('fst','').gsub(/^0+/, '')}"
     end
   end
 end
