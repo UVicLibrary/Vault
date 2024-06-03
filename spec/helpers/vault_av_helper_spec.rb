@@ -41,6 +41,8 @@ RSpec.describe VaultAvHelper, type: :helper do
     describe "#has_transcript?(file_set)" do
 
       context "when parent does not have a transcript" do
+        before { allow(parent).to receive(:member_presenters).and_return([child]) }
+
         it "returns false" do
           expect(helper.has_transcript?(parent)).to be(false)
         end
