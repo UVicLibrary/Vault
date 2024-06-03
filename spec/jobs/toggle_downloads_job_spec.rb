@@ -13,8 +13,8 @@ RSpec.describe ToggleDownloadsJob do
     let(:downloadable) { "true" }
 
     context 'with a work that already has the correct permissions' do
+
       before do
-        work.downloadable = true
         work.permissions_attributes = work.permissions.map(&:to_hash) << access
         work.save!
       end
@@ -29,7 +29,6 @@ RSpec.describe ToggleDownloadsJob do
       it "adds public download access to members' permissions" do
         described_class.perform_now(collection.id, user_email, downloadable)
         work.reload
-        expect(work.downloadable).to be true
         expect(work.permissions.map(&:to_hash)).to include access
         expect(SolrDocument.find(work.id)["download_access_group_ssim"]).to eq ["public"]
       end
@@ -40,10 +39,6 @@ RSpec.describe ToggleDownloadsJob do
     let(:downloadable) { "false" }
 
     context 'with a work that already has the correct permissions' do
-      before do
-        work.downloadable = false
-        work.save!
-      end
 
       it 'does not save the work' do
         expect(work).not_to receive(:save!)
@@ -53,7 +48,6 @@ RSpec.describe ToggleDownloadsJob do
 
     context 'with a work that needs changing' do
       before do
-        work.downloadable = true
         work.permissions_attributes = work.permissions.map(&:to_hash) << access
         work.save!
       end
@@ -61,7 +55,6 @@ RSpec.describe ToggleDownloadsJob do
       it "removes public download access from members' permissions" do
         described_class.perform_now(collection.id, user_email, downloadable)
         work.reload
-        expect(work.downloadable).to be false
         expect(work.permissions.map(&:to_hash)).not_to include access
         expect(SolrDocument.find(work.id)).not_to have_key("download_access_group_ssim")
       end

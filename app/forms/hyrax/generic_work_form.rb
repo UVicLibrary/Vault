@@ -15,7 +15,7 @@ module Hyrax
                    :has_format, :physical_repository, :collection, :provenance, :provider,
                    :sponsor, :genre, :format,:archival_item_identifier, :fonds_title, :fonds_creator,
                    :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized,
-                   :transcript, :technical_note, :year, :downloadable]
+                   :transcript, :technical_note, :year]
 
     self.terms -= [:abstract, :access_right, :rights_notes]
 

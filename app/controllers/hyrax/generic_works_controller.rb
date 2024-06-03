@@ -56,50 +56,10 @@ module Hyrax
       end
     end
 
-    def edit
-      build_form
-      document = search_result_document(id: params[:id])
-      # Used by views/records/vault/* partials to render field labels for URIs
-      @all_labels = curation_concern.controlled_properties.each_with_object({}) do |prop, hash|
-        labels = document.send("#{prop.to_s}_label")
-        values = document.send(prop)
-
-        hash["#{prop.to_s}_label"] = []
-        values.each do |val|
-          if val.include?("http")
-            hash["#{prop.to_s}_label"].push({label: "#{labels[values.index(val)]}", uri: "#{val}" })
-          elsif val.present?
-            hash["#{prop.to_s}_label"].push({string: "#{labels[values.index(val)]}" })
-          end
-        end
-      end
-    end
-
-    def update
-      downloadable_to_boolean
-      if actor.update(actor_environment)
-        after_update_response
-      else
-        respond_to do |wants|
-          wants.html do
-            build_form
-            render 'edit', locals: { document: ::SolrDocument.find(params[:id]) }, status: :unprocessable_entity
-          end
-          wants.json { render_json_response(response_type: :unprocessable_entity, options: { errors: curation_concern.errors }) }
-        end
-      end
-    end
-
     private
 
     def set_default_response_format
       request.format = :html unless params[:format]
-    end
-
-    def downloadable_to_boolean
-      if params[:generic_work] && params[:generic_work][:downloadable].present?
-        params[:generic_work][:downloadable] = ActiveModel::Type::Boolean.new.cast(params[:generic_work][:downloadable])
-      end
     end
 
     def additional_response_formats(format)
