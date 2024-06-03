@@ -1,11 +1,10 @@
 {
-  "options": {
-
-  },
+  "options": {},
   "modules": {
     "footerPanel": {
       "options": {
         "downloadEnabled": true
       }
+    }
   }
 }
