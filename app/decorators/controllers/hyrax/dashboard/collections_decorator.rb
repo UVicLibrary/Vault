@@ -182,10 +182,11 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     File.open(saved_file, 'wb') do |file|
       file.write(uploaded_file.read)
     end
-    image = MiniMagick::Image.open(saved_file)
-    # Save two versions of the image: one for homepage feature cards and one for regular thumbnail
-    image.resize('500x900').format("jpg").write("#{dir_name}/#{@collection.id}_card.jpg")
-    image.resize('150x300').format("jpg").write("#{dir_name}/#{@collection.id}_thumbnail.jpg")
+
+    # Use libvips to save two versions of the image: one for homepage feature cards and one for regular thumbnail
+    `vips thumbnail #{saved_file} #{dir_name}/#{@collection.id}_card.jpg 500x900`
+    `vips thumbnail #{saved_file} #{dir_name}/#{@collection.id}_thumbnail.jpg 150x300`
+
     File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
     File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
   end
