@@ -1,6 +1,6 @@
 require 'hydra/head' unless defined? Hydra
 
-# Extends/modifies Hydra::AccessControls v.11.0.7 (in hydra-head gem)
+# Extends/modifies Hydra-Head gem v.11.0.7 (hydra-access-controls v.11.0.7)
 # to include a "download" permissions attribute. This is needed to set
 # work-level download permissions independent of read permissions. By
 # default, Hyrax bundles read and download permissions together.
@@ -20,6 +20,7 @@ Hydra::AccessControls::Permission.class_eval do
                 when 'discover'
                   [Hydra::AccessControls::Mode.new(Hydra::ACL.Discover)]
                 when 'download'
+                  # app/vocabularies/uvic/acl.rb
                   [Hydra::AccessControls::Mode.new(Uvic::ACL.Download)]
                 else
                   raise ArgumentError, "Unknown access #{access.inspect}"
