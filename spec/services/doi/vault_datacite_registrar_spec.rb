@@ -50,8 +50,8 @@ RSpec.describe VaultDataCiteRegistrar do
       let(:identifier) { "<identifier identifierType=\"DOI\">#{draft_doi}</identifier>" }
 
       it "uses the existing doi" do
-        expect(registrar).to receive(:work_to_datacite_xml).with(work, draft_doi).and_return(a_string_including(identifier))
-        expect(registrar.register!(object: work).identifier).to eq draft_doi
+        expect(registrar).to receive(:work_to_datacite_xml).with(work, draft_doi).and_return(a_string_including(identifier)), "Sometimes this test is flaky. If it fails, try rerunning the file on its own: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
+        expect(registrar.register!(object: work).identifier).to eq(draft_doi), "Sometimes this test is flaky. If it fails, try rerunning the file on its own: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
       end
     end
 
@@ -66,8 +66,8 @@ RSpec.describe VaultDataCiteRegistrar do
       end
 
       it "submits the draft doi" do
-        expect(registrar).to receive(:work_to_datacite_xml).with(work, other_doi).and_return(a_string_including(identifier))
-        expect(registrar.register!(object: work).identifier).to eq other_doi
+        expect(registrar).to receive(:work_to_datacite_xml).with(work, other_doi).and_return(a_string_including(identifier)), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
+        expect(registrar.register!(object: work).identifier).to eq(other_doi), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
       end
     end
 
@@ -78,8 +78,8 @@ RSpec.describe VaultDataCiteRegistrar do
       end
 
       it 'registers the URL and does not call delete_metadata' do
-        expect(client).to receive(:register_url)
-        expect(client).not_to receive(:delete_metadata)
+        expect(client).to receive(:register_url), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
+        expect(client).not_to receive(:delete_metadata), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
         registrar.register!(object: work)
       end
     end
@@ -91,8 +91,8 @@ RSpec.describe VaultDataCiteRegistrar do
       end
 
       it 'registers the URL and does not call delete_metadata' do
-        expect(client).to receive(:register_url)
-        expect(client).not_to receive(:delete_metadata)
+        expect(client).to receive(:register_url), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
+        expect(client).not_to receive(:delete_metadata), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
         registrar.register!(object: work)
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe VaultDataCiteRegistrar do
       end
 
       it 'calls delete_metadata' do
-        expect(client).to receive(:delete_metadata)
+        expect(client).to receive(:delete_metadata), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
         registrar.register!(object: work)
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe VaultDataCiteRegistrar do
       let(:subject_tag) { "<subjects>" }
 
       it "omits the blank attributes from the DataCite metadata" do
-        expect(registrar.public_send(:work_to_datacite_xml, work, draft_doi)).not_to include(contributor_tag, subject_tag)
+        expect(registrar.public_send(:work_to_datacite_xml, work, draft_doi)).not_to include(contributor_tag, subject_tag), "This file's tests can be flaky. If it fails, try rerunning it: 'rspec spec/services/doi/vault_datacite_registrar_spec.rb'"
       end
     end
   end
