@@ -21,9 +21,6 @@ class CollectionIndexer < Hyrax::CollectionIndexer
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
-      # Index the size of the collection in bytes
-      solr_doc['bytes_lts'] = object.bytes
-
       # Allow public users to see the metadata (so they can decide to request access or not)
       if object.visibility == "authenticated"
         solr_doc["discover_access_group_ssim"] = ["public"]

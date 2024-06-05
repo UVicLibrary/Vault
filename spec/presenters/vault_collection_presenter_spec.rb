@@ -2,7 +2,6 @@ RSpec.describe VaultCollectionPresenter do
   describe ".terms" do
     subject { described_class.terms }
     it { is_expected.to eq [:total_viewable_items,
-                            :size,
                             :modified_date] }
   end
 
@@ -79,7 +78,7 @@ RSpec.describe VaultCollectionPresenter do
 
     it 'gives the list of terms that have values' do
       expect(presenter.terms_with_values)
-          .to contain_exactly(:total_viewable_items, :size, :modified_date)
+          .to contain_exactly(:total_viewable_items, :modified_date)
     end
   end
 
@@ -111,12 +110,6 @@ RSpec.describe VaultCollectionPresenter do
     subject { presenter.to_key }
 
     it { is_expected.to eq ['adc12v'] }
-  end
-
-  describe '#size' do
-    it 'returns a hard-coded string' do
-      expect(presenter.size).to eq('0 Bytes')
-    end
   end
 
   describe "#total_items", :clean_repo do
