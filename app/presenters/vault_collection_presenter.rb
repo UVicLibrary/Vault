@@ -13,15 +13,11 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
   # However, we already display the extra terms in
   # _attribute_rows rather than _show_descriptions.
   def self.terms
-    [:total_viewable_items, :size, :modified_date]
+    [:total_viewable_items, :modified_date]
   end
 
   def terms_with_values
     self.class.terms.select { |t| self.send(t).present? }
-  end
-
-  def size
-    number_to_human_size(@solr_document['bytes_lts'])
   end
 
   def user_can_feature_collections?
