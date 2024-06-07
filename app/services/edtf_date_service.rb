@@ -26,22 +26,21 @@ class EdtfDateService
       @parsed_date = parse_date(@date_string)
     end
 
-    # Return date in solr format
-    def solr_date_range
+    # The first possible date in Solr datetime format for sorting
+    # @return [String] - a Solr-formatted datetime
+    # See https://solr.apache.org/guide/solr/latest/indexing-guide/date-formatting-math.html
+    def first_solr_date
       if [EDTF::Interval, EDTF::Decade, EDTF::Century, EDTF::Season].include?(@parsed_date.class)
         if @parsed_date.class == EDTF::Interval && @parsed_date.open?
-          Array.wrap(@parsed_date.from.strftime("%FT%TZ"))
+          @parsed_date.from.strftime("%FT%TZ")
         else
-          @parsed_date.map{|d| d.strftime("%FT%TZ")}
+          # byebug
+          # @parsed_date.map{|d| d.strftime("%FT%TZ")}
+          @parsed_date.first.strftime("%FT%TZ")
         end
       elsif @parsed_date.class == Date
-        Array.wrap(@parsed_date.strftime("%FT%TZ"))
+        @parsed_date.strftime("%FT%TZ")
       end
-    end
-
-    # Returns first solr date
-    def first_solr_date
-      solr_date_range.first if solr_date_range
     end
 
     def year_range

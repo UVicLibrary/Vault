@@ -39,12 +39,16 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
       unless object.date_created.empty?
         object.date_created.each do |date|
           service = EdtfDateService.new(date)
-          (solr_doc['year_sort_dtsim']||= []) << service.solr_date_range
+          (solr_doc['year_sort_dtsi']||= []) << service.first_solr_date
           (solr_doc['year_range_isim']||=[]) << service.year_range
         end
-        solr_doc['year_sort_dtsim'] = solr_doc['year_sort_dtsim'].flatten.uniq.sort
-        solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsim'].first
-        solr_doc['year_range_isim'] = solr_doc['year_range_isim'].flatten.uniq.sort
+        # If there are multiple values for date_created, we want the
+        # earliest possible date for sorting. If "unknown" or
+        # "no date", return nil
+        solr_doc['year_sort_dtsi'] = solr_doc['year_sort_dtsi'].any?(&:presence) ?
+                                         solr_doc['year_sort_dtsi'].flatten.uniq.sort.first : nil
+        solr_doc['year_range_isim'] = solr_doc['year_range_isim'].any?(&:presence) ?
+                                          solr_doc['year_range_isim'].flatten.uniq.sort : nil
       end
 
     end

@@ -9,8 +9,9 @@ RSpec.describe GenericWorkIndexer do
   let(:work) { create(:generic_work, creator: ["http://id.worldcat.org/fast/549011"],
                       geographic_coverage: ["http://id.worldcat.org/fast/1243522"],
                       chronological_coverage: ["1943/1945"],
-                      date_created: ["1943/1945"],
+                      date_created: date_created,
                       resource_type:["http://purl.org/dc/dcmitype/StillImage"]) }
+  let(:date_created) {["1943/1945"] }
 
   it 'indexes a title field for sorting alphabetically' do
     expect(solr_document['title_sort_ssi']).to eq 'Test title'
@@ -28,6 +29,33 @@ RSpec.describe GenericWorkIndexer do
     expect(solr_document['oai_dc_coverage_tesim']).to eq(['United States--Pacific Coast','1943/1945'])
     expect(solr_document['oai_dc_type_tesim']).to eq(["StillImage"])
     expect(solr_document['oai_dc_relation_tesim']).to eq([])
+  end
+
+  describe 'date indexing' do
+    context 'with a single date_created value' do
+      it 'indexes extra (EDTF) datetime fields for sorting and blacklight_range_limit' do
+        expect(solr_document['year_range_isim']).to eq([1943, 1944, 1945])
+        expect(solr_document['year_sort_dtsi']).to eq "1943-01-01T00:00:00Z"
+      end
+    end
+
+    context 'with multiple date_created values' do
+      let(:date_created) { ["1940-01-09", "1943/1945"] }
+
+      it 'indexes the correct EDTF datetime fields' do
+        expect(solr_document['year_range_isim']).to eq([1940, 1943, 1944, 1945])
+        expect(solr_document['year_sort_dtsi']).to eq "1940-01-09T00:00:00Z"
+      end
+    end
+
+    context 'with unknown' do
+      let(:date_created) { ["unknown"] }
+
+      it "does not index anything in year_range_isim or year_sort_dtsi" do
+        expect(solr_document['year_range_isim']).to be_nil
+        expect(solr_document['year_sort_dtsi']).to be_nil
+      end
+    end
   end
 
   context 'without explicit visibility set' do
