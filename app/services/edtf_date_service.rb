@@ -34,8 +34,6 @@ class EdtfDateService
         if @parsed_date.class == EDTF::Interval && @parsed_date.open?
           @parsed_date.from.strftime("%FT%TZ")
         else
-          # byebug
-          # @parsed_date.map{|d| d.strftime("%FT%TZ")}
           @parsed_date.first.strftime("%FT%TZ")
         end
       elsif @parsed_date.class == Date
@@ -43,6 +41,7 @@ class EdtfDateService
       end
     end
 
+    # @return [Array <Integer>] - a range of years for blacklight_range_limit gem
     def year_range
       # For open-ended intervals such as "1900/.."
       if @parsed_date.class == EDTF::Interval && @parsed_date.open?
