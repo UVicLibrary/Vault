@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-# New for himalia
 gem 'ruby-vips'
 gem 'carrierwave-vips'
-gem 'redlock', '1.3.2'
 
 gem 'simple_xlsx_reader'
 
 gem 'omniauth-cas'
+
+gem 'redlock', '~> 1.3.2'
 
 # Pin to 5.10.7 to avoid 'PermissionsControl is not a constructor' error
 # DO NOT USE 5.10.9
@@ -147,7 +147,7 @@ gem 'sidekiq-cron'
 gem 'cdm_migrator', '3.4.2'
 gem 'to_spotlight', '~> 0.2.7'
 
-gem 'secure_headers', '3.6.5'
+gem 'secure_headers', '6.5.0'
 
 gem 'honeybadger', '~> 3.0'
 
