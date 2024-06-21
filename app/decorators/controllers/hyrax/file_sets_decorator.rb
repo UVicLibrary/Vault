@@ -7,7 +7,7 @@ Hyrax::FileSetsController.class_eval do
   # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
   include Hydra::Controller::IpBasedAbility
 
-  self.form_class = Hyrax::FileSetForm
+  self.form_class = Hyrax::Forms::FileSetEditForm
 
   def initialize_edit_form
     @form = self.form_class.new(curation_concern)
