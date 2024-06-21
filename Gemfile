@@ -140,7 +140,7 @@ gem 'riiif', '~> 1.1'
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
-gem 'sidekiq', '~> 6.0.0'
+gem 'sidekiq', '~> 6.4.0'
 gem 'redis', '4.6'
 gem 'sidekiq-cron'
 
