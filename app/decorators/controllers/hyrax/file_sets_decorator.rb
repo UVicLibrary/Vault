@@ -9,6 +9,9 @@ Hyrax::FileSetsController.class_eval do
 
   self.form_class = Hyrax::Forms::FileSetEditForm
 
+  # This can be deleted after upgrading to Hyrax 3.5
+  before_action :presenter
+
   def initialize_edit_form
     @form = self.form_class.new(curation_concern)
     @parent = @file_set.in_objects.first
