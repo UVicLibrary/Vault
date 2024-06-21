@@ -7,6 +7,8 @@ Hyrax::FileSetsController.class_eval do
   # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
   include Hydra::Controller::IpBasedAbility
 
+  # This can be deleted after upgrading to Hyrax 3.5
+  before_action :presenter
 
   # This can be deleted after upgrading to Hyrax 3.5 since it's exactly the same
   def initialize_edit_form
