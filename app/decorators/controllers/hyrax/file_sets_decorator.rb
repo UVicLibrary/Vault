@@ -1,20 +1,25 @@
 require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/file_sets_controller.rb')
 
-# OVERRIDE class from Hyrax v. 3.1.0
+# OVERRIDE class from Hyrax v. 3.4
 Hyrax::FileSetsController.class_eval do
 
   # Defined in the hydra-head gem
   # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
   include Hydra::Controller::IpBasedAbility
 
-  self.form_class = Hyrax::Forms::FileSetEditForm
 
+  # This can be deleted after upgrading to Hyrax 3.5 since it's exactly the same
   def initialize_edit_form
-    @form = self.form_class.new(curation_concern)
-    @parent = @file_set.in_objects.first
-    guard_for_workflow_restriction_on!(parent: @parent)
-    original = @file_set.original_file
-    @version_list = Hyrax::VersionListPresenter.new(original ? original.versions.all : [])
+    guard_for_workflow_restriction_on!(parent: parent)
+    case file_set
+    when Hyrax::Resource
+      @form = Hyrax::Forms::ResourceForm.for(file_set)
+      @form.prepopulate!
+    else
+      @form = form_class.new(file_set)
+      @form[:visibility] = file_set.visibility # workaround for hydra-head < 12
+    end
+    @version_list = Hyrax::VersionListPresenter.for(file_set: file_set)
     @groups = current_user.groups
   end
 
@@ -31,14 +36,4 @@ Hyrax::FileSetsController.class_eval do
     end
   end
 
-  # GET /concern/parent/:parent_id/file_sets/:id
-  def show
-    @presenter = presenter
-    guard_for_workflow_restriction_on!(parent: parent(file_set: @presenter))
-    respond_to do |wants|
-      wants.html
-      wants.json
-      additional_response_formats(wants)
-    end
-  end
 end
