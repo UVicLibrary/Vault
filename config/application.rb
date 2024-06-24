@@ -30,6 +30,14 @@ module Hyku
       end
     end
 
+    # Configure env variables for uploading batch exports to the OLRC
+    config.before_configuration do
+      env_file = File.join(Rails.root, 'config', 'olrc.yml')
+      YAML.load(File.open(env_file)).each do |key, value|
+        ENV[key.to_s] = value
+      end if File.exists?(env_file)
+    end
+
     # Gzip all responses.  We probably could do this in an upstream proxy, but
     # configuring Nginx on Elastic Beanstalk is a pain.
     config.middleware.use Rack::Deflater
