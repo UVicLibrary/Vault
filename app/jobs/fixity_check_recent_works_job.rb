@@ -23,12 +23,12 @@ class FixityCheckRecentWorksJob < ActiveJob::Base
 
     # @return [Array < GenericWork >] array of works to pass to fixity check
     def get_work_ids(start_date, end_date)
-      AccountElevator.switch! "vault.library.uvic.ca"
+      # AccountElevator.switch! "vault.library.uvic.ca"
       solr = RSolr.connect url: Blacklight.connection_config[:url]
       response = solr.get 'select', params: {
           q: "*:*",
           # Restrict this to non-private works because those are test objects
-          fq: ["has_model_ssim:GenericWork","system_create_dtsi:[#{start_date} TO #{end_date}}", "-visibility_ssi:restricted"],
+          fq: ["has_model_ssim:GenericWork","system_create_dtsi:[#{start_date} TO #{end_date}}"],
           rows: 5000,
           fl: "id"
       }
