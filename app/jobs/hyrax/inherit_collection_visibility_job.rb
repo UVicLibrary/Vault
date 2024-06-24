@@ -19,7 +19,6 @@ module Hyrax
         change_visibility(work, visibility)
         update_doi_status(work)
         work.save!
-        ConvertWorkDownloadPermissionsJob.perform_later(work)
         # Assign a findable DOI if the work is public or UVic-only.
         # Otherwise, change the DOI (if any) to registered state.
         Hyrax::DOI::RegisterDOIJob.perform_later(work, registrar: work.doi_registrar.presence, registrar_opts: work.doi_registrar_opts)
