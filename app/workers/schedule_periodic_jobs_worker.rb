@@ -12,7 +12,7 @@ class SchedulePeriodicJobsWorker
   #   - Get all works created in the last 3-6 months
   #   - Export to Q (staging area)
   #
-  # When all files are exported, move from Q to narwhal via rails console
+  # When all files are exported, move from narwhal to OLRC
 
   WEEKDAY = :friday
   HOUR = 21 # 9:00 PM
@@ -36,22 +36,26 @@ class SchedulePeriodicJobsWorker
   # them as an array of datetime objects
     def calculate_times(year, months)
       months.map do |month|
-        datetime = DateTime.new(year, month, -1, HOUR, 0, 0, "PST")
+        datetime = DateTime.new(year, month, 1, HOUR, 0, 0, "PST")
         # If the last day of the month is a Friday, use that date
         if datetime.strftime("%A").downcase == WEEKDAY.to_s
           datetime
         else # Otherwise, find the previous Friday
-          datetime.prev_occurring(WEEKDAY)
+          datetime.next_occurring(WEEKDAY)
         end
       end
     end
 
     def schedule_fixity(datetime)
-      schedule_job(FixityCheckRecentWorksJob, datetime)
+      Apartment::Tenant.switch(Account.find_by(name: "vault").tenant) do
+        schedule_job(FixityCheckRecentWorksJob, datetime) unless datetime.past?
+      end
     end
 
     def schedule_batch_export(datetime)
-      schedule_job(BatchExportJob, datetime)
+      Apartment::Tenant.switch(Account.find_by(name: "vault").tenant) do
+        schedule_job(BatchExportJob, datetime) unless datetime.past?
+      end
     end
 
     # Enqueues a specific job on a specific date/time
