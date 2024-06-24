@@ -40,7 +40,7 @@ module Hyrax
         }
         wants.json do
           @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-          raise Blacklight::Exceptions::RecordNotFound unless @document && @curation_concern
+          raise Blacklight::Exceptions::RecordNotFound unless @document && @curation_concern && @curation_concern.work?
 
           if can? :read, @document
             render :show, status: :ok
