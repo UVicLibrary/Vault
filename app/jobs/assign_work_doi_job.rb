@@ -15,7 +15,7 @@ class AssignWorkDOIJob < ActiveJob::Base
     # to retry it as usual. However, for metadata errors, we want to send an email instead of
     # retrying to avoid making tons of draft DOIs.
   rescue Hyrax::DOI::Error, EdtfDateService::InvalidEdtfDateError, Hyrax::DOI::DataCiteClient::Error => e
-    NotificationMailer.with(user_email: Settings.fixity_email, failures: [work.id], job_class: self.class).failures.deliver
+    JobFailedMailer.mail_failures(failures: [work.id], job_class: self.class).deliver
   end
 
 end

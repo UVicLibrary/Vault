@@ -3,7 +3,7 @@ Hello,
 The following files failed fixity checks:
 <% @file_sets.each do |fs| %>
   <% host = "#{Account.find_by(tenant: Apartment::Tenant.current).cname}" %>
-  <%= fs.title.first %>: <%= "https://#{host}/concern/parent/#{fs.parent_id}/file_sets/#{fs.id}" %></p>
+  <%= fs.title.first %>: <%= "https://#{host}/concern/file_sets/#{fs.id}" %></p>
   Download: <%= "http://#{host}/downloads/#{fs.id}" %>
     Original checksum(md5): <%= fs.original_checksum.first %>
     Current checksum(md5): <%= fs.current_checksum %>
