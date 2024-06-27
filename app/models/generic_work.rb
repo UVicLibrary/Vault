@@ -110,5 +110,17 @@ class GenericWork < ActiveFedora::Base
   
   # This indexer uses IIIF thumbnails:
   self.indexer = GenericWorkIndexer
+
+  before_destroy :delist_doi
+
+  # Changes a work DOI's status to registered before the work is destroyed
+  def delist_doi
+    if self.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC &&
+        self.doi_status_when_public == "findable" && self.doi.presence
+          self.doi_status_when_public = "registered"
+          self.save!
+          Hyrax::DOI::RegisterDOIJob.perform_now(self, registrar: self.doi_registrar.presence, registrar_opts: self.doi_registrar_opts)
+    end
+  end
   
 end
