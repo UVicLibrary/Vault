@@ -10,21 +10,6 @@ Hyrax::FileSetsController.class_eval do
   # This can be deleted after upgrading to Hyrax 3.5
   before_action :presenter
 
-  # This can be deleted after upgrading to Hyrax 3.5 since it's exactly the same
-  def initialize_edit_form
-    guard_for_workflow_restriction_on!(parent: parent)
-    case file_set
-    when Hyrax::Resource
-      @form = Hyrax::Forms::ResourceForm.for(file_set)
-      @form.prepopulate!
-    else
-      @form = form_class.new(file_set)
-      @form[:visibility] = file_set.visibility # workaround for hydra-head < 12
-    end
-    @version_list = Hyrax::VersionListPresenter.for(file_set: file_set)
-    @groups = current_user.groups
-  end
-
   def show_presenter
     # Tenant-specific file set presenters
     if Settings.multitenancy.enabled
