@@ -1,5 +1,6 @@
 <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
 <script src="<%= request.base_url %>/able_player/build/ableplayer.js"></script>
+<% parent = file_set.parent %>
 <!-- methods defined in AvTranscriptsHelper -->
 <% if multiple_video?(file_set) and work_show_page? %>
   <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files_for(parent), parent: parent %>
