@@ -1,15 +1,16 @@
 <!-- Able Player by Terrill Thompson et al.: https://github.com/ableplayer/ableplayer -->
 <script src="<%= request.base_url %>/able_player/build/ableplayer.js"></script>
+<% parent = file_set.parent %>
 <!-- methods defined in AvTranscriptsHelper -->
 <% if multiple_video?(file_set) and work_show_page? %>
-  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files(file_set.parent), parent: file_set.parent %>
+  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files(parent), parent: parent %>
 <% else %>
   <video preload="auto" data-able-player data-skin="2020" <%= video_tag_settings(file_set) %> playsinline>
     <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
     <!-- Track tag and transcript div must be INSIDE the video tag -->
     <%= render_track_tag(file_set) %>
     <% if has_transcript?(file_set) && !has_vtt?(file_set) %>
-      <div id="transcript-text"><%= sanitize(file_set.parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
+      <div id="transcript-text"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
     <% end %>
     Your browser does not support the video tag.
   </video>
