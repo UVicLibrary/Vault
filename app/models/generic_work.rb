@@ -104,9 +104,9 @@ class GenericWork < ActiveFedora::Base
   validates :title, presence: { message: 'Your work must have a title.' }
 
   
-  def rendering_ids
-    to_param
-  end
+  # def rendering_ids
+  #   to_param
+  # end
   
   # This indexer uses IIIF thumbnails:
   self.indexer = GenericWorkIndexer
