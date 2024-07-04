@@ -9,8 +9,6 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = !!Sidekiq.server?
 
-  config.active_job.queue_adapter = :async # :sidekiq
-
   # http://meta-lambda.com/rails-5-web-console-and-docker
   config.web_console.whitelisted_ips = Socket.ip_address_list.reduce([]) do |res, addrinfo|
     addrinfo.ipv4? ? res << IPAddr.new(addrinfo.ip_address).mask(24) : res
@@ -18,10 +16,6 @@ Rails.application.configure do
 
   # Do not eager load code on boot.
   config.eager_load = false
-
-  # config.assets.js_compressor = :terser # Uglifier.new(harmony: true, mangle: false)
-
-  config.cache_store = :file_store, "#{root}/tmp/cache"
 
   # Show full error reports.
   config.consider_all_requests_local = true
@@ -31,7 +25,6 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
-    config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
@@ -57,7 +50,7 @@ Rails.application.configure do
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
-  # config.assets.debug = false
+  # config.assets.debug = true
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
@@ -71,7 +64,7 @@ Rails.application.configure do
   #
 
   config.action_mailer.default_options = { from: 'no-reply@uvic.ca' }
-  config.action_mailer.default_url_options = { host: "localhost:3000" }
+  config.action_mailer.default_url_options = { host: "localhost:3001" }
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.

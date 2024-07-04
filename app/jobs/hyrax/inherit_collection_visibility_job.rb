@@ -12,10 +12,14 @@ module Hyrax
       # Hyrax.query_service.custom_queries.find_child_works(resource: collection)
       works = GenericWork.where(member_of_collection_ids_ssim: collection_id).select { |w| w.visibility != visibility }
       works.each do |work|
+        work.members.each do |member|
+          change_visibility(member, visibility)
+          member.save!
+        end
         change_visibility(work, visibility)
         update_doi_status(work)
         work.save!
-        Hyrax::VisibilityPropagator.for(source: work).propagate
+        ConvertWorkDownloadPermissionsJob.perform_later(work)
         # Assign a findable DOI if the work is public or UVic-only.
         # Otherwise, change the DOI (if any) to registered state.
         Hyrax::DOI::RegisterDOIJob.perform_later(work, registrar: work.doi_registrar.presence, registrar_opts: work.doi_registrar_opts)

@@ -108,7 +108,7 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '3.5'
+gem 'hyrax', '3.4.2'
 gem 'dry-monads', '< 1.5'
 
 # Loading the env fails if psych > 3.0
@@ -140,7 +140,7 @@ gem 'riiif', '~> 1.1'
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
-gem 'sidekiq', '~> 6.4.0'
+gem 'sidekiq', '~> 6.0.0'
 gem 'redis', '4.6'
 gem 'sidekiq-cron'
 

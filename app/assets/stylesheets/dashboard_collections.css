@@ -19,10 +19,6 @@ span.feature-collection-error {
     margin-bottom: 2%;
 }
 
-.collections-list .flex-wrapper {
-    justify-content: flex-start;
-}
-
 /* Public */
 #make-public-button {
     background-color: #daf5da;

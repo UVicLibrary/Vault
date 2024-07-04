@@ -1,4 +1,3 @@
-./fits.log
 *.rbc
 capybara-*.html
 #.rspec
@@ -19,8 +18,6 @@ public/branding
 public/uploaded_collection_thumbnails
 public/pdf_thumbnails
 .gitignore
-tmp
-*Zone.Identifier
 
 ## Environment normalization:
 /.bundle
@@ -64,4 +61,3 @@ fits.log
 .solr_wrapper
 .env
 
-solr_data

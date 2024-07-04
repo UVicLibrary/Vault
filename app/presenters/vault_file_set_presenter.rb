@@ -56,7 +56,7 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
         ids.each do |id|
           doc = ::SolrDocument.find(id)
           next if current_ability.can?(:edit, doc)
-          raise Hyrax::WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
+          raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
         end
         Hyrax::PresenterFactory.build_for(ids: ids,
                                           presenter_class: VaultWorkShowPresenter,

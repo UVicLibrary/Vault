@@ -23,26 +23,26 @@ class ExportFileJob < ActiveJob::Base
   #                                         (e.g. creator, rights_statement)
   #     |__[file set id].txt - The full text contents (transcript) of the file if available
 
-  EXPORT_DIR = "/mnt/narwhal"
-
-  def perform(file_set, dirname = EXPORT_DIR)
+  def perform(file_set, dirname = "/mnt/narwhal")
     Dir.chdir(dirname) do
       # Create a new directory named after the file set id
       bag_dir = "#{file_set.id}"
       next if File.file? "#{bag_dir}.7z" or skip_thumbnail?(file_set)
-      FileUtils.mkdir_p(bag_dir) && FileUtils.mkdir_p("#{bag_dir}/data")
-      download_objects(file_set, bag_dir)
-      extract_text(file_set, bag_dir)
-      write_file_metadata(file_set, "#{bag_dir}/data/metadata.txt")
-      CdmMigrator::CsvExportService.new([GenericWork]).write_to_csv([file_set.parent.id],"#{bag_dir}/work_and_file_set_metadata.csv")
-      write_collection_ids_and_titles(file_set, bag_dir)
+      FileUtils.mkdir_p(bag_dir)
+      Dir.chdir(bag_dir) do
+        FileUtils.mkdir_p("data")
+        download_objects(file_set)
+        extract_text(file_set)
+        write_file_metadata(file_set, "data/metadata.txt")
+        CdmMigrator::CsvExportService.new([GenericWork]).write_to_csv([file_set.parent.id],"work_and_file_set_metadata.csv")
+        write_collection_ids_and_titles(file_set)
+      end
       bag = BagIt::Bag.new bag_dir
       # Generate a checksum for the bag
       bag.manifest!(algo: 'sha1')
       # Compress everything into .7z format. Requires p7zip library; apt install p7zip-full
-      `7za a #{file_set.id} ./#{file_set.id}/*`
+      `7z a #{file_set.id} ./#{file_set.id}/*`
       # Clean up after ourselves
-      FileUtils.rm_rf bag_dir
     end
   end
 
@@ -68,33 +68,25 @@ class ExportFileJob < ActiveJob::Base
       end
     end
 
-    def extract_text(file_set, bag_dir)
+    def extract_text(file_set)
       if (file_set.extracted_text and file_set.extracted_text.content.present?) || file_set.transcript.present?
         if file_set.extracted_text
           text = file_set.extracted_text.content
         else
           text = file_set.transcript.clone.join("")
         end
-        File.open("#{bag_dir}/#{file_set.id}.txt","wb") { |file| file.write(text) }
+        File.open("#{file_set.id}.txt","wb") { |file| file.write(text) }
       end
     end
 
-    def download_objects(file_set, dirname)
-      FileUtils.mkdir_p("#{dirname}/data/objects")
-      object_dir = "#{dirname}/data/objects"
-      id = file_set.id
-      url = "#{host_url}/downloads/#{id}"
-      ext = File.extname(File.basename(file_set.files.first.file_name.first))
-      begin
-        Down::Wget.download(url, :no_check_certificate, destination: (object_dir + "/bitstream_#{file_set.id}"))
-        FileUtils.copy_file("#{object_dir}/bitstream_#{id}", "#{object_dir}/#{id}#{ext}")
-      rescue Down::ClientError # Fallback to curl
-        user = ActiveFedora.fedora_config.credentials[:user]
-        password = ActiveFedora.fedora_config.credentials[:password]
-        filename = file_set.files.first.file_name.first
-        `curl #{file_set.files.first.uri.to_s} -u #{user}:#{password} -L -O -J`
-        File.rename("#{object_dir}/#{filename}", "#{object_dir}/#{id}#{ext}")
-        FileUtils.copy_file("#{object_dir}/#{id}#{ext}", "#{object_dir}/bitstream_#{id}")
+    def download_objects(file_set)
+      FileUtils.mkdir_p('data/objects')
+      Dir.chdir('data/objects') do
+        id = file_set.id
+        url = "#{host_url}/downloads/#{id}"
+        ext = File.extname(File.basename(file_set.files.first.file_name.first))
+        Down::Wget.download(url, :no_check_certificate, destination: "bitstream_#{file_set.id}")
+        FileUtils.copy_file("bitstream_#{id}", "#{id}#{ext}")
       end
     end
 
@@ -106,11 +98,11 @@ class ExportFileJob < ActiveJob::Base
       end
     end
 
-    def write_collection_ids_and_titles(file_set, bag_dir)
-      File.open("#{bag_dir}/collection_uuids_and_titles.txt", "a") do |file|
+    def write_collection_ids_and_titles(file_set)
+      File.open("collection_uuids_and_titles.txt", "a") do |file|
         parent = file_set.parent
         parent.member_of_collection_ids.each do |c_id|
-          file.puts "#{c_id} \t #{Collection.find(c_id).title.first}"
+          file.puts "#{c_id} \t #{Hyrax.config.collection_class.find(c_id).title.first}"
         end
       end
     end

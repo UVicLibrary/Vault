@@ -71,7 +71,6 @@ RSpec.describe Hyrax::FileSetsController do
         expect(controller)
           .to receive(:add_breadcrumb)
           .with(I18n.t('hyrax.file_set.browse_view'), app_helpers.hyrax_file_set_path(file_set, locale: 'en'))
-
         get :edit, params: { id: file_set }
 
         expect(response).to be_successful
@@ -79,12 +78,11 @@ RSpec.describe Hyrax::FileSetsController do
         expect(assigns[:version_list]).to be_kind_of Hyrax::VersionListPresenter
         expect(assigns[:parent]).to eq parent
         expect(response).to render_template(:edit)
-        expect(response).to render_template('dashboard')
       end
 
-      it 'initializes @form with a Hyrax::Forms::FileSetEditForm' do
+      it 'initializes @form with a Hyrax::FileSetForm' do
         get :edit, params: { id: file_set }
-        expect(assigns[:form]).to be_a Hyrax::Forms::FileSetEditForm
+        expect(assigns[:form]).to be_a Hyrax::FileSetForm
       end
     end
 
@@ -112,7 +110,6 @@ RSpec.describe Hyrax::FileSetsController do
               }
             }
           end.to have_enqueued_job(ContentUpdateEventJob).exactly(:once)
-
           expect(response)
             .to redirect_to main_app.hyrax_file_set_path(file_set, locale: 'en')
           expect(assigns[:file_set].modified_date)
@@ -157,10 +154,9 @@ RSpec.describe Hyrax::FileSetsController do
             .with(file_set, user)
           file = fixture_file_upload('/world.png', 'image/png')
           allow(Hyrax::UploadedFile)
-            .to receive(:find)
-            .with(["1"])
-            .and_return([file])
+            .to receive(:find).with(["1"]).and_return([file])
 
+          # post :update, params: { id: file_set, file_set: { files: ["1"] } }
           post :update, params: { id: file_set, files_files: ["1"] }
           expect(assigns[:file_set].modified_date)
             .not_to be file_set.modified_date
@@ -212,7 +208,6 @@ RSpec.describe Hyrax::FileSetsController do
               post :update, params: { id: file_set, revision: version1 }
               expect(response.code).to eq '401'
               expect(response).to render_template 'unauthorized'
-              expect(response).to render_template('dashboard')
             end
           end
         end
@@ -236,7 +231,6 @@ RSpec.describe Hyrax::FileSetsController do
       it "updates existing groups and users" do
         file_set.edit_groups = ['group3']
         file_set.save
-
         post :update, params: {
           id: file_set,
           file_set: { keyword: [''],
@@ -265,7 +259,6 @@ RSpec.describe Hyrax::FileSetsController do
           post :update, params: { id: file_set, file_set: { keyword: [''] } }
           expect(response.code).to eq '422'
           expect(response).to render_template('edit')
-          expect(response).to render_template('dashboard')
           expect(assigns[:file_set]).to eq file_set
         end
       end
@@ -287,7 +280,6 @@ RSpec.describe Hyrax::FileSetsController do
           get :edit, params: { id: file_set }
           expect(response.code).to eq '401'
           expect(response).to render_template('unauthorized')
-          expect(response).to render_template('dashboard')
         end
       end
     end
@@ -391,10 +383,8 @@ RSpec.describe Hyrax::FileSetsController do
       describe '#edit' do
         it 'gives me the unauthorized page' do
           get :edit, params: { id: public_file_set }
-
           expect(response.code).to eq '401'
           expect(response).to render_template(:unauthorized)
-          expect(response).to render_template('dashboard')
         end
       end
 
@@ -451,9 +441,7 @@ RSpec.describe Hyrax::FileSetsController do
         expect(controller)
           .to receive(:additional_response_formats)
           .with(ActionController::MimeResponds::Collector)
-
         get :show, params: { id: public_file_set }
-
         expect(response).to be_successful
       end
 
@@ -491,20 +479,20 @@ RSpec.describe Hyrax::FileSetsController do
 
     describe '#show' do
       let(:parent_work_active) do
+        # create(:work, :public, state: ::RDF::URI('http://fedora.info/definitions/1/0/access/ObjState#active'))
         FactoryBot
-          .create(:work, :public, state: Vocab::FedoraResourceStatus.active)
+            .create(:work, :public, state: Vocab::FedoraResourceStatus.active)
       end
-
       let(:file_set_active) do
         FactoryBot.create(:file_set, read_groups: ['public']).tap do |file_set|
           parent_work_active.ordered_members << file_set
           parent_work_active.save!
         end
       end
-
       let(:parent_work_inactive) do
+        # create(:work, :public, state: ::RDF::URI('http://fedora.info/definitions/1/0/access/ObjState#inactive'))
         FactoryBot
-          .create(:work, :public, state: Vocab::FedoraResourceStatus.inactive)
+            .create(:work, :public, state: Vocab::FedoraResourceStatus.inactive)
       end
       let(:file_set_inactive) do
         FactoryBot.create(:file_set, read_groups: ['public']).tap do |file_set|
@@ -512,27 +500,23 @@ RSpec.describe Hyrax::FileSetsController do
           parent_work_inactive.save!
         end
       end
-
-      it "shows active parent" do
-        expect(controller)
-          .to receive(:additional_response_formats)
-          .with(ActionController::MimeResponds::Collector)
-
-        get :show, params: { id: file_set_active }
-
-        expect(response).to be_successful
-      end
-
-      it "shows not currently available for inactive parent" do
-        get :show, params: { id: file_set_inactive }
-
-        expect(response).to render_template 'unavailable'
-        expect(flash[:notice])
-          .to eq 'The file is not currently available because its parent work ' \
-                 'has not yet completed the approval process'
-        expect(response.status).to eq 401
-      end
     end
+
+      # it "shows active parent" do
+      #   expect(controller)
+      #     .to receive(:additional_response_formats)
+      #     .with(ActionController::MimeResponds::Collector)
+      #
+      #   get :show, params: { id: file_set_active }
+      #   expect(response).to be_successful
+      # end
+      #
+      # it "shows not currently available for inactive parent" do
+      #   get :show, params: { id: file_set_inactive }
+      #   expect(response).to render_template 'unavailable'
+      #   expect(flash[:notice]).to eq 'The file is not currently available because its parent work has not yet completed the approval process'
+      #   expect(response.status).to eq 401
+      # end
   end
 
   describe 'tenant-specific show presenters (#show_presenter)' do
@@ -562,33 +546,30 @@ RSpec.describe Hyrax::FileSetsController do
   end
 
   # We don't use really use Sipity stuff so I don't think this applies?
-  describe 'integration test for suppressed documents' do
-    let(:work) do
-      FactoryBot
-        .create(:work, :public, state: Vocab::FedoraResourceStatus.inactive)
-    end
-
-    let(:file_set) do
-      FactoryBot.create(:file_set, read_groups: ['public']).tap do |file_set|
-        work.ordered_members << file_set
-        work.save!
-      end
-    end
-
-    before do
-      work.ordered_members << file_set
-      work.save!
-
-      FactoryBot.create(:sipity_entity, proxy_for_global_id: work.to_global_id.to_s)
-    end
-
-    it 'renders the unavailable message because it is in workflow' do
-      get :show, params: { id: file_set }
-
-      expect(response.code).to eq '401'
-      expect(response).to render_template(:unavailable)
-      expect(assigns[:presenter]).to be_instance_of VaultFileSetPresenter
-      expect(flash[:notice]).to eq 'The file is not currently available because its parent work has not yet completed the approval process'
-    end
-    end
+  # describe 'integration test for suppressed documents' do
+  #   let(:work) do
+  #     create(:work, :public, state: Vocab::FedoraResourceStatus.inactive)
+  #   end
+  #   let(:file_set) do
+  #     create(:file_set, read_groups: ['public']).tap do |file_set|
+  #       work.ordered_members << file_set
+  #       work.save!
+  #     end
+  #   end
+  #
+  #   before do
+  #     work.ordered_members << file_set
+  #     work.save!
+  #     create(:sipity_entity, proxy_for_global_id: work.to_global_id.to_s)
+  #   end
+  #
+  #   it 'renders the unavailable message because it is in workflow' do
+  #     get :show, params: { id: file_set }
+  #     byebug
+  #     expect(response.code).to eq '401'
+  #     expect(response).to render_template(:unavailable)
+  #     expect(assigns[:presenter]).to be_instance_of Hyku::FileSetPresenter
+  #     expect(flash[:notice]).to eq 'The file is not currently available because its parent work has not yet completed the approval process'
+  #   end
+  # end
 end

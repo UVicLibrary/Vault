@@ -36,7 +36,7 @@ export default class {
     init() {
         this.autocomplete()
         this.controlledVocabularies()
-        // this.authoritySelect()
+        this.authoritySelect()
     }
 
     // Used when you have a linked data field that can have terms from multiple
@@ -52,9 +52,6 @@ export default class {
 
     // Autocomplete fields for the collection edit form
     autocomplete() {
-        // Do not initialize autocomplete twice if on a work form page
-        if (!window.location.pathname.match(/collections\/.+\/edit/)) { return }
-
         var autocomplete = new Autocomplete()
         $('[data-autocomplete]').each((function() {
             var elem = $(this)
