@@ -29,7 +29,7 @@ class FixityCheckJob < ActiveJob::Base
 			log_file.close
 			# Mail email addresses defined in config/settings.yml
 			if failed.any?
-				::NotificationMailer.with(file_sets: failed).fixity_failures.deliver
+				JobFailedMailer.fixity_failures(file_sets: failed, job_class: self.class).deliver
 			end
 		end
 	end

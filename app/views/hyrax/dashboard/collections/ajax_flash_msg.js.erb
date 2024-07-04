@@ -1,0 +1,5 @@
+<% message = "Your files are being processed in the background.
+You'll receive an email when the process has finished.
+If this collection contains subcollections, note that changes
+will only apply to works in this collection and not works in its subcollections)." %>
+$(document.getElementById("flash_msg")).append("<%= j (render partial: '/flash_msg', locals: { flash: { notice: message } }) %>")

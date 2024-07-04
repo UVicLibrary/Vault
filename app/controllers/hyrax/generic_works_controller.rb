@@ -10,7 +10,6 @@ module Hyrax
 
     self.curation_concern_type = GenericWork
     self.show_presenter = VaultWorkShowPresenter
-    self.iiif_manifest_builder = Hyrax::CustomManifestBuilderService.new
 
     # Catch deleted work
     rescue_from Blacklight::Exceptions::RecordNotFound, Ldp::Gone, with: :not_found
@@ -41,7 +40,7 @@ module Hyrax
         }
         wants.json do
           @curation_concern = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[:id])
-          raise Blacklight::Exceptions::RecordNotFound unless @document && @curation_concern
+          raise Blacklight::Exceptions::RecordNotFound unless @document && @curation_concern && @curation_concern.work?
 
           if can? :read, @document
             render :show, status: :ok
@@ -78,9 +77,10 @@ module Hyrax
       end
     end
 
+    # Use our custom manifest builders, which add file set metadata
     def iiif_manifest_builder
       self.class.iiif_manifest_builder ||
-          (Flipflop.cache_work_iiif_manifest? ? Hyrax::CachingIiifManifestBuilder.new : Hyrax::CustomManifestBuilderService.new)
+          (Flipflop.cache_work_iiif_manifest? ? Hyrax::CustomCachingIiifManifestBuilder.new : Hyrax::CustomManifestBuilderService.new)
     end
 
   end

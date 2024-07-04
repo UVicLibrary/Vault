@@ -8,7 +8,7 @@
     <p>The following files failed fixity checks or were missing files:</p>
     <% @file_sets.each do |fs| %>
       <% host = "#{Account.find_by(tenant: Apartment::Tenant.current).cname}" %>
-      <p><%= fs.title.first %>: <%= link_to "Page for file", "https://#{host}/concern/parent/#{fs.parent_id}/file_sets/#{fs.id}" %> &#9; <%= link_to "Download link", "http://#{host}/downloads/#{fs.id}" %></p>
+      <p><%= fs.title.first %>: <%= link_to "Page for file", "https://#{host}/concern/file_sets/#{fs.id}" %> &#9; <%= link_to "Download link", "https://#{host}/downloads/#{fs.id}" %></p>
       <p>Original checksum(md5): <%= fs.original_checksum.first %>&nbsp;
         Current checksum(md5): <%= fs.current_checksum %>
         Current checksum(sha1): <%= fs.files.first.checksum.value %></p>
