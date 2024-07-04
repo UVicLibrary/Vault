@@ -5,6 +5,10 @@ Hyrax::CollectionsController.class_eval do
   # Catch deleted collection
   rescue_from Ldp::Gone, ActiveFedora::ObjectNotFoundError, Blacklight::Exceptions::RecordNotFound, with: :not_found
 
+  rescue_from ActionController::UnknownFormat do
+    render json: { response: 'Requested format (or blank format) is not supported.', status: 406 }
+  end
+
   # The search builder to find the collections' members
   # inherits from Collections::CollectionMemberService
   self.membership_service_class = ::NestedWorksSearchService

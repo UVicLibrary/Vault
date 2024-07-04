@@ -66,7 +66,7 @@ GEM
       activemodel (= 5.2.4.6)
       activesupport (= 5.2.4.6)
       arel (>= 9.0)
-    activerecord-import (1.6.0)
+    activerecord-import (1.7.0)
       activerecord (>= 4.2)
     activestorage (5.2.4.6)
       actionpack (= 5.2.4.6)
@@ -263,6 +263,7 @@ GEM
       rexml
     csl-styles (1.0.1.11)
       csl (~> 1.0)
+    csv (3.3.0)
     database_cleaner (2.0.2)
       database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.1.0)
@@ -414,7 +415,9 @@ GEM
       raabro (~> 1.4)
     gender_detector (0.1.2)
       unicode_utils (>= 1.3.0)
-    geocoder (1.8.2)
+    geocoder (1.8.3)
+      base64 (>= 0.1.0)
+      csv (>= 3.0.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
     google-apis-core (0.11.3)
@@ -489,7 +492,7 @@ GEM
       hydra-derivatives (~> 3.6)
       hydra-file_characterization (~> 1.0)
       hydra-pcdm (>= 0.9)
-    hyrax (3.4.2)
+    hyrax (3.5.0)
       active-fedora (~> 13.1, >= 13.1.2)
       almond-rails (~> 0.1)
       awesome_nested_set (~> 3.1)
@@ -502,6 +505,7 @@ GEM
       draper (~> 4.0)
       dry-equalizer (~> 0.2)
       dry-events (~> 0.2.0)
+      dry-monads (< 1.5)
       dry-struct (~> 1.0)
       dry-transaction (~> 0.11)
       dry-validation (~> 1.3)
@@ -534,6 +538,7 @@ GEM
       rails_autolink (~> 1.1)
       rdf-rdfxml
       rdf-vocab (~> 3.0)
+      redis (~> 4.0)
       redis-namespace (~> 1.5)
       redlock (>= 0.1.2)
       reform (~> 2.3)
@@ -599,7 +604,7 @@ GEM
     jsonlint (0.3.0)
       oj (~> 3)
       optimist (~> 3)
-    jwt (2.8.1)
+    jwt (2.8.2)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -632,10 +637,11 @@ GEM
       rdf-turtle
       rdf-vocab (>= 0.8)
       slop
-    ldpath (1.1.0)
+    ldpath (1.2.0)
       nokogiri (~> 1.8)
       parslet
       rdf (~> 3.0)
+      rdf-vocab (~> 3.0)
     legato (0.7.0)
       multi_json
     link_header (0.0.8)
@@ -708,7 +714,7 @@ GEM
     mimemagic (0.3.10)
       nokogiri (~> 1)
       rake
-    mini_magick (4.12.0)
+    mini_magick (4.13.1)
     mini_mime (1.1.5)
     mini_portile2 (2.8.6)
     minitest (5.22.3)
@@ -808,9 +814,6 @@ GEM
     raabro (1.4.0)
     racc (1.7.3)
     rack (2.2.9)
-    rack-protection (3.2.0)
-      base64 (>= 0.1.0)
-      rack (~> 2.2, >= 2.2.4)
     rack-test (0.7.0)
       rack (>= 1.0, < 3)
     rails (5.2.4.6)
@@ -1050,11 +1053,10 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
-    sidekiq (6.0.7)
+    sidekiq (6.4.2)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
-      rack-protection (>= 2.0.0)
-      redis (>= 4.1.0)
+      redis (>= 4.2.0)
     sidekiq-cron (1.12.0)
       fugit (~> 1.8)
       globalid (>= 1.0.1)
@@ -1064,7 +1066,7 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    simple_form (5.3.0)
+    simple_form (5.3.1)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     simple_xlsx_reader (5.0.0)
@@ -1161,7 +1163,7 @@ GEM
       rdf-vocab
       reform (~> 2.2)
       reform-rails
-    version_gem (1.1.3)
+    version_gem (1.1.4)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (3.7.0)
@@ -1219,7 +1221,7 @@ DEPENDENCIES
   flipflop (~> 2.3)
   honeybadger (~> 3.0)
   http_parser.rb
-  hyrax (= 3.4.2)
+  hyrax (= 3.5)
   hyrax-doi!
   i18n-debug
   i18n-tasks
@@ -1260,7 +1262,7 @@ DEPENDENCIES
   selenium-webdriver (~> 3.142.7)
   shoulda-callback-matchers
   shoulda-matchers
-  sidekiq (~> 6.0.0)
+  sidekiq (~> 6.4.0)
   sidekiq-cron
   simple_xlsx_reader
   simplecov

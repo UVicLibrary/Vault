@@ -28,8 +28,12 @@
       # Hyrax.custom_queries.find_parent_work(resource: file_set) in v.3.5
       # https://github.com/samvera/hyrax/blob/main/app/models/hyrax/file_set.rb
       def fetch_thumbnail(object)
-        # return object if object.thumbnail_id == object.id
-        ActiveFedora::Base.find(object.thumbnail_id)
+        return ActiveFedora::Base.find(object.thumbnail_id) unless Hyrax.config.use_valkyrie?
+        return object if object.thumbnail_id == object.id
+        Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: object.thumbnail_id)
+      rescue Valkyrie::Persistence::ObjectNotFoundError, Hyrax::ObjectNotFoundError
+        Rails.logger.error("Couldn't find thumbnail #{object.thumbnail_id} for #{object.id}")
+        nil
       end
 
       # Returns the value for the thumbnail path to put into the solr document

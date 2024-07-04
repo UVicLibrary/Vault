@@ -18,6 +18,10 @@ class CatalogController < ApplicationController
     "system_modified_dtsi"
   end
 
+  rescue_from Blacklight::Exceptions::InvalidRequest do
+    render json: { response: 'Bad Request: try a different search', status: 400 }
+  end
+
   configure_blacklight do |config|
     # default advanced config values
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
