@@ -90,13 +90,14 @@ RSpec.describe FileSetIndexer do
       expect(subject['all_text_timv']).to eq('abcxyz')
       expect(subject['height_is']).to eq 500
       expect(subject['width_is']).to eq 600
-      expect(subject['digest_ssim']).to eq 'urn:sha1:f794b23c0c6fe1083d0ca8b58261a078cd968967'
+      expect(subject['digest_ssim']).to eq ['urn:sha1:f794b23c0c6fe1083d0ca8b58261a078cd968967']
       expect(subject['visibility_ssi']).to eq 'restricted'
       expect(subject['page_count_tesim']).to eq ['1']
       expect(subject['file_title_tesim']).to eq ['title']
       expect(subject['duration_tesim']).to eq ['0:1']
       expect(subject['sample_rate_tesim']).to eq ['sample rate']
       expect(subject['current_file_version_ssi']).to eq file_set.original_file.id
+      expect(subject['original_file_id_ssi']).to eq file_set.original_file.id
     end
 
     context "when the file set's parent has a creator" do

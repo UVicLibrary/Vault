@@ -21,18 +21,16 @@ module Hyrax
         solr_doc['mime_type_ssi']  = object.mime_type
         # Index the Fedora-generated SHA1 digest to create a linkage between
         # files on disk (in fcrepo.binary-store-path) and objects in the repository.
-        solr_doc['digest_ssim'] = digest_from_content
+        solr_doc['digest_ssim']             = [digest_from_content]
         solr_doc['page_count_tesim']        = object.page_count
         solr_doc['file_title_tesim']        = object.file_title
         solr_doc['duration_tesim']          = object.duration
         solr_doc['sample_rate_tesim']       = object.sample_rate
         solr_doc['original_checksum_tesim'] = object.original_checksum
-        # solr_doc['alpha_channels_ssi']      = object.alpha_channels
+        solr_doc['alpha_channels_ssi']      = object.alpha_channels
         solr_doc['current_file_version_ssi'] = latest_file_id
+        solr_doc['original_file_id_ssi'] = latest_file_id
         solr_doc['generic_type_si'] = 'FileSet'
-          # In later versions of Hyrax, the above field gets collapsed into
-          # solr_doc['original_file_id_ssi']    = original_file_id
-          # But I prefer current_file_version because it's less confusing
       end
     end
 
