@@ -71,7 +71,7 @@
 
     class DisplayImagePresenter < Draper::Decorator
       delegate_all
-      include Hyrax::DisplaysImage
+      include CustomDisplaysImage
 
       ##
       # @!attribute [w] ability
@@ -91,7 +91,7 @@
 
         IIIFManifest::DisplayImage
             .new(display_image_url(@hostname),
-                 format: 'jpg', # image_format(alpha_channels)
+                 format: image_format(alpha_channels),
                  width: width,
                  height: height,
                  iiif_endpoint: iiif_endpoint(latest_file_id))

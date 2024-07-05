@@ -3,7 +3,7 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
     include Hyrax::PresentsAttributes
     include Hyrax::CharacterizationBehavior
     include Hyrax::WithEvents
-    include Hyrax::DisplaysImage
+    include CustomDisplaysImage
 
     attr_accessor :solr_document, :current_ability, :request
 
@@ -25,6 +25,9 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
              :additional_physical_characteristics, :has_format, :physical_repository, :provenance,
              :provider, :sponsor, :genre, :format, :is_referenced_by, :date_digitized, :transcript,
              :technical_note, :year, to: :solr_document
+
+    # Needed for CustomDisplaysImage
+    delegate :current_file_version, to: :solr_document
 
     # IIIF metadata for inclusion in the manifest
     #  Called by the `iiif_manifest` gem to add metadata

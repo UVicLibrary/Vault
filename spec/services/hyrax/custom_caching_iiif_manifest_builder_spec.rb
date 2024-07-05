@@ -21,7 +21,10 @@ RSpec.describe Hyrax::CustomCachingIiifManifestBuilder, :clean_repo do
 
   subject(:builder) { described_class.new }
 
-  before { allow(presenter).to receive(:member_presenters).and_return [file_set_presenter] }
+  before do
+    allow(presenter).to receive(:member_presenters).and_return [file_set_presenter]
+    allow(presenter).to receive(:timestamp).and_return "2024-07-05"
+  end
 
   it 'hits the cache' do
     expect(Rails.cache).to receive(:fetch).and_yield
@@ -32,6 +35,10 @@ RSpec.describe Hyrax::CustomCachingIiifManifestBuilder, :clean_repo do
     Rails.cache.delete(builder.send(:manifest_cache_key, presenter: presenter))
     expect(Hyrax::CustomManifestBuilderService).to receive(:manifest_for).with(presenter: presenter)
     builder.manifest_for(presenter: presenter)
+  end
+
+  it 'uses the timestamp in #manifest_cache_key' do
+    expect(builder.send(:manifest_cache_key, presenter: presenter)).to match /2024-07-05/
   end
 
 end
