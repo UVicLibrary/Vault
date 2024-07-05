@@ -29,7 +29,7 @@ Hyrax::IiifManifestPresenter::DisplayImagePresenter.class_eval do
 
     IIIFManifest::DisplayImage
       .new(display_image_url(hostname),
-      format: 'jpg', # image_format(alpha_channels),
+      format: image_format(alpha_channels),
       width: width,
       height: height,
       iiif_endpoint: iiif_endpoint(latest_file_id))

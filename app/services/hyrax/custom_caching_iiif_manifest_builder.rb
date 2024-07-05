@@ -18,5 +18,13 @@ module Hyrax
       end
     end
 
+    ##
+    # Use timestamp for manifest key so that a new manifest gets cached if
+    # a file set's content version is updated
+    # @return [String]
+    def version_for(presenter)
+      presenter.timestamp
+    end
+
   end
 end
