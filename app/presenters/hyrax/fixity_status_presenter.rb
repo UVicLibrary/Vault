@@ -30,7 +30,7 @@ module Hyrax
             elsif File.exist?(log_path)
               content_tag("span", "passed", class: "label label-success") + ' ' + "on #{humanize_datetime(@file_set.last_fixity_check)}"
             else
-              content_tag("span", "unknown", class: "label label-warning") + ' ' + "Fixity checks have been run but Hyrax cannot find the status."
+              content_tag("span", "unknown", class: "label label-warning") + ' ' + "Fixity checks have been run but Hyrax cannot find the status. This usually means the file passed but the log has been deleted."
             end
           else
             "Fixity checks have not yet been run on this object"
