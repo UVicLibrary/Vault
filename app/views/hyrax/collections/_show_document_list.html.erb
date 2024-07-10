@@ -1,15 +1,16 @@
 <table class="table table-striped">
-  <caption class="sr-only">List of items in this collection</caption>
+  <caption class="sr-only"><%= t('hyrax.dashboard.my.heading.caption') %></caption>
   <thead>
   <tr>
     <th>&nbsp;</th>
     <th><%= t("hyrax.dashboard.my.heading.title") %></th>
+    <!-- Edited to display a column for date created -->
     <th><%= t("blacklight.search.fields.show.date_created") %></th>
     <th><%= t("hyrax.dashboard.my.heading.date_uploaded") %></th>
     <th><%= t("hyrax.dashboard.my.heading.visibility") %></th>
   </tr>
   </thead>
   <tbody>
-  <%= render partial: 'show_document_list_row', collection: documents, as: :document %>
+    <%= render partial: 'show_document_list_row', collection: documents, as: :document %>
   </tbody>
 </table>

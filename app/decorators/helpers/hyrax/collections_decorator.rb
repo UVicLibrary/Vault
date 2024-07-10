@@ -27,4 +27,8 @@ Hyrax::CollectionsHelper.module_eval do
       { "id" => col.id, "title_first" => col.title.first }
     end.to_json
   end
+
+  def collection_metadata_label(_, _)
+    # Intentionally left blank to omit labels on collection show page
+  end
 end

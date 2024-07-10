@@ -5,6 +5,7 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
            :contributor_label, :physical_repository_label, :genre_label,
            :geographic_coverage, :genre, :resource_type, :keyword,
            :geographic_coverage_label, :chronological_coverage, :thumbnail_path,
+           :last_modified,
            to: :solr_document
 
   # Terms is the list of fields displayed by
