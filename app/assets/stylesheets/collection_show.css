@@ -40,6 +40,10 @@
     font-size: 1.5em;
 }
 
+.hyc-metadata dl {
+    border: none;
+}
+
 .hyc-header {
     margin-bottom: 1em;
 }

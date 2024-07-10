@@ -27,4 +27,9 @@ Hyrax::CollectionsHelper.module_eval do
       { "id" => col.id, "title_first" => col.title.first }
     end.to_json
   end
+
+  def collection_metadata_label(collection, field)
+    return if collection.class == VaultCollectionPresenter
+    Hyrax::PresenterRenderer.new(collection, self).label(field)
+  end
 end
