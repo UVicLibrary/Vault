@@ -28,8 +28,7 @@ Hyrax::CollectionsHelper.module_eval do
     end.to_json
   end
 
-  def collection_metadata_label(collection, field)
-    return if collection.class == VaultCollectionPresenter
-    Hyrax::PresenterRenderer.new(collection, self).label(field)
+  def collection_metadata_label(_, _)
+    # Intentionally left blank to omit labels on collection show page
   end
 end
