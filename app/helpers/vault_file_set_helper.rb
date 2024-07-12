@@ -52,10 +52,12 @@ module VaultFileSetHelper
   end
 
   def multiple_audio?(file_set)
+    return false if action_name == "edit"
     file_set.parent.member_presenters.select(&:audio?).count > 1
   end
 
   def multiple_video?(file_set)
+    return false if action_name == "edit"
     file_set.parent.member_presenters.select(&:video?).count > 1
   end
 

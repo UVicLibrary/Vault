@@ -32,6 +32,7 @@ module VaultAvHelper
   # whereas has_vtt? checks for a file set-level transcript. has_vtt? takes precedence over
   # has_transcript?
   def has_transcript?(parent)
+    return false if action_name == "edit"
     transcript_for(parent).present? # && work_show_page?
   end
 
@@ -39,7 +40,7 @@ module VaultAvHelper
     parent.member_presenters.find { |fs| fs.pdf? && fs.title.first.downcase.include?("transcript") }
   end
 
-  def video_tag_settings(file_set)
+  def audio_video_tag_settings(file_set)
     if has_transcript?(file_set.parent)
       sanitize('width="600px" data-transcript-text="transcript-text"')
     else
@@ -59,9 +60,10 @@ module VaultAvHelper
   end
 
   def track_source(file_set)
+    parent = @parent || file_set.parent
     if has_vtt?(file_set)
       vtt_path_for(file_set)
-    elsif has_transcript?(file_set.parent)
+    elsif has_transcript?(parent)
       # This is just a dummy to trigger the Hide/Show transcript button, various controls
       # (e.g. dragging, resizing) that aren't available otherwise.
       "/able_player/transcripts/blank.vtt"

@@ -23,4 +23,9 @@ Hyrax::FileSetsController.class_eval do
     end
   end
 
+  def edit
+    initialize_edit_form
+    @parent = presenter.parent
+  end
+
 end
