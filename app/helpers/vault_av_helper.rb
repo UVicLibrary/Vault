@@ -1,9 +1,5 @@
 module VaultAvHelper
 
-  def work_show_page?
-    params[:controller].present? && params[:controller].include?("generic_works")
-  end
-
   # Checks to see if a file set-level transcript is available.
   def has_vtt?(file_set)
     File.file? Rails.root.join("public","able_player","transcripts", "#{file_set.id}.vtt")
@@ -24,7 +20,7 @@ module VaultAvHelper
     end
   end
 
-  def video_files(work_presenter)
+  def video_files_for(work_presenter)
     work_presenter.member_presenters.select(&:video?)
   end
 
@@ -35,18 +31,17 @@ module VaultAvHelper
   # Checks to see if there is a work-level (parent-level) transcript for multiple files,
   # whereas has_vtt? checks for a file set-level transcript. has_vtt? takes precedence over
   # has_transcript?
-  def has_transcript?(file_set)
-    SolrDocument.find(file_set.parent.id).full_text.present? && work_show_page?
+  def has_transcript?(parent)
+    return false if action_name == "edit"
+    transcript_for(parent).present? # && work_show_page?
   end
 
-  def transcript_for(file_set)
-    file_set.parent.member_presenters.find { |fs| fs.pdf? && fs.title.first.downcase.include?("transcript") }
+  def transcript_for(parent)
+    parent.member_presenters.find { |fs| fs.pdf? && fs.title.first.downcase.include?("transcript") }
   end
 
-  def video_tag_settings(file_set)
-    if has_vtt?(file_set)
-      sanitize('width="600px"')
-    elsif has_transcript?(file_set)
+  def audio_video_tag_settings(file_set)
+    if has_transcript?(file_set.parent)
       sanitize('width="600px" data-transcript-text="transcript-text"')
     else
       sanitize('width="750px"')
@@ -65,9 +60,10 @@ module VaultAvHelper
   end
 
   def track_source(file_set)
+    parent = @parent || file_set.parent
     if has_vtt?(file_set)
       vtt_path_for(file_set)
-    elsif has_transcript?(file_set)
+    elsif has_transcript?(parent)
       # This is just a dummy to trigger the Hide/Show transcript button, various controls
       # (e.g. dragging, resizing) that aren't available otherwise.
       "/able_player/transcripts/blank.vtt"
