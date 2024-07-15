@@ -10,6 +10,10 @@ module VaultFileSetHelper
     end
   end
 
+  def work_show_page?
+    params[:controller].present? && params[:controller].include?("generic_works")
+  end
+
   # Override Hyrax::FileSetHelper in Hyrax v. 3.1
   def media_display_partial(file_set)
     'hyrax/file_sets/media_display/' +
