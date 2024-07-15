@@ -22,7 +22,7 @@
     <div class="able-status-bar"></div>
   </div>
 </div>
-<% if has_transcript?(video_files.first) %>
+<% if has_transcript?(parent) && !has_vtt?(video_files.first) %>
   <div id="transcript-text" style="display: none;" aria-hidden="true"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
 <% end %>
 <% if display_media_download_link?(file_set: video_files.first) %>
@@ -41,13 +41,13 @@
                   target: :_blank,
                   id: "transcript_file_download",
                   data: { label: vtt_transcript_for(video_files.first).id } %>
-    <% elsif has_transcript?(video_files.first) %>
+    <% elsif has_transcript?(parent) %>
       <%= link_to "Download transcript (PDF)",
-                  hyrax.download_path(transcript_for(video_files.first)),
+                  hyrax.download_path(transcript_for(parent)),
                   data: { turbolinks: false },
                   target: :_blank,
                   id: "transcript_file_download",
-                  data: { label: transcript_for(video_files.first).id } %>
+                  data: { label: transcript_for(parent).id } %>
     <% end %>
   </div>
 <% end %>

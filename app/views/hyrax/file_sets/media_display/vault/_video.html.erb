@@ -3,37 +3,37 @@
 <% parent = (@parent || file_set.parent) %>
 <!-- methods defined in AvTranscriptsHelper -->
 <% if multiple_video?(file_set) and work_show_page? %>
-  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files(parent), parent: parent %>
+  <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files_for(parent), parent: parent %>
 <% else %>
   <video preload="auto" data-able-player data-skin="2020" <%= audio_video_tag_settings(file_set) %> playsinline>
     <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
     <!-- Track tag and transcript div must be INSIDE the video tag -->
     <%= render_track_tag(file_set) %>
-    <% if has_transcript?(file_set) && !has_vtt?(file_set) %>
+    <% if has_transcript?(parent) && !has_vtt?(file_set) %>
       <div id="transcript-text"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
     <% end %>
     Your browser does not support the video tag.
   </video>
   <br/>
 
-  <% if display_media_download_link?(file_set: file_set) %>
-    <div class="download-links-container">
-    <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
-                hyrax.download_path(file_set),
-                data: { label: file_set.id },
-                target: :_blank,
-                id: "file_download" %>
-    <%# Include link to transcript %>
-    <% if display_pdf_download_link?(file_set) %>
-      &ensp;|&ensp;
-      <%= link_to "Download transcript (PDF)",
-                  hyrax.download_path(pdf_file_set(file_set)),
-                  data: { turbolinks: false },
-                  target: :_blank,
-                  id: "transcript_file_download",
-                  data: { label: pdf_file_set(file_set).id } %>
+
+    <% if display_media_download_link?(file_set: file_set) %>
+      <div class="download-links-container">
+        <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
+                    hyrax.download_path(file_set),
+                    data: { label: file_set.id },
+                    target: :_blank,
+                    id: "file_download" %>
+        <%# Include link to transcript %>
+        <% if display_pdf_download_link?(file_set) && has_transcript?(parent) %>
+          &ensp;|&ensp;
+          <%= link_to "Download transcript (PDF)",
+                      hyrax.download_path(transcript_for(parent).id),
+                      target: :_blank,
+                      id: "transcript_file_download",
+                      data: { turbolinks: false, label: transcript_for(parent).id } %>
+        <% end %>
+      </div>
     <% end %>
-    </div>
-  <% end %>
 
 <% end %>

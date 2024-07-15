@@ -14,7 +14,7 @@ module VaultAvHelper
     transcript = file_set.parent.member_presenters.find { |fs| fs.title.first.gsub("transcript","video") == file_set.title.first && fs.pdf?  }
     # Sometimes we have separate vtt files but only one PDF transcript
     if transcript.nil?
-      transcript_for(file_set)
+      transcript_for(file_set.parent)
     else
       transcript
     end
@@ -42,7 +42,9 @@ module VaultAvHelper
 
   def audio_video_tag_settings(file_set)
     if has_transcript?(file_set.parent)
-      sanitize('width="600px" data-transcript-text="transcript-text"')
+      text = 'width="600px"'
+      text += ' data-transcript-text="transcript-text"' if !has_vtt?(file_set)
+      sanitize(text)
     else
       sanitize('width="750px"')
     end
