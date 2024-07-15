@@ -5,7 +5,7 @@
 <% if multiple_video?(file_set) and work_show_page? %>
   <%= render 'hyrax/file_sets/media_display/vault/video_playlist', video_files: video_files(parent), parent: parent %>
 <% else %>
-  <video preload="auto" data-able-player data-skin="2020" <%= video_tag_settings(file_set) %> playsinline>
+  <video preload="auto" data-able-player data-skin="2020" <%= audio_video_tag_settings(file_set) %> playsinline>
     <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
     <!-- Track tag and transcript div must be INSIDE the video tag -->
     <%= render_track_tag(file_set) %>
