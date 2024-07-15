@@ -2,10 +2,10 @@
 <script src="<%= request.base_url %>/able_player/build/ableplayer.js"></script>
 <div>
   <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-<% parent = (@parent || file_set.parent) %>
-<% if multiple_audio?(file_set) and work_show_page? %>
+  <% parent = (@parent || file_set.parent) %>
+  <% if multiple_audio?(file_set) and work_show_page? %>
     <%= render 'hyrax/file_sets/media_display/vault/audio_playlist', audio_files: audio_files(parent), parent: parent %>
-<% else %>
+  <% else %>
     <audio id="audio1" data-able-player data-skin="2020" <%= audio_video_tag_settings(file_set) %> preload="auto" >
       <source type="<%= file_set.mime_type %>" src="<%= hyrax.download_path(file_set) %>"/>
       <!-- Track tag and transcript div must be INSIDE the audio tag -->
@@ -41,5 +41,5 @@
                     data: { turbolinks: false, label: transcript_for(parent).id } %>
       <% end %>
     <% end %>
-<% end %>
+  <% end %>
 </div>
