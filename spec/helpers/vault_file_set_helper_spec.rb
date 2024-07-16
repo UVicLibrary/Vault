@@ -188,5 +188,22 @@ RSpec.describe VaultFileSetHelper do
       subject { helper.display_pdf_download_link?(double(Hyrax::FileSetPresenter)) }
       it { is_expected.to eq false }
     end
+
+    describe '#work_show_page?' do
+      subject { helper.work_show_page? }
+
+      context 'on a work page' do
+        before { allow(helper).to receive(:params).and_return({ controller: "hyrax/generic_works" }) }
+
+        it { is_expected.to eq true }
+      end
+
+      context 'on a file set page' do
+        before { allow(helper).to receive(:params).and_return({ controller: "hyrax/file_sets" }) }
+
+        it { is_expected.to eq false }
+      end
+    end
+
   end
 end

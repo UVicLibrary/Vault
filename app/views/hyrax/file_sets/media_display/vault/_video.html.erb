@@ -16,24 +16,24 @@
   </video>
   <br/>
 
+  <% if display_media_download_link?(file_set: file_set) %>
+    <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
+                hyrax.download_path(file_set),
+                data: { label: file_set.id },
+                target: :_blank,
+                id: "file_download" %>
+  <% end %>
 
-    <% if display_media_download_link?(file_set: file_set) %>
-      <div class="download-links-container">
-        <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
-                    hyrax.download_path(file_set),
-                    data: { label: file_set.id },
-                    target: :_blank,
-                    id: "file_download" %>
-        <%# Include link to transcript %>
-        <% if display_pdf_download_link?(file_set) && has_transcript?(parent) %>
-          &ensp;|&ensp;
-          <%= link_to "Download transcript (PDF)",
-                      hyrax.download_path(transcript_for(parent).id),
-                      target: :_blank,
-                      id: "transcript_file_download",
-                      data: { turbolinks: false, label: transcript_for(parent).id } %>
-        <% end %>
-      </div>
+  <%# Include link to transcript %>
+  <% if display_pdf_download_link?(parent) && work_show_page? %>
+    <% if has_transcript?(parent) %>
+      &ensp;|&ensp;
+      <%= link_to "Download transcript (PDF)",
+                  hyrax.download_path(transcript_for(parent).id),
+                  target: :_blank,
+                  id: "transcript_file_download",
+                  data: { turbolinks: false, label: transcript_for(parent).id } %>
     <% end %>
+  <% end %>
 
 <% end %>
