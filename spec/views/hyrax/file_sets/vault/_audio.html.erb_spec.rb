@@ -61,6 +61,10 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_audio.html.erb', type: :vie
         expect(subject).to have_css("track")
         expect(subject).to have_link('Download selected transcript (PDF)', href: '/downloads/pdf')
       end
+
+      it 'does not render the transcript-text div' do
+        expect(subject).not_to have_selector("div#transcript-text", visible: false)
+      end
     end
 
     context "with a work-level PDF transcript" do
@@ -93,6 +97,10 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_audio.html.erb', type: :vie
       it "draws the view without PDF transcript download link" do
         expect(subject).to have_selector("audio[data-able-player]")
         expect(subject).not_to have_css('a', text: 'Download transcript (PDF)')
+      end
+
+      it 'does not render the transcript-text div' do
+        expect(subject).not_to have_selector("div#transcript-text", visible: false)
       end
     end
 

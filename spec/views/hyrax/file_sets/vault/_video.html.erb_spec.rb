@@ -38,6 +38,7 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_video.html.erb', type: :vie
         allow(view).to receive(:has_vtt?).with(file_set).and_return false
         allow(view).to receive(:has_transcript?).with(work_presenter).and_return false
         allow(view).to receive(:display_pdf_download_link?).with(file_set).and_return true
+        allow(view).to receive(:display_pdf_download_link?).with(work_presenter).and_return true
         allow(view).to receive(:transcript_for).with(work_presenter).and_return(transcript)
       end
     end
@@ -64,7 +65,10 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_video.html.erb', type: :vie
       it "renders a download transcript link and a track tag" do
         expect(subject).to have_selector("video[data-able-player]", visible: false)
         expect(subject).to have_css("track", visible: false)
-        expect(subject).to have_link('Download transcript (PDF)', href: '/downloads/pdf')
+      end
+
+      it 'does not render the transcript-text div' do
+        expect(subject).not_to have_selector("div#transcript-text", visible: false)
       end
     end
 
@@ -73,7 +77,7 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_video.html.erb', type: :vie
       before do
         without_partial_double_verification do
           allow(view).to receive(:has_transcript?).with(work_presenter).and_return true
-          allow(view).to receive(:transcript_for).with(work_presenter).and_return(double(id: "nar"))
+          allow(view).to receive(:transcript_for).with(work_presenter).and_return(double(id: "pdf"))
         end
       end
 
@@ -91,8 +95,9 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_video.html.erb', type: :vie
     context 'no PDF transcript' do
       before do
         without_partial_double_verification do
-          allow(view).to receive(:display_pdf_download_link?).with(file_set).and_return false
-          allow(view).to receive(:work_show_page?).and_return false
+          allow(view).to receive(:has_vtt?).with(file_set).and_return false
+          # allow(view).to receive(:display_pdf_download_link?).with(work_presenter).and_return false
+          allow(view).to receive(:work_show_page?).and_return true
         end
       end
 
@@ -100,6 +105,10 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_video.html.erb', type: :vie
         expect(subject).to have_selector("video", visible: false)
         expect(subject).not_to have_selector("track", visible: false)
         expect(subject).not_to have_css('a', text: 'Download transcript (PDF)')
+      end
+
+      it 'does not render the transcript-text div' do
+        expect(subject).not_to have_selector("div#transcript-text", visible: false)
       end
     end
 

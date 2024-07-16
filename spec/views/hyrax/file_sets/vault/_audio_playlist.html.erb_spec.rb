@@ -46,6 +46,10 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_audio_playlist.html.erb', t
       it "renders a transcript link" do
         expect(subject).to have_link('Download selected transcript (PDF)', href: '/downloads/pdf')
       end
+
+      it 'does not render the transcript-text div' do
+        expect(subject).not_to have_selector("div#transcript-text", visible: false)
+      end
     end
 
     context 'with a work-level PDF transcript' do
@@ -74,6 +78,10 @@ RSpec.describe 'hyrax/file_sets/media_display/vault/_audio_playlist.html.erb', t
       it "does not render a download transcript link" do
         expect(subject).not_to have_link('Download selected transcript (PDF)', href: '/downloads/pdf')
         expect(subject).not_to have_link('Download transcript (PDF)', href: '/downloads/pdf')
+      end
+
+      it 'does not render the transcript-text div' do
+        expect(subject).not_to have_selector("div#transcript-text", visible: false)
       end
     end
   end

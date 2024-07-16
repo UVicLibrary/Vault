@@ -77,7 +77,7 @@ RSpec.describe Hyrax::FileSetsController do
         expect(response).to be_successful
         expect(assigns[:file_set]).to eq file_set
         expect(assigns[:version_list]).to be_kind_of Hyrax::VersionListPresenter
-        expect(assigns[:parent]).to eq parent
+        expect(assigns[:parent]).to be_kind_of VaultWorkShowPresenter
         expect(response).to render_template(:edit)
         expect(response).to render_template('dashboard')
       end

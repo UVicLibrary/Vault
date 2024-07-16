@@ -147,5 +147,36 @@ RSpec.describe VaultAvHelper, type: :helper do
         it { is_expected.to eq "" }
       end
     end
+
+    describe "#audio_video_tag_settings" do
+      subject { helper.audio_video_tag_settings(child) }
+
+      before do
+        allow(transcript).to receive(:title).and_return(["transcript"])
+        allow(child).to receive(:parent).and_return(parent)
+        allow(parent).to receive(:member_presenters).and_return([child, transcript])
+        allow(helper).to receive(:params).and_return({ controller: "hyrax/generic_works" })
+      end
+
+      context 'with a vtt transcript' do
+        before do
+          allow(File).to receive(:file?).and_call_original
+          allow(File).to receive(:file?).with(Rails.root.join("public","able_player","transcripts", "#{child.id}.vtt")).and_return(true)
+        end
+
+        it { is_expected.to eq 'width="600px"' }
+      end
+
+      context 'when there is a work-level transcript' do
+        it { is_expected.to eq 'width="600px" data-transcript-text="transcript-text"' }
+      end
+
+      context 'with no transcript' do
+        before { allow(parent).to receive(:member_presenters).and_return([child]) }
+
+        it { is_expected.to eq 'width="750px"' }
+      end
+
+    end
   end
 end

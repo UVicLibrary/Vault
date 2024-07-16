@@ -33,13 +33,15 @@ module VaultAvHelper
   # has_transcript?
   def has_transcript?(parent)
     return false if action_name == "edit"
-    transcript_for(parent).present? # && work_show_page?
+    work_show_page? && transcript_for(parent).present?
   end
 
+  # Finds the PDF file set that is the transcript for a work
   def transcript_for(parent)
     parent.member_presenters.find { |fs| fs.pdf? && fs.title.first.downcase.include?("transcript") }
   end
 
+  # Make the width of the audio/video player smaller if a transcript is available
   def audio_video_tag_settings(file_set)
     if has_transcript?(file_set.parent)
       text = 'width="600px"'
