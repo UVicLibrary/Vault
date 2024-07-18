@@ -14,6 +14,10 @@ RSpec.describe GenericWorkIndexer do
                       resource_type:["http://purl.org/dc/dcmitype/StillImage"]) }
   let(:date_created) {["1943/1945"] }
 
+  it 'uses VaultThumbnailPathService to index thumbnail paths' do
+    expect(described_class.thumbnail_path_service).to eq VaultThumbnailPathService
+  end
+
   it 'indexes a title field for sorting alphabetically' do
     expect(solr_document['title_sort_ssi']).to eq 'Test title'
   end
