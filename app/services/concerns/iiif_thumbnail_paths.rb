@@ -16,15 +16,30 @@ module IIIFThumbnailPaths
 
     # @private
     def iiif_thumbnail_path(file_set, size)
-      af_file_set = ::FileSet.find(file_set.id.to_s)
-      return default_image unless af_file_set.original_file and af_file_set.image?
+      return default_image unless file_set.try(:image?) || is_image?(file_set)
 
-      # Use latest version
-      path = Hyrax::VersioningService.versioned_file_id(af_file_set.original_file)
+      # file_set will be an ActiveFedora FileSet when indexing a file set
+      # and a Hyrax::FileSet when indexing a work
+      path = if file_set.is_a? Hyrax::FileSet
+               file = Hyrax.custom_queries.find_file_metadata_by(id: file_set.original_file_id)
+               Hyrax.config.translate_uri_to_id.call(
+                   Hyrax::VersioningService.versioned_file_id(file)
+               )
+             else # ActiveFedora file set (file_set.class.ancestors.include?(ActiveFedora::Base))
+               file = ActiveFedora::Base.find(file_set.id.to_s).original_file
+               Hyrax::VersioningService.versioned_file_id(file)
+             end
+
       Riiif::Engine.routes.url_helpers.image_path(
         path,
         size: size
       )
+    end
+
+    # @param [Hyrax::FileSet]
+    def is_image?(file_set)
+      return false unless file_set.respond_to?(:original_file_id)
+      Hyrax.custom_queries.find_file_metadata_by(id: file_set.original_file_id).image?
     end
 
   end

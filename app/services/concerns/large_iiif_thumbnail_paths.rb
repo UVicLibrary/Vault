@@ -10,7 +10,7 @@ module LargeIIIFThumbnailPaths
     # @return the IIIF url for the thumbnail if it's an image, otherwise gives
     #         the thumbnail download path
     def thumbnail_path(file_set, size = LARGE_THUMBNAIL_SIZE)
-      # return super(file_set) unless file_set.image?
+      return super(file_set) unless file_set.try(:image?) || is_image?(file_set)
       iiif_thumbnail_path(file_set, size)
     end
   end

@@ -49,9 +49,13 @@
       end
 
       def m4a_file?(object)
-        # For a Hyrax::FileSet, .files.first.original_name can be replaced with
-        # Hyrax.custom_queries.find_file_metadata_by(id: object.original_file_id).original_filename
-        object.files.any? ? object.files.first.original_name.include?("m4a") : false
+        if object.is_a? Hyrax::FileSet
+          return false unless object.original_file_id.present?
+          filename = Hyrax.custom_queries.find_file_metadata_by(id: object.original_file_id).original_filename
+          filename.include?("m4a")
+        else # is an ActiveFedora FileSet
+          object.files.any? ? object.files.first.original_name.include?("m4a") : false
+        end
       end
 
       def audio_thumbnail_path(object)

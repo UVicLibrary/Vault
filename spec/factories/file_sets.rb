@@ -28,7 +28,7 @@ FactoryBot.define do
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-            .call(file_set, File.open(Hyrax::Engine.root + 'spec/fixtures/world.png'), :original_file)
+            .call(file_set, File.open(Rails.root + 'spec/fixtures/world.png'), :original_file)
       end
     end
 

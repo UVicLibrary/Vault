@@ -36,7 +36,7 @@ RSpec.describe VaultThumbnailPathService do
 
   context "with a Work" do
 
-    let(:object)         { GenericWork.new(thumbnail_id: '999') }
+    let(:object)         { GenericWork.new(thumbnail_id: representative.id) }
     let(:representative) { FileSet.new(id: '999') }
     let(:collection) { Collection.new(id: "foo-bar", title: ["Collection Title"]) }
 
@@ -113,6 +113,18 @@ RSpec.describe VaultThumbnailPathService do
         before { allow(representative).to receive(:pdf?).and_return true }
 
         it { is_expected.to eq("/pdf_thumbnails/999-thumb.jpg") }
+      end
+    end
+
+    context 'when #fetch_thumbnail returns a Hyrax::FileSet' do
+      before { allow(Hyrax.config).to receive(:use_valkyrie?).and_return true }
+
+      context "with an image thumbnail" do
+        let(:representative) { FactoryBot.create(:file_set, :with_original_file) }
+
+        it "includes the version in the URL" do
+          expect(subject).to eq "/images/#{CGI.escape("#{representative.original_file.id}/fcr:versions/version1").gsub("%3A",":")}/full/!150,300/0/default.jpg"
+        end
       end
     end
 
