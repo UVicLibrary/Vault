@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 RSpec.describe WorkIndexer do
   describe 'thumbnail_path_service' do
     subject { described_class.thumbnail_path_service }
 
-    it { is_expected.to eq IIIFWorkThumbnailPathService }
+    it { is_expected.to eq Hyrax::WorkThumbnailPathService }
   end
 
   describe 'rdf_service' do

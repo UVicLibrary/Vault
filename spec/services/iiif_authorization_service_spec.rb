@@ -41,7 +41,7 @@ RSpec.describe IIIFAuthorizationService do
 
       context 'when requesting a thumbnail' do
         context 'work thumbnail' do
-          let(:size) { IIIFThumbnailPaths::THUMBNAIL_SIZE }
+          let(:size) { "!150,300" }
           context "show" do
             subject { service.can?(:show, image) }
             it { is_expected.to be true }
@@ -61,7 +61,7 @@ RSpec.describe IIIFAuthorizationService do
       context 'when requesting a thumbnail' do
 
         context 'work thumbnail' do
-          let(:size) { IIIFThumbnailPaths::THUMBNAIL_SIZE }
+          let(:size) { "!150,300" }
           context "show" do
             it { is_expected.to be true }
           end

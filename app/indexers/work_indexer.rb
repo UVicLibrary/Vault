@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This indexer is not used by any work type as of 8/11/2022.
 # It's left here as a template for future tenant work types and
 # documentation of the default thumbnail indexing options.
@@ -14,7 +16,7 @@ class WorkIndexer < Hyrax::WorkIndexer
   include Hyrax::IndexesLinkedMetadata
 
   # Use thumbnails served by RIIIF
-  self.thumbnail_path_service = IIIFWorkThumbnailPathService
+  self.thumbnail_path_service = Hyrax::WorkThumbnailPathService
 
   # Uncomment this block if you want to add custom indexing behavior:
   def generate_solr_document
