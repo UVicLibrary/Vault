@@ -116,7 +116,18 @@ RSpec.describe VaultThumbnailPathService do
       end
     end
 
-    context 'when #fetch_thumbnail returns a Hyrax::FileSet' do
+    context "and has a video thumbnail" do
+
+      before do
+        allow(representative).to receive(:video?).and_return true
+        allow(ActiveFedora::Base).to receive(:find).with("999").and_return(representative)
+        allow(File).to receive(:exist?).with(Hyrax::DerivativePath.derivative_path_for_reference(representative, 'thumbnail')).and_return true
+      end
+
+      it { is_expected.to eq("/downloads/999?file=thumbnail") }
+    end
+
+    context 'with a Hyrax::FileSet' do
       before { allow(Hyrax.config).to receive(:use_valkyrie?).and_return true }
 
       context "with an image thumbnail" do
