@@ -18,13 +18,13 @@ RSpec.describe VaultThumbnailPathService do
       before do
         allow(ActiveFedora::Base).to receive(:find).with('999').and_return(object)
         allow(object).to receive(:original_file).and_return(original_file)
-        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return(original_file.id)
+        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return("#{object.id}/files/#{original_file.id}")
       end
 
       let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
 
       before { allow(File).to receive(:exist?).and_return(true) }
-      it { is_expected.to eq IIIFWorkThumbnailPathService.call(object) }
+      it { is_expected.to eq "/images/999%2Ffiles%2F#{original_file.id}/full/!150,300/0/default.jpg" }
     end
 
     context "that has no thumbnail" do

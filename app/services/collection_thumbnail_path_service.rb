@@ -1,33 +1,26 @@
+# frozen_string_literal: true
 class CollectionThumbnailPathService < VaultThumbnailPathService
   # Returns the path for collection thumbnails, i.e.
   #   1. The path for an uploaded collection thumbnail, if it exists
   #   2. A 500x900 IIIF thumbnail selected from a member work. We select
   #       a larger respolution so that it still looks good on a homepage card.
-
-  # app/services/concerns/iiif_thumbnail_paths.rb
-  include IIIFThumbnailPaths
-  # app/services/concerns/large_iiif_thumbnail_paths.rb
-  include LargeIIIFThumbnailPaths
-
   class << self
     # @param [Collection] object to get the thumbnail path for an uploaded image
     def call(object)
       if uploaded_thumbnail?(object)
         "/uploaded_collection_thumbnails/#{object.id}/#{object.id}_card.jpg"
       else
-        return default_image unless object.thumbnail_id
-        thumb = fetch_thumbnail(object)
-        if thumbnail?(thumb)
-          return download_path(thumb) if video?(thumb)
-          thumbnail_path(thumb)
-        else
-          default_image
-        end
+        # Thumbnail was selected from a work. See app/services/vault_thumbnail_path_service
+        super
       end
     end
 
     def upload_dir(collection)
       "#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}"
+    end
+
+    def image_thumbnail_size
+      '!500,900'
     end
 
     private

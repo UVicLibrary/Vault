@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
   # Modifies #file_set_id_for to decode the image URL.
   # Restricts access to IIIF image URLs to download
@@ -26,8 +27,8 @@ class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
   end
 
   def thumbnail?
-    @controller.params[:size] == IIIFThumbnailPaths::THUMBNAIL_SIZE ||
-      @controller.params[:size] == LargeIIIFThumbnailPaths::LARGE_THUMBNAIL_SIZE ||
+    @controller.params[:size] == VaultThumbnailPathService.image_thumbnail_size ||
+      @controller.params[:size] == CollectionThumbnailPathService.image_thumbnail_size ||
       # The size for thumbnails in search results view
       @controller.params[:size] == '!150,300'
   end
