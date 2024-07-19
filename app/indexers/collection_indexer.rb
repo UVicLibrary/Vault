@@ -10,7 +10,6 @@ class CollectionIndexer < Hyrax::CollectionIndexer
   include IndexesOAIFields
 
   # Use thumbnails served by RIIIF
-  # self.thumbnail_path_service = IIIFCollectionThumbnailPathService
   self.thumbnail_path_service = CollectionThumbnailPathService
 
   def generate_solr_document
