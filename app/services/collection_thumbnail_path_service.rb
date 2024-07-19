@@ -5,18 +5,15 @@ class CollectionThumbnailPathService < VaultThumbnailPathService
   #   2. A 500x900 IIIF thumbnail selected from a member work. We select
   #       a larger respolution so that it still looks good on a homepage card.
   class << self
+
     # @param [Collection] object to get the thumbnail path for an uploaded image
     def call(object)
-      if uploaded_thumbnail?(object)
-        "/uploaded_collection_thumbnails/#{object.id}/#{object.id}_card.jpg"
+      if UploadedCollectionThumbnailPathService.uploaded_thumbnail?(object)
+        UploadedCollectionThumbnailPathService.call(object)
       else
-        # Thumbnail was selected from a work. See app/services/vault_thumbnail_path_service
-        super
+        return default_image if object.try(:thumbnail_id).blank?
+        super(object)
       end
-    end
-
-    def upload_dir(collection)
-      "#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}"
     end
 
     def image_thumbnail_size
@@ -25,19 +22,8 @@ class CollectionThumbnailPathService < VaultThumbnailPathService
 
     private
 
-    # @return the network path to the thumbnail
-    # @param [FileSet] thumbnail the object that is the thumbnail
-    def download_path(thumbnail)
-      Hyrax::Engine.routes.url_helpers.download_path(thumbnail.id,
-                                                     file: 'thumbnail')
-    end
-
-    def uploaded_thumbnail?(collection)
-      File.exist?("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg")
-    end
-
     def default_image
-      ActionController::Base.helpers.image_path 'collection.png'
+      Hyrax::CollectionThumbnailPathService.default_image
     end
 
   end

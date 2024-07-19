@@ -19,10 +19,12 @@ RSpec.describe CollectionThumbnailPathService do
 
     context "with an uploaded thumbnail" do
       before do
-        allow(File).to receive(:exist?).with("#{Rails.root.to_s}/public/uploaded_collection_thumbnails/#{collection.id}/#{collection.id}_card.jpg").and_return(true)
+        allow(File).to receive(:exist?)
+                       .with("#{Rails.root.to_s}/public/uploads/uploaded_collection_thumbnails/foo/foo_card.jpg")
+                       .and_return(true)
       end
 
-      it { is_expected.to eq "/uploaded_collection_thumbnails/foo/foo_card.jpg" }
+      it { is_expected.to eq "/uploads/uploaded_collection_thumbnails/foo/foo_card.jpg" }
     end
 
     context "with a thumbnail selected from a work/file set" do
