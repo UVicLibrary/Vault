@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Delete me after upgrading to Hyku v.6 (I am duplicated code)
+# Copied from Hyku v.6. Delete me after upgrading to Hyku 6.
 module Hyrax
   module CollectionThumbnailPathServiceDecorator
 
