@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copied from Hyku v.6
+# Copied from Hyku v.6. Delete me after upgrading to Hyku 6.
 class UploadedCollectionThumbnailPathService < Hyrax::ThumbnailPathService
   class << self
     # @param [Collection] object to get the thumbnail path for an uploaded image
