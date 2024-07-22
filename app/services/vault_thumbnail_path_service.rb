@@ -64,8 +64,9 @@ class VaultThumbnailPathService < Hyrax::ThumbnailPathService
     end
 
     def audio_thumbnail_path(object)
-      return audio_image unless (object.parent && object.parent.member_of_collections.any?)
-      collection = object.parent.member_of_collections.first
+      parent = object.is_a?(Hyrax::FileSet) ? Hyrax.custom_queries.find_parent_work(resource: object) : object.parent
+      return audio_image unless (parent.presence && parent.member_of_collection_ids.any?)
+      collection = ActiveFedora::Base.find(parent.member_of_collection_ids.first)
       CollectionThumbnailPathService.call(collection)
     end
 
