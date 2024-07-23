@@ -125,7 +125,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def uploaded_thumbnail_files
-    Dir["#{::CollectionThumbnailPathService.upload_dir(@collection)}/*"]
+    Dir["#{UploadedCollectionThumbnailPathService.upload_dir(@collection)}/*"]
   end
 
   def extract_controlled_properties
@@ -171,13 +171,13 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def process_uploaded_thumbnail(uploaded_file)
-    dir_name = ::CollectionThumbnailPathService.upload_dir(@collection)
+    dir_name = UploadedCollectionThumbnailPathService.upload_dir(@collection)
     saved_file = Rails.root.join(dir_name, uploaded_file.original_filename)
     # Create directory if it doesn't already exist
-    unless File.directory?(dir_name)
-      FileUtils.mkdir_p(dir_name)
-    else # clear contents
+    if File.directory?(dir_name) # clear contents
       delete_uploaded_thumbnail
+    else
+      FileUtils.mkdir_p(dir_name)
     end
     File.open(saved_file, 'wb') do |file|
       file.write(uploaded_file.read)
@@ -187,23 +187,22 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     `vips thumbnail #{saved_file} #{dir_name}/#{@collection.id}_card.jpg 500x900`
     `vips thumbnail #{saved_file} #{dir_name}/#{@collection.id}_thumbnail.jpg 150x300`
 
-    File.chmod(0664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
-    File.chmod(0664,"#{dir_name}/#{@collection.id}_card.jpg")
+    File.chmod(0o664,"#{dir_name}/#{@collection.id}_thumbnail.jpg")
+    File.chmod(0o664,"#{dir_name}/#{@collection.id}_card.jpg")
   end
 
-  def update
-    unless params[:update_collection].nil?
-      process_banner_input
-      process_logo_input
-    end
+  def update_active_fedora_collection
+    # unless params[:update_collection].nil?
+    #   process_banner_input
+    #   process_logo_input
+    # end
+    process_member_changes
+    process_branding
 
     process_uploaded_thumbnail(params[:collection][:thumbnail_upload]) if params[:collection][:thumbnail_upload] # Save the image in the proper dimensions to public folder
     if params[:collection][:in_scua]
       params[:collection][:in_scua] = ActiveModel::Type::Boolean.new.cast(params[:collection][:in_scua])
     end
-
-    process_member_changes
-
     return valkyrie_update if @collection.is_a?(Valkyrie::Resource)
 
     @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
