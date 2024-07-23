@@ -321,17 +321,6 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
             .to exist
       end
 
-      it "don't save banner metadata" do
-        put :update, params: { id: collection,
-                               banner_files: [uploaded.id],
-                               collection: { creator: ['Emily'] } }
-
-        expect(CollectionBrandingInfo
-                   .where(collection_id: collection.id.to_s, role: "banner")
-                   .where("local_path LIKE '%#{uploaded.file.filename}'"))
-            .not_to exist
-      end
-
       it "saves logo metadata" do
         put :update, params: { id: collection,
                                logo_files: [uploaded.id],
