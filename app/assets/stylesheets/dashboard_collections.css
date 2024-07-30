@@ -1,3 +1,9 @@
+.metadata-collections dd {
+    margin-left: 0;
+    width: fit-content;
+    display: inline-block;
+}
+
 .collection-title-row-content.flex-container {
     flex-wrap: wrap;
     justify-content: flex-end;
