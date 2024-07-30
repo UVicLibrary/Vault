@@ -37,7 +37,7 @@ module BatchExport
       GC.compact
 
       # Omit thumbnails for primarily audio/video works
-      return if skip_thumbnail?(file_set) or already_uploaded?("#{file_set.id}.7z")
+      return if skip_thumbnail?(file_set) # or already_uploaded?("#{file_set.id}.7z")
 
       # Create a new directory named after the file set id
       FileUtils.mkdir_p(bag_dir) && FileUtils.mkdir_p("#{bag_dir}/data")
