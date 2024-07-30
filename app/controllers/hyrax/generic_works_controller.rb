@@ -18,6 +18,8 @@ module Hyrax
       render json: { response: 'Requested format (or blank format) is not supported.', status: 406 }
     end
 
+    after_action :export_files, only: :update
+
     def not_found
       # Sets alert to display once redirected page has loaded
       flash.alert = "The work you're looking for may have moved or does not exist. Try searching for it in the search bar."
@@ -81,6 +83,14 @@ module Hyrax
     def iiif_manifest_builder
       self.class.iiif_manifest_builder ||
           (Flipflop.cache_work_iiif_manifest? ? Hyrax::CustomCachingIiifManifestBuilder.new : Hyrax::CustomManifestBuilderService.new)
+    end
+
+    def export_files
+      if (curation_concern.create_date < 3.months.ago) && Rails.env.production?
+        curation_concern.file_sets.each do |file_set|
+          BatchExport::ExportFileJob.perform_later(file_set)
+        end
+      end
     end
 
   end
