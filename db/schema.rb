@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181218060922) do
+ActiveRecord::Schema.define(version: 2023_03_13_164822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,9 +33,9 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.integer "fcrepo_endpoint_id"
     t.string "name"
     t.integer "redis_endpoint_id"
-    t.bigint "data_cite_endpoint_id"
-    t.jsonb "settings", default: {}
     t.boolean "is_public", default: false
+    t.jsonb "settings", default: {}
+    t.bigint "data_cite_endpoint_id"
     t.index ["cname", "tenant"], name: "index_accounts_on_cname_and_tenant"
     t.index ["cname"], name: "index_accounts_on_cname", unique: true
     t.index ["data_cite_endpoint_id"], name: "index_accounts_on_data_cite_endpoint_id"
@@ -43,6 +43,20 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.index ["redis_endpoint_id"], name: "index_accounts_on_redis_endpoint_id", unique: true
     t.index ["settings"], name: "index_accounts_on_settings", using: :gin
     t.index ["solr_endpoint_id"], name: "index_accounts_on_solr_endpoint_id", unique: true
+  end
+
+  create_table "batch_ingests", id: :serial, force: :cascade do |t|
+    t.text "data"
+    t.string "admin_set_id"
+    t.string "collection_id"
+    t.text "message"
+    t.integer "size"
+    t.string "csv"
+    t.integer "user_id"
+    t.boolean "complete", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_batch_ingests_on_user_id"
   end
 
   create_table "bookmarks", id: :serial, force: :cascade do |t|
@@ -98,6 +112,9 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.datetime "updated_at", null: false
     t.string "external_key"
     t.integer "site_id"
+    t.string "researcher_thumbnail"
+    t.string "researcher_name"
+    t.string "researcher_title"
     t.index ["site_id"], name: "index_content_blocks_on_site_id"
   end
 
@@ -150,6 +167,34 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.binary "options"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "fast_update_changes", force: :cascade do |t|
+    t.string "old_uri"
+    t.string "action"
+    t.string "new_uris", default: [], array: true
+    t.string "new_labels", default: [], array: true
+    t.string "collection_id"
+    t.string "string"
+    t.boolean "complete"
+    t.integer "count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "old_label"
+  end
+
+  create_table "featured_collection_lists", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "featured_collections", force: :cascade do |t|
+    t.integer "order", default: 5
+    t.string "collection_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collection_id"], name: "index_featured_collections_on_collection_id"
+    t.index ["order"], name: "index_featured_collections_on_order"
   end
 
   create_table "featured_works", id: :serial, force: :cascade do |t|
@@ -212,6 +257,17 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.boolean "enabled", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "ingest_works", id: :serial, force: :cascade do |t|
+    t.string "work_type"
+    t.text "data"
+    t.text "files"
+    t.boolean "complete", default: false
+    t.integer "batch_ingest_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["batch_ingest_id"], name: "index_ingest_works_on_batch_ingest_id"
   end
 
   create_table "job_io_wrappers", id: :serial, force: :cascade do |t|
@@ -380,10 +436,19 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
+  create_table "sessions", id: :serial, force: :cascade do |t|
+    t.string "session_id", null: false
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["updated_at"], name: "index_sessions_on_updated_at"
+  end
+
   create_table "single_use_links", id: :serial, force: :cascade do |t|
-    t.string "downloadKey"
+    t.string "download_key"
     t.string "path"
-    t.string "itemId"
+    t.string "item_id"
     t.datetime "expires"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -421,7 +486,7 @@ ActiveRecord::Schema.define(version: 20181218060922) do
 
   create_table "sipity_entity_specific_responsibilities", id: :serial, force: :cascade do |t|
     t.integer "workflow_role_id", null: false
-    t.string "entity_id", null: false
+    t.integer "entity_id", null: false
     t.integer "agent_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -555,6 +620,8 @@ ActiveRecord::Schema.define(version: 20181218060922) do
     t.string "institution_name_full"
     t.string "banner_image"
     t.text "available_works", default: [], array: true
+    t.string "default_collection_image"
+    t.string "default_work_image"
   end
 
   create_table "subject_local_authority_entries", id: :serial, force: :cascade do |t|
@@ -566,6 +633,17 @@ ActiveRecord::Schema.define(version: 20181218060922) do
 
   create_table "tinymce_assets", id: :serial, force: :cascade do |t|
     t.string "file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "to_spotlight_spotlight_transfers", id: :serial, force: :cascade do |t|
+    t.string "user"
+    t.text "mappings"
+    t.boolean "approved", default: false
+    t.string "collection_id"
+    t.string "exhibit_id"
+    t.string "spotlight_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -681,9 +759,11 @@ ActiveRecord::Schema.define(version: 20181218060922) do
   add_foreign_key "accounts", "endpoints", column: "fcrepo_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "redis_endpoint_id", on_delete: :nullify
   add_foreign_key "accounts", "endpoints", column: "solr_endpoint_id", on_delete: :nullify
+  add_foreign_key "batch_ingests", "users"
   add_foreign_key "collection_type_participants", "hyrax_collection_types"
   add_foreign_key "content_blocks", "sites"
   add_foreign_key "curation_concerns_operations", "users"
+  add_foreign_key "ingest_works", "batch_ingests"
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"
   add_foreign_key "mailboxer_notifications", "mailboxer_conversations", column: "conversation_id", name: "notifications_on_conversation_id"
   add_foreign_key "mailboxer_receipts", "mailboxer_notifications", column: "notification_id", name: "receipts_on_notification_id"
