@@ -48,13 +48,13 @@ class SchedulePeriodicJobsWorker
 
     def schedule_fixity(datetime)
       Apartment::Tenant.switch(Account.find_by(name: "vault").tenant) do
-        schedule_job(FixityCheckRecentWorksJob, datetime) unless datetime.past?
+        schedule_job(BatchExport::FixityCheckRecentFilesJob, datetime) unless datetime.past?
       end
     end
 
     def schedule_batch_export(datetime)
       Apartment::Tenant.switch(Account.find_by(name: "vault").tenant) do
-        schedule_job(BatchExportJob, datetime) unless datetime.past?
+        schedule_job(BatchExport::BatchExportRecentFilesJob, datetime) unless datetime.past?
       end
     end
 
