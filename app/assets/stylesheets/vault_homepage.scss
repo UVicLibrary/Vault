@@ -1,9 +1,3 @@
-/* We only need this in docker, which can't load the Open Sans font via a normal @import line. */
-@font-face {
-  font-family: 'Open Sans';
-  src: url('OpenSans-VariableFont_wdth,wght.ttf');
-}
-
 /* Fade effect for header */
 .fade-in-text {
   animation: fadeIn 0.15s;
@@ -143,7 +137,7 @@ footer .navbar-link i {
 
 
 /* Card animation */
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
 // Variables
 $regal-blue: #034378;
 $san-juan: #2d4e68;
