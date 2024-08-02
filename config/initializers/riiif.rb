@@ -28,6 +28,8 @@ Riiif::ImageMagickInfoExtractor.external_command = "gm identify"
 Riiif.not_found_image = 'app/assets/images/us_404.svg'
 Riiif.unauthorized_image = 'app/assets/images/us_404.svg'
 
+Riiif::Image.file_resolver.cache_path = '/mnt/nfs/cache'
+
 Riiif::Engine.config.cache_duration_in_days = 365
 
 Riiif::ImagesController.class_eval do

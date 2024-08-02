@@ -16,8 +16,8 @@ if Rails.env.production?
     def ignored_error_classes
       [ActiveFedora::ObjectNotFoundError, ActionController::RoutingError,
        Blacklight::Exceptions::RecordNotFound, Ldp::Gone, FrozenError,
-       Riiif::ConversionError, Hyrax::ObjectNotFoundError,
-       I18n::InvalidLocale]
+       Riiif::ConversionError, Hyrax::ObjectNotFoundError, ActionController::UnknownFormat,
+       Blacklight::Exceptions::InvalidRequest, I18n::InvalidLocale]
     end
   end
 end

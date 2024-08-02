@@ -105,7 +105,7 @@ Hyrax.config do |config|
   config.redis_namespace = Settings.redis.default_namespace
 
   # Specify the path to the file characterization tool:
-  config.fits_path = Settings.fits_path
+  config.fits_path = "/home/sufia/fits-1.5.0/fits.sh" # Settings.fits_path
 
   # Specify the path to the file derivatives creation tool:
   # config.libreoffice_path = "soffice"
