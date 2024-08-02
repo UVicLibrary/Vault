@@ -10,8 +10,8 @@ FactoryBot.define do
 
     factory :admin do
       after(:create) do |user|
-        user.add_role(:admin)
-        user.site_roles = ["admin"]
+        user.add_role(:admin, Site.instance)
+        # user.site_roles = ["admin"]
       end
     end
 
