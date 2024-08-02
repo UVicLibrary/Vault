@@ -17,7 +17,7 @@ export default class LinkedData {
     selected(e) {
         let result = this.element.select2("data")
         // this.element.select2("destroy")
-        this.element.val(result.label) //.attr("readonly", "readonly")
+        this.element.val(result.label).attr("readonly", false)
         this.setIdentifier(result.id)
     }
 
