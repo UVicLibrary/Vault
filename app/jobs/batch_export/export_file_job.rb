@@ -1,7 +1,7 @@
 module BatchExport
   class ExportFileJob < ActiveJob::Base
-    # require 'down/wget'
-    # require 'bagit'
+    require 'down/wget'
+    require 'bagit'
 
     include BatchExport::SharedMethods
 
