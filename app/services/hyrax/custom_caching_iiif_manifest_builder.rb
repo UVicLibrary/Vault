@@ -12,7 +12,8 @@ module Hyrax
 
     def manifest_for(presenter:)
       # The expiry date is 30 days. To expire the cached manifest manually, run
-      # Rails.cache.delete(manifest_cache_key(presenter: presenter))
+      # Hyrax::CustomCachingIiifManifestBuilder.new.send(:manifest_cache_key, presenter: SolrDocument.find(<id>))
+      # where id is the generic work ID
       Rails.cache.fetch(manifest_cache_key(presenter: presenter), expires_in: expires_in) do
         Hyrax::CustomManifestBuilderService.manifest_for(presenter: presenter)
       end
