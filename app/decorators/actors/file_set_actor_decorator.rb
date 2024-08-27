@@ -18,6 +18,16 @@ module FileSetActorDecorator
     yield(file_set) if block_given?
   end
 
+  def update_metadata(attributes)
+    env = Hyrax::Actors::Environment.new(file_set, ability, attributes)
+
+    # When adding string values into controlled properties, Hyrax will assume
+    # they are URIs unless we clean the values
+    env.curation_concern.attributes = clean_controlled_properties(env, env.attributes)
+
+    Hyrax::CurationConcern.file_set_update_actor.update(env)
+  end
+
   # Adds a FileSet to the work using ore:Aggregations.
   def attach_to_af_work(work, file_set_params)
     super
@@ -44,6 +54,23 @@ module FileSetActorDecorator
     end
     work.rendering_ids -= [file_set.id]
     work.save!
+  end
+
+  def clean_controlled_properties(env, attributes)
+    qa_attributes = {}
+    env.curation_concern.controlled_properties.each do |field_symbol|
+      field = field_symbol.to_s
+      # Do not include deleted attributes
+      next unless attributes.keys.include?(field+'_attributes')
+      filtered_attributes = attributes[field+'_attributes'].select  { |_,v| v['_destroy'].blank? }
+      qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
+      attributes.delete(field)
+      attributes.delete(field+'_attributes')
+    end
+    env.curation_concern.attributes = qa_attributes
+    env.curation_concern.to_controlled_vocab
+    # save(env)
+    attributes
   end
 
 end
