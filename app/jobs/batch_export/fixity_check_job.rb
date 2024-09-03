@@ -3,13 +3,15 @@ module BatchExport
 
     include BatchExport::SharedMethods
 
+    LOG_DIR = Rails.root.join('log','fixity')
+
     # Note that FileSets must be checked sequentially (one-by-one) due to a bug
     # in Fedora 4 that causes checks to "fail" whenever more than one is run at once.
     # This bug will be fixed in Fedora 6.
 
     # @param [Array <String>] - the IDs of file sets to fixity check
     def perform(file_set_ids, log_filename = DateTime.now.strftime('%Y%m%d%H%M%S') )
-      File.open("/usr/local/rails/vault/log/fixity/#{log_filename}.log", 'w') do |log_file|
+      File.open("#{LOG_DIR}/#{log_filename}.log", "w") do |log_file|
         failed_ids = file_set_ids.each_with_object([]) do |id, array|
           puts "Checking #{id}"
           file_set = FileSet.find(id)
@@ -46,7 +48,7 @@ module BatchExport
     end
 
     def passed?(file_set)
-      log_path = "/usr/local/rails/vault/log/fixity/#{file_set.last_fixity_check}.log"
+      log_path = "#{LOG_DIR}/#{file_set.last_fixity_check}.log"
       return false unless File.file? log_path
       File.read(log_path).exclude?(file_set.id)
     end
