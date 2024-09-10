@@ -10,7 +10,7 @@ module BatchExport
 
       super(get_recent_file_ids(start_date_string, end_date_string))
 
-      AuditBatchExportsJob.set(wait_until: 1.week.from_now).perform_later(start_date_string, end_date_string)
+      BatchExport::AuditBatchExportJob.set(wait_until: 1.week.from_now).perform_later(start_date_string, end_date_string)
 
     end
 
