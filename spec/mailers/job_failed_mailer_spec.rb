@@ -2,7 +2,7 @@
 
 RSpec.describe JobFailedMailer, type: :mailer do
 
-  let(:mail) { described_class.mail_failures(failures: ["foo"], job_class: ExportFileJob) }
+  let(:mail) { described_class.mail_failures(failures: ["foo"], job_class: BatchExport::ExportFileJob) }
   old_env = ENV['JOB_FAILED_USER_EMAIL']
 
   before { ENV['JOB_FAILED_USER_EMAIL'] = "admin@example.com" }
@@ -10,7 +10,7 @@ RSpec.describe JobFailedMailer, type: :mailer do
   describe '#mail_failures' do
     it 'emails the specified user with the failed ids' do
       expect(mail.to).to eq ["admin@example.com"]
-      expect(mail.subject).to eq "ExportFileJob Failed"
+      expect(mail.subject).to eq "BatchExport::ExportFileJob Failed"
       expect(mail.body.encoded).to include "foo"
     end
   end
