@@ -1,4 +1,4 @@
-FROM ruby:2.7.4
+FROM ruby:2.7.8
 RUN apt-get update -qq && \
     apt-get install -y \
         build-essential \
@@ -6,6 +6,8 @@ RUN apt-get update -qq && \
         imagemagick \
         libpq-dev \
         libvips \
+        libvips-dev \
+        libvips-tools \
         ffmpeg \
         nodejs \
         npm \
