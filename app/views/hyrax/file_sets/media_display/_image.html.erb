@@ -11,11 +11,4 @@
                 target: :_blank,
                 id: "file_download" %>
   </div>
-<% else %>
-  <div>
-    <%= image_tag iiif_image_path(file_set, '900,'),
-                  class: "representative-media",
-                  alt: "",
-                  role: "presentation" %>
-  </div>
 <% end %>
