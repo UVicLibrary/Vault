@@ -65,6 +65,16 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
     end
   end
 
+  # If we are coming from a keyword facet, add file sets to the list
+  # of allowed models
+  def models
+    if self.blacklight_params.dig('f').dig('has_model_ssim').try(:include?, "FileSet")
+      super + Hyrax::FileSetSearchBuilder.new("").send(:models)
+    else
+      super
+    end
+  end
+
 end
 
 

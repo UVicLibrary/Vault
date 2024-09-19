@@ -84,6 +84,7 @@ class CatalogController < ApplicationController
       config.add_facet_field "contributor_label_sim", label: 'Contributor', limit: 5
       config.add_facet_field "fonds_title_sim", label: 'Fonds Title', limit: 5, show: false
       config.add_facet_field "fonds_identifier_sim", label: 'Fonds Identifier', limit: 5, show: false
+      config.add_facet_field "has_model_ssim", label: 'Include Model Type', show: false, include_in_advanced_search: false
       config.add_facet_field "physical_repository_label_sim", label: 'Physical Repository', limit: 5
       config.add_facet_field "resource_type_sim", label: 'Resource Type', limit: 5, helper_method: :resource_type_links
 
