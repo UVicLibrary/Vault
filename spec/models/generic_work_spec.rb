@@ -22,7 +22,7 @@ RSpec.describe GenericWork do
                                      :fonds_title, :fonds_creator, :fonds_description,
                                      :fonds_identifier, :is_referenced_by, :date_digitized,
                                      :transcript, :technical_note, :year, :label,
-                                     :downloadable, :relative_path, :import_url,
+                                     :relative_path, :import_url,
                                      :creator, :part_of, :resource_type, :contributor,
                                      :description, :keyword, :license, :rights_statement,
                                      :publisher, :date_created, :subject, :language,
