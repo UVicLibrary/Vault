@@ -28,7 +28,7 @@ Hyrax::FileSetsController.class_eval do
   end
 
   # Expire the parent work's cached IIIF manifest so that the updated
-  # # file set metadata shows up in Universal Viewer
+  # file set metadata shows up in Universal Viewer
   def expire_parent_manifest_cache
     return if presenter.parent.nil?
     # We only need an object that responds to :id and :timestamp, so a solr doc will suffice
