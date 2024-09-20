@@ -188,7 +188,6 @@ RSpec.describe Hyrax::DownloadsController do
 
       before do
         parent.ordered_members << file_set
-        parent.downloadable = false
         parent.save!
       end
 
