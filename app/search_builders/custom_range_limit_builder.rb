@@ -75,6 +75,14 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
     end
   end
 
+  # OVERRIDE Hyrax 3.5: Delete the file sets only filter in order to
+  # include all models (works, collections, file sets) in keyword search.
+  def filter_models(solr_parameters)
+    solr_parameters[:fq] ||= []
+    solr_parameters[:fq].delete("{!term f=has_model_ssim}FileSet") if solr_parameters[:fq].include?("{!term f=has_model_ssim}FileSet")
+    solr_parameters[:fq] << "{!terms f=has_model_ssim}#{models_to_solr_clause}"
+  end
+
 end
 
 
