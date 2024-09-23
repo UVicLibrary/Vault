@@ -301,7 +301,7 @@ module CdmMigrator
                 end
                 if field != :genre && field != :resource_type
                   unless val.match(/\bhttps?:\/\/id.worldcat.org\/fast\/\d+\b/)
-                    hash[field.to_s] = "May contain two combined URIs that should be separated (e.g. http://id.worldcat.org/fast/XXXXXXhttp://id.worldcat.org/fast/YYYYYYY)."
+                    hash[field.to_s] = "Field may contain an invalid URI or is missing a separator between URIs."
                   end
                 end
               else # Or val should be string
