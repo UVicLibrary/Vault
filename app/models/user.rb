@@ -1,4 +1,11 @@
 class User < ApplicationRecord
+
+  # Since Hyku >= v.3, we force the use of the public users table so
+  # that the same user account can be used across all tenants (rather
+  # than creating an account per tenant). Otherwise, switching tenants
+  # will also switch the users table to <tenant id>.users
+  self.table_name = "public.users"
+
   # Includes lib/rolify from the rolify gem
   rolify
   # Connects this user object to Hydra behaviors.
@@ -17,6 +24,10 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: [:cas], authentication_keys: [:email]
 
   # before_create :add_default_roles
+
+  scope :for_repository, -> {
+    joins(:roles)
+  }
 
   mount_uploader :avatar, VipsAvatarUploader, mount_on: :avatar_file_name
   validates_with Hyrax::AvatarValidator
@@ -48,6 +59,22 @@ class User < ApplicationRecord
   # user class to get a user-displayable login/identifier.
   def to_s
     email
+  end
+
+  def is_superadmin
+    has_role? :superadmin
+  end
+
+  # This comes from a checkbox in the proprietor interface
+  # Rails checkboxes are often nil or "0" so we handle that
+  # case directly
+  def is_superadmin=(value)
+    value = ActiveModel::Type::Boolean.new.cast(value)
+    if value
+      add_role :superadmin
+    else
+      remove_role :superadmin
+    end
   end
 
   def site_roles
@@ -89,7 +116,11 @@ class User < ApplicationRecord
 
   private
 
-    def add_default_roles
-      add_role :admin, Site.instance unless self.class.any? || Account.global_tenant?
-    end
+  def add_default_roles
+    # byebug
+    # Do not add the default admin role in test mode
+    add_role :admin, Site.instance unless
+      # self.class.any? || Account.global_tenant?
+      self.class.joins(:roles).where("roles.name = ?", "admin").any? || Account.global_tenant?
+  end
 end

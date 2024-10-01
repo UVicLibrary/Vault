@@ -93,8 +93,6 @@ class GenericWork < ActiveFedora::Base
 
   property :part_of, predicate: ::RDF::Vocab::DC.isPartOf
 
-  property :downloadable, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#downloadable'), multiple: false
-
   # These lines must appear AFTER all custom properties are declared.
   # include ::Hyrax::BasicMetadata
   include ::VaultBasicMetadata

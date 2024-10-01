@@ -9,7 +9,10 @@ FactoryBot.define do
     end
 
     factory :admin do
-      after(:create) { |user| user.add_role(:admin) }
+      after(:create) do |user|
+        user.add_role(:admin, Site.instance)
+        # user.site_roles = ["admin"]
+      end
     end
 
     factory :uvic do
