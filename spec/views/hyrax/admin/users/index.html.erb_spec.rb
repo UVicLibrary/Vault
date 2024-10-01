@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'hyrax/admin/users/index.html.erb', type: :view do
   let(:presenter) { Hyrax::Admin::UsersPresenter.new }
   let(:users) { [] }
@@ -7,12 +9,15 @@ RSpec.describe 'hyrax/admin/users/index.html.erb', type: :view do
     # Create four normal user accounts
     (1..4).each do |i|
       users << FactoryBot.create(
-        :user,
-        display_name: "user#{i}",
-        email: "email#{i}@example.com",
-        last_sign_in_at: Time.zone.now - 15.minutes,
-        created_at: Time.zone.now - 3.days
+          :user,
+          display_name: "user#{i}",
+          email: "email#{i}@example.com",
+          last_sign_in_at: Time.zone.now - 15.minutes,
+          created_at: Time.zone.now - 3.days
       )
+      # Delete the default admin role that is added to the
+      # first created user.
+      User.first.remove_role(:admin)
     end
     allow(presenter).to receive(:users).and_return(users)
     assign(:presenter, presenter)
@@ -22,7 +27,7 @@ RSpec.describe 'hyrax/admin/users/index.html.erb', type: :view do
   it "draws user invite form" do
     expect(page).to have_selector("div.users-invite")
     expect(page).to have_content("Add or Invite user via email")
-    expect(page).to have_selector("div.users-invite input.email")
+    expect(page).to have_selector("div.users-invite input#user_email")
     expect(page).to have_selector("//input[@value='Invite user']")
   end
 
@@ -49,7 +54,7 @@ RSpec.describe 'hyrax/admin/users/index.html.erb', type: :view do
       # Create two admin acccounts
       (5..6).each do |i|
         users << FactoryBot.create(:admin,
-                                   display_name: "admin-user#{i}",
+                                   display_name: "user#{i}",
                                    email: "admin#{i}@example.com",
                                    last_sign_in_at: Time.zone.now - 15.minutes,
                                    created_at: Time.zone.now - 3.days)
