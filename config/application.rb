@@ -2,6 +2,7 @@ require_relative 'boot'
 
 require 'rails/all'
 require 'i18n/debug' if ENV['I18N_DEBUG']
+#require 'ext/string'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -87,7 +88,9 @@ module Hyku
         engine_path = HykuKnapsack::Engine.root.join(relative_path)
         return engine_path.to_s if engine_path.exist?
       end
+
       Rails.root.join(relative_path).to_s
     end
+
   end
 end

@@ -1,14 +1,11 @@
-# frozen_string_literal: true
-
 # Initialize and configure external dependencies for an Account
 class CreateAccount
-  attr_reader :account, :users
+  attr_reader :account
 
   ##
   # @param [Account]
-  def initialize(account, users = [])
+  def initialize(account)
     @account = account
-    @users = users
   end
 
   # @return [Boolean] true if save and jobs spawning were successful
@@ -21,7 +18,7 @@ class CreateAccount
   # Account (i.e. creation steps complete, endpoints populated).  THEREFORE, `create_tenant`
   # must be called *after* all external resources are provisioned.
   def create_external_resources
-    create_account_inline && account.save && create_tenant
+    create_account_inline && create_tenant
   end
 
   ##
@@ -30,35 +27,8 @@ class CreateAccount
     Apartment::Tenant.create(account.tenant) do
       initialize_account_data
       account.switch do
-        create_defaults
-        fillin_translations
-        add_initial_users
-        true
+        AdminSet.find_or_create_default_admin_set_id
       end
-    end
-  end
-
-  def create_defaults
-    Hyrax::CollectionType.find_or_create_default_collection_type
-    Hyrax::CollectionType.find_or_create_admin_set_type
-    AdminSet.find_or_create_default_admin_set_id
-  end
-
-  # Workaround for upstream issue https://github.com/samvera/hyrax/issues/3136
-  def fillin_translations
-    collection_types = Hyrax::CollectionType.all
-    collection_types.each do |c|
-      next unless c.title =~ /^translation missing/
-      oldtitle = c.title
-      c.title = I18n.t(c.title.gsub("translation missing: en.", ''))
-      c.save
-      Rails.logger.debug "#{oldtitle} changed to #{c.title}"
-    end
-  end
-
-  def add_initial_users
-    users.each do |user|
-      user.add_role :admin, Site.instance
     end
   end
 

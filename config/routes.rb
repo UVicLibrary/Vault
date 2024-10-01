@@ -14,7 +14,6 @@ Rails.application.routes.draw do
 
       namespace :proprietor do
         resources :accounts
-        resources :users
       end
     end
   end

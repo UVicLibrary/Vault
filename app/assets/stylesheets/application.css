@@ -30,6 +30,5 @@
  *= require footer
  *= require work_show
  *= require fast_update
- *= require manage_users
  *= require_self
 */

@@ -7,24 +7,23 @@
       <%= t('.invite_users') %>
   </div>
   <div class="panel-body">
-    <%# user_invitation_path is provided by devise_invitable %>
-    <%= simple_form_for :user,  url: main_app.user_invitation_path, html: { class: 'form-inline pull-left' } do |f| %>
-      <div class="form-group">
-        <%= f.hint :email %>
-        <%= f.label :email, class: "control-label", required: false %>
-        <%= f.input_field :email, class: "form-control", value: "" %>
-        <%= f.input :roles, required: false %>
-        <%= f.submit t('.add'), class: 'btn btn-primary' %>
-      </div>
-    <% end %>
+      <%# user_invitation_path is provided by devise_invitable %>
+      <%= simple_form_for :user,  url: main_app.user_invitation_path, html: { class: 'form-inline pull-left' } do |f| %>
+        <div class="form-group">
+          <%= f.hint :email %>
+          <%= f.label :email, class: "control-label", required: false %>
+          <%= f.input_field :email, class: "form-control", value: "" %>
+          <%= f.submit t('.add'), class: 'btn btn-primary' %>
+        </div>
+      <% end %>
   </div>
 </div>
 
 <div class="panel panel-default users-listing">
   <div class="panel-heading">
       <span style="display: inline-block; margin-top: 0.5em"><%= t('hyrax.admin.users.index.describe_users_html', count: @presenter.user_count) %></span>
-      <%# Add button for editing roles/permissions %>
-      <%= link_to t(:'hyrax.admin.sidebar.roles_and_permissions'), '/site/roles', class: "btn btn-primary", style: "float: right;" %>
+      <%# button for editing roles/permissions %>
+      <%= link_to "Edit Permissions", "/site/roles", class: "btn btn-primary", style: "float: right;" %>
   </div>
 
   <div class="panel-body">

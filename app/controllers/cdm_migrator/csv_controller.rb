@@ -299,11 +299,6 @@ module CdmMigrator
                 unless remainder.blank?
                   hash[field.to_s] = "May contain the wrong multi-value separator or a typo in the URI."
                 end
-                if field != :genre && field != :resource_type
-                  unless val.match(/\bhttps?:\/\/id.worldcat.org\/fast\/\d+\b/)
-                    hash[field.to_s] = "Field may contain an invalid URI or is missing a separator between URIs."
-                  end
-                end
               else # Or val should be string
               invalid_chars = ["\\"]
                    # Make exceptions for backslashes that are part of whitespace characters

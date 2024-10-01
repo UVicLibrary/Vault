@@ -22,7 +22,6 @@ class ApplicationController < ActionController::Base
 
   before_action :require_active_account!, if: :multitenant?
   before_action :set_account_specific_connections!
-  before_action :elevate_single_tenant!, if: :singletenant?
   skip_after_action :discard_flash_if_xhr
 
   before_action :add_honeybadger_context
@@ -34,13 +33,11 @@ class ApplicationController < ActionController::Base
   ALLOWED_LOCALES = %w( de en es fr it zh ).freeze
   DEFAULT_LOCALE = 'en'.freeze
 
-  protected
-
-    def super_and_current_users
-      users = Role.find_by(name: 'superadmin')&.users.to_a
-      users << current_user if current_user && !users.include?(current_user)
-      users
-    end
+  #def create_work_presenter
+  #   @create_work_presenter ||= Hyrax::SelectTypeListPresenter.new(current_user)
+  #end
+  #helper_method :create_work_presenter
+  #
 
   def set_locale
     I18n.locale = extract_locale_from_headers
@@ -60,45 +57,27 @@ class ApplicationController < ActionController::Base
     def require_active_account!
       return unless Settings.multitenancy.enabled
       return if devise_controller?
+
       raise Apartment::TenantNotFound, "No tenant for #{request.host}" unless current_account.persisted?
     end
 
     def set_account_specific_connections!
-      current_account.switch! # if current_account
+      current_account.switch! if current_account
     end
 
     def multitenant?
       Settings.multitenancy.enabled
     end
 
-    def singletenant?
-      !Settings.multitenancy.enabled
-    end
-
-    def elevate_single_tenant!
-      AccountElevator.switch!(current_account.cname) if current_account && root_host?
-    end
-
-    def root_host?
-      Account.canonical_cname(request.host) == Account.root_host
-    end
-
     def admin_host?
       return false unless multitenant?
+
       Account.canonical_cname(request.host) == Account.admin_host
     end
 
     def current_account
       @current_account ||= Account.from_request(request)
-      @current_account ||= if Settings.multitenancy.enabled
-                             Account.new do |a|
-                               a.build_solr_endpoint
-                               a.build_fcrepo_endpoint
-                               a.build_redis_endpoint
-                             end
-                           else
-                             Account.single_tenant_default
-                           end
+      @current_account ||= Account.single_tenant_default
     end
 
     # Add context information to the lograge entries
@@ -116,4 +95,5 @@ class ApplicationController < ActionController::Base
     def ssl_configured?
       ActiveRecord::Type::Boolean.new.cast(Settings.ssl_configured)
     end
+
 end
