@@ -25,7 +25,7 @@ module HyraxHelper
   # @param [Hash] options from blacklight helper_method invocation. Maps license URIs to links with labels.
   # @return [ActiveSupport::SafeBuffer] license links, html_safe
   def resource_type_links(options)
-    to_sentence([options].map { |right| label = Hyrax::ResourceTypesService.label(right) rescue right; link_to label, right })
+    to_sentence([options].map { |right| Hyrax::ResourceTypesService.label(right) })
   end
     
   def resource_type_index_links(options)
