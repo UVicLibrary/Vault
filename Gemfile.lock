@@ -66,7 +66,7 @@ GEM
       activemodel (= 5.2.4.6)
       activesupport (= 5.2.4.6)
       arel (>= 9.0)
-    activerecord-import (1.7.0)
+    activerecord-import (1.8.1)
       activerecord (>= 4.2)
     activestorage (5.2.4.6)
       actionpack (= 5.2.4.6)
@@ -92,8 +92,8 @@ GEM
     ast (2.4.2)
     autoprefixer-rails (10.4.16.0)
       execjs (~> 2)
-    awesome_nested_set (3.6.0)
-      activerecord (>= 4.0.0, < 7.2)
+    awesome_nested_set (3.7.0)
+      activerecord (>= 4.0.0, < 8.0)
     aws-eventstream (1.3.0)
     aws-partitions (1.919.0)
     aws-sdk-core (3.192.1)
@@ -195,13 +195,13 @@ GEM
     bootstrap-will_paginate (1.0.0)
       will_paginate
     breadcrumbs_on_rails (3.0.1)
-    browse-everything (1.3.0)
+    browse-everything (1.4.0)
       addressable (~> 2.5)
       aws-sdk-s3
       dropbox_api (>= 0.1.20)
       google-apis-drive_v3
       googleauth (>= 0.6.6, < 2.0)
-      rails (>= 4.2, < 7.2)
+      rails (>= 4.2, < 8.0)
       ruby-box
       signet (~> 0.8)
       typhoeus
@@ -483,16 +483,16 @@ GEM
       hydra-access-controls (= 11.0.7)
       hydra-core (= 11.0.7)
       rails (>= 5.2, < 6.1)
-    hydra-pcdm (1.3.0)
-      active-fedora (>= 10, < 15)
+    hydra-pcdm (1.4.0)
+      active-fedora (>= 10)
       mime-types (>= 1)
       rdf-vocab
-    hydra-works (2.1.0)
-      activesupport (>= 5.2, < 7.1)
-      hydra-derivatives (~> 3.6)
+    hydra-works (2.2.0)
+      activesupport (>= 5.2, < 8.0)
+      hydra-derivatives (>= 3.6)
       hydra-file_characterization (~> 1.0)
       hydra-pcdm (>= 0.9)
-    hyrax (3.5.0)
+    hyrax (3.6.0)
       active-fedora (~> 13.1, >= 13.1.2)
       almond-rails (~> 0.1)
       awesome_nested_set (~> 3.1)
@@ -540,7 +540,7 @@ GEM
       rdf-vocab (~> 3.0)
       redis (~> 4.0)
       redis-namespace (~> 1.5)
-      redlock (>= 0.1.2)
+      redlock (>= 0.1.2, < 2.0)
       reform (~> 2.3)
       reform-rails (~> 0.2.0)
       retriable (>= 2.9, < 4.0)
@@ -599,12 +599,12 @@ GEM
     json-ld-preloaded (3.1.6)
       json-ld (~> 3.1)
       rdf (~> 3.1)
-    json-schema (4.3.0)
-      addressable (>= 2.8)
+    json-schema (5.0.1)
+      addressable (~> 2.8)
     jsonlint (0.3.0)
       oj (~> 3)
       optimist (~> 3)
-    jwt (2.8.2)
+    jwt (2.9.3)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -676,7 +676,7 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    logger (1.6.0)
+    logger (1.6.1)
     lograge (0.14.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -714,7 +714,7 @@ GEM
     mimemagic (0.3.10)
       nokogiri (~> 1)
       rake
-    mini_magick (4.13.1)
+    mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.6)
     minitest (5.22.3)
@@ -730,7 +730,7 @@ GEM
       racc (~> 1.7)
     nest (3.2.0)
       redic
-    net-http-persistent (4.0.2)
+    net-http-persistent (4.0.4)
       connection_pool (~> 2.2)
     net-imap (0.4.10)
       date
@@ -802,14 +802,14 @@ GEM
     psych (3.3.4)
     public_suffix (4.0.7)
     puma (3.12.6)
-    qa (5.11.0)
+    qa (5.13.0)
       activerecord-import
       deprecation
       faraday (< 3.0, != 2.0.0)
       geocoder
       ldpath
       nokogiri (~> 1.6)
-      rails (>= 5.0, < 7.2)
+      rails (>= 5.0, < 8.0)
       rdf
     raabro (1.4.0)
     racc (1.7.3)
@@ -1221,7 +1221,7 @@ DEPENDENCIES
   flipflop (~> 2.3)
   honeybadger (~> 3.0)
   http_parser.rb
-  hyrax (= 3.5)
+  hyrax (= 3.6)
   hyrax-doi!
   i18n-debug
   i18n-tasks
