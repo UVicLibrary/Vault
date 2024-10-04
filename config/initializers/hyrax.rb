@@ -28,16 +28,10 @@ Hyrax.config do |config|
   # How frequently should a file be audited.
   # config.max_days_between_fixity_checks = 7
 
-  # Enable displaying usage statistics in the UI
-  # Defaults to FALSE
-  # Requires a Google Analytics id and OAuth2 keyfile.  See README for more info
-  config.analytics = Settings.google_analytics_id.present?
-
-  # Specify a Google Analytics tracking ID to gather usage statistics
-  config.google_analytics_id = Settings.google_analytics_id
-
-  # Specify a date you wish to start collecting Google Analytic statistics for.
-  # config.analytic_start_date = DateTime.new(2014,9,10)
+  # Google Analytics. Note that we hide the work stats page, but we
+  # still configure analytics in order to render the gtag that collects
+  # data and sends it to the Google Analytics dashboard.
+  config.analytics_provider = "ga4"
 
   # The group name to use for registered users, which CanCan uses to check
   # permissions for the "Institution" visibility option. The default value
