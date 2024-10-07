@@ -70,3 +70,5 @@ public/robots.txt
 /.idea/*
 
 solr_data
+
+.env
