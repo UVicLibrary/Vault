@@ -352,6 +352,8 @@ RSpec.describe EdtfDateService do
 
     it 'raises an invalid date error' do
       expect { EdtfDateService.new("invalid") }.to raise_error(EdtfDateService::InvalidEdtfDateError, 'Could not parse date: "invalid." If date is unknown, use "unknown" or "no date"')
+      expect { EdtfDateService.new("1983-24/1983-21") }.to raise_error(EdtfDateService::InvalidEdtfDateError, 'The start date of an interval cannot be after the end date.')
+      expect { EdtfDateService.new("1985/1983") }.to raise_error(EdtfDateService::InvalidEdtfDateError, 'The start date of an interval cannot be after the end date.')
     end
 
     it 'raises a specific error message for #' do
