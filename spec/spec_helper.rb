@@ -16,8 +16,15 @@
 require 'webmock/rspec'
 require 'rspec/rails'
 require 'i18n/debug' if ENV['I18N_DEBUG']
+
 require 'shoulda/matchers'
 require 'shoulda/callback/matchers'
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
 
 # ensure Hyrax::Schema gets loaded is resolvable for `support/` models
 Hyrax::Schema # rubocop:disable Lint/Void
