@@ -1,6 +1,5 @@
 class GenericWork < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
-  include AsyncCollectionNesting
 
   # Adds behaviors for hyrax-doi plugin.
   include Hyrax::DOI::DOIBehavior

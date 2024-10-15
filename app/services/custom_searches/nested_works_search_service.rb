@@ -5,15 +5,13 @@ class NestedWorksSearchService < Hyrax::Collections::CollectionMemberSearchServi
   def available_member_works
     response, _docs = search_results do |builder|
       builder.search_includes_models = :works
-      # Search down the ancestor tree for works that are
-      # members of subcollections
-      builder.merge(fq: add_descendants(builder.query['fq']) )
+      # Include works that are members of subcollections
+      builder.merge(fq: add_nested_descendants(builder.query['fq'], builder.collection.id))
       # If there is no sort or collection query specified,
       # sort by date_created and then alphabetically by title
       if !user_params.key?(:sort) && !user_params.key?(:cq)
-        builder.merge(sort: date_sort)
+        builder.merge(sort: default_sort)
       else
-        # Fix bug where sort parameter was not coming through
         builder.merge(user_params.permit(:sort))
       end
     end
@@ -22,19 +20,18 @@ class NestedWorksSearchService < Hyrax::Collections::CollectionMemberSearchServi
 
   private
 
-  def add_descendants(fq)
-    fq = fq.select(&:present?)
-    members_filter = fq.delete("member_of_collection_ids_ssim:#{collection.id}")
-    fq.push("(#{members_filter} OR #{ancestors_filter})")
+  # Replace the member_of_collection_ids_ssim filter with a query for nested children
+  # using Solr's graph query parser
+  def add_nested_descendants(fq, collection_id)
+    # Solr can do graph traversal without the need of special indexing with the Graph query parser so
+    # use this to compute the nested children of the current collection
+    # See https://solr.apache.org/guide/solr/latest/query-guide/other-parsers.html#graph-query-parser
+    fq.select(&:present?) - ["member_of_collection_ids_ssim:#{collection_id}"] +
+      ["{!graph to=id from=member_of_collection_ids_ssim maxDepth=5}id:#{collection_id}"]
   end
 
-  def date_sort
+  def default_sort
     "year_sort_dtsi asc, title_sort_ssi asc"
-  end
-
-  def ancestors_filter
-    ancestors_field = Samvera::NestingIndexer.configuration.solr_field_name_for_storing_ancestors
-    "#{ancestors_field}:*#{collection.id}"
   end
 
 end

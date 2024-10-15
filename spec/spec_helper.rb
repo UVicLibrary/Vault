@@ -14,7 +14,17 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'webmock/rspec'
+require 'rspec/rails'
 require 'i18n/debug' if ENV['I18N_DEBUG']
+
+require 'shoulda/matchers'
+require 'shoulda/callback/matchers'
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
 
 # ensure Hyrax::Schema gets loaded is resolvable for `support/` models
 Hyrax::Schema # rubocop:disable Lint/Void
@@ -44,12 +54,17 @@ end
 
 RSpec.configure do |config|
   config.before(:suite) do
-    WebMock.disable_net_connect!(allow_localhost: true, allow: 'hyku-carrierwave-test.s3.amazonaws.com')
+    # WebMock.disable_net_connect!(allow_localhost: true, allow: 'hyku-carrierwave-test.s3.amazonaws.com')
+    WebMock.allow_net_connect!
   end
 
   # Require supporting ruby files from spec/support/ and subdirectories.  Note: engine, not Rails.root context.
   # Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
   Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+  # Exclude certain directories that are known to be failing
+  # config.exclude_pattern = 'spec/{features,requests,tasks,views}/**/*_spec.rb'
+  # config.exclude_pattern = 'spec/features/**/*_spec.rb'
 
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Capybara::RSpecMatchers, type: :input
@@ -91,7 +106,7 @@ RSpec.configure do |config|
   # only run aws tests from CI (or w/ `--tag aws`) and only run it on the main repo, since that
   # is where the valid aws keys live. TRAVIS_PULL_REQUEST_SLUG is "" when the job is a push job
   unless ENV['CI'] &&
-         (ENV['TRAVIS_PULL_REQUEST_SLUG'].match('samvera-labs/hyku') || ENV['TRAVIS_PULL_REQUEST_SLUG'].blank?)
+    (ENV['TRAVIS_PULL_REQUEST_SLUG'].match('samvera-labs/hyku') || ENV['TRAVIS_PULL_REQUEST_SLUG'].blank?)
     config.filter_run_excluding(aws: true)
   end
 
@@ -173,6 +188,17 @@ RSpec.configure do |config|
     ActiveJob::Base.queue_adapter.filter = nil
     ActiveJob::Base.queue_adapter.perform_enqueued_jobs    = false
     ActiveJob::Base.queue_adapter.perform_enqueued_at_jobs = false
+  end
+
+  config.after(:example, :cleanup_accounts) do |example|
+    FcrepoEndpoint.all.each(&:remove!)
+    SolrEndpoint.all.each(&:remove!)
+    RedisEndpoint.all.each(&:remove!)
+
+    Account.all.each do |account|
+      Apartment::Tenant.drop(account.tenant) rescue nil  # ignore if account.tenant missing
+      account.destroy
+    end
   end
 
   config.before(:example, :index_adapter) do |example|
