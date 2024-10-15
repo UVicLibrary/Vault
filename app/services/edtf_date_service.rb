@@ -68,22 +68,23 @@ class EdtfDateService
       elsif "#{@date_string}".include?("/..")
         result = @parsed_date.humanize.capitalize
       else
-        # Everything else
-        case @parsed_date.class.name
-        when "EDTF::Interval"
-          if season_interval? || century_interval? || decade_interval?
-            from = apply_humanized_approximate_or_uncertain(Date.edtf(@date_string.split('/')[0]), @date_string.split('/')[0].last)
-            to = apply_humanized_approximate_or_uncertain(Date.edtf(@date_string.split('/')[1]), @date_string.split('/')[1].last)
+        case @parsed_date
+        when EDTF::Interval
+          from_date = @date_string.split('/')[0].gsub('/..','open')
+          to_date = @date_string.split('/')[1].gsub('/..','open')
+          if pre_1000_interval?
+            from = parse_date_before_1000(from_date).humanize.gsub(/^0/,'')
+            to = parse_date_before_1000(to_date).humanize.gsub(/^0/,'')
           else
-            from = apply_humanized_approximate_or_uncertain(@parsed_date.from.humanize, @date_string.split('/')[0].last)
-            to = apply_humanized_approximate_or_uncertain(@parsed_date.to.humanize, @date_string.split('/')[1].last)
+            from = Date.edtf(from_date).humanize
+            to = Date.edtf(to_date).humanize
           end
           result = "#{from}#{I18n.t('edtf.terms.interval_connector_day')}#{to}"
-        when "EDTF::Century", "EDTF::Decade","EDTF::Season"
+        when EDTF::Century, EDTF::Decade, EDTF::Season
           result = apply_humanized_approximate_or_uncertain(@parsed_date, @date_string.last)
-        when "String" # "unknown" or "no date"
+        when String # "unknown" or "no date"
           result = @parsed_date
-        when "Date"
+        when Date
           result = apply_humanized_approximate_or_uncertain(@parsed_date.humanize, @date_string.last)
         end
       end
@@ -103,51 +104,32 @@ class EdtfDateService
     private
 
       def parse_date(date_string)
-        date_string = date_string.gsub('/..','/open')
-        # Remove all uncertainty and approximation markers when parsing these kinds of dates
-        date_string = strip_markers(date_string)
+        # Remove all uncertainty and approximation markers before parsing.
+        # They will be added back later if necessary.
+        date_string = strip_markers(date_string.gsub('/..','/open'))
+        return Date.edtf(date_string) if Date.edtf(date_string) && !interval?
 
         if date_string == "unknown" or date_string == "no date"
           date_string
-        elsif date_string.include? "../"
+        elsif date_string.include? "../" # Open start interval
           last_date = date_string.split("/").last
-          if before_1000?(last_date)
-            parse_date_before_1000(last_date)
-          else
-            Date.edtf(last_date)
-          end
+          before_1000?(last_date) ? parse_date_before_1000(last_date) : Date.edtf(last_date)
+        elsif interval?
+          parse_interval(date_string)
         elsif before_1000?(date_string)
-          if date_string.include?('/') # Interval
-            first_date = parse_date_before_1000(date_string.split("/").first)
-            last_date = date_string.split("/").last
-            if before_1000?(last_date)
-              last_date = parse_date_before_1000(last_date)
-            elsif last_date == "open"
-              last_date = last_date.to_sym
-            else
-              last_date = Date.edtf(last_date)
-            end
-            EDTF::Interval.new(first_date, last_date)
-          elsif date_string.end_with?('xx'||'XX') # century
+          if date_string.end_with?('xx'||'XX') # century
             EDTF::Century.new(date_string.gsub('xx','00').to_i)
           elsif date_string.end_with?('x'||'XX') # decade
             EDTF::Decade.new(date_string.gsub('x','0').to_i)
           else
             parse_date_before_1000(date_string)
           end
-        elsif season_interval? || century_interval? || decade_interval?
-          # since edtf-ruby can't parse them and add them back in during .humanize
-          first_date = Date.edtf(date_string.split("/").first)
-          last_date = Date.edtf(date_string.split("/").last)
-          EDTF::Interval.new(first_date.first, last_date.last)
-        elsif Date.edtf(date_string).nil? # Invalid date
+        else # Date is still invalid despite best attempt to parse
           if date_string.include? "#"
             raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" Date includes #, please use X or another alternative.")
           else
             raise InvalidEdtfDateError.new("Could not parse date: \"#{date_string}.\" If date is unknown, use \"unknown\" or \"no date\"")
           end
-        else
-          Date.edtf(date_string)
         end
       end
 
@@ -169,6 +151,37 @@ class EdtfDateService
         dup
       end
 
+      def parse_interval(date_string)
+        if pre_1000_interval?
+          first_date = parse_date_before_1000(date_string.split("/").first)
+          last_date = if date_string.split("/").last == "open"
+                        date_string.split("/").last.to_sym
+                      elsif before_1000?(date_string.split("/").last)
+                        parse_date_before_1000(date_string.split("/").last)
+                      else
+                        Date.edtf(date_string.split("/").last)
+                      end
+        elsif season_interval? || century_interval? || decade_interval?
+          # edtf-ruby doesn't like century or decade intervals, so we call
+          # #first and #last to get normal dates
+          first_date = Date.edtf(date_string.split("/").first).first
+          last_date = Date.edtf(date_string.split("/").last).last
+        else # Just an interval of normal dates
+          first_date = Date.edtf(date_string).from
+          last_date = Date.edtf(date_string).to
+        end
+        if last_date != :open && first_date > last_date
+          raise InvalidEdtfDateError.new("The start date of an interval cannot be after the end date.")
+        end
+        # Use first_date.first and last_date.last to avoid
+        # ArgumentError: Intervals cannot start with: ...
+        Date.edtf(date_string).nil? ? EDTF::Interval.new(first_date, last_date) : Date.edtf(date_string)
+      end
+
+      def interval?
+        Date.edtf(@date_string).class == EDTF::Interval || season_interval? || century_interval? || decade_interval? || pre_1000_interval?
+      end
+
       def season_interval?
         @date_string.include?('/') && @date_string.split('/').all? { |date| Date.edtf(date).class == EDTF::Season }
       end
@@ -179,6 +192,10 @@ class EdtfDateService
 
       def decade_interval?
         @date_string.include?('/') && @date_string.split('/').all? { |date| Date.edtf(date).class == EDTF::Decade }
+      end
+
+      def pre_1000_interval?
+        @date_string.include?('/') && @date_string.split('/').any? { |date| before_1000?(date) }
       end
 
       def before_1000?(date_string)
