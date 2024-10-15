@@ -2,8 +2,6 @@ module CustomCollectionBehavior
   PERMISSION_TEXT_VALUE_AUTHENTICATED = 'uvic'.freeze
   VISIBILITY_TEXT_VALUE_AUTHENTICATED = 'authenticated'.freeze
 
-  include AsyncCollectionNesting
-
   # Use this query to get the ids of the member objects (since the containment
   # association has been flipped)
   def member_object_ids

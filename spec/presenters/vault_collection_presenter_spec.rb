@@ -459,14 +459,10 @@ RSpec.describe VaultCollectionPresenter do
     context "when user can create featured collections" do
       let(:solr_doc) { SolrDocument.new(collection.to_solr) }
 
-      before do
-        allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true)
-      end
+      before { allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true) }
 
       context "and solr document is public" do
-        before do
-          allow(solr_doc).to receive(:public?).and_return(true)
-        end
+        before { allow(solr_doc).to receive(:public?).and_return(true) }
 
         it "returns true" do
           expect(presenter.collection_featurable?).to be true
@@ -474,9 +470,7 @@ RSpec.describe VaultCollectionPresenter do
       end
 
       context "and solr document is private" do
-        before do
-          allow(solr_doc).to receive(:public?).and_return(false)
-        end
+        before { allow(solr_doc).to receive(:public?).and_return(false) }
 
         it "returns false" do
           expect(presenter.collection_featurable?).to be false
@@ -485,10 +479,7 @@ RSpec.describe VaultCollectionPresenter do
     end
 
     context "when user can't create featured collections" do
-
-      before do
-        allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(false)
-      end
+      before { allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(false) }
 
       it "returns false" do
         expect(presenter.collection_featurable?).to be false
@@ -497,9 +488,7 @@ RSpec.describe VaultCollectionPresenter do
   end
 
   describe '#display_feature_link?' do
-    before do
-      allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true)
-    end
+    before { allow(ability).to receive(:can?).with(:create, FeaturedCollection).and_return(true) }
 
     context "when a featured collection can be added and collection is not featured" do
       let(:solr_doc) { SolrDocument.new(collection.to_solr) }
@@ -513,27 +502,24 @@ RSpec.describe VaultCollectionPresenter do
     end
 
     context "when the collection is not featurable" do
-      before do
-        allow(presenter).to receive(:collection_featurable?).and_return(false)
-      end
+      before { allow(presenter).to receive(:collection_featurable?).and_return(false) }
+
       it 'returns false' do
         expect(presenter.display_feature_link?).to be false
       end
     end
 
     context "when another collection cannot be featured" do
-      before do
-        allow(FeaturedCollection).to receive(:can_create_another?).and_return(false)
-      end
+      before { allow(FeaturedCollection).to receive(:can_create_another?).and_return(false) }
+
       it 'returns false' do
         expect(presenter.display_feature_link?).to be false
       end
     end
 
     context 'when collection is already featured' do
-      before do
-        FeaturedCollection.create(collection_id: collection.id)
-      end
+      before { FeaturedCollection.create(collection_id: collection.id) }
+
       it 'returns false' do
         expect(presenter.display_feature_link?).to be false
       end
@@ -543,9 +529,8 @@ RSpec.describe VaultCollectionPresenter do
   describe '#display_unfeature_link?' do
 
     context 'when collection is not featured' do
-      before do
-        allow(presenter).to receive(:collection_featurable?).and_return(true)
-      end
+      before { allow(presenter).to receive(:collection_featurable?).and_return(true) }
+
       it 'returns false' do
         expect(presenter.display_unfeature_link?).to be false
       end
@@ -556,15 +541,15 @@ RSpec.describe VaultCollectionPresenter do
         allow(presenter).to receive(:collection_featurable?).and_return(true)
         FeaturedCollection.create(collection_id: collection.id)
       end
+
       it 'returns true' do
         expect(presenter.display_unfeature_link?).to be true
       end
     end
 
     context 'when collection is not featurable' do
-      before do
-        allow(presenter).to receive(:collection_featurable?).and_return(false)
-      end
+      before { allow(presenter).to receive(:collection_featurable?).and_return(false) }
+
       it 'returns false' do
         expect(presenter.display_unfeature_link?).to be false
       end
@@ -580,9 +565,7 @@ RSpec.describe VaultCollectionPresenter do
     end
 
     context 'when the collection is featured' do
-      before do
-        FeaturedCollection.create(collection_id: collection.id)
-      end
+      before { FeaturedCollection.create(collection_id: collection.id) }
 
       it 'returns true' do
         expect(presenter.featured?).to be true

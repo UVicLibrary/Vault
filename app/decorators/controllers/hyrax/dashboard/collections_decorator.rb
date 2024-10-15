@@ -209,8 +209,10 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     # @collection.attributes = controlled_properties
     @collection.attributes = collection_params.merge(clean_controlled_properties(extract_controlled_properties))
     @collection.to_controlled_vocab
-    # we don't have to reindex the full graph when updating collection
-    @collection.reindex_extent = Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX
+
+    # As of Hyrax 3.6, :reindex_extent is only defined if HYRAX_USE_SOLR_GRAPH_NESTING is false
+    # Remove this line after upgrading to Hyrax 4.0
+    @collection.try(:reindex_extent=, Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX)
 
     if @collection.update(collection_params.except(:members))
       after_update

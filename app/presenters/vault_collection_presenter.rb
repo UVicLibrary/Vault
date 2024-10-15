@@ -43,8 +43,10 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
   end
 
   def total_viewable_items
+    # The nested members query alone seems to include the collection itself,
+    # so add a line to explicitly exclude it. Weird.
     Hyrax::SolrService.get(query_for_ability,
-                           fq: nested_members_query)['response']['numFound']
+                           fq: "(#{nested_members_query}) AND -id:#{solr_document.id}")['response']['numFound']
   end
 
   def total_viewable_works
@@ -61,9 +63,11 @@ class VaultCollectionPresenter < Hyrax::CollectionPresenter
                            fq: filter_query)['response']['numFound']
   end
 
+  # Solr can do graph traversal without the need of special indexing with the Graph query parser so
+  # use this to compute the nested children of the current collection
+  # See https://solr.apache.org/guide/solr/latest/query-guide/other-parsers.html#graph-query-parser
   def nested_members_query
-    ["nesting_collection__ancestors_ssim:*#{id.to_s}",
-     "member_of_collection_ids_ssim:#{id.to_s}"].join(" OR ")
+    "{!graph to=id from=member_of_collection_ids_ssim maxDepth=5}id:#{solr_document.id}"
   end
 
   def query_for_ability
