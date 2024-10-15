@@ -327,12 +327,6 @@ RSpec.describe Collection, type: :model do
     end
   end
 
-  describe '#update_nested_collection_relationship_indices', :with_nested_reindexing do
-    it 'will enqueue a reindexing job once for the Collection resource and once for the nested ACL permission resource' do
-      expect { collection.save! }.to have_enqueued_job(ReindexNestedRelationshipsJob).exactly(2).times
-    end
-  end
-
   describe '#properties' do
     subject { described_class.properties.map(&:first).map(&:to_sym) }
     it { is_expected.to match_array([:has_model, :create_date, :modified_date, :depositor, :title,

@@ -9,7 +9,9 @@ class GoogleMapCollectionMembersService < NestedWorksSearchService
       builder.search_includes_models = :works
       builder.merge(
           fl: filter_fields,
-          fq: add_coordinates_filter(add_descendants(builder.query['fq'])),
+          fq: add_coordinates_filter(
+                add_nested_descendants(builder.query['fq'], builder.collection.id)
+              ),
           rows: 3000)
     end
     response
