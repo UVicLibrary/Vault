@@ -127,6 +127,16 @@ en:
             active: Active
             pending: Pending
           status_label: Status
+    permission_levels:
+      options:
+        edit: Edit
+        none: Choose Access
+        read: View
+      edit: Edit access
+      owner:
+        edit: Edit access
+      read: View
+    institution_name: Institution
   proprietor:
     accounts:
       edit:
