@@ -1,5 +1,5 @@
 tenant_settings:
-  vault.library.uvic.ca:
+  vault.localhost:
     csv_checker:
       date_indexing_service:
         - EdtfDateService
