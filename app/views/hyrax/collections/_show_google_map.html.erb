@@ -8,7 +8,7 @@
   }
 </style>
 
-<div id="map" data-gmaps="<%= Rails.application.secrets[:google_maps] %>"></div>
+<div id="map" data-gmaps="<%= ENV['GOOGLE_MAPS_API_KEY'] %>"></div>
 
 <script>
   var googleMapItems = <%= raw @coordinates.to_json %>;

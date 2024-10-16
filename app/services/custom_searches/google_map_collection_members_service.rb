@@ -10,12 +10,15 @@ class GoogleMapCollectionMembersService < NestedWorksSearchService
       builder.merge(
           fl: filter_fields,
           fq: add_coordinates_filter(
-                add_nested_descendants(builder.query['fq'], builder.collection.id)
+                add_nested_descendants(builder.query['fq'],
+                                       builder.collection.id)
               ),
           rows: 3000)
     end
     response
   end
+
+  private
 
   def filter_fields
     %w(id coordinates_tesim thumbnail_path_ss description_tesim geographic_coverage_label_tesim title_tesim).join(', ')
