@@ -23,7 +23,6 @@ class ApplicationController < ActionController::Base
   before_action :require_active_account!, if: :multitenant?
   before_action :set_account_specific_connections!
   before_action :elevate_single_tenant!, if: :singletenant?
-  skip_after_action :discard_flash_if_xhr
 
   before_action :add_honeybadger_context
 

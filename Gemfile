@@ -126,7 +126,7 @@ gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
 gem 'devise_invitable', '~> 1.6'
 
-gem 'apartment'
+gem 'apartment', github: 'scientist-softserv/apartment', branch: 'development'
 gem 'config', '~> 2.2', '>= 2.2.1'
 gem 'is_it_working'
 gem 'rolify'

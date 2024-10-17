@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
+class IIIFAuthorizationService < Hyrax::IiifAuthorizationService
   # Modifies #file_set_id_for to decode the image URL.
   # Restricts access to IIIF image URLs to download
   # users/groups only (except for thumbnails).
