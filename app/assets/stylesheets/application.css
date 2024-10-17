@@ -12,7 +12,7 @@
  *
  *= require hyrax/custom_editor
  *= require hyrax
- *= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+ *= require dataTables.bootstrap4
  *= require blacklight_range_limit
  *= require custom
  *= require pages

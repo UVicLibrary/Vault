@@ -6,6 +6,7 @@ gem 'hyrax', '~> 4.0'
 gem 'sass-rails', '~> 6.0'
 gem 'bootstrap', '~> 4.0'
 gem 'riiif', '~> 2.0'
+gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 
 # TO DO: Relax reqs for cdm_migrator
 # gem 'cdm_migrator', '3.4.2'

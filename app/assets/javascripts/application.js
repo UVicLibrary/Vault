@@ -11,14 +11,21 @@
 // about supported directives.
 //
 //= require jquery3
-//= require jquery_ujs
-//= require dataTables/jquery.dataTables
-//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+//= require rails-ujs
+//= require popper
+//= require twitter/typeahead
+//= require bootstrap
+//= require jquery.dataTables
+//= require dataTables.bootstrap4
+
 //= require js.cookie
-//= require blacklight/blacklight
-//= require blacklight_range_limit
-// require browse_collections
 //= require turbolinks
+
+// Required by Blacklight
+//= require blacklight/blacklight
+// require admin_color_select
+//= require blacklight_advanced_search
+//= require blacklight_gallery/default
 
 // Moved the Hyku JS *above* the Hyrax JS to resolve #1187 (following
 // a pattern found in ScholarSphere)
@@ -28,5 +35,5 @@
 // require vault_homepage
 //= require navbar
 //= require hyrax
-//= require fast_update
+// require fast_update
 //= require google_map
