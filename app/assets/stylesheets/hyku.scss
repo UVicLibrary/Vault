@@ -101,7 +101,7 @@ footer.navbar {
 
 .sidebar {
   .h5 {
-    padding: $nav-link-padding;
+    padding: 10px 15px;
   }
 
   &.maximized {
@@ -189,7 +189,7 @@ footer.navbar {
 }
 
 .callout-danger {
-  background-color: $well-bg;
+  background-color: #f5f5f5;
   border-color: $brand-danger;
 
   h1,
