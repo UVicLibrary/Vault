@@ -95,7 +95,7 @@ RSpec.describe VaultFileSetHelper do
         allow(helper).to receive(:workflow_restriction?).and_return false
         allow(parent).to receive(:member_presenters).and_return([presenter])
         allow(controller).to receive(:current_ability).and_return(ability)
-        allow(ability).to receive(:can?).with(:download, presenter.id).and_return(true)
+        allow(ability).to receive(:can?).with(:download, presenter).and_return(true)
       end
 
       context 'when on a work show page' do
@@ -181,13 +181,13 @@ RSpec.describe VaultFileSetHelper do
       before { allow(controller).to receive(:current_ability).and_return(ability) }
 
       it 'does not allow download when permissions restrict it' do
-        allow(ability).to receive(:can?).with(:read, file_set).and_return(false)
+        allow(ability).to receive(:can?).with(:download, file_set).and_return(false)
 
         expect(helper.display_media_download_link?(file_set: file_set)).to eq false
       end
 
       it 'allows download when permissions allow it ' do
-        allow(ability).to receive(:can?).with(:read, file_set).and_return(true)
+        allow(ability).to receive(:can?).with(:download, file_set).and_return(true)
 
         expect(helper.display_media_download_link?(file_set: file_set)).to eq true
       end

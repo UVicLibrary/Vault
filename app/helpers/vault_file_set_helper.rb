@@ -1,16 +1,5 @@
 module VaultFileSetHelper
 
-  # Override Hyrax::FileSetHelper in Hyrax v. 3.1
-  def display_media_download_link?(file_set:)
-    if current_account.name.include? "vault"
-      Hyrax.config.display_media_download_link? &&
-        can?(:download, file_set.id)
-    else
-      Hyrax.config.display_media_download_link? &&
-          can?(:read, file_set)
-    end
-  end
-
   def work_show_page?
     params[:controller].present? && params[:controller].include?("generic_works")
   end
@@ -102,7 +91,7 @@ module VaultFileSetHelper
   end
 
   def latest_file_id(solr_doc)
-    solr_doc.current_file_version || Hyrax::VersioningService.versioned_file_id(FileSet.find(solr_doc.id).original_file)
+    solr_doc.try(:current_file_version) || Hyrax::VersioningService.versioned_file_id(FileSet.find(solr_doc.id).original_file)
   end
 
   def default_image
