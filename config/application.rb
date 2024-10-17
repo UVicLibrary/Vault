@@ -89,5 +89,31 @@ module Hyku
       end
       Rails.root.join(relative_path).to_s
     end
+
+    ##
+    # Psych Allow YAML Classes
+    #
+    # The following configuration addresses errors of the following form:
+    #
+    # ```
+    # Psych::DisallowedClass: Tried to load unspecified class: ActiveSupport::HashWithIndifferentAccess
+    # ```
+    #
+    # Psych::DisallowedClass: Tried to load unspecified class: <Your Class Name Here>
+    config.after_initialize do
+      yaml_column_permitted_classes = [
+          Symbol,
+          Hash,
+          Array,
+          ActiveSupport::HashWithIndifferentAccess,
+          ActiveModel::Attribute.const_get(:FromDatabase),
+          User,
+          Time
+      ]
+      config.active_record.yaml_column_permitted_classes = yaml_column_permitted_classes
+      # Seems at some point `ActiveRecord::Base.yaml_column_permitted_classes` loses all the values we set above
+      # so we need to set it again here.
+      ActiveRecord::Base.yaml_column_permitted_classes = yaml_column_permitted_classes
+    end
   end
 end
