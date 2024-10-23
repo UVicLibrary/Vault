@@ -45,8 +45,7 @@ Hyrax.config do |config|
   config.iiif_info_url_builder = ->(_file_id, _base_url) { "#{_base_url}/images/#{ActionDispatch::Journey::Router::Utils.escape_segment(_file_id)}" }
 
   config.rights_statement_service_class = ->() {
-    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
-    when "iaff"
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("iaff")
       IaffRightsStatementService
     else
       Hyrax::RightsStatementService
@@ -54,8 +53,7 @@ Hyrax.config do |config|
   }
 
   config.iiif_metadata_fields = ->() {
-    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
-    when "vault"
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
       [:creator_label, :creator, :contributor_label, :contributor,
        :subject_label, :subject, :publisher, :language, :identifier,
        :keyword, :date_created, :based_near_label, :related_url,
