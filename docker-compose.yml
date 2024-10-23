@@ -34,7 +34,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "echo 'ruok' | nc -w 2 -q 2 localhost 2181 | grep imok || exit 1"]
       interval: "5s"
-      timeout: "8"
+      timeout: "8s"
   solr:
     image: solr:9.4.1
     command: solr -c -f -z zoo1:2181
@@ -90,7 +90,7 @@ services:
     image: hyku/main:latest
     env_file:
       - .env
-    # Commands to run on first install:
+      # Commands to run on first install:
       # bundle exec rails zookeeper:upload
       # rails db:migrate
     environment:
@@ -118,8 +118,8 @@ services:
       - app:/home/app/webapp/tmp/uploads
       - assets:/home/app/webapp/public/assets
       - cache:/home/app/webapp/tmp/cache
-#      - .:/home/app/webapp
-      - ~/Vault:/home/app/webapp
+      - .:/home/app/webapp
+    #      - ~/Vault:/home/app/webapp
     networks:
       internal:
 
@@ -140,8 +140,8 @@ services:
     stdin_open: true
     tty: true
     volumes:
-#      - .:/home/app/webapp:consistent
-      - ~/Vault:/home/app/webapp:consistent
+      - .:/home/app/webapp:consistent
+  #      - ~/Vault:/home/app/webapp:consistent
 
   workers:
     extends:

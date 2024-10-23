@@ -15,8 +15,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   # Tenant-specific class overrides
   self.presenter_class = ->() {
-    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
-    when "vault"
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
       VaultCollectionPresenter
     else
       Hyrax::CollectionPresenter
@@ -24,8 +23,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   }
 
   self.form_class = ->() {
-    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
-    when "vault"
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
       VaultCollectionForm
     else
       Hyrax::Forms::CollectionForm
@@ -49,12 +47,12 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   # Add .call because form_class.is_a? Proc
   def form
     @form ||=
-        case @collection
-        when Valkyrie::Resource
-          Hyrax::Forms::ResourceForm.for(@collection)
-        else
-          form_class.call.new(@collection, current_ability, repository)
-        end
+      case @collection
+      when Valkyrie::Resource
+        Hyrax::Forms::ResourceForm.for(@collection)
+      else
+        form_class.call.new(@collection, current_ability, repository)
+      end
   end
 
   # Add .call because form_class.is_a? Proc
@@ -64,8 +62,8 @@ Hyrax::Dashboard::CollectionsController.class_eval do
       form_class.call.model_attributes(params[:collection])
     else
       params.permit(collection: {})[:collection]
-          .merge(params.permit(:collection_type_gid))
-          .merge(member_of_collection_ids: Array(params[:parent_id]))
+        .merge(params.permit(:collection_type_gid))
+        .merge(member_of_collection_ids: Array(params[:parent_id]))
     end
   end
 
@@ -235,7 +233,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
         format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
       end
     end
-    end
+  end
 
   def new_permissions
     # Reject blank attributes

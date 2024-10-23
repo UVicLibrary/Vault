@@ -14,8 +14,7 @@ Hyrax::CollectionsController.class_eval do
   self.membership_service_class = ::NestedWorksSearchService
 
   self.presenter_class = ->() {
-    case Account.find_by(tenant: Apartment::Tenant.current).try(:name)
-    when "vault"
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
       VaultCollectionPresenter
     else
       Hyrax::CollectionPresenter
@@ -28,7 +27,7 @@ Hyrax::CollectionsController.class_eval do
   # Defined in the hydra-head gem
   # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
   include Hydra::Controller::IpBasedAbility
-  
+
   # You can override this method if you need to provide additional inputs to the search
   # builder. For example:
   #   search_field: 'all_fields'
