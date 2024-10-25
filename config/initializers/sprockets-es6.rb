@@ -17,9 +17,10 @@ Sprockets::ES6.class_eval do
       transform(data, transformation_options(input))
     end
 
-    regex = /(define\('#{input[:name]}', \[\'exports', '?.*)/
+    regex = /(define\(('|")#{input[:name]}('|"), \[('|")exports('|")(, '?.*)?)/
+
     # If there is more than one define statement...
-    return if result['code'].start_with?("define('#{input[:name]}', ['exports'], function (exports) {") && result['code'].match?(regex)
+    return if result['code'].scan(regex).count > 1
     result['code']
   end
 
