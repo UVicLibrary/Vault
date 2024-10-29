@@ -33,7 +33,7 @@ module VaultAvHelper
   # has_transcript?
   def has_transcript?(parent)
     return false if action_name == "edit"
-    work_show_page? && transcript_for(parent).present?
+    work_show_page? && transcript_for(parent).present? && parent.solr_document.has_key?("full_text_tsi")
   end
 
   # Finds the PDF file set that is the transcript for a work
