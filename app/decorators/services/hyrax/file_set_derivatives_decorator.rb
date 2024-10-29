@@ -66,7 +66,7 @@ module Hyrax
       # Find what collection the fileset belongs to and create a folder named after it
       # Use a "misc" folder if it's not in any collection.
       def create_vips_thumbnail(filepath)
-        `vips thumbnail #{filepath} #{pdf_thumbnail_dir}/#{@file_set.id}-thumb.jpg 493x`
+        `vips thumbnail "#{filepath}" #{pdf_thumbnail_dir}/#{@file_set.id}-thumb.jpg 493x`
       end
 
   end
