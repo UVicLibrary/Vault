@@ -45,7 +45,7 @@ Hyrax.config do |config|
   config.iiif_info_url_builder = ->(_file_id, _base_url) { "#{_base_url}/images/#{ActionDispatch::Journey::Router::Utils.escape_segment(_file_id)}" }
 
   config.rights_statement_service_class = ->() {
-    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("iaff")
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).try(:include?, "iaff")
       IaffRightsStatementService
     else
       Hyrax::RightsStatementService
@@ -53,7 +53,7 @@ Hyrax.config do |config|
   }
 
   config.iiif_metadata_fields = ->() {
-    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).try(:include?, "vault")
       [:creator_label, :creator, :contributor_label, :contributor,
        :subject_label, :subject, :publisher, :language, :identifier,
        :keyword, :date_created, :based_near_label, :related_url,
@@ -181,9 +181,9 @@ Hyrax.config do |config|
 
   # Options to control the file uploader
   config.uploader = {
-    limitConcurrentUploads: 6,
-    maxNumberOfFiles: 100,
-    maxFileSize: 1000.megabytes
+      limitConcurrentUploads: 6,
+      maxNumberOfFiles: 100,
+      maxFileSize: 1000.megabytes
   }
 
   # Fedora import/export tool
