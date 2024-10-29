@@ -15,7 +15,7 @@ module Hyrax
     rescue_from Blacklight::Exceptions::RecordNotFound, Ldp::Gone, with: :not_found
 
     rescue_from ActionController::UnknownFormat do
-      render json: { response: 'Requested format (or blank format) is not supported.', status: 406 }
+      render status: 406, json: { response: 'Requested format (or blank format) is not supported.' }
     end
 
     after_action :export_files, only: :update
@@ -25,6 +25,15 @@ module Hyrax
       flash.alert = "The work you're looking for may have moved or does not exist. Try searching for it in the search bar."
       redirect_to help_path
       return
+    end
+
+    # Rescue error where bots shove collection ids into work URLs
+    def build_breadcrumbs
+      if action_name == 'show' && search_result_document(id: params[:id]).hydra_model != GenericWork
+        render status: 404, json: { response: "No work with id #{params[:id]}" }
+      else
+        super
+      end
     end
 
     # Finds a solr document matching the id and sets @presenter
