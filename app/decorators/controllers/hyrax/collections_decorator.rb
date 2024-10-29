@@ -14,7 +14,7 @@ Hyrax::CollectionsController.class_eval do
   self.membership_service_class = ::NestedWorksSearchService
 
   self.presenter_class = ->() {
-    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).try(:include?, "vault")
       VaultCollectionPresenter
     else
       Hyrax::CollectionPresenter
