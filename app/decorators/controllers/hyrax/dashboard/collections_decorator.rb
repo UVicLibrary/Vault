@@ -15,7 +15,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   # Tenant-specific class overrides
   self.presenter_class = ->() {
-    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).try(:include?, "vault")
       VaultCollectionPresenter
     else
       Hyrax::CollectionPresenter
@@ -23,7 +23,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   }
 
   self.form_class = ->() {
-    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).include?("vault")
+    if Account.find_by(tenant: Apartment::Tenant.current).try(:name).try(:include?, "vault")
       VaultCollectionForm
     else
       Hyrax::Forms::CollectionForm
