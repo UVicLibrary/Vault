@@ -1,32 +1,31 @@
-<ul id="user_utility_links" class="nav navbar-nav navbar-right">
+<ul id="user_utility_links" class="nav navbar-nav navbar-right ml-auto">
   <% if request.base_url.include? "vault" %>
-      <li <%= 'class=active' if current_page?(hyrax.about_path) %>>
-        <%= link_to t(:'hyrax.controls.about'), hyrax.about_path, data: { turbolinks: false }, aria: current_page?(hyrax.about_path) ? {current: 'page'} : nil %></li>
-      <li <%= 'class=active' if current_page?(hyrax.contact_path) %>>
-        <%= link_to t(:'hyrax.controls.contact'), hyrax.contact_path, data: { turbolinks: false }, aria: current_page?(hyrax.contact_path) ? {current: 'page'} : nil %></li>
-      <li <%= 'class=active' if current_page?(hyrax.help_path) %>>
-        <%= link_to t(:'hyrax.controls.help'), hyrax.help_path, data: { turbolinks: false }, aria: current_page?(hyrax.help_path) ? {current: 'page'} : nil %></li>
+      <li class="nav-item <%= 'active' if current_page?(hyrax.about_path) %>" >
+        <%= link_to t(:'hyrax.controls.about'), hyrax.about_path, class: "nav-link", data: { turbolinks: false }, aria: current_page?(hyrax.about_path) ? {current: 'page'} : nil %></li>
+      <li class="nav-item <%= 'active' if current_page?(hyrax.contact_path) %>" >
+        <%= link_to t(:'hyrax.controls.contact'), hyrax.contact_path, class: "nav-link", data: { turbolinks: false }, aria: current_page?(hyrax.contact_path) ? {current: 'page'} : nil %></li>
+      <li class="nav-item <%= 'active' if current_page?(hyrax.help_path) %>" >
+        <%= link_to t(:'hyrax.controls.help'), hyrax.help_path, class: "nav-link", data: { turbolinks: false }, aria: current_page?(hyrax.help_path) ? {current: 'page'} : nil %></li>
   <% end %>
   <%= render 'shared/locale_picker' if available_translations.size > 1 %>
   <% if user_signed_in? %>
-    <li>
-      <%#= render_notifications(user: current_user) %>
-    </li>
-    <li class="dropdown">
-      <%= link_to hyrax.dashboard_profile_path(current_user), role: 'button', data: { toggle: 'dropdown', turbolinks: false }, aria: { haspopup: true, expanded: false} do %>
+    <li class="nav-item dropdown">
+      <%= link_to hyrax.dashboard_profile_path(current_user), class: "nav-link dropdown-toggle", role: 'button', data: { toggle: 'dropdown', turbolinks: false }, aria: { haspopup: true, expanded: false} do %>
         <span class="sr-only"><%= t("hyrax.toolbar.profile.sr_action") %></span>
         <span class="hidden-xs">&nbsp;<%= current_user.name %></span>
         <span class="sr-only"> <%= t("hyrax.toolbar.profile.sr_target") %></span>
-        <span class="fa fa-user"></span>
-        <span class="caret"></span>
+        <i class="fa fa-user" aria-hidden="true"></i>
       <% end %>
-      <ul class="dropdown-menu dropdown-menu-right" role="menu">
-        <li><%= link_to t("hyrax.toolbar.dashboard.menu"), hyrax.dashboard_path, data: { turbolinks: false } %></li>
-
-        <li class="divider"></li>
-        <li><%= link_to t("hyku.toolbar.profile.edit_registration"), main_app.edit_user_registration_path, data: { turbolinks: false } %></li>
-        <li><%= link_to t("hyrax.toolbar.profile.logout"), main_app.destroy_user_session_path, data: { turbolinks: false } %></li>
-      </ul>
+      <div id="user-util-links" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="<%= hyrax.dashboard_path %>"><%= t("hyrax.toolbar.dashboard.menu") %></a>
+        <%# if Flipflop.show_login_link? || current_ability.user_groups.include?('admin') %>
+          <div class="dropdown-divider"></div>
+          <% if Devise.mappings[:user]&.registerable? %>
+            <a class="dropdown-item" href="<%= main_app.edit_user_registration_path %>"><%= t("hyku.toolbar.profile.edit_registration") %></a>
+          <% end %>
+          <a class="dropdown-item" href="<%= main_app.destroy_user_session_path %>"><%= t("hyrax.toolbar.profile.logout") %></a>
+        <%# end %>
+      </div>
     </li><!-- /.btn-group -->
   <% else %>
     <li>
