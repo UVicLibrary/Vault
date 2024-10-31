@@ -1,20 +1,23 @@
+.site-footer {
+  height: fit-content;
+  color: #fff;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+}
+
 .footer-link {
   color: #fbfbfbfc !important;
   margin-bottom: 2px;
   display: inline-block;
-}
 
-.footer-link:hover,
-.footer-link:focus {
-  text-decoration: underline;
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
 }
 
 .footer-logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  //margin-left: 5%;
-  padding-left: 5%;
 }
 
 #footer-logo { /* image is in view file */
@@ -34,13 +37,17 @@
     display: flex;
   }
 
-  .glyphicon {
-    margin-right: 7px;
+  .fa {
+    font-size: 20px;
   }
 
-  .fa {
-    font-size: 22px;
-    margin-left: 5px;
+  .footer-icon {
+    margin-right: 5px;
+  }
+
+  .sms-icon {
+    filter: brightness(0) invert(1);
+    height: 22px;
   }
 
   ul[aria-labelledby=social-media-header] li {
@@ -51,10 +58,6 @@
 .unstyled-list {
   list-style-type: none;
   padding-left: 0;
-}
-
-.navbar-inverse.site-footer {
-  border: none;
 }
 
 //mobile view max-size 767px
