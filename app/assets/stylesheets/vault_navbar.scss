@@ -1,10 +1,113 @@
-// For twitter typeahead
-.vault_nav.navbar-static-top {
-  z-index: 50;
+// New for Hyrax 4 and Bootstrap 4
+
+.vault_nav {
+  //Background color is dynamically set in views/vault_navbar
+  // via appearance.header_background_color
+  padding: 0;
+
+  .row {
+    flex: 1 0 100%;
+  }
+
+  // Overrides hyrax/_facets.scss
+  .navbar-toggler .navbar-toggler-icon {
+    display: inline-block;
+  }
+
+  .navbar-toggler {
+    margin: 0.5rem 1rem 0.5rem 0;
+  }
+
+  #navbar-right-different {
+    font-size: 18px !important;
+    justify-content: space-around;
+    display: flex;
+    margin-left: auto; /* align right */
+    line-height: 2;
+
+    *:not(.dropdown-item, .dropdown-menu *) {
+      color: #fff;
+    }
+
+    #user_utility_links {
+      height: 100%;
+      align-items: baseline;
+
+     .active > .nav-link {
+       box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
+     }
+
+      .nav-item {
+        height: 100%;
+        display: flex;
+        align-items: baseline;
+
+        &:hover, &:focus {
+          box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
+          text-decoration: underline;
+        }
+
+        .nav-link {
+          display: block;
+          padding: 0.5rem 1rem;
+          height: 100%;
+          align-content: center;
+        }
+      }
+
+    }
+
+  }
+
+  #vault_logo {
+    font-size: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-content: center;
+    margin-left: 1rem;
+
+    span {
+      width: fit-content;
+    }
+
+    .institution_name {
+      display: none;
+    }
+
+    #wordmark {
+      height: 18px;
+      margin-top: -4.5px;
+    }
+  }
+
+  #expand-search-button {
+    box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
+    fill: white;
+    border: 0;
+    border-radius: 0;
+
+    &:hover, &:focus {
+      // Same background colour as search bar
+      box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
+      border-color: #fff !important;
+    }
+
+  }
+
+  #expand-search-button.dropdown-toggle.collapsed {
+    box-shadow: none;
+
+    &::after {
+      transform: rotate(180deg);
+    }
+  }
+
 }
 
 // For invisible help/label text meant for screen readers
 // See https://www.a11yproject.com/posts/how-to-hide-content/
+// This class is applied to #expand-search-button
 .visually-hidden {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -15,287 +118,79 @@
   width: 1px;
 }
 
+// Search bar
 .expanded-search-container {
 
+  // Make the search bar background a bit darker to
+  // contrast the main navbar
   box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
 
-  .flex-wrapper {
+  #search-top-navbar-collapse.show,
+  #search-top-navbar-collapse.collapsing {
+    padding: 15px;
     display: flex;
+    flex: 1 0 100%;
     justify-content: center;
+    flex-wrap: wrap;
+    align-content: space-between;
+    gap: 1rem;
+  }
+
+  .adv-search {
+    display: flex;
+    color: white;
+    font-size: 14px;
     align-items: center;
+    margin-right: 2rem;
+  }
+
+  // Search form
+  .input-group {
+    height: 37.5px;
+
+    // Autocomplete for collection titles
+    .twitter-typeahead,
+    #search-field-header {
+      height: 100%;
+    }
+
+    .typeahead, .tt-query, .tt-hint,
+    .twitter-typeahead .tt-suggestion {
+      font-size: 18px;
+      border-radius: 0;
+    }
+
   }
 
   #search-form-header {
     width: 80%;
     display: inline-block;
-    margin-bottom: 0.5em;
-
-    /* Twitter typeahead (autocomplete) styles */
-    .tt-suggestion {
-      width: 100%;
-      display: block;
-      text-decoration: none;
-      color: #333;
-    }
-
-    .tt-suggestion:hover, .tt-suggestion:focus, .tt-suggestion.tt-cursor {
-      background-color: #337ab7; // #0C71CA;
-      color: #fff;
-    }
-
-    .twitter-typeahead {
-      border-color: transparent;
-      box-shadow: none;
-      opacity: 1;
-      background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255);
-      border-radius: 5px;
-    }
-
-    .tt-menu.tt-open {
-      margin-top: 0;
-      padding: 0;
-    }
-
   }
 
-  .adv-search {
-    display: inline-block;
-    color: white;
-    font-size: 14px;
-    margin-left: 22px;
-    padding-bottom: 0.75em;
-    width: 12%;
-  }
-
-  #search-field-header {
-    height: 34px;
-    font-size: 18px;
-  }
-
-  #search-field-header:focus {
-    -webkit-box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 8px rgba(102, 175, 233, 0.6);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 8px rgba(102, 175, 233, 0.6);
-  }
-
+  // "Go" button for search
   #search-submit-header {
-    background-color: #337ab7;
-    border-color: #2e6da4;
-  }
-
-  //mobile view max-size 767px
-  @media only screen and (max-width: 767px ) {
-    .flex-wrapper {
-      display: block;
-    }
-
-    #search-form-header {
-      width: 100%;
-      margin-bottom: 0;
-    }
-
-    .adv-search {
-      width: 35%;
-      float: right;
-    }
-  }
-
-}
-
-#search-top-navbar-collapse {
-  padding: 15px 15px 0px 15px;
-}
-
-.vault_nav::after {
-  content: none;
-}
-
-.vault_nav {
-
-  .container::after, .row::after, .collapse.navbar-collapse::after,
-  .nav::after, .navbar::after {
-    content: none;
-  }
-
-  .navbar-nav {
-    //margin: 0px -15px;
-    margin: 0;
-    padding-right: 15px;
-  }
-
-  .navbar-nav .active > a {
-    background-color: #337ab7;
-  }
-
-  #user_utility_links>li>a:hover, #user_utility_links>li>a:focus {
-    background-color: rgba(0,0,0,0.4) !important;
-    text-decoration: underline;
-  }
-
-  .navbar-nav>li #search_button>button:hover,
-  .navbar-nav>li #search_button>button:focus {
-    background-color: rgba(0,0,0,0.4) !important;
-    border-color: #fff !important;
-  }
-
-  #navbar-right-different {
-    font-size: 18px !important;
-    width: auto;
-    justify-content: left;
-    display: inline-flex;
-    float: right;
-  }
-
-  .col-md-3 {
-    width: 32%;
-  }
-
-  .col-md-5 {
-    width: 34%;
-  }
-
-  .col-md-7 {
-    width: 32%;
-  }
-
-  #vault_logo {
-    max-width: 245px;
-    font-size: 22px;
-  }
-
-  #wordmark {
-    height: 18px;
-    margin-top: -5.05px;
-  }
-
-  //#search_button {
-  //  margin-top: 9px;
-  //  margin-left: 3px;
-  //  margin-right: 3px;
-  //}
-
-  #search_button .caret {
-    transform: rotate(180deg);
-  }
-
-  button[data-target="#search-top-navbar-collapse"] {
-    line-height: 2.4;
     border-radius: 0;
-
-    .glyphicon-search {
-      margin-top: 10px;
-      display: inline-block;
-    }
-  }
-
-  .glyphicon-log-in {
-    margin-left: -5px;
-    margin-top: -3px;
-  }
-
-  @media only screen and (max-width: 1250px ) {
-
-    .row {
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-  }
-
-  @media only screen and (min-width: 767px ) and (max-width:  1250px ) {
-
-    #vault_logo > div {
-      padding-left: 0px;
-    }
-
-    .nav > li > a {
-      padding: 15px 10px;
-    }
-
-    .navbar-nav {
-      padding-right: 0px;
-    }
-  }
-
-  @media only screen and (max-width: 840px ) {
-    a {
-      font-size: 20px;
-    }
-    body {
-      margin-bottom: 55%
-    }
-    .col-md-5 {
-      display: none;
-    }
-    .col-md-7 {
-      display: none;
-    }
-  }
-
-  @media only screen and (max-width: 768px ) {
-
-    .navbar-nav>li>a {
-      padding-left: 30px;
-    }
-
-  }
-
-  //mobile view max-size 767px
-  @media only screen and (max-width: 767px ) {
-
-    .navbar-collapse {
-      width: 104%;
-      padding: 0;
-      //margin-top: 55px;
-    }
-
-    a {
-      font-size: 14px;
-    }
-
-    .row {
-      margin-left: -15px;
-      margin-right: 0px;
-      padding-right: 0px;
-    }
-
-    div#search_button {
-      //padding-left: 15px;
-      float: right;
-      margin-right: 10px;
-      padding-right: 0;
-    }
-
-    #navbar-right-different {
-      display: contents;
-    }
-
-  }
-
-  @media only screen and (max-width: 500px ) {
-    body {
-      margin-bottom: 95%
-    }
-    .advanced-search-link {
-      padding: 1em;
-    }
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
   }
 
 }
 
 // Dashboard view styles
-body.dashboard {
-
-  .vault_nav .container {
-    width: 100%;
-    padding-left: 1%;
-  }
-
-  .expanded-search-container .adv-search {
-    width: fit-content;
-    width: -moz-fit-content;
-  }
-}
-
-body.dashboard.vault-dashboard {
-    padding-top: 0;
-    overflow-x: unset;
-}
+//body.dashboard {
+//
+//  .vault_nav .container {
+//    width: 100%;
+//    padding-left: 1%;
+//  }
+//
+//  .expanded-search-container .adv-search {
+//    width: fit-content;
+//    width: -moz-fit-content;
+//  }
+//}
+//
+//body.dashboard.vault-dashboard {
+//    padding-top: 0;
+//    overflow-x: unset;
+//}
