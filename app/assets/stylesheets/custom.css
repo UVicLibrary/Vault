@@ -117,7 +117,8 @@ h5, #documents .document .document-title-heading, .h5, span.constraints-label {
     font-size: 22px;
 }
 
-h4, .facets .facets-heading, .h4 {
+/*h4, .facets .facets-heading, .h4 {*/
+ .facets .facets-heading, .h4 {
     font-size: 1.4em;
 }
 
