@@ -15,14 +15,14 @@
   }
 
   .navbar-toggler {
-    margin: 0.5rem 1rem 0.5rem 0;
+    margin: 0.5rem 2rem 0.5rem 0;
   }
 
   #navbar-right-different {
     font-size: 18px !important;
     justify-content: space-around;
     display: flex;
-    margin-left: auto; /* align right */
+    margin-left: auto; // Stick to the right no matter the screen size
     line-height: 2;
 
     *:not(.dropdown-item, .dropdown-menu *) {
@@ -54,7 +54,6 @@
           align-content: center;
         }
       }
-
     }
 
   }
@@ -65,7 +64,8 @@
     flex-wrap: wrap;
     gap: 0.75rem;
     align-content: center;
-    margin-left: 1rem;
+    margin-right: auto; // Stick to the left no matter the screen size
+    margin-left: 2rem;
 
     span {
       width: fit-content;
@@ -79,6 +79,7 @@
       height: 18px;
       margin-top: -4.5px;
     }
+
   }
 
   #expand-search-button {
