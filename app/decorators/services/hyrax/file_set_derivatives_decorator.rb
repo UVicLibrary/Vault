@@ -60,6 +60,7 @@ module Hyrax
                                                                   layer: 0
                                                               }])
         end
+        extract_full_text(filename, uri)
       end
 
       # Resize, create and save a thumbnail in assets directory
