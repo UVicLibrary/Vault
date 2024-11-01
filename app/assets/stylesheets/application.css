@@ -20,6 +20,7 @@
  *= require dashboard_collections
  *= require collection_show
  *= require vault_homepage
+ *= require vault_dashboard
  *= require browse_collections
  *= require pagination
  *= require ableplayer
