@@ -1,39 +1,42 @@
 <!DOCTYPE html>
-<html lang="<%= t("hyrax.document_language", default: '') %>" prefix="og:http://ogp.me/ns#">
+<html lang="<%= I18n.locale.to_s %>" prefix="og:http://ogp.me/ns#">
   <head>
     <%= render partial: 'layouts/head_tag_content' %>
     <%= content_for(:head) %>
   </head>
 
   <body class="dashboard <%= 'vault-dashboard' if request.base_url.include?("vault") %>">
-    <a href="#skip_to_content" class="sr-only">Skip to Content</a>
+    <div class="skip-to-content">
+      <%= link_to "Skip to Content", "#skip-to-content" %>
+    </div>
     <% if request.base_url.include? 'vault' %>
-      <%= render '/vault_navbar' %>
+        <%= render '/vault_navbar' %>
     <% else %>
       <%= render '/masthead' %>
     <% end %>
     <%= content_for(:navbar) %>
     <div id="content-wrapper" role="main">
-      <a name="skip_to_content"></a>
       <div class="sidebar maximized">
         <%= render 'hyrax/dashboard/sidebar' %>
       </div>
-      <div class="main-content maximized">
-        <%= render_breadcrumbs builder: Hyrax::BootstrapBreadcrumbsBuilder %>
+      <div class="main-content maximized<%= " admin-stats" if request.fullpath.include? '/admin/stats' %>">
+        <%= render_breadcrumbs builder: Hyrax.config.breadcrumb_builder %>
         <%= render '/flash_msg' %>
         <% if content_for?(:page_header) %>
           <div class="row">
-            <div class="col-xs-12 main-header">
+            <div class="col-12 main-header">
               <%= yield(:page_header) %>
             </div>
           </div>
         <% end %>
 
-        <%= render 'shared/read_only' if Flipflop.read_only? %>
-        <%= content_for?(:content) ? yield(:content) : yield %>
+          <a name="skip-to-content" id="skip-to-content"></a>
+          <%= render 'shared/read_only' if Flipflop.read_only? %>
+          <%= content_for?(:content) ? yield(:content) : yield %>
+
       </div>
 
     </div><!-- /#content-wrapper -->
-    <%= render 'shared/ajax_modal' %>
+    <%= render 'shared/modal' %>
   </body>
 </html>
