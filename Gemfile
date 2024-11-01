@@ -9,7 +9,7 @@ gem 'riiif', '~> 2.0'
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 
 # TO DO: Relax reqs for cdm_migrator
-# gem 'cdm_migrator', '3.4.2'
+gem 'cdm_migrator', git: 'https://github.com/UVicLibrary/cdm_migrator'
 # gem 'to_spotlight', '~> 0.2.7'
 
 # Prevents an error like ffi-1.17.0 requires rubygems version >= 3.3.22
