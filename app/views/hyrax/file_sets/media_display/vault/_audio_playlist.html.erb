@@ -1,9 +1,13 @@
 <audio id="audio1" data-able-player data-skin="2020" <%= audio_video_tag_settings(audio_files.first) %> preload="auto" width="600">
+  <% if has_transcript?(parent) && !has_vtt?(audio_files.first) %>
+    <div id="transcript-text"><%= sanitize(parent.solr_document.full_text.strip.gsub("\n","<br/>")) %></div>
+  <% end %>
 </audio>
 <ul class="able-playlist" data-player="audio1" data-embedded>
   <% audio_files.each do |file| %>
     <li>
       <span class="able-source" data-type="audio/mpeg" data-src="<%= hyrax.download_path(file) %>"></span>
+      <%= render_multi_track_tag(file) %>
       <button><%= file.title.first %></button>
     </li>
   <% end %>
