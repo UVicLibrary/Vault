@@ -11,7 +11,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     # Reload from Fedora and reindex for thumbnail and extracted text
     file_set.reload
     file_set.update_index
-    file_set.parent.update_index if parent_needs_reindex?(file_set)
+    file_set.parent.save if parent_needs_reindex?(file_set)
     export_new_files(file_set)
   end
 
@@ -19,7 +19,8 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
   # then the parent also needs to be reindexed.
   def parent_needs_reindex?(file_set)
     return false unless file_set.parent
-    file_set.parent.thumbnail_id == file_set.id
+    # Need to reindex parents of PDF thumbs to index the extracted text
+    file_set.parent.thumbnail_id == file_set.id || pdf_with_text?(file_set)
   end
 
   # If the parent work was created more than 3 months before the file set, export the newly-attached file
@@ -27,5 +28,10 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     if file_set.parent.present? && file_set.parent.create_date < 3.months.ago
       BatchExport::ExportFileJob.perform_later(file_set)
     end
+  end
+
+  def pdf_with_text?(file_set)
+    # When working with Hyrax::FileSet, change fs.pdf? to Hyrax::FileSetTypeService.new(file_set: file_set).pdf?
+    file_set.pdf? && file_set.extracted_text.present?
   end
 end
