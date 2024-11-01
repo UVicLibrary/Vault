@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/UVicLibrary/cdm_migrator
+  revision: 6858c2cef08d85668346884a65b6a2cd1ef494c1
+  specs:
+    cdm_migrator (3.5.2)
+      hyrax (>= 3.2, < 5.0)
+      rails (>= 5.0, < 7.0)
+
+GIT
   remote: https://github.com/samvera-labs/hyrax-doi.git
   revision: 9b7ab7f8054a14385b838de1118f55ad2e0f5da8
   branch: rails_hyrax_upgrade
@@ -1248,6 +1256,7 @@ DEPENDENCIES
   capybara
   carrierwave-aws
   carrierwave-vips
+  cdm_migrator!
   chromedriver-helper
   coffee-rails (~> 4.2)
   config (~> 2.2, >= 2.2.1)
