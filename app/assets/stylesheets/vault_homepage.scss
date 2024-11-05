@@ -165,12 +165,12 @@ sans-serif;
   animation-duration: 2s;
 }
 
-.card .plain-link:focus {
+.homepage-card .plain-link:focus {
   color: inherit;
   outline-offset: 0px;
 }
 
-.card.work-card {
+.homepage-card.work-card {
 
   .data {
     transform: translateY(calc(45px + 1em));
@@ -188,7 +188,7 @@ sans-serif;
 }
 
 // Base styles
-.card {
+.homepage-card {
   float: left;
   //padding: 0 1.7rem;
   padding-right: 1.7rem;
