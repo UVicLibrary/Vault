@@ -179,12 +179,13 @@ Hyrax.config do |config|
   # Specify whether the media display partial should render a download link
   # config.display_media_download_link = true
 
-  # Options to control the file uploader
-   config.uploader = {
-     limitConcurrentUploads: 6,
-     maxNumberOfFiles: 100,
-     maxFileSize: 2.5.gigabytes
-   }
+  # Don't edit uploader settings because it is
+  # overridden by app/models/concerns/account_settings
+  #  config.uploader = {
+  #    limitConcurrentUploads: 6,
+  #    maxNumberOfFiles: 100,
+  #    maxFileSize: 1000.megabytes.to_i
+  #  }
 
   # Fedora import/export tool
   #
