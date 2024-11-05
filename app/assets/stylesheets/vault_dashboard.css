@@ -1,3 +1,13 @@
 body.dashboard.vault-dashboard {
     padding-top: 0;
+
+}
+
+.vault-dashboard .vault_nav .container {
+    margin-left: 260px;
+}
+
+.dashboard .nav-item a {
+    display: block;
+    padding: 0.5rem 1rem;
 }
