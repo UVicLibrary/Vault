@@ -15,3 +15,30 @@ span.controls-add-string {
 .multi_value .listing li:first-of-type, .controlled_vocabulary .listing li:first-of-type {
     width: 100% !important;
 }
+
+.multi_value .input-group-btn.field-controls, .controlled_vocabulary .input-group-btn.field-controls {
+    margin-left: 0;
+}
+
+/* Custom fa-x icon (font-awesome gem doesn't have it)
+ based on Bootstrap 3's .glyphicon-remove */
+.fa-x:before {
+    content: "\1F5D9";
+    font-weight: 800;
+    margin-right: 0.25rem;
+    transform: translateY(-1px);
+}
+
+.add .fa-plus:before {
+    margin-right: 0.25rem;
+}
+
+.btn.btn-link.add {
+    color: #2a62bc;
+}
+
+.controlled_vocabulary .btn.btn-link.add {
+    margin-right: 0.5rem;
+    /* Restore bootstrap 4 default */
+    padding-left: 0.375rem;
+}
