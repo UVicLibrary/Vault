@@ -5,7 +5,6 @@
 import RelationshipsControl from 'hyrax/relationships/control'
 import SaveWorkControl from 'hyrax/save_work/save_work_control'
 import AdminSetWidget from 'hyrax/editor/admin_set_widget'
-import ControlledVocabulary from 'hyrax/editor/controlled_vocabulary'
 import Autocomplete from 'hyrax/autocomplete'
 import AuthoritySelect from 'hyrax/authority_select'
 
@@ -77,7 +76,7 @@ export default class {
             // Override with our custom class, but pass in a ControlledVocabulary so that
             // we have access to its functions. The element for ControlledVocabulary is
             // intentionally empty to allow our custom class to initialize
-            new MixedControlledVocabulary(controlled_field, new ControlledVocabulary('', this.paramKey))
+            new MixedControlledVocabulary(controlled_field)
         )
     }
 
