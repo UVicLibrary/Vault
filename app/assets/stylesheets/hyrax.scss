@@ -7,13 +7,104 @@
 @import "bootstrap-default-overrides";
 @import "bootstrap";
 @import "blacklight/blacklight";
-@import "font-awesome";
 @import "blacklight_gallery/gallery";
 @import "blacklight_gallery/masonry";
 @import "blacklight_gallery/slideshow";
 @import "blacklight_gallery/osd_viewer";
+@import "hyrax/blacklight_gallery";
+@import "font-awesome";
 @import "hyrax/hyrax";
 @import "hyku";
 @import "accounts";
 @import "viewer";
 
+//@import "themes/*";
+
+// for catalog search result snippets
+.highlight {
+  background: #ffff00;
+  font-weight: 700;
+}
+
+// to make collection form labels bold
+#collection-edit-controls label.control-label {
+  font-weight: bold !important;
+}
+
+/* Collection show page */
+// Contribute back to Hyrax?
+
+// nav search header
+#search-form-header {
+  // adds bootstrap class to element
+  label[for="search-field-header"] {
+    @extend .sr-only;
+  }
+
+  .form-group {
+    justify-content: right;
+  }
+}
+
+.hyc-bugs {
+  margin-top: 10px;
+}
+
+.hyrax-collections-show {
+  .document-metadata {
+    dd {
+      word-break: break-all;
+    }
+  }
+}
+
+#hyc-collection-metadata-total_items,
+#hyc-collection-metadata-creator {
+  align-items: baseline;
+}
+
+// collections gallery view
+#documents {
+
+  // hide the bookmark button
+  .caption-area {
+    input[name="commit"] {
+      display: none;
+    }
+  }
+
+  .document {
+    margin-top: 6px;
+    padding-top: 6px;
+
+    .document-thumbnail {
+      .img-thumbnail {
+        padding: 0.25rem;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+      }
+    }
+  }
+}
+
+// adds bootstrap class to element
+.documents-gallery {
+  @extend .row-cols-lg-4;
+}
+
+// pagination
+.hyc-bl-pager {
+  .pagination {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .hyc-banner {
+    .hyc-bugs {
+      flex-wrap: wrap;
+    }
+  }
+}
+/* End Collection show page */
