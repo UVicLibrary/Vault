@@ -59,7 +59,6 @@ module VaultFileSetHelper
 
   # @param [VaultFileSetPresenter or VaultWorkShowPresenter]
   def display_pdf_download_link?(presenter)
-    return false unless current_account.name.include? "vault"
     pdf = pdf_file_set(presenter)
     pdf.present? && display_media_download_link?(file_set: pdf) && work_show_page?
   end
@@ -74,10 +73,9 @@ module VaultFileSetHelper
 
   # @param [VaultWorkShowPresenter]
   def pdf_file_set(presenter)
-    case presenter
-    when VaultWorkShowPresenter
+    if presenter.class.to_s.include? "Work"
       presenter.member_presenters.find { |fs| fs.pdf? }
-    when VaultFileSetPresenter
+    elsif presenter.class.to_s.include? "FileSet"
       presenter.parent.member_presenters.find { |fs| fs.pdf? }
     end
   end

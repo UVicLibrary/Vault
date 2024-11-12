@@ -75,28 +75,72 @@ RSpec.describe VaultFileSetHelper do
     end
   end
 
-  context 'when in Vault' do
-    let(:account) { Account.new(name: "vault") }
-    before { allow_any_instance_of(HykuHelper).to receive(:current_account).and_return(account) }
+  describe '#display_media_download_link?' do
+    let(:ability)  { double(Ability) }
+    let(:file_set) { FactoryBot.create(:file_set) }
 
-    let(:work) { double(GenericWork) }
-    let(:parent) { VaultWorkShowPresenter.new(work, ability) }
+    before { allow(controller).to receive(:current_ability).and_return(ability) }
+
+    it 'does not allow download when permissions restrict it' do
+      allow(ability).to receive(:can?).with(:download, file_set).and_return(false)
+
+      expect(helper.display_media_download_link?(file_set: file_set)).to eq false
+    end
+
+    it 'allows download when permissions allow it ' do
+      allow(ability).to receive(:can?).with(:download, file_set).and_return(true)
+
+      expect(helper.display_media_download_link?(file_set: file_set)).to eq true
+    end
+
+    context 'with a FileSetPresenter' do
+      let(:ability) { Ability.new(user) }
+      let(:file_set) { FactoryBot.create(:file_set, :with_original_file, user: user) }
+      let(:presenter) { Hyrax::FileSetPresenter.new(solr_document, ability) }
+      let(:solr_document) { SolrDocument.new(file_set.to_solr) }
+      let(:user) { FactoryBot.create(:user) }
+
+      it 'resolves permissions based on the solr document' do
+        expect(helper.display_media_download_link?(file_set: presenter))
+            .to eq true
+      end
+
+      describe '#iiif_image_path' do
+        subject { helper.iiif_image_path(presenter, "900,") }
+
+        context 'with a Hyrax file set' do
+          it 'returns a path for the latest version' do
+            expect(subject).to include('fcr:versions%2Fversion1')
+          end
+        end
+
+        context 'with a Vault file set' do
+          let(:presenter) { VaultFileSetPresenter.new(solr_document, ability) }
+          before { allow(presenter).to receive(:current_file_version).and_return("foo/fcr:versions/version2") }
+
+          it 'returns a path for the latest version' do
+            expect(subject).to eq "/images/foo%2Ffcr:versions%2Fversion2/full/900,/0/default.jpg"
+          end
+        end
+
+      end
+    end
+  end
+
+  describe '#display_pdf_download_link?' do
     let(:ability) { Ability.new(user) }
-    let(:file_set) { FactoryBot.create(:file_set, user: user) }
-    let(:presenter) { VaultFileSetPresenter.new(solr_document, ability) }
+    let(:file_set) { FactoryBot.create(:file_with_work, user: user) }
     let(:solr_document) { SolrDocument.new(file_set.to_solr) }
     let(:user) { FactoryBot.create(:user) }
+    let(:presenter) { VaultFileSetPresenter.new(solr_document, ability) }
+    subject { helper.display_pdf_download_link?(presenter) }
 
-    describe '#display_pdf_download_link?' do
-      subject { helper.display_pdf_download_link?(presenter) }
+    before do
+      allow(presenter.parent).to receive(:member_presenters).and_return([presenter])
+      allow(controller).to receive(:current_ability).and_return(ability)
+    end
 
-      before do
-        allow(presenter).to receive(:parent).and_return(parent)
-        allow(helper).to receive(:workflow_restriction?).and_return false
-        allow(parent).to receive(:member_presenters).and_return([presenter])
-        allow(controller).to receive(:current_ability).and_return(ability)
-        allow(ability).to receive(:can?).with(:download, presenter).and_return(true)
-      end
+    context 'with Vault work and file set presenters' do
 
       context 'when on a work show page' do
         before { allow(helper).to receive(:params).and_return({ controller: "hyrax/generic_works" }) }
@@ -120,99 +164,30 @@ RSpec.describe VaultFileSetHelper do
       end
     end
 
-    describe '#pdf_file_set' do
-      subject { helper.pdf_file_set(parent) }
+    context 'with Hyrax work and file set presenters' do
 
-      before do
-        allow(presenter).to receive(:parent).and_return(parent)
-        allow(parent).to receive(:member_presenters).and_return([presenter])
-      end
-
-      context 'with a pdf member presenter' do
-        before { allow(presenter).to receive(:pdf?).and_return true }
-
-        it { is_expected.to eq presenter }
-      end
-
-      context 'without a pdf member presenter' do
-        before { allow(presenter).to receive(:pdf?).and_return false }
-
-        it { is_expected.to be_nil }
-      end
-    end
-
-    describe '#pdf_link_text' do
-
-      before do
-        allow(presenter).to receive(:parent).and_return(parent)
-        allow(parent).to receive(:member_presenters).and_return([presenter])
-        allow(presenter).to receive(:pdf?).and_return true
-      end
-
-      subject { helper.pdf_link_text(presenter) }
-
-      context 'with a transcript' do
-        before { allow(presenter).to receive(:title).and_return(["Transcript"]) }
-        it { is_expected.to eq("Download PDF transcription") }
-      end
-
-      context "without a transcript" do
-        before { allow(presenter).to receive(:title).and_return(["Summary"]) }
-        it { is_expected.to eq("Download PDF") }
-      end
-    end
-
-    describe '#iiif_image_path' do
-      before { allow(solr_document).to receive(:current_file_version).and_return("foo/fcr:versions/version1") }
-
-      subject { helper.iiif_image_path(presenter, "900,") }
-      it { is_expected.to eq "/images/foo%2Ffcr:versions%2Fversion1/full/900,/0/default.jpg" }
-    end
-  end
-
-  context 'when not in Vault' do
-    let(:account) { Account.new(name: "other") }
-    before { allow_any_instance_of(HykuHelper).to receive(:current_account).and_return(account) }
-
-    describe '#display_media_download_link?' do
-      let(:ability)  { double(Ability) }
-      let(:file_set) { FactoryBot.create(:file_set) }
-
-      before { allow(controller).to receive(:current_ability).and_return(ability) }
-
-      it 'does not allow download when permissions restrict it' do
-        allow(ability).to receive(:can?).with(:download, file_set).and_return(false)
-
-        expect(helper.display_media_download_link?(file_set: file_set)).to eq false
-      end
-
-      it 'allows download when permissions allow it ' do
-        allow(ability).to receive(:can?).with(:download, file_set).and_return(true)
-
-        expect(helper.display_media_download_link?(file_set: file_set)).to eq true
-      end
-    end
-
-    describe '#display_pdf_download_link?' do
-      subject { helper.display_pdf_download_link?(double(Hyrax::FileSetPresenter)) }
-      it { is_expected.to eq false }
-    end
-
-    describe '#work_show_page?' do
-      subject { helper.work_show_page? }
-
-      context 'on a work page' do
+      context 'when on a work show page' do
         before { allow(helper).to receive(:params).and_return({ controller: "hyrax/generic_works" }) }
 
-        it { is_expected.to eq true }
+        context 'when work has a pdf file set' do
+          before { allow(presenter).to receive(:pdf?).and_return true }
+
+          it { is_expected.to eq true }
+        end
+
+        context "when work doesn't have a pdf file set" do
+          before { allow(presenter).to receive(:pdf?).and_return false }
+
+          it { is_expected.to eq false }
+        end
       end
 
-      context 'on a file set page' do
+      context 'when not on a work show page' do
         before { allow(helper).to receive(:params).and_return({ controller: "hyrax/file_sets" }) }
-
         it { is_expected.to eq false }
       end
     end
-
   end
+
 end
+
