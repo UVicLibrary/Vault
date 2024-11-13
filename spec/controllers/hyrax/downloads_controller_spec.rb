@@ -184,12 +184,7 @@ RSpec.describe Hyrax::DownloadsController do
       let(:file_set) do
         create(:file_with_work, user: user, content: File.open(fixture_path + '/image.png'))
       end
-      let(:parent) { create(:public_generic_work) }
-
-      before do
-        parent.ordered_members << file_set
-        parent.save!
-      end
+      let(:parent) { file_set.parent }
 
       context "and visits a work show page" do
         let(:url) { "http://test.localhost/concern/generic_works/#{parent.id}?locale=en" }
