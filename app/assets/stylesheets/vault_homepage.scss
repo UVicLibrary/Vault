@@ -95,22 +95,8 @@ footer .navbar-link i {
   margin-left: 0.3em;
 }
 
-@media only screen and (max-width: 600px) {
-  #featured-header, #browse-by-header {
-    text-align: center;
-  }
-  .home-content #featured-nav ul[role=tablist] {
-    margin-bottom: 1.5em;
-  }
-  .home-content ul[role=tablist] li {
-    width: 100%;
-  }
-  .home-content ul[role=tablist] li button {
-    width: 100%;
-  }
-  .homepage-facet-list ul {
-    margin-top: 1.5em;
-  }
+.browse-by-container {
+  width: 100%;
 }
 
 .home-content ul[role=tablist] li button {
@@ -123,13 +109,14 @@ footer .navbar-link i {
   color: #005493;
 }
 
-.home-content ul[role=tablist] li button:hover, .home-content ul[role=tablist] li button:focus {
+.home-content ul[role=tablist] li button:hover {
   text-decoration: underline;
   background-color: #ccdde9;
   color: #333;
 }
 
-.home-content ul[role=tablist] li.active button {
+.home-content ul[role=tablist] li.active button,
+.home-content ul[role=tablist] button.active {
   text-decoration: none;
   background-color: #005493 !important;
   color: #fff;
@@ -357,10 +344,8 @@ sans-serif;
 }
 
 .homepage-facet-label {
-  margin-bottom: 1em;
-  display: inline-block;
-  padding-left: 0.9em;
-  padding-right: 0.9em;
+  display: flex;
+  padding: 0.8rem;
 }
 
 a.homepage-facet-link {
@@ -371,24 +356,19 @@ a.homepage-facet-link {
 .homepage-facet-list {
   padding-left: 0;
   margin-bottom: 1em;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-#genre-homepage-facet ul {
+#genre-homepage-facet ul,
+#subject-homepage-facet ul,
+#place-homepage-facet ul {
   margin-top: 2em;
 }
 
 #year-range-homepage-facet ul {
   margin-top: 1em;
 }
-
-#subject-homepage-facet ul {
-  margin-top: 2em;
-}
-
-#place-homepage-facet ul {
-  margin-top: 2em;
-}
-
 
 .homepage-facet-tab .col-md-12 {
   padding-left: 0;
@@ -397,22 +377,30 @@ a.homepage-facet-link {
 .homepage-year-range-form {
   display: inline-flex;
   margin-left: 1em;
-}
+  align-content: center;
+  flex-wrap: wrap;
 
-.homepage-year-range-form .control-label {
-  font-weight: 400;
-  font-size: 16px;
-}
+  form.range_limit {
+    display: inline-flex;
+    margin-top: 0;
+  }
 
-.homepage-year-range-form form {
-  display: inline-flex;
-}
+  .control-label {
+    font-weight: 400;
+    font-size: 16px;
+  }
 
-.homepage-year-range-form input[type=text] {
-  margin-left: 0.5em;
-  margin-right: 0.5em;
-}
+  input[type=text] {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+  }
 
-.homepage-year-range-form input[type=submit] {
-  height: fit-content;
+  input[type=submit] {
+    height: fit-content;
+  }
+
+  input.range_begin, input.range_end {
+    margin: 0 0.5rem 0 0.5rem;
+  }
+
 }
