@@ -38,7 +38,10 @@ FactoryBot.define do
       end
       after(:create) do |file, evaluator|
         Hydra::Works::UploadFileToFileSet.call(file, evaluator.content) if evaluator.content
-        create(:work, user: evaluator.user).members << file
+        work = build(:work, user: evaluator.user)
+        work.members << file
+        work.ordered_members << file
+        work.save!
       end
     end
   end
