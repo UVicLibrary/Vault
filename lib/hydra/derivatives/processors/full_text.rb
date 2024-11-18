@@ -43,8 +43,17 @@ module Hydra::Derivatives::Processors
 
           file_content.rewind if file_content.respond_to?(:rewind)
           resp.body.force_encoding(resp.type_params['charset']) if resp.type_params['charset']
-          resp.body
+          scrub_text(resp.body)
         end
+    end
+
+    def scrub_text(string)
+      regex = /(file:\/\/\/.+?\.txt\s?+)/
+      matches = string.scan(regex).flatten.select(&:present?) + string.scan(/\s?+Local Disk/)
+      matches.each do |substring|
+        string.gsub!(substring, '')
+      end
+      string
     end
 
     # Send the request to the extract service
