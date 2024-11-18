@@ -16,7 +16,7 @@
           <% year_range_values.each do |val| %>
             <%= render_year_range_value(val) %>
           <% end %>
-          <div class="homepage-year-range-form col-md">
+          <div class="homepage-year-range-form">
             <div class="limit_content range_limit">
               <label class="control-label">Enter custom year range:</label>
               <%= form_tag main_app.search_catalog_path, method: :get, class: [BlacklightRangeLimit.classes[:form], "range_#{solr_field}"].join(' ') do %>

@@ -69,7 +69,7 @@ module VaultHomepageHelper
   def render_homepage_facet_value(facet_field, item, options ={})
     path = path_for_homepage_facet(facet_field, item)
     options[:label] ? label = options[:label] : label = facet_display_value(facet_field, item)
-    content_tag(:li, class:"homepage-facet-label col-md") do
+    content_tag(:li, class:"homepage-facet-label") do
       link_to_unless(options[:suppress_link], label, path, class: "homepage-facet-link homepage-tab-link", data: { turbolinks: false })
     end
   end
@@ -103,7 +103,7 @@ module VaultHomepageHelper
   def render_year_range_value(hash)
     label = hash.keys.first
     path = hash[label]
-    content_tag(:li, class:"homepage-facet-label col-md") do
+    content_tag(:li, class:"homepage-facet-label") do
       link_to(label, path, class: "homepage-facet-link homepage-tab-link", data: { turbolinks: false })
     end
   end
