@@ -1,10 +1,10 @@
 <!-------------- app/views/hyrax/homepage/_collection_card.html.erb -------------->
-<div class="card col-lg-<%= card_width %> col-md-<%= card_width %> col-sm-<%= card_width %> col-xs-12">
+<div class="homepage-card collection-card col-lg-<%= card_width %> col-md-<%= card_width %> col-sm-<%= card_width %> col-xs-12">
   <%= link_to [hyrax, presenter], class: "plain-link homepage-tab-link" do %>
     <div class="wrapper" style="background: url(<%= presenter.thumbnail_path %>); background-size: cover; background-position: center;">
       <div class="data">
         <div class="content">
-          <h3 class="card-title collection-card-title"><%= presenter.title.first %></h3>
+          <h4 class="homepage-card-title collection-card-title"><%= presenter.title.first %></h4>
           <p class="text">
             <!-- Sometimes there is a link in the collection description. This breaks
             the link to the collection unless we wrap the description in an object tag. -->
