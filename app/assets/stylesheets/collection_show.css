@@ -85,3 +85,7 @@
     overflow-x: auto;
     margin: 0em 0 2em;
 }
+
+.media-heading span, .works-list-description {
+    font-size: 0.9em;
+}

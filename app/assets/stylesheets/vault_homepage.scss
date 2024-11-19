@@ -1,85 +1,32 @@
-/* Fade effect for header */
-.fade-in-text {
-  animation: fadeIn 0.15s;
-}
+/* CSS classes in this document are organized
+by the order they appear on the page */
 
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-#featured-header {
-  display: inline-flex;
-}
-
-.list-collections-button, .all-collections-button {
-  color: #005493;
-  background-color: transparent;
-  background-image: none;
-  border-color: #005493;
-  line-height: 1.4;
-  margin-left: 1em;
-  margin-bottom: 1.25em;
-}
-
-.list-collections-button:hover, .all-collections-button:hover {
-  background-color: #005493;
-  color: #fff;
-}
-
-#list-collections a {
-  margin-top: 0.5em;
-  display: inline-block;
-  font-size: 16px;
-}
-
-.welcome-text p {
-  font-size: 16px;
-}
-
-.welcome-text a {
-  text-decoration: underline;
-}
-
-.home-content ul[role=tablist] li {
-  font-size: 16px;
-}
-
+/* Welcome text */
 .welcome-text {
   margin-top: 1em;
   margin-bottom: 2em;
   padding-left: 1em;
   padding-right: 1em;
+
+  p {
+    font-size: 16px;
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }
 
-#featured-researcher {
-  padding-top: 5%;
-  padding-bottom: 5%;
+/* Homepage facets (Genre, Subject, etc.) */
+
+// Since bootstrap 4 containers and rows were changed to
+// flex by default, we need to specify width
+.browse-by-container,
+.featured-container,
+.cards-container {
+  width: 100%;
 }
 
-.researcher-name {
-  margin-top: 0;
-}
-
-#homepage-works-and-collections {
-  margin-top: 2em;
-}
-
-.media-heading span, .works-list-description {
-  font-size: 0.9em;
-}
-
-/* social media icons */
-footer .navbar-link i {
-  font-size: 1.5em;
-}
-
-.card-container, .list-container {
-  margin-bottom: 4em;
-  padding-top: 1em;
-}
-
-/* Pill nav bar */
 .home-content ul[role=tablist] {
   margin-bottom: 0;
   margin-top: 1.5em;
@@ -93,255 +40,38 @@ footer .navbar-link i {
 .home-content ul[role=tablist] li {
   margin-right: 0.3em;
   margin-left: 0.3em;
-}
+  font-size: 16px;
 
-.browse-by-container {
-  width: 100%;
-}
-
-.home-content ul[role=tablist] li button {
-  border: none;
-  border-radius: 6px;
-  position: relative;
-  display: block;
-  padding: 10px 15px;
-  background: none;
-  color: #005493;
-}
-
-.home-content ul[role=tablist] li button:hover {
-  text-decoration: underline;
-  background-color: #ccdde9;
-  color: #333;
-}
-
-.home-content ul[role=tablist] li.active button,
-.home-content ul[role=tablist] button.active {
-  text-decoration: none;
-  background-color: #005493 !important;
-  color: #fff;
-}
-
-
-/* Card animation */
-
-// Variables
-$regal-blue: #034378;
-$san-juan: #2d4e68;
-$bermuda: #77d7b9;
-$white: #fff;
-$black: #000;
-$open-sans: 'Open Sans',
-sans-serif;
-// clear-fix mixin
-@mixin cf {
-  &::before,
-  &::after {
-    content: '';
-    display: table;
-  }
-  &::after {
-    clear: both;
-  }
-}
-
-.card-row {
-  max-width: auto;
-  margin: 1.5em auto 0;
-  animation-name: fadeout;
-  animation-duration: 2s;
-}
-
-.homepage-card .plain-link:focus {
-  color: inherit;
-  outline-offset: 0px;
-}
-
-.homepage-card.work-card {
-
-  .data {
-    transform: translateY(calc(45px + 1em));
-    min-height: 42%;
-  }
-
-  .title {
-    margin-bottom: 0em;
-  }
-
-  .card-collection-link {
-    margin-top: 0.6em;
-  }
-
-}
-
-// Base styles
-.homepage-card {
-  float: left;
-  //padding: 0 1.7rem;
-  padding-right: 1.7rem;
-  padding-left: 0em;
-  //width: 33%;
-  .content {
-    background-color: $white;
-    box-shadow: 0 5px 30px 10px rgba($black, 0.3);
-  }
-  .card-title {
-    a {
-      color: lighten($black, 50%);
-    }
-  }
-  .menu-button {
-    position: absolute;
-    z-index: 999;
-    top: 16px;
-    right: 16px;
-    width: 25px;
-    text-align: center;
-    cursor: pointer;
-    span {
-      width: 5px;
-      height: 5px;
-      background-color: lighten($black, 50%);
-      color: lighten($black, 50%);
-      position: relative;
-      display: inline-block;
-      border-radius: 50%;
-      &::after,
-      &::before {
-        content: '';
-        display: block;
-        width: 5px;
-        height: 5px;
-        background-color: currentColor;
-        position: absolute;
-        border-radius: 50%;
-      }
-      &::before {
-        left: -10px;
-      }
-      &::after {
-        right: -10px;
-      }
-    }
-  }
-  .menu-content {
-    @include cf;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    li {
-      display: inline-block;
-    }
-    a {
-      color: $white;
-    }
-    span {
-      position: absolute;
-      left: 50%;
-      top: 0;
-      font-size: 10px;
-      font-weight: 700;
-      font-family: 'Open Sans';
-      transform: translate(-50%, 0);
-    }
-  }
-  .wrapper {
-    margin-bottom: 3em;
-    background-color: $white;
-    min-height: 421px;
+  button {
+    border: none;
+    border-radius: 6px;
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 19px 38px rgba($black, 0.1), 0 15px 12px rgba($black, 0.1); // 0 19px 38px rgba($black, 0.3), 0 15px 12px rgba($black, 0.2);
-    .card-collection-link {
-      bottom: 0%;
-      position: absolute;
-      display: inline-block;
-      padding: 0 1em 1.15em 1em;
-      margin-bottom: -0.1em;
-      background-color: #fff;
-      width: 100%;
-      z-index: 100;
-    }
+    display: block;
+    padding: 10px 15px;
+    background: none;
+    color: #005493;
+
     &:hover {
-      .data {
-        transform: translateY(-20px);
-      }
-      .content {
-        padding-bottom: 3.5em;
-        margin-bottom: -1.5em;
-      }
-      .text {
-        height: 50px;
-      }
-      .work-card-title {
-        margin-bottom: 0.4em;
-      }
-      box-shadow: 0 19px 38px rgba($black, 0.3), 0 15px 12px rgba($black, 0.3)
-    }
-    .work-card-link {
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: absolute;
+      text-decoration: underline;
+      background-color: #ccdde9;
+      color: #333;
     }
   }
-  .data {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    transform: translateY(calc(70px + 1em));
-    transition: transform 0.3s;
-    .content {
-      padding: 1em;
-      position: relative;
-      z-index: 1;
+
+  button.active {
+    text-decoration: none;
+    background-color: #005493 !important;
+    color: #fff;
+
+    &:hover {
+      // Overrides button:hover class above
+      color:#fff;
+      text-decoration: underline;
     }
   }
-  .author {
-    font-size: 12px;
-  }
-  .card-title.collection-card-title {
-    margin-bottom: 0.7em;
-    margin-top: 0.3em !important;
-    font-family: $open-sans;
-    font-weight: 300;
-  }
-  .card-title.work-card-title {
-    word-wrap: break-word;
-    margin-top: 0.3em !important;
-    font-family: $open-sans;
-    font-weight: 300;
-  }
-  .text {
-    height: 70px;
-    margin: 0;
-  }
-  input[type='checkbox'] {
-    display: none;
-  }
-  input[type='checkbox']:checked + .menu-content {
-    transform: translateY(-60px);
-  }
+
 }
 
-.card.col-lg-3 .wrapper {
-  min-height: 310px;
-}
-
-.card.col-lg-3 h2 {
-  font-size: 26px;
-}
-
-#all-collections .browse-home {
-  margin-top: 2em;
-}
-
-.card.work-card .data {
-  transform: translateY(0px);
-  transition: none;
-  position: absolute;
-  top: 0px;
-}
 
 .homepage-facet-label {
   display: flex;
@@ -368,10 +98,6 @@ a.homepage-facet-link {
 
 #year-range-homepage-facet ul {
   margin-top: 1em;
-}
-
-.homepage-facet-tab .col-md-12 {
-  padding-left: 0;
 }
 
 .homepage-year-range-form {
@@ -403,4 +129,234 @@ a.homepage-facet-link {
     margin: 0 0.5rem 0 0.5rem;
   }
 
+}
+
+/* Fade effect for header */
+.fade-in-text {
+  animation: fadeIn 0.15s;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+#featured-header {
+  display: inline-flex;
+}
+
+.list-collections-button,
+.all-collections-button {
+  color: #005493;
+  background-color: transparent;
+  background-image: none;
+  border-color: #005493;
+  line-height: 1.4;
+  margin-left: 1em;
+  margin-bottom: 1.25em;
+
+  &:hover {
+    background-color: #005493;
+    color: #fff;
+  }
+}
+
+#list-collections a {
+  margin-top: 0.5em;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#homepage-works-and-collections {
+  margin-top: 2em;
+}
+
+.card-container, .list-container {
+  margin-bottom: 4em;
+  padding-top: 1em;
+}
+
+/* Card animation */
+
+// Variables
+$white: #fff;
+$black: #000;
+$open-sans: 'Open Sans',
+sans-serif;
+
+// clear-fix mixin
+@mixin cf {
+  &::before,
+  &::after {
+    content: '';
+    display: table;
+  }
+  &::after {
+    clear: both;
+  }
+}
+
+.card-row {
+  margin: 1.5em auto 0;
+  animation-name: fadeout;
+  animation-duration: 2s;
+}
+
+.homepage-card .plain-link:focus {
+  color: inherit;
+  outline-offset: 0;
+}
+
+.homepage-card.work-card {
+
+  .data {
+    transform: translateY(calc(45px + 1em));
+    min-height: 42%;
+  }
+
+  .title {
+    margin-bottom: 0;
+  }
+
+  .card-collection-link {
+    margin-top: 0.6em;
+  }
+
+}
+
+ // Shared styles for collection & work cards
+.homepage-card {
+  float: left;
+  padding-right: 1.7rem;
+  padding-left: 0;
+
+  .content {
+    background-color: $white;
+    box-shadow: 0 5px 30px 10px rgba($black, 0.3);
+  }
+
+  .homepage-card-title {
+    a {
+      color: rgba($black, 0.5);
+    }
+  }
+
+  .wrapper {
+    margin-bottom: 3em;
+    background-color: $white;
+    min-height: 421px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 19px 38px rgba($black, 0.1), 0 15px 12px rgba($black, 0.1);
+  }
+
+  .data {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    transition: transform 0.3s;
+    .content {
+      padding: 1em;
+      position: relative;
+      z-index: 1;
+
+      .text {
+        height: 70px;
+        margin: 0;
+      }
+    }
+  }
+
+} // .homepage-card
+
+.homepage-card.col-lg-3 .wrapper {
+  min-height: 310px;
+}
+
+// Work card styles
+.homepage-card.work-card {
+
+  .data {
+    transition: none;
+    position: absolute;
+    top: 0;
+  }
+
+  .work-card-title {
+    word-wrap: break-word;
+    margin-top: 0.3em !important;
+    font-family: $open-sans;
+    font-weight: 300;
+  }
+
+  .wrapper {
+
+    &:hover {
+      .work-card-title {
+        margin-bottom: 0.4em;
+      }
+    }
+
+    // Is part of ...
+    .card-collection-link {
+      bottom: 0;
+      position: absolute;
+      display: inline-block;
+      padding: 0 1em 1.15em 1em;
+      margin-bottom: -0.1em;
+      background-color: #fff;
+      width: 100%;
+      z-index: 100;
+    }
+
+    .work-card-link {
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+
+  } // .wrapper
+
+} // .homepage-card.work-card
+
+
+// Collection card styles
+.homepage-card.collection-card {
+
+  .collection-card-title {
+    margin-bottom: 0.7em;
+    margin-top: 0.3em !important;
+    font-family: $open-sans;
+    font-weight: 300;
+  }
+
+  .wrapper {
+
+    &:hover {
+      .data {
+        transform: translateY(-20px);
+      }
+      .content {
+        padding-bottom: 3.5em;
+        margin-bottom: -1.5em;
+      }
+      .text {
+        height: 50px;
+      }
+
+      box-shadow: 0 19px 38px rgba($black, 0.3), 0 15px 12px rgba($black, 0.3)
+    }
+
+  }
+
+  .data {
+    transform: translateY(calc(70px + 1em));
+  }
+
+}
+
+
+#all-collections .browse-home {
+  margin-top: 2em;
 }

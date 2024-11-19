@@ -10,12 +10,12 @@
   <h1 id="featured-header" class="fade-in-text">Featured Collections</h1>
   <button type="button" class="btn btn-default list-collections-button collapse" href="#list-collections" aria-label="list all collections" data-toggle="tab" data-header="All Collections">List All</button>
   <button type="button" class="btn btn-default all-collections-button collapse" href="#all-collections" aria-label="card view for all collections" data-toggle="tab"  data-header="All Collections">Card View</button>
-  <ul id="featured-nav" role="tablist">
+  <ul id="featured-nav" role="tablist" class="nav nav-tabs">
     <li>
       <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" data-header="All Collections" aria-controls="all-collections" aria-selected="true" tabindex="-1">All Collections</button>
     </li>
-    <li class="active">
-      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0">Featured Collections</button>
+    <li>
+      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0" class="active">Featured Collections</button>
     </li>
     <li>
       <button id="featured-works-tab" href="#featured-works" data-toggle="tab" role="tab" data-header="Featured Works" aria-controls="featured-works" aria-selected="false" tabindex="-1">Featured Works</button>
@@ -30,7 +30,7 @@
 </div>
 
 <!------------------- Card Rows -------------------->
-<div class="tab-content" >
+<div class="cards-container tab-content" >
 
   <!---------------------------- All Collections ----------------------------->
   <div class="tab-pane fade" role="tabpanel" id="all-collections"  aria-selected="true">
