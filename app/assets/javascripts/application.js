@@ -32,7 +32,7 @@
 //
 //= require hyku/groups/per_page
 //= require hyku/groups/add_member
-// require vault_homepage
+//= require vault_homepage
 //= require navbar
 //= require hyrax
 //= require hyrax/editor/mixed_controlled_vocabulary
