@@ -76,7 +76,7 @@ export default class {
             // Override with our custom class, but pass in a ControlledVocabulary so that
             // we have access to its functions. The element for ControlledVocabulary is
             // intentionally empty to allow our custom class to initialize
-            new MixedControlledVocabulary(controlled_field)
+            new MixedControlledVocabulary(controlled_field, this.paramKey)
         )
     }
 

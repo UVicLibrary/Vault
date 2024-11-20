@@ -3,7 +3,7 @@ import ControlledVocabulary from 'hyrax/editor/controlled_vocabulary'
 
 export default class CustomControlledVocabulary extends FieldManager {
 
-    constructor(element) {
+    constructor(element, paramKey) {
         let options = {
             /* callback to run after add is called */
             add:    null,
@@ -35,7 +35,7 @@ export default class CustomControlledVocabulary extends FieldManager {
 
         // hydra-editor/field_manager.es6
         super(element, $.extend({}, options, $(element).data()))
-
+        this.paramKey = paramKey
         // hyrax/editor/controlled_vocabulary.es6
         this.controlledVocabulary = new ControlledVocabulary('', this.paramKey)
         // these 2 properties are needed to trigger autocomplete on URI fields
