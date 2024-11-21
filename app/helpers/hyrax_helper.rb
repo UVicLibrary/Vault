@@ -4,6 +4,7 @@ module HyraxHelper
   include Hyrax::HyraxHelperBehavior
   # Helpers provided by hyrax-doi plugin.
   include Hyrax::DOI::HelperBehavior
+  include Hyku::BlacklightHelperBehavior
 
   def application_name
     Site.application_name || super
