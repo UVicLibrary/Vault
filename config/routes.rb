@@ -75,9 +75,15 @@ Rails.application.routes.draw do
   mount Hyrax::DOI::Engine, at: '/doi', as: 'hyrax_doi'
   #mount ToSpotlight::Engine, at: '/to_spotlight'
 
-  Hyrax::Engine.routes do
-    resources :featured_collection_lists
-    resource :featured_collection, only: [:create, :destroy]
+  # OVERRIDE here to add featured collection routes
+  scope module: 'hyrax' do
+    # Generic collection routes
+    resources :collections, only: [] do
+      member do
+        resource :featured_collection, only: %i[create destroy]
+      end
+    end
+    resources :featured_collection_lists, path: 'featured_collections', only: :create
   end
 
   concern :searchable, Blacklight::Routes::Searchable.new
