@@ -116,18 +116,23 @@ $(document).on('turbolinks:load', function() {
         })
 
         function hideDescr(card) {
+            cardHeight = card.closest('.wrapper').outerHeight();
             titleHeight= $(card.find('.homepage-card-title')).outerHeight();
-            linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
-            cardHeight = parseInt($('.homepage-card.col-lg-3 .wrapper').css('min-height'));
 
-            card.css('transform','translateY(' + (cardHeight - linkHeight - titleHeight - 28) + 'px)');
+            link = card.closest('.wrapper').find('.card-collection-link');
+            linkHeight = (link.length != 0 ? link.outerHeight() : 0);
+
+            card.css('transform','translateY(' + (cardHeight - (titleHeight + linkHeight + 33)) + 'px)');
         }
 
         function showDescr(card) {
-            cardHeight = parseInt($('.homepage-card.col-lg-3 .wrapper').css('min-height'));
-            linkHeight = $(card.parent().siblings()[0]).innerHeight() || 7;
+            cardHeight = card.closest('.wrapper').outerHeight();
             titleHeight= $(card.find('.homepage-card-title')).outerHeight();
-            card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - linkHeight -titleHeight - 98) + 'px)');
+
+            link = card.closest('.wrapper').find('.card-collection-link');
+            linkHeight = (link.length != 0 ? link.outerHeight() : 0);
+
+            card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - (titleHeight + linkHeight + 112)) + 'px)');
         }
     }
 
