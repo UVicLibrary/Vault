@@ -1,84 +1,91 @@
-<% access_options = options_for_select([['Manage', 'manage'], ['Deposit', 'deposit']]) %>
-<% group_options = (Role.all.map(&:name).uniq - ["superadmin"]).each_with_object([]) do |group_id, array| %>
-  <% option = [group_id.titleize, group_id] %>
-  <% array.push(option) %>
-<% end %>
+<%# Override Hyrax 4.0
+      - remove viewer access option (it was moved to discovery tab)
+      - add form-control class to 'select user' text field
+      - Omit form_share_viewers (it was moved to discovery tab
+%>
 
-<div class="participants" class="tab-pane">
-  <div class="panel-body">
+<% access_options = options_for_select([[t('.manager'), 'manage'], [t('.depositor'), 'deposit'],]) %>
 
-      <section class="section-add-sharing clearfix">
-        <p>Change who can edit or deposit works into this collection. <%= t('.note') %></p>
-        <h3>Add Groups or Users</h3><%#= t('.add_sharing') %>
+<div id="participants" class="tab-pane">
+  <div class="edit-sharing-tab">
+    <section class="section-add-sharing">
+      <p><%= t('.note') %></p>
+      <h3><%= t('.add_sharing') %></h3>
 
-        <!-- Add group form -->
-        <div class="sharing-row-form clearfix" data-id="<%= @form.id %>">
-          <%= simple_form_for @form.permission_template,
-                              url: [hyrax, :dashboard, @form, :permission_template],
-                              html: { id: 'group-participants-form' } do |f| %>
-              <%= f.fields_for 'access_grants_attributes',
-                               f.object.access_grants.build(agent_type: 'group'),
-                               index: 0 do |builder| %>
+      <!-- Add group form -->
+      <div class="form-add-sharing-wrapper" data-id="<%= @form.id %>">
+        <%= simple_form_for collection_permission_template_form_for(form: @form),
+                            url: [hyrax, :dashboard, @form, :permission_template],
+                            html: { id: 'group-participants-form' } do |f| %>
 
-                <div class="form-inline add-sharing-form">
-                  <div class="form-group">
-                    <label><%= t('.add_group') %>:</label>
-                    <%= builder.hidden_field :agent_type %>
-                    <%= builder.select :agent_id,
-                                       group_options,
-                                       { prompt: "Select a group..." },
-                                       class: 'form-control' %>
-                    as
-                    <%= builder.select :access,
-                                       access_options,
-                                       { prompt: "Select a role..." },
-                                       class: 'form-control' %>
-
-                  <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', :disabled => true %>
-                </div>
-              <% end %>
-          <% end %>
-        </div>
-        <!-- Add user form -->
-        <div class="sharing-row-form clearfix" data-id="<%= @form.id %>">
-          <%= simple_form_for @form.permission_template,
-                              url: [hyrax, :dashboard, @form, :permission_template],
-                              html: { id: 'user-participants-form-2' } do |f| %>
-
+          <div class="form-inline add-sharing-form sharing-row-form">
             <%= f.fields_for 'access_grants_attributes',
-                             f.object.access_grants.build(agent_type: 'user'),
-                             index: 1 do |builder| %>
+                              f.object.access_grants.build(agent_type: 'group'),
+                              index: 0 do |builder| %>
 
-                <div class="form-inline">
-                  <div class="form-group">
-                    <label><%= t('.add_user') %>:</label>
-                    <%= builder.hidden_field :agent_type %>
-                    <%= builder.text_field :agent_id,
-                                           placeholder: "Search for a user..." %>
-                    as
-                    <%= builder.select :access,
-                                       access_options,
-                                       { prompt: "Select a role..." },
-                                       class: 'form-control' %>
+              <div class="form-group mr-2">
+                <label class="mr-2"><%= t('.add_group') %>:</label>
+                <%= builder.hidden_field :agent_type %>
+                <%= builder.text_field :agent_id,
+                                        placeholder: t('.search_for_a_group'),
+                                        class: 'form-control search-input' %>
+              </div>
+              <div class="form-group">
+                <label class="mr-2">as</label>
+                <%= builder.select :access,
+                                      access_options,
+                                      { prompt: t('.select_a_role') },
+                                      class: 'form-control' %>
+              </div>
+            <% end %>
+            <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button ml-2', :disabled => true %>
 
-                  <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button', :disabled => true %>
-                </div>
-              <% end %>
-          <% end %>
-        </div>
+          </div><!-- /.form-inline -->
+        <% end %>
+      </div>
 
-      <p class="help-block"><%= t('hyrax.admin.admin_sets.form.note') %></p>
+      <!-- Add user form -->
+      <div class="form-add-sharing-wrapper" data-id="<%= @form.id %>">
+        <%= simple_form_for collection_permission_template_form_for(form: @form),
+                            url: [hyrax, :dashboard, @form, :permission_template],
+                            html: { id: 'user-participants-form' } do |f| %>
+
+          <div class="form-inline sharing-row-form add-users">
+            <%= f.fields_for 'access_grants_attributes',
+                              f.object.access_grants.build(agent_type: 'user'),
+                              index: 0 do |builder| %>
+
+              <div class="form-group">
+                <label class="mr-2"><%= t('.add_user') %>:</label>
+                <%= builder.hidden_field :agent_type %>
+                <%= builder.text_field :agent_id,
+                                        class: 'form-control',
+                                        placeholder: t('.search_for_a_user') %>
+              </div>
+              <div class="form-group">
+                <label class="mx-2">as</label>
+                <%= builder.select :access,
+                                    access_options,
+                                    { prompt: t('.select_a_role') },
+                                    class: 'form-control' %>
+              </div>
+            <% end %>
+
+            <%= f.submit t('helpers.submit.hyrax_permission_template_access.create'), class: 'btn btn-info edit-collection-add-sharing-button ml-2', :disabled => true %>
+
+          </div> <!-- /.form-inline -->
+        <% end %>
+      </div>
+
+      <p class="form-text mt-2"><em><%= t('hyrax.admin.admin_sets.form.note') %></em></p>
     </section>
 
+    <h2 class="h3"><%= t(".current_shared") %></h2>
     <section class="section-collection-sharing">
-      <legend class="sr-only"><%= t(".current_shared") %></legend>
-      <h3 id="current-edit-access-heading">Current Editors</h3>
-      <%= render 'form_share_table', access: 'managers' %>
-    </section>
 
+
+      <%= render 'form_share_table', access: 'managers', filter: :manage? %>
+      <%= render 'form_share_table', access: 'depositors', filter: :deposit? %>
+    </section>
   </div>
 </div>
-<script>
-    // Add autocomplete to the user form
-    $('#user-participants-form-2 input[type=text]').userSearch();
-</script>
