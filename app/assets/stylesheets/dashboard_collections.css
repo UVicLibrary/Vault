@@ -59,10 +59,6 @@ span.feature-collection-error {
     margin-bottom: 1.5rem;
 }
 
-.sharing-row-form:first-of-type {
-    margin-top: 2rem;
-}
-
-.sharing-row-form select {
-    margin-right: 1rem;
+.sharing-row-form {
+    align-items: start;
 }

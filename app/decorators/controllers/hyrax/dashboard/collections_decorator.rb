@@ -49,9 +49,11 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     @form ||=
         case @collection
         when Valkyrie::Resource
-          Hyrax::Forms::ResourceForm.for(@collection)
+          form = Hyrax::Forms::ResourceForm.for(@collection)
+          form.prepopulate!
+          form
         else
-          form_class.call.new(@collection, current_ability, repository)
+          form_class.call.new(@collection, current_ability, blacklight_config.repository)
         end
   end
 
@@ -62,8 +64,8 @@ Hyrax::Dashboard::CollectionsController.class_eval do
       form_class.call.model_attributes(params[:collection])
     else
       params.permit(collection: {})[:collection]
-          .merge(params.permit(:collection_type_gid))
-          .merge(member_of_collection_ids: Array(params[:parent_id]))
+          .merge(params.permit(:collection_type_gid)
+                     .with_defaults(collection_type_gid: default_collection_type_gid))
     end
   end
 
@@ -190,10 +192,6 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   def update_active_fedora_collection
-    # unless params[:update_collection].nil?
-    #   process_banner_input
-    #   process_logo_input
-    # end
     process_member_changes
     process_branding
 
@@ -208,14 +206,10 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     @collection.attributes = collection_params.merge(clean_controlled_properties(extract_controlled_properties))
     @collection.to_controlled_vocab
 
-    # As of Hyrax 3.6, :reindex_extent is only defined if HYRAX_USE_SOLR_GRAPH_NESTING is false
-    # Remove this line after upgrading to Hyrax 4.0
-    @collection.try(:reindex_extent=, Hyrax::Adapters::NestingIndexAdapter::LIMITED_REINDEX)
-
     if @collection.update(collection_params.except(:members))
       after_update
     else
-      after_update_error
+      after_update_errors(@collection.errors)
     end
   end
 
