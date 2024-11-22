@@ -62,3 +62,16 @@ span.feature-collection-error {
 .sharing-row-form {
     align-items: start;
 }
+
+/* branding tab */
+.branding-banner-list {
+
+    .container {
+        margin-left: 0;
+    }
+
+    .banner-image img {
+        object-fit: cover;
+    }
+
+}
