@@ -1,7 +1,7 @@
 import { FieldManager } from 'hydra-editor/field_manager'
 import ControlledVocabulary from 'hyrax/editor/controlled_vocabulary'
 
-export default class CustomControlledVocabulary extends FieldManager {
+export default class MixedControlledVocabulary extends FieldManager {
 
     constructor(element, paramKey) {
         let options = {
