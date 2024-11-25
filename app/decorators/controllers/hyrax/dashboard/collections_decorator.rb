@@ -1,6 +1,6 @@
 require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/dashboard/collections_controller.rb')
 
-# OVERRIDE class from Hyrax v. 3.1.0
+# OVERRIDE class from Hyrax v. 4.0
 Hyrax::Dashboard::CollectionsController.class_eval do
 
   # Catch deleted collection
@@ -58,15 +58,36 @@ Hyrax::Dashboard::CollectionsController.class_eval do
   end
 
   # Add .call because form_class.is_a? Proc
+  # Extract and merge controlled properties with text attributes
   def collection_params
     if Hyrax.config.collection_class < ActiveFedora::Base
       @participants = extract_old_style_permission_attributes(params[:collection])
-      form_class.call.model_attributes(params[:collection])
+      extract_and_merge_controlled_properties(form_class.call.model_attributes(params[:collection]))
     else
       params.permit(collection: {})[:collection]
           .merge(params.permit(:collection_type_gid)
                      .with_defaults(collection_type_gid: default_collection_type_gid))
     end
+  end
+
+  # Merges URI and textual values for controlled vocabulary fields.
+  # Before: creator_tesim: ["Text value"], creator_attributes: [{ id : "http://worldcat.org/XXXXX", ... }]
+  # After: creator: ["Text value","http://worldcat.org/XXXXX"]
+  # @param [Hash] - the collection parameters (params[:collection])
+  def extract_and_merge_controlled_properties(params)
+    Hyrax.config.collection_class.controlled_properties.map do |property|
+      attribute_key = "#{property}_attributes"
+      next unless params.keys.include?(attribute_key)
+
+
+      # Omit deleted attributes, extract & merge URIs (ids) from what's left
+      filtered_attributes = params[attribute_key].select { |_,v| v['_destroy'].blank? }.map { |attr| attr[1]['id'] }
+      params.merge!({ property => filtered_attributes })
+
+      # Delete the "{field}_attributes" field since it's no longer needed
+      params.delete(attribute_key)
+    end
+    params
   end
 
   def not_found
@@ -110,6 +131,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     member_works
   end
 
+  # Override to add downloadable works count and form for uploaded thumbnails
   def edit
     form
     collection_type
@@ -126,36 +148,6 @@ Hyrax::Dashboard::CollectionsController.class_eval do
 
   def uploaded_thumbnail_files
     Dir["#{UploadedCollectionThumbnailPathService.upload_dir(@collection)}/*"]
-  end
-
-  def extract_controlled_properties
-    attributes = {}
-    Hyrax.config.collection_class.controlled_properties.each do |prop|
-      attribute_key = "#{prop}_attributes"
-      if params[:collection].has_key?(attribute_key)
-        if params[:collection].has_key?(attribute_key)
-          params[:collection][attribute_key].permit!
-          attributes[attribute_key] = params[:collection][attribute_key].to_h
-        end
-      else
-        params
-      end
-    end
-    attributes
-  end
-
-  def clean_controlled_properties(attributes)
-    qa_attributes = {}
-    @collection.controlled_properties.each do |field_symbol|
-      field = field_symbol.to_s
-      # Do not include deleted attributes
-      next unless attributes.keys.include?(field+'_attributes')
-      filtered_attributes = attributes[field+'_attributes'].select  { |k,v| v['_destroy'].blank? }
-      qa_attributes[field] = filtered_attributes.map { |attr| attr[1]['id'] }
-      attributes.delete(field)
-      attributes.delete(field+'_attributes')
-    end
-    qa_attributes
   end
 
   # Deletes any previous thumbnails. The thumbnail indexer (see services/hyrax/indexes_thumbnails)
@@ -202,11 +194,10 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     return valkyrie_update if @collection.is_a?(Valkyrie::Resource)
 
     @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
-    # @collection.attributes = controlled_properties
-    @collection.attributes = collection_params.merge(clean_controlled_properties(extract_controlled_properties))
+    @collection.attributes = collection_params.except(:members)
     @collection.to_controlled_vocab
 
-    if @collection.update(collection_params.except(:members))
+    if @collection.save!
       after_update
     else
       after_update_errors(@collection.errors)

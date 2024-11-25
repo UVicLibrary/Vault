@@ -45,4 +45,11 @@ class VaultCollectionForm < Hyrax::Forms::CollectionForm
     ]
   end
 
+  def self.permitted_params
+    controlled_attributes = self.model_class.controlled_properties.each_with_object([]) do |property, array|
+      array << { "#{property}_attributes".to_sym => [:id, :_destroy] }
+    end
+    super + controlled_attributes
+  end
+
 end
