@@ -1,6 +1,6 @@
 <%# OVERRIDE Hyrax v4.0
       - Use a select box for group permissions (options defined by group_options)
-      - add "form-control" class to resize the "Search for a User..." box
+        This is a Hyku-specific feature.
       - add "mb-4" Bootstrap classes to section headers for more white space
 %>
 <% access_options = options_for_select([
@@ -63,7 +63,6 @@
                 <label class="mr-2"><%= t('.add_user') %>:</label>
                 <%= builder.hidden_field :agent_type %>
                 <%= builder.text_field :agent_id,
-                                       class: 'form-control',
                                        placeholder: t('.search_for_a_user') %>
               </div>
               <div class="form-group">
