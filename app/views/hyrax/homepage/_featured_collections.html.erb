@@ -3,7 +3,7 @@
   <p id='no-collections'><%= t('hyrax.homepage.featured_collections.no_collections') %></p>
 <% else %>
   <%= form_for [main_app, @featured_collection_list] do |f| %>
-    <div class="panel-group dd" id="dd">
+    <div class="panel-group dd" id="ff">
       <ol id="featured_collections">
         <%= f.fields_for :featured_collections do |featured| %>
           <%= render 'sortable_featured_collections', f: featured %>
