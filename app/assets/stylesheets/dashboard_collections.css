@@ -4,18 +4,31 @@
     display: inline-block;
 }
 
-.collection-title-row-content.flex-container {
-    flex-wrap: wrap;
-    justify-content: flex-end;
+.collection-title-row-content .buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 0.5rem;
 }
 
-.collection-title-row-content.flex-container .button-wrapper {
-    margin-bottom: 2%;
+.collections-list-table ul.dropdown-menu li {
+    margin-left: 1rem;
 }
-.collection-title-row-content.flex-container .button-wrapper:last-child {
-    text-align: right;
-    margin-left: 4px;
+
+.collections-panel-wrapper .search-form label[for=search-field-header] {
+    flex: 0 0 16.66666667%;
+    max-width: 16.66666667%;
 }
+
+.collections-panel-wrapper .list-filters .btn-group .btn.btn-secondary {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.vault-dashboard .metadata-collections .collection-details-wrapper {
+    margin-left: 15px;
+}
+
 
 span.feature-collection-error {
     display: inline-block;
