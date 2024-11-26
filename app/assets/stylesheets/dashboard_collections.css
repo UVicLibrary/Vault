@@ -15,12 +15,14 @@
     margin-left: 1rem;
 }
 
-.collections-panel-wrapper .search-form label[for=search-field-header] {
+/* Make the "Search X" label smaller so that the search bar renders on one line */
+.dashboard .search-form label[for=search-field-header] {
     flex: 0 0 16.66666667%;
     max-width: 16.66666667%;
 }
 
-.collections-panel-wrapper .list-filters .btn-group .btn.btn-secondary {
+/* Round button corners on filters for dashboard/my/collections and works */
+.dashboard .list-filters .btn-group .btn.btn-secondary {
     border-top-left-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
