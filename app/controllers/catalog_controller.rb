@@ -20,11 +20,11 @@ class CatalogController < ApplicationController
   end
 
   def self.modified_field
-    'system_modified_dtsi'
+    'timestamp'
   end
 
   def self.title_field
-    'title_ssi'
+    'title_sort_ssi'
   end
 
   def self.uploaded_field
@@ -442,9 +442,9 @@ class CatalogController < ApplicationController
     # whether the sort is ascending or descending (it must be asc or desc
     # except in the relevancy case).
     # label is key, solr field is value
-    config.add_sort_field "score desc", label: "relevance"
     config.add_sort_field "year_sort_dtsi asc, #{title_field} asc", label: "date created \u25B2"
     config.add_sort_field "year_sort_dtsi desc, #{title_field} desc", label: "date created \u25BC"
+    config.add_sort_field "score desc", label: "relevance"
     config.add_sort_field "#{title_field} asc", label: "title \u25B2"
     config.add_sort_field "#{title_field} desc", label: "title \u25BC"
     config.add_sort_field "#{modified_field} desc", label: "date modified \u25BC"
