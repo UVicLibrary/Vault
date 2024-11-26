@@ -45,23 +45,36 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
     end
   end
 
+  # If a user enters a search query but no sort, sort the results
+  # by relevance (instead of "year_sort_dtsi title_sort_ssi asc",
+  # which is used as the default for displaying works)
+  ###
+  # copy sorting params from BL app over to solr
+  def add_sorting_to_solr(solr_params)
+    if solr_params['q'].present? && solr_params['sort'].blank?
+      solr_params['sort'] = 'score desc'
+    else
+      super
+    end
+  end
+
   # A Solr param filter that is NOT included by default in the chain,
   # but is appended by AdvancedController#index, to do a search
   # for facets _ignoring_ the current query, we want the facets
   # as if the current query weren't there.
   #
   # Also adds any solr params set in blacklight_config.advanced_search[:form_solr_parameters]
-  def facets_for_advanced_search_form(solr_p)
+  def facets_for_advanced_search_form(solr_params)
     # ensure empty query is all records, to fetch available facets on entire corpus
-    solr_p["q"]            = '{!lucene}*:*'
+    solr_params["q"]            = '{!lucene}*:*'
     # explicitly use lucene defType since we are passing a lucene query above (and appears to be required for solr 7)
-    solr_p["defType"]      = 'lucene'
+    solr_params["defType"]      = 'lucene'
     # We only care about facets, we don't need any rows.
-    solr_p["rows"]         = "0"
+    solr_params["rows"]         = "0"
 
     # Anything set in config as a literal
     if blacklight_config.advanced_search[:form_solr_parameters]
-      solr_p.merge!(blacklight_config.advanced_search[:form_solr_parameters])
+      solr_params.merge!(blacklight_config.advanced_search[:form_solr_parameters])
     end
   end
 
@@ -84,8 +97,3 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
   end
 
 end
-
-
-
-
-
