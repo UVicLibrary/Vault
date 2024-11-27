@@ -1,4 +1,8 @@
-<%# representative thumbnail for collection %>
+<%# Override Hyrax 4.0
+      - add collection thumbnail wrapper class
+      - separate description from the other collection metadata using columns
+      - add collection permalink
+%>
 <% if request.base_url.include?("vault") && request.original_url.exclude?("dashboard") %>
   <div class="public-collection-thumbnail">
     <%= render 'hyrax/collections/media_display', presenter: @presenter %>
