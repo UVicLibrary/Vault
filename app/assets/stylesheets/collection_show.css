@@ -80,6 +80,10 @@
     box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.8);
 }
 
+.hyc-bl-sort .view-type {
+    margin-bottom: 1em;
+}
+
 .hyc-bl-results {
     width: 100%;
     overflow-x: auto;
