@@ -1,12 +1,19 @@
+<%# Override Hyrax 4.0:
+      - Add gradient to collection banner to make the title more visible
+      - Render collection metadata/details, subcollections in a separate
+        column from the description
+      - Add "Dashboard view", "Edit collection", "Show (Google) Map" buttons
+      - Omit collections analytics button (we view analytics directly in Google Analytics)
+%>
 <% provide :page_title, construct_page_title(@presenter.title) %>
 <div class="hyc-container" itemscope itemtype="http://schema.org/CollectionPage">
   <div class="row hyc-header">
     <div class="col-md-12">
 
-      <% unless @presenter.banner_file.blank? %>
+      <% if @presenter.banner_file.present? %>
         <div class="hyc-banner" style="
         background: -webkit-linear-gradient(rgba(0,0,0, 0.65), rgba(0,0,0, 0)), url(<%= @presenter.banner_file %>) center center;
-            background-size: cover;">
+        background-size: cover;">
       <% else %>
           <div class="hyc-generic">
       <% end %>
@@ -20,12 +27,12 @@
       <% unless @presenter.logo_record.blank? %>
           <div class="hyc-logos">
             <% @presenter.logo_record.each_with_index  do |lr, i| %>
-                <% file_exists = File.file? "#{Rails.public_path}#{lr[:file_location]}" %>
+
                 <% if lr[:linkurl].blank? %>
-                    <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" style="<%= "display: none" if !file_exists %>" />
+                    <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" onerror="this.style.display='none'"/>
                 <% else %>
                     <a href="<%= lr[:linkurl] %>">
-                      <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" style="<%= "display: none" if !file_exists %>" />
+                      <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" onerror="this.style.display='none'"/>
                     </a>
                 <% end %>
 
@@ -73,7 +80,7 @@
           <% end %>
         </div>
 
-        <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
+      <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
           <div class="hyc-blacklight hyc-bl-title">
             <h2>
               <%= t('.parent_collection_header') %> (<%= @presenter.total_parent_collections %>)
@@ -82,32 +89,28 @@
           <div class="hyc-blacklight hyc-bl-results">
             <%= render 'show_parent_collections', presenter: @presenter %>
           </div>
-        <% end %>
+      <% end %>
 
         <!-- Subcollections -->
         <% if @presenter.collection_type_is_nestable? && @subcollection_count > 0 %>
-          <div class="hyc-blacklight hyc-bl-title">
-            <h4><%= t('.subcollection_count') %> (<%= @subcollection_count %>)</h4>
-          </div>
-          <div class="hyc-blacklight hyc-bl-results">
-            <%= render 'subcollection_list', collection: @subcollection_docs %>
-          </div>
-        <% end %>
-
-      </div>
-
+        <div class="hyc-blacklight hyc-bl-title">
+          <h4><%= t('.subcollection_count') %> (<%= @subcollection_count %>)</h4>
+        </div>
+        <div class="hyc-blacklight hyc-bl-results">
+          <%= render 'subcollection_list', collection: @subcollection_docs %>
+        </div>
+      <% end %>
     </div>
-
-
+  </div>
 
   <!-- Search results label -->
   <% if @members_count > 0 || @presenter.subcollection_count > 0 %>
     <div class="hyc-blacklight hyc-bl-title">
+    <% if collection_search_parameters? %>
       <h2>
-        <% if has_collection_search_parameters? %>
-            <%= t('hyrax.dashboard.collections.show.search_results') %>
-        <% end %>
+        <%= t('hyrax.dashboard.collections.show.search_results') %>
       </h2>
+    <% end %>
     </div>
   <% end %>
 
@@ -121,7 +124,7 @@
   <!-- Works -->
   <% if @members_count > 0 %>
       <div class="hyc-blacklight hyc-bl-title">
-        <h4><%= t('.works_in_collection') %> (<%= @members_count %>)</h4>
+        <h2><%= t('.works_in_collection') %> (<%= @members_count %>)</h2>
       </div>
 
       <div class="hyc-blacklight hyc-bl-sort">
