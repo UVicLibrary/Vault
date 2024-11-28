@@ -1,13 +1,13 @@
-<% unless (search_context_str = render_search_to_s( advanced_search_context)).blank? %>
-  <div class="constraints well search_history">
-    <h4><%= t 'blacklight_advanced_search.form.search_context' %></h4>
-    <%= search_context_str %>
-  </div>
-<% end %>
+  <% unless (search_context_str = render_search_to_s( advanced_search_context)).blank? %>
+    <div class="constraints well search_history">
+      <h4><%= t 'blacklight_advanced_search.form.search_context' %></h4>
+      <%= search_context_str %>
+    </div>
+  <% end %>
 
-<%= form_tag search_catalog_path, :class => 'advanced form-horizontal', :method => :get do  %>
+<%= form_tag search_catalog_path, class: 'advanced form-horizontal row', method: :get do  %>
 
-  <div class="col-md-4">
+  <div class="col-md-5 col-xs-12">
     <div class="limit-criteria">
       <h3 class="limit-criteria-heading">Filter by...</h3>
       <div id="advanced_search_facets" class="limit_input">
@@ -22,12 +22,12 @@
 
   <%= render_hash_as_hidden_fields(advanced_search_context) %>
 
-  <div class="col-md-8">
+  <div class="col-md-7 col-xs-12">
     <div class="input-criteria">
 
       <div class="query-criteria">
         <h3 class="query-criteria-heading">
-          Find items that match...
+          <%= t('blacklight_advanced_search.form.query_criteria_heading_html', :select_menu =>  select_menu_for_field_operator ) %>
         </h3>
 
         <div class="form-group">

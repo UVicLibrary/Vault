@@ -50,14 +50,6 @@ class CatalogController < ApplicationController
     # config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     # config.show.partials.insert(1, :openseadragon)
 
-    # default advanced config values
-    config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
-    # config.advanced_search[:qt] ||= 'advanced'
-    config.advanced_search[:url_key] ||= 'advanced'
-    config.advanced_search[:query_parser] ||= 'dismax'
-    config.advanced_search[:form_solr_parameters] ||= {}
-    config.advanced_search[:form_facet_partial] ||= "advanced_search_facets_as_select"
-
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = {
       qt: "search",
@@ -87,7 +79,7 @@ class CatalogController < ApplicationController
     config.add_facet_field "member_of_collections_ssim", limit: 10, label: 'Collections'
     config.add_facet_field "genre_label_sim", label: 'Genre', limit: 10
     # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
-    config.add_facet_field "year_range_isim", label: "Year Range", range: true, include_in_advanced_search: false
+    config.add_facet_field "year_range_isim", label: "Year Range", range: true
     config.add_facet_field "geographic_coverage_label_sim", label: 'Geographic Coverage', limit: 10
     config.add_facet_field "subject_label_sim", label: 'Subject', limit: 5
     config.add_facet_field "language_sim", limit: 5
@@ -95,9 +87,26 @@ class CatalogController < ApplicationController
     config.add_facet_field "contributor_label_sim", label: 'Contributor', limit: 5
     config.add_facet_field "fonds_title_sim", label: 'Fonds Title', limit: 5, show: false
     config.add_facet_field "fonds_identifier_sim", label: 'Fonds Identifier', limit: 5, show: false
-    config.add_facet_field "has_model_ssim", label: 'Include Model Type', show: false, include_in_advanced_search: false
+    config.add_facet_field "has_model_ssim", label: 'Include Model Type', show: false
     config.add_facet_field "physical_repository_label_sim", label: 'Physical Repository', limit: 5
     config.add_facet_field "resource_type_sim", label: 'Resource Type', limit: 5, helper_method: :resource_type_links
+
+    # Advanced search parameters - these need to appear after adding
+    # all the facet fields because we only render a subset of them
+    # on the advanced search page
+    config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
+    excluded_advanced_facet_fields = ['year_range_isim', 'has_model_ssim',
+                                      'fonds_identifier_sim', 'fonds_title_sim']
+    # config.advanced_search[:qt] ||= 'advanced'
+    config.advanced_search[:url_key] ||= 'advanced'
+    config.advanced_search[:query_parser] ||= 'dismax'
+    config.advanced_search[:form_solr_parameters] ||= {
+        # The facet fields to render on advanced search page
+        "facet.field" => config.facet_fields.map(&:first) - excluded_advanced_facet_fields,
+        # -1 means unlimited (i.e. show all facet values)
+        "facet.limit" => -1
+    }
+    config.advanced_search[:form_facet_partial] ||= "custom_advanced_search_facets" # "advanced_search_facets_as_select"
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
