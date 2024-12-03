@@ -10,18 +10,19 @@
   <%# Omit Year Range facet because we will render it in the form %>
   <% if display_facet.items.present? %>
     <div class="form-group advanced-search-facet">
-      <%= label_tag display_facet.name.parameterize, :class => "col-sm-10 h4 mt-3" do %>
+      <%= label_tag display_facet.name.parameterize, class: "col-sm-10 h4 mt-3" do %>
         <%= facet_field_label(display_facet.name) %>
       <% end %>
 
       <div class="col-12">
-        <%= content_tag(:select, :multiple => true,
-                        :name   => "f_inclusive[#{display_facet.name}][]",
-                        :id     => display_facet.name.parameterize,
-                        :class  => "form-control advanced-search-facet-select") do %>
+        <%= content_tag(:select, multiple: true,
+                        name: "f_inclusive[#{display_facet.name}][]",
+                        id: display_facet.name.parameterize,
+                        multiple: "multiple", # tells select2 that this tag allows multiple selections
+                        class: "advanced-search-facet-select") do %>
           <% display_facet.items.each do |facet_item| %>
-            <%= content_tag :option, :value => facet_item.value, :selected => facet_value_checked?(display_facet.name, facet_item.value) do %>
-              <%= facet_item.label %>&nbsp;&nbsp;(<%= number_with_delimiter facet_item.hits %>)
+            <%= content_tag :option, value: facet_item.value, selected: facet_value_checked?(display_facet.name, facet_item.value) do %>
+              <%= facet_item.label %><%#= number_with_delimiter facet_item.hits %>
             <% end %>
           <% end %>
         <% end %>
@@ -29,9 +30,38 @@
     </div>
   <% end %>
 <% end %>
-<!-- Load chosen js from CDN and initialize it on advanced search facets -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" type="text/javascript"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css">
 <script>
-  $('.advanced-search-facet-select').chosen()
+  // Initialize select2 (JS library) to provide autocomplete.
+  // Override select2-rails gem v.3.5.11 (included in Hyrax)
+  // to make the remove button look more like Blacklight v.7's
+  // remove button
+  $('.advanced-search-facet-select').select2({
+      placeholder: 'Start typing or click to see options',
+      theme: "bootstrap",
+      // In later versions of select2-rails, we may be able
+      // to use the following parameter instead of on change:
+      // createTag: function (params) {
+      //   Do something
+      // }
+  }).on("change.select2", (e) => {
+
+      if (e.hasOwnProperty('removed')) {
+          return // Do nothing if the element was removed
+      }
+
+      let selected = $(e.target).closest('.advanced-search-facet')
+                                .find('.select2-search-choice').toArray()
+                                .filter(function(el) {
+                                  return $(el).find('div').text().includes(e.added.id);
+                                })
+      let text = "Remove option: " + e.added.id;
+
+      // Append some extra blacklight elements to the remove link
+      let spans = ['<span class="remove-icon" aria-hidden="true">✖</span>',
+                    '<span class="sr-only visually-hidden"',
+                        text,
+                    '</span>'].join('')
+
+      $(selected).find('a').append(spans)
+  });
 </script>
