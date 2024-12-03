@@ -1,0 +1,34 @@
+// Hyrax & Blacklight overrides for displaying metadata
+
+// De-bold metadata field labels
+.search-result-wrapper {
+
+  .search-results-title-row {
+    margin-bottom: 0.75rem;
+  }
+
+  .metadata dt {
+    font-weight: 400;
+  }
+
+  .collection-counts-wrapper {
+    margin-bottom: 1rem;
+    width: fit-content;
+
+    .collection-counts-item {
+      font-size: 1rem;
+    }
+
+  }
+}
+
+/* Search results metadata */
+/*.row.metadata-row {*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.metadata-row .col-sm-8 {*/
+/*    display: block;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
