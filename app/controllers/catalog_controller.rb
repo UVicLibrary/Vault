@@ -106,7 +106,7 @@ class CatalogController < ApplicationController
         # -1 means unlimited (i.e. show all facet values)
         "facet.limit" => -1
     }
-    config.advanced_search[:form_facet_partial] ||= "custom_advanced_search_facets" # "advanced_search_facets_as_select"
+    config.advanced_search[:form_facet_partial] ||= "select2_advanced_search_facets"
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request

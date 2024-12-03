@@ -115,7 +115,7 @@
       position: relative;
       padding: 0.5rem;
       top: 0;
-      background: none;
+      background: none !important;
       font-size: 1rem;
       width: fit-content;
       height: fit-content;
@@ -124,13 +124,16 @@
 
       &:hover {
         color: #ffffff;
-        background-color: #bd2130;
         border-color: #b21f2d;
       }
 
       span.remove-icon {
         padding-left: 0;
       }
+    }
+
+    .select2-search-choice-close.red-bg {
+      background-color: #bd2130 !important;
     }
   }
 }

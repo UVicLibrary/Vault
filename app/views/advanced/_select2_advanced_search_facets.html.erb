@@ -36,8 +36,8 @@
   // to make the remove button look more like Blacklight v.7's
   // remove button
   $('.advanced-search-facet-select').select2({
-      placeholder: 'Start typing or click to see options',
-      theme: "bootstrap",
+      placeholder: 'Start typing or click to see options'
+      // theme: "bootstrap",
       // In later versions of select2-rails, we may be able
       // to use the following parameter instead of on change:
       // createTag: function (params) {
@@ -62,6 +62,18 @@
                         text,
                     '</span>'].join('')
 
-      $(selected).find('a').append(spans)
+      $(selected).find('a').append(spans).hover(
+          // Select2 CSS adds !important to
+          // the background property, so this is a
+          // workaround to get the background to change
+          // on hover. This may not be necessary
+          // once upgraded to select2-rails v. 4
+          function () {
+              $(this).addClass("red-bg");
+          },
+          function () {
+              $(this).removeClass("red-bg");
+          }
+      );
   });
 </script>
