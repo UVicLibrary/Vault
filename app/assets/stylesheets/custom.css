@@ -112,16 +112,7 @@ dl.document-metadata.dl-horizontal.dl-invert {
     padding-top: 0px;
 }
 
-/* Search results metadata */
-/*.row.metadata-row {*/
-/*    margin-bottom: 10px;*/
-/*}*/
 
-/*.metadata-row .col-sm-8 {*/
-/*    display: block;*/
-/*    overflow: hidden;*/
-/*    text-overflow: ellipsis;*/
-/*}*/
 .multi-line-truncate {
     overflow: hidden;
     display: -webkit-box;

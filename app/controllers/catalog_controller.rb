@@ -31,6 +31,15 @@ class CatalogController < ApplicationController
     'system_create_dtsi'
   end
 
+  # The presenter to use for catalog/index (search result) views
+  def collection_presenter_class
+    if current_account.name.include? "vault"
+      VaultCollectionPresenter
+    else
+      Hyrax::CollectionPresenter
+    end
+  end
+
   rescue_from Blacklight::Exceptions::InvalidRequest do
     render json: { response: 'Bad Request: try a different search', status: 400 }
   end
@@ -115,7 +124,7 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
-    config.add_index_field "alternative_title_tesim", label: "Alternative Title"
+    config.add_index_field "alternative_title_tesim", label: "Alternative Title", helper_method: :truncate_field_values
     config.add_index_field "tag_tesim", itemprop: 'keywords'
     config.add_index_field "subject_label_tesim", itemprop: 'about', label: "Subject"
     config.add_index_field "creator_label_tesim", itemprop: 'creator', link_to_search: "creator_label_sim", label: "Creator"
@@ -127,7 +136,7 @@ class CatalogController < ApplicationController
     config.add_index_field "date_modified_tesim", itemprop: 'dateModified'
     config.add_index_field "date_created_tesim", itemprop: 'dateCreated', helper_method: :humanize_date_created
     config.add_index_field "rights_statement_tesim", label: "Rights Statement", helper_method: :rights_statement_links
-    config.add_index_field "license_tesim", label: "License"
+    # config.add_index_field "license_tesim", label: "License"
     config.add_index_field "resource_type_tesim", label: "Resource Type", helper_method: :resource_type_index_links
     config.add_index_field "file_format_tesim", link_to_search: "file_format_sim"
     config.add_index_field "identifier_tesim"
@@ -140,11 +149,11 @@ class CatalogController < ApplicationController
     config.add_index_field "geographic_coverage_label_tesim", itemprop: "Geographic Coverage", label: "Geographic Coverage"
     config.add_index_field "coordinates_tesim", itemprop: "Coordinates", label: "Coordinates"
     config.add_index_field "chronological_coverage_tesim", itemprop: "Chronological Coverage", label: "Chronological Coverage"
-    config.add_index_field "additional_physical_characteristics_tesim", itemprop:"Additional Physical Characteristics", label: "Additional Physical Characteristics"
+    config.add_index_field "additional_physical_characteristics_tesim", itemprop:"Additional Physical Characteristics", label: "Additional Physical Characteristics", helper_method: :truncate_field_values
     config.add_index_field "has_format_tesim", itemprop: "Has Format"
     config.add_index_field "physical_repository_label_tesim", itemprop: "Physical Repository", label: "Physical Repository"
     config.add_index_field "collection_tesim", itemprop: "Collection", label: "Collection"
-    config.add_index_field "provenance_tesim", itemprop: "Provenance", label: "Provenance"
+    config.add_index_field "provenance_tesim", itemprop: "Provenance", label: "Provenance", helper_method: :extract_external_links
     config.add_index_field "provider_label_tesim", itemprop: "Provider", label: "Provider"
     config.add_index_field "sponsor_tesim", itemprop: "Sponsor", label: "Sponsor"
     config.add_index_field "genre_label_tesim", itemprop: "Genre", label: "Genre"
@@ -153,10 +162,10 @@ class CatalogController < ApplicationController
     config.add_index_field "fonds_creator_tesim", itemprop: "Fonds Creator", label: "Fonds Creator"
     config.add_index_field "fonds_description_tesim", itemprop: "Fonds Description", label: "Fonds Description"
     config.add_index_field "fonds_identifier_tesim", itemprop: "Fonds Identifier", label: "Fonds Identifier"
-    config.add_index_field "is_referenced_by_tesim", itemprop:"Is_referenced_by", label: "Is Referenced By"
+    config.add_index_field "is_referenced_by_tesim", itemprop:"Is_referenced_by", label: "Is Referenced By", helper_method: :extract_external_links
     config.add_index_field "date_digitized_tesim", itemprop: "Date Digitized", label: "Date Digitized"
-    config.add_index_field "transcript_tesim", itemprop: "Transcript", label: "Transcript"
-    config.add_index_field "technical_note_tesim", itemprop: "Technical Note", label: "Technical Note"
+    config.add_index_field "transcript_tesim", itemprop: "Transcript", label: "Transcript", helper_method: :truncate_field_values
+    config.add_index_field "technical_note_tesim", itemprop: "Technical Note", label: "Technical Note", helper_method: :truncate_field_values
     config.add_index_field "year_tesim", itemprop: "Year", label: "Year"
     config.add_index_field "full_text_tsi", label: "Keyword in Context", helper_method: :excerpt_search_term
 
