@@ -1,9 +1,0 @@
-<div class="col-md-3 col-sm-12">
-  <div class="list-thumbnail">
-    <% if document["member_ids_ssim"] and document.thumbnail_id.present? %>
-        <%= image_tag(document['thumbnail_path_ss'].gsub("!150","!300")) %>
-    <% else %>
-        <%= render_thumbnail_tag document %>
-    <% end %>
-  </div>
-</div>
