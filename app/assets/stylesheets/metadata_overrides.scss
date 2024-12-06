@@ -22,13 +22,8 @@
   }
 }
 
-/* Search results metadata */
-/*.row.metadata-row {*/
-/*    margin-bottom: 10px;*/
-/*}*/
-
-/*.metadata-row .col-sm-8 {*/
-/*    display: block;*/
-/*    overflow: hidden;*/
-/*    text-overflow: ellipsis;*/
-/*}*/
+// Change color of active facet header to white
+// to make it more readable (increase constrast)
+.facet-limit-active h3 button {
+  color: #fff;
+}
