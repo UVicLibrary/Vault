@@ -27,7 +27,7 @@
  *= require ableplayer-light
  *= require blacklight_advanced_search
  *= require blacklight_advanced_search/blacklight_advanced_search_overrides
- *= require metadata_overrides
+ *= require blacklight_overrides
  *= require vault_navbar
  *= require footer
  *= require work_show
