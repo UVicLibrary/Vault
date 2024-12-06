@@ -20,6 +20,31 @@ Rails.application.config.to_prepare do
 
   BlacklightAdvancedSearch::RenderConstraintsOverride.module_eval do
 
+    # Over-ride of Blacklight method, provide advanced constraints if needed,
+    # otherwise call super.
+    def render_constraints_filters(my_params = params)
+      content = super(my_params)
+      if advanced_query
+        advanced_query.filters.each_pair do |field, value_list|
+          label = facet_field_label(field)
+          content << render_constraint_element(label,
+                                               safe_join(Array(value_list), " <strong class='text-muted constraint-connector'>OR</strong> ".html_safe),
+                                               :remove => search_action_path(remove_advanced_filter_group(field, my_params).except(:controller, :action))
+          )
+        end
+      end
+
+      content
+    end
+
+    # Override to fix double-rendering of constraints labels
+    # ( 1. rendered by blacklight and 2. by blacklight advanced search)
+    def render_constraint_element(label, value, options = {})
+      Deprecation.warn(Blacklight::RenderConstraintsHelperBehavior, 'render_constraints_element is deprecated')
+      return if value.include?("OR") && value.exclude?('text-muted constraint-connector')
+      render(partial: "catalog/constraints_element", locals: { label: label, value: value, options: options })
+    end
+
     def remove_advanced_filter_group(field, my_params = params)
       if (my_params[:f_inclusive])
         my_params = Blacklight::SearchState.new(params, blacklight_config).to_h.symbolize_keys
