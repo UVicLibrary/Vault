@@ -20,7 +20,7 @@
   </td>
   <td class="text-center"><%= document.date_created.first %> </td>
   <td class="text-center"><%= document.date_uploaded %> </td>
-  <td class="text-center">
-    <%= render_visibility_link(document) %>
-  </td>
+  <% if collection_permissions(@collection) %>
+    <td class="text-center"><%= render_visibility_link(document) %></td>
+  <% end %>
 </tr>
