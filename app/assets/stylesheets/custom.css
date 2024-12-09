@@ -46,10 +46,6 @@ span.facet-count {
     white-space: pre-line;
 }
 
-.slider-selection, .slider_js .slider-selection {
-    background-image: linear-gradient(to bottom, #149bdf, #0480be);
-}
-
 span[itemprop="Is_referenced_by"], span[itemprop="Provenance"] {
     text-overflow: ellipsis;
     overflow: hidden;

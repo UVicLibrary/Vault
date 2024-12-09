@@ -13,7 +13,6 @@
  *= require hyrax/custom_editor
  *= require hyrax
  *= require dataTables.bootstrap4
- *= require blacklight_range_limit
  *= require custom
  *= require pages
  *= require sign_in
@@ -27,6 +26,8 @@
  *= require ableplayer-light
  *= require blacklight_advanced_search
  *= require blacklight_advanced_search/blacklight_advanced_search_overrides
+ *= require blacklight_range_limit
+ *= require blacklight_range_limit/blacklight_range_limit_overrides
  *= require blacklight_overrides
  *= require vault_navbar
  *= require footer
