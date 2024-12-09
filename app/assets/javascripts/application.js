@@ -17,13 +17,10 @@
 //= require bootstrap
 //= require jquery.dataTables
 //= require dataTables.bootstrap4
-
-//= require js.cookie
 //= require turbolinks
 
 // Required by Blacklight
 //= require blacklight/blacklight
-// require admin_color_select
 //= require blacklight_advanced_search
 //= require blacklight_gallery/default
 
@@ -38,3 +35,13 @@
 //= require hyrax/editor/mixed_controlled_vocabulary
 // require fast_update
 //= require google_map
+
+//= require jquery.flot.pie
+//= require flot_graph
+
+// Required for blacklight range limit
+//= require bootstrap-slider
+//= require blacklight_range_limit/range_limit_distro_facets
+//= require blacklight_range_limit/range_limit_shared
+//= require blacklight_range_limit/range_limit_slider
+//= require tinymce
