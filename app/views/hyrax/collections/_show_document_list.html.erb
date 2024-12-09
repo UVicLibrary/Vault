@@ -7,7 +7,9 @@
     <!-- Edited to display a column for date created -->
     <th><%= t("blacklight.search.fields.show.date_created") %></th>
     <th><%= t("hyrax.dashboard.my.heading.date_uploaded") %></th>
-    <th><%= t("hyrax.dashboard.my.heading.visibility") %></th>
+    <% if collection_permissions(@collection) %>
+      <th><%= t("hyrax.dashboard.my.heading.visibility") %></th>
+    <% end %>
   </tr>
   </thead>
   <tbody>
