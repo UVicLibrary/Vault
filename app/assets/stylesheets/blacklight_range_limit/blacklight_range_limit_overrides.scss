@@ -14,3 +14,11 @@ div.flot-tick-label {
 .slider-track .slider-handle {
   background-image: linear-gradient(to bottom, #26A739, #008538);
 }
+
+/* ensures the increment/decrement arrows always display.
+   may not work in Firefox according to caniuse.com and MDN,
+   but manual testing shows it may work in some versions? */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  opacity: 1;
+}
