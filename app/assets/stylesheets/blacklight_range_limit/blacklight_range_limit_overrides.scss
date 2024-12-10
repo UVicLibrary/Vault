@@ -10,6 +10,7 @@ div.flot-tick-label {
   margin-right: 1rem;
 }
 
-.slider.slider-horizontal .slider-selection {
-  background-image: linear-gradient(to bottom, #149bdf, #0480be);
+.slider.slider-horizontal .slider-selection,
+.slider-track .slider-handle {
+  background-image: linear-gradient(to bottom, #26A739, #008538);
 }
