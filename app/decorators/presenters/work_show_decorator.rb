@@ -2,6 +2,9 @@ require_dependency Hyrax::Engine.root.join('app/presenters/hyrax/work_show_prese
 
 # OVERRIDE class from Hyrax v. 3.1.0
 Hyrax::WorkShowPresenter.class_eval do
+
+  delegate :visibility, to: :solr_document
+
   # IIIF metadata for inclusion in the manifest
   #  Called by the `iiif_manifest` gem to add metadata
   #
