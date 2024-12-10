@@ -212,7 +212,7 @@ Blacklight.onLoad(function () {
                         xaxis: { tickDecimals: 0 }, // force integer ticks
                         series: { lines: { fill: true, steps: true } },
                         grid: { clickable: true, hoverable: true, autoHighlight: false },
-                        selection: { mode: "x" },
+                        selection: { mode: "x", color: "#008538" }
                     })
                 );
             } catch (err) {
