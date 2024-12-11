@@ -18,7 +18,7 @@ module Hyrax
     included do
       # OVERRIDE: Adding inject theme views method for theming
       around_action :inject_theme_views
-      before_action :setup_negative_captcha, only: %i[new create]
+      # before_action :setup_negative_captcha, only: %i[new create]
 
       # OVERRIDE: Add for theming
       class_attribute :presenter_class
@@ -103,19 +103,21 @@ module Hyrax
       end
     end
 
-    def setup_negative_captcha
-      @captcha = NegativeCaptcha.new(
-        # A secret key entered in environment.rb. 'rake secret' will give you a good one.
-        secret: ENV.fetch('NEGATIVE_CAPTCHA_SECRET', 'default-value-change-me'),
-        spinner: request.remote_ip,
-        # Whatever fields are in your form
-        fields: %i[name email subject message],
-        # If you wish to override the default CSS styles (position: absolute; left: -2000px;)
-        # used to position the fields off-screen
-        css: "display: none",
-        params: params
-      )
-    end
+    # Not used due to accessibility concerns
+    # See https://github.com/erik-megarad/negative-captcha
+    # def setup_negative_captcha
+    #   @captcha = NegativeCaptcha.new(
+    #     # A secret key entered in environment.rb. 'rake secret' will give you a good one.
+    #     secret: ENV.fetch('NEGATIVE_CAPTCHA_SECRET', 'default-value-change-me'),
+    #     spinner: request.remote_ip,
+    #     # Whatever fields are in your form
+    #     fields: %i[name email subject message],
+    #     # If you wish to override the default CSS styles (position: absolute; left: -2000px;)
+    #     # used to position the fields off-screen
+    #     css: "display: none",
+    #     params: params
+    #   )
+    # end
   end
 end
 
