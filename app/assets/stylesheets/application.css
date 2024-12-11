@@ -30,6 +30,7 @@
  *= require blacklight_range_limit/blacklight_range_limit_overrides
  *= require blacklight_overrides
  *= require vault_navbar
+ *= require contact_form
  *= require footer
  *= require work_show
  *= require fast_update
