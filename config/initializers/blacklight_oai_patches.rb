@@ -1,13 +1,18 @@
-# Fix the OAI gem resource identifier format
+# Override blacklight_oai_provider v. 7.0.2
+# Add link to Vault page and thumbnail link to OAI record
+
+# Note: These changes need to be in an initializer rather than a
+# decorator because they override config/initializers/oai_patches
+# in the original gem.
+
+# The original initializer was meant to fix the OAI gem
+# resource identifier format
 # See: https://github.com/code4lib/ruby-oai/issues/38
 
 Rails.application.config.to_prepare do
   OAI::Provider::Response::RecordResponse.class_eval do
-    private
 
-    def identifier_for(record)
-      "#{provider.prefix}:#{record.id}"
-    end
+    private
 
     def data_for(record)
       @builder.metadata do
@@ -35,14 +40,6 @@ Rails.application.config.to_prepare do
 
     def link_to_thumbnail(record)
       "https://#{host_for_tenant}#{record.thumbnail_path}"
-    end
-  end
-
-  OAI::Provider::Response::Base.class_eval do
-    private
-
-    def extract_identifier(id)
-      id.sub("#{provider.prefix}:", '')
     end
   end
 end
