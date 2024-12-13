@@ -468,21 +468,26 @@ class CatalogController < ApplicationController
     config.add_sort_field "#{modified_field} desc", label: "date modified \u25BC"
     config.add_sort_field "#{modified_field} asc", label: "date modified \u25B2"
 
+    oai_doc_options = {
+        limit: 20000, # number of records returned with each request, default: 15
+        set_fields: [ # the Solr field(s) to map to OAI's "set"
+          { label: 'collection', solr_field: 'member_of_collections_ssim' }
+      ]
+    }
+
     # OAI Config fields (these are custom and not the same as Hyku)
     config.oai = {
-      provider: {
+        provider: {
         repository_name: ->(controller) { controller.send(:current_account)&.name.presence },
         repository_url: ->(controller) { controller.oai_catalog_url },
         record_prefix: ->(controller) { controller.send(:current_account).oai_prefix },
         admin_email: ->(controller) { controller.send(:current_account).oai_admin_email },
-        sample_id: ->(controller) { controller.send(:current_account).oai_sample_identifier }
+        sample_id: ->(controller) { controller.send(:current_account).oai_sample_identifier },
+        model: ->(controller) {
+          BlacklightOaiProvider::LimitedSolrDocumentWrapper.new(controller, oai_doc_options)
+        },
       },
-      document: {
-        limit: 20000, # number of records returned with each request, default: 15
-        set_fields: [ # ability to define ListSets, optional, default: nil
-          { label: 'collection', solr_field: 'member_of_collections_ssim' }
-        ]
-      }
+      document: oai_doc_options
     }
 
     # If there are more than this many search results, no spelling ("did you
