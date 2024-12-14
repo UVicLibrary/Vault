@@ -209,17 +209,7 @@ form #content_block_researcher_title {
   color: inherit;
 }
 
-.pagination {
-    padding-left: 15px;
-}
 
-.fullscrn_pagination {
-    display: flex;
-}
-
-.mblview_pagination {
-    display: none;
-}
 
 body {
   margin-bottom: 25%; /*overwrites 133px that's showing up only in prod*/
@@ -234,11 +224,4 @@ html {
     overflow-x: hidden;
 }
 
-@media only screen and (max-width: 600px ) {
-  .fullscrn_pagination {
-    display: none;
-  }
-  .mblview_pagination {
-    display: flex;
-  }
-}
+

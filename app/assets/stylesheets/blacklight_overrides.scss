@@ -35,3 +35,20 @@ div#appliedParams.constraints-container {
 .facet-label {
   width: 13rem;
 }
+
+// Pagination
+
+.pagination {
+  padding-left: 15px;
+  font-size: 1rem;
+
+  .page-link {
+    color: #3380b7;
+  }
+
+  .page-item.active .page-link {
+    background-color: #3380b7;
+    border-color: #3380b7;
+  }
+
+}
