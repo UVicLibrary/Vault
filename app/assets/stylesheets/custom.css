@@ -1,6 +1,5 @@
-.main-content.maximized { /* stops dropdown from being displayed as a scroll box */
-    position: unset; /* or relative */
-    overflow: hidden
+.vault-dashboard #content-wrapper {
+    min-height: 50vh;
 }
 
 #sidebar {
@@ -24,7 +23,7 @@ span.facet-count {
     margin-bottom: 3em;
 }
 
-.feature-collection-message {
+.feature-collection-message, .feature-work-message {
     display: inline-block;
 }
 
@@ -212,16 +211,13 @@ form #content_block_researcher_title {
 
 
 body {
-  margin-bottom: 25%; /*overwrites 133px that's showing up only in prod*/
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 14px;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
 }
 
-html {
-    overflow-x: hidden;
+@media screen and (min-width: 768px) {
+    body {
+        margin-bottom: 25%; /*overwrites 133px that's showing up only in prod*/
+    }
 }
-
 
