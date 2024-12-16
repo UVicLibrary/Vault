@@ -1,19 +1,19 @@
 <!-- From CdmMigrator gem: https://github.com/UVicLibrary/cdm_migrator -->
-<li>
+<li class="nav-item">
   <%= menu.collapsable_section "Batch Processing",
                                icon_class: "fa fa-map-signs",
                                id: 'collapseCdmMigrator',
                                open: menu.cdm_migrator_section? do %>
-    <%= menu.nav_link(main_app.csv_checker_path) do %>
-      <span class="fa fa-check-circle"></span><span>CSV Checker</span>
+    <%= menu.nav_link(main_app.csv_checker_path, class: 'nav-link') do %>
+      <span class="fa fa-check-circle"></span><span class="sidebar-action-text">CSV Checker</span>
     <% end %>
-    <%= menu.nav_link(main_app.csv_upload_path) do %>
+    <%= menu.nav_link(main_app.csv_upload_path, class: 'nav-link') do %>
       <span class="fa fa-angle-double-up"></span> <span class="sidebar-action-text"><%= t('CSV Batch Uploader') %></span>
     <% end %>
-    <%= menu.nav_link(main_app.csv_my_batches_path) do %>
+    <%= menu.nav_link(main_app.csv_my_batches_path, class: 'nav-link') do %>
       <span class="fa fa-database"></span> <span class="sidebar-action-text"><%= t('Batches') %></span>
     <% end %>
-    <%= menu.nav_link(main_app.csv_edit_path) do %>
+    <%= menu.nav_link(main_app.csv_edit_path, class: 'nav-link') do %>
       <span class="fa fa-angle-double-up"></span> <span class="sidebar-action-text"><%= t('Batch Update') %></span>
     <% end %>
   <% end %>
