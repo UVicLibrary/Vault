@@ -1063,7 +1063,7 @@ en:
         save: Save Descriptions
         title: Descriptions
       edit:
-        descriptions: Descriptions
+        descriptions: Metadata
         header: Edit %{file_set}
         permissions: Permissions
         versions: Versions
