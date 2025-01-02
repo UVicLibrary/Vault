@@ -56,9 +56,10 @@
     <% end %>
   </li>
 
-<!--  Commenting out the Statistics option from the dashboard sidebar. Will need to be looked at again in Hyrax 3.6"
+<!--  Commenting out the Statistics option from the dashboard sidebar since this links to an admin dashboard
+      that has been removed in later Hyrax versions due to incompatibility with Google Analytics 4 -->
 <%# if current_ability.can_create_any_work? && Hyrax.config.analytics? %>
-  <li class="nav-item">
+<!--  <li class="nav-item">-->
     <%#= menu.collapsable_section t('hyrax.admin.sidebar.analytics'),
                                  icon_class: "fa fa-pie-chart",
                                  id: 'collapseAnalytics',
@@ -69,7 +70,7 @@
                         class: "nav-link",
                         onclick: "dontChangeAccordion(event);",
                         title: t('hyrax.admin.sidebar.collections_report')) do %>
-          <span class="fa fa-folder-open" aria-hidden="true"></span> <span class="sidebar-action-text"><%#= t('hyrax.admin.sidebar.collections_report') %></span>
+          <!-- <span class="fa fa-folder-open" aria-hidden="true"></span> <span class="sidebar-action-text"><%#= t('hyrax.admin.sidebar.collections_report') %></span> -->
         <%# end %>
     <%# end %>
 
@@ -77,11 +78,11 @@
                       class: "nav-link",
                       onclick: "dontChangeAccordion(event);",
                       title: t('hyrax.admin.sidebar.works_report')) do %>
-        <span class="fa fa-file" aria-hidden="true"></span> <span class="sidebar-action-text"><%#= t('hyrax.admin.sidebar.works_report') %></span>
+        <!-- <span class="fa fa-file" aria-hidden="true"></span> <span class="sidebar-action-text"><%#= t('hyrax.admin.sidebar.works_report') %></span> -->
       <%# end %>
 
   <%# end %>
-  </li>
+<!--  </li>-->
 <%# end %>
 
 <%= render 'hyrax/dashboard/sidebar/menu_partials', menu: menu, section: :activity %>
