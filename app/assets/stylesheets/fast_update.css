@@ -1,5 +1,7 @@
 #new_fast_update_change {
     margin-top: 2rem;
+    display: flex;
+    font-size: 1rem;
 }
 
 #new_fast_update_change .field-wrapper:first-child {
@@ -10,10 +12,8 @@
     margin-left: 0.5rem;
 }
 
-@media only screen and (min-width: 1024px) {
-    .fast-update-buttons-container {
-        margin-top: 1.5rem;
-    }
+.fast-update-buttons-container {
+    margin-left: 0;
 }
 
 .fast-update-form-group, div[role=radiogroup] label {
@@ -79,7 +79,7 @@
 }
 
 .fast-update-container {
-    width: 100%;
+    margin-top: 1rem;
 }
 
 .label-count-display {
@@ -133,7 +133,7 @@
 .fast-update-or-span {
     margin-bottom: 15px;
     display: inline-block;
-    font-weight: 600;
+    /*font-weight: 600;*/
 }
 
 .fast-update-icon {
