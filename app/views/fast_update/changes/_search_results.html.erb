@@ -1,5 +1,6 @@
 <% if @response %>
   <%= render 'facets', uri: uri, label: label %>
+  <%= render 'constraints' %>
   <%= render 'default_group', docs: docs, uri: uri %>
   <%= render 'results_pagination' %>
 <% else %>

@@ -1,7 +1,4 @@
-<% if query_has_constraints? %>
-
-  <div id="appliedParams">
-    <span class="constraints-label"><%= t('blacklight.search.filters.title') %></span>
-    <%= render_constraints(params) %>
-  </div>
-<% end %>
+<%= render Blacklight::ConstraintsComponent.new(search_state: search_state,
+                                                facet_constraint_component_options: {
+                                                    layout: FastUpdate::ConstraintLayoutComponent
+                                                } ) %>
