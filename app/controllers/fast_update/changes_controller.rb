@@ -15,10 +15,10 @@ module FastUpdate
 
     before_action :authenticate
 
+    # Override facet field configuration to use only collection field
     configure_blacklight do |config|
-      # Reset facet fields
       config.facet_fields = { }
-      config.add_facet_field "member_of_collections_ssim", limit: 5, partial: 'facet_list', url_method: :search_preview_path
+      config.add_facet_field "member_of_collections_ssim", limit: 10, url_method: :search_preview_path
       config.search_builder_class = FastUpdate::UriSearchBuilder
     end
 
@@ -89,6 +89,13 @@ module FastUpdate
 
     def search_preview_params
       params.permit(:old_uri, :collection_id)
+    end
+
+    # This is necessary so that the Search Preview button submits
+    # searches to the fast update preview/search path instead of
+    # hyrax/my/works.
+    def search_action_url(args = {})
+      fast_update_search_preview_path(args)
     end
 
     # Extracts labels from change parameters
