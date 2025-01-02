@@ -1,0 +1,70 @@
+<%= simple_form_for @change, html: { data: { behavior: 'change-form', 'param-key' => 'fast_update_change' }, class: 'col-12' } do |f| %>
+  <div class="field-wrapper col-md-4 col-sm-12 col-xs-12">
+    <%= f.input :old_label,
+                label: 'Select a URI',
+                placeholder: 'Search for an entity',
+                input_html: {
+                    id: 'old-label',
+                    data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                            'autocomplete-type' => "linked",
+                            'autocomplete' => :old_label,
+                            'fieldName' => 'collection_id'
+                    }
+                },
+                wrapper_html: { data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                                        'field-name' => :old_label }} %>
+    <span class="fast-update-or-span"> Or Paste a URI </span>
+    <a href="#" id="remove_trophy_help" data-toggle="popover" data-content="In cases where FAST has already diverted deprecated labels to point to the new URI, you will need to copy/paste the old URI. Otherwise, the suggestion box will autofill the URI instead." data-original-title="Select or Paste in a URI"><i class="fa fa-question-circle fast-update-icon"></i></a>
+    <%= f.input :old_uri,
+                label: false,
+                placeholder: "Paste a URI",
+                input_html: {
+                    data: { 'id' => "remote" }
+                }
+    %>
+  </div>
+  <div class="fast-update-form-group col-md-4 col-sm-12 col-xs-12">
+    <div role="radiogroup">
+      <%= f.collection_radio_buttons :action, [['delete', 'Delete'], ['replace', 'Replace with']], :first, :last, checked: ['replace', 'Replace with:'] %>
+    </div>
+    <%= f.input :new_uris,
+                label: false,
+                as: :fast_update,
+                placeholder: 'Search for an entity',
+                input_html: {
+                    class: 'controlled_vocabulary',
+                    id: 'new_labels_and_uris_0',
+                    data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                            'autocomplete-type' => "linked",
+                            'autocomplete' => :new_uris
+                    }
+                },
+                wrapper_html: { class: 'controlled_vocabulary',
+                                data: { 'autocomplete-url' => "/authorities/search/assign_fast/all",
+                                        'field-name' => :new_labels_and_uris }} %>
+  </div>
+  <div class="fast-update-form-group col-md-4 col-sm-12 col-xs-12">
+    <div role="radiogroup">
+      <%= f.collection_radio_buttons :collection_id, [['All', 'in Everything'], ['', 'in a Collection']], :first, :last, checked: ['All', 'in Everything'] %>
+    </div>
+    <div>
+      <%= f.input :collection_id,
+                  label: false,
+                  prompt: :translate,
+                  placeholder: 'Search for a collection',
+                  input_html: {
+                      class: 'form-control',
+                      data: {
+                          autocomplete: 'collection',
+                          'autocomplete-url' => Rails.application.routes.url_helpers.qa_path + '/search/collections?access=edit'
+                      }
+                  } %>
+    </div>
+  </div>
+  </div>
+  <div class="row fast-update-buttons-container">
+    <div class="col-md-12">
+      <%= link_to 'Search Preview', fast_update_search_preview_path, remote: :true, id: 'fast-update-search-preview', class: 'btn btn-default', type: "button" %>
+      <%= f.submit 'Submit', class: 'btn btn-primary', id: 'fast-update-submit-button', data: { confirm_text: "Are you sure you want to remove this URI from the repository? This cannot be undone and affected works are not tracked.", confirm_cancel: "Cancel", confirm_remove: 'Remove'  } %>
+    </div>
+<% end %><!-- /form -->

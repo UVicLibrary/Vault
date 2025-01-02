@@ -33,7 +33,7 @@
 //= require navbar
 //= require hyrax
 //= require hyrax/editor/mixed_controlled_vocabulary
-// require fast_update
+//= require fast_update
 //= require google_map
 
 //= require jquery.flot.pie
