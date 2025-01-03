@@ -1,7 +1,11 @@
 source 'https://rubygems.org'
 
-# Hyrax 4 upgrade
-gem 'rails', '~> 6.0.5'
+# This is the Rails version normally allowed by Hyrax 4
+# gem 'rails', '~> 6.0.5'
+
+# This is the Rails version that Hyku 6 (Hyrax 5) uses
+gem 'rails', '~> 6.0', github: 'rails/rails', branch: '6-1-stable', ref: 'd16199e507086e3d54d94253b7e1d87ead394d9f'
+
 gem 'hyrax', '~> 4.0'
 gem 'sass-rails', '~> 6.0'
 gem 'bootstrap', '~> 4.0'
