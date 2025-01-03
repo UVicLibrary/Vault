@@ -43,6 +43,7 @@
 .fast-update-table thead, .fast-update-table thead th {
     background-color: #286090; /* #50504db5 */
     color: #fff;
+    min-width: 130px;
     font-weight: normal;
 }
 
@@ -63,6 +64,11 @@
     /*padding-left: 1.25em;*/
     padding-left: 1em;
 }
+
+.dashboard .fast-update-table-container .list-filters {
+    margin-bottom: 0;
+}
+
 .dashboard .fast-update-table-container .list-filters .facet-label {
     width: 100%;
 }
@@ -71,6 +77,7 @@
     background-color: #fff;
     border: 1px solid #dedede;
     border-top: none;
+    padding: 2rem;
 }
 
 #fast-update-tabs {
