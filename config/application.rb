@@ -18,7 +18,7 @@ module Hyku
     #
     config.time_zone = 'Pacific Time (US & Canada)'
 
-    config.paths.add "#{root}/lib/fast_update", eager_load: true
+    # config.paths.add "#{root}/lib/fast_update", eager_load: true
     config.paths.add "#{root}/app/services/doi", eager_load: true
     config.paths.add "#{root}/app/services/identifier", eager_load: true
     config.paths.add "#{root}/app/services/custom_searches", eager_load: true
