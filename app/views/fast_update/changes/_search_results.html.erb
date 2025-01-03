@@ -1,5 +1,5 @@
 <% if @response %>
-  <p>Showing results for <%= label %> (<%= uri %>). Click "Search Preview" to refresh results.</p>
+  <p>Showing results for <span class="font-weight-bold"><%= label %> (<%= uri %>)</span>. Click "Search Preview" to refresh results.</p>
   <%= render 'facets', uri: uri, label: label %>
   <%= render 'constraints' %>
   <%= render 'default_group', docs: docs, uri: uri, label: label %>
