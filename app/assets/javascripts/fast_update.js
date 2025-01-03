@@ -1,7 +1,14 @@
+// EXTENDS Hyrax 4.0
+// This file imports and extends several Hyrax JS classes:
+//     - LinkedData and Resource for autcomplete with FAST API (Note: the first
+//       autocomplete initialization is handled on line 160 by FastUpdateFormManager
+//     - ControlledVocabulary to leverage add/remove controls for multiple URIs
+// ConfirmRemoveDialog handles a confirmation popup before deleting a URI
+
 var LinkedData = require('hyrax/autocomplete/linked_data');
 var Resource = require('hyrax/autocomplete/resource');
 var ConfirmRemoveDialog = require('hyrax/relationships/confirm_remove_dialog');
-
+var ControlledVocabulary = require('hyrax/editor/controlled_vocabulary');
 
 $(document).on('turbolinks:load', function() {
     new FastUpdateFormManager($('#new_fast_update_change'));
@@ -44,8 +51,11 @@ class FastUpdateAutocomplete extends autocompleteModule {
 // when selected
 class FastUpdateLinkedData extends LinkedData {
 
-    selected(elem) {
+    selected(_) {
         let result = this.element.select2("data")
+
+        // Set the label
+        this.element.val(result.label);
 
         if (result.id.startsWith("fst")) {
             // In some Hyrax repos, the id comes back as "fst<id no.>"
@@ -55,8 +65,6 @@ class FastUpdateLinkedData extends LinkedData {
             let uri = uriFromId(result['id']);
             // set the URI
             this.setIdentifier(uri);
-            // Set the label
-            this.element.val(result['label']);
             if (this.element.attr('id') == "old-label") {
                 setFastUpdateParams(result['label'], uri);
             }
@@ -127,14 +135,16 @@ class ConfirmRemoveUriDialog extends ConfirmRemoveDialog {
 
 }
 
+// Based on Hydra editor's FieldManager class
 class FastUpdateFormManager {
 
     constructor(element) {
         this.element = $(element);
         // The selectors for elements to add autocomplete to
-        this.autocompleteSelectors = ['#old-label','#fast_update_change_collection_id'];
+        this.autocompleteSelectors = ['#old-label', '#new_labels_and_uris_0','#fast_update_change_collection_id'];
         this.submitButton = $('#fast-update-submit-button');
         this.oldURIField = $('#fast_update_change_old_uri');
+        this.controlledVocabulary = new FastUpdateControlledVocabulary($('.fast_update_change_new_uris'), 'fast_update_change');
         this.init();
     }
 
@@ -219,4 +229,23 @@ class FastUpdateFormManager {
             else { return; }
         });
     }
+}
+
+class FastUpdateControlledVocabulary extends ControlledVocabulary {
+
+    get _source() {
+        return "<li class=\"field-wrapper input-group input-append\">" +
+            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[new_labels_and_uris][{{index}}][uri]\" value=\"\" id=\"new_label_{{index}}\" data-autocomplete=\"new_uris\" data-autocomplete-type=\"linked\" data-autocomplete-url=\"/authorities/search/assign_fast/all\" placeholder=\"Search for an entity\" type=\"text\">" +
+            "<input name=\"{{paramKey}}[new_labels_and_uris][{{index}}][uri]\" value=\"\" id=\"{{paramKey}}_new_uri_{{index}}\" type=\"hidden\" data-id=\"remote\">"
+    }
+
+    /**
+     * Make new element have autocomplete behavior
+     * @param {jQuery} input - The <input type="text"> tag
+     */
+    addAutocompleteToEditor(input) {
+        var autocomplete = new FastUpdateAutocomplete()
+        autocomplete.setup(input, this.fieldName, this.searchUrl)
+    }
+
 }

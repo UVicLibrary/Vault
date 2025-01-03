@@ -43,14 +43,14 @@ module FastUpdate
 
       if @change.save
         # Enqueue the job
-        collection = @change.collection_id == "all" ? nil : @change.collection_id
+        collection = @change.collection_id.downcase == "all" ? nil : @change.collection_id
         ReplaceOrDeleteUriJob.perform_later(@change.id, collection)
         flash[:notice] = "Your files are being processed by #{view_context.application_name} in the background. You may need to refresh this page to see these updates."
       else
         flash[:error] = @change.errors.full_messages
       end
       # Redirect to here because we render everything on the index page
-      redirect_to action: 'index'
+      redirect_to action: 'index', anchor: 'fast-update-changes-tab'
     end
 
     def search_preview

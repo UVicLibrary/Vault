@@ -8,14 +8,14 @@ module FastUpdateHelper
     case change.complete
     when true
       if change.action == "replace"
-        "<span class='label label-success'>Success</span>  #{change.count} replacement(s) made.".html_safe
+        "<span class='badge badge-success'>Success</span>  #{change.count} replacement(s) made.".html_safe
       else
-        "<span class='label label-success'>Success</span>".html_safe
+        "<span class='badge badge-success'>Success</span>".html_safe
       end
     when nil
       'No'
     when false
-      '<span class="label label-danger">Error</span> Contact administrator for details.'.html_safe
+      '<span class="badge badge-danger">Error</span> Contact administrator for details.'.html_safe
     end
   end
 
