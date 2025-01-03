@@ -235,7 +235,7 @@ class FastUpdateControlledVocabulary extends ControlledVocabulary {
 
     get _source() {
         return "<li class=\"field-wrapper input-group input-append\">" +
-            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[new_labels_and_uris][{{index}}][uri]\" value=\"\" id=\"new_label_{{index}}\" data-autocomplete=\"new_uris\" data-autocomplete-type=\"linked\" data-autocomplete-url=\"/authorities/search/assign_fast/all\" placeholder=\"Search for an entity\" type=\"text\">" +
+            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[new_labels_and_uris][{{index}}][label]\" value=\"\" id=\"new_label_{{index}}\" data-autocomplete=\"new_uris\" data-autocomplete-type=\"linked\" data-autocomplete-url=\"/authorities/search/assign_fast/all\" placeholder=\"Search for an entity\" type=\"text\">" +
             "<input name=\"{{paramKey}}[new_labels_and_uris][{{index}}][uri]\" value=\"\" id=\"{{paramKey}}_new_uri_{{index}}\" type=\"hidden\" data-id=\"remote\">"
     }
 
@@ -246,6 +246,16 @@ class FastUpdateControlledVocabulary extends ControlledVocabulary {
     addAutocompleteToEditor(input) {
         var autocomplete = new FastUpdateAutocomplete()
         autocomplete.setup(input, this.fieldName, this.searchUrl)
+    }
+
+    // Fall back to the FieldManager function, which removes the whole field
+    // https://github.com/samvera/hydra-editor/blob/main/app/assets/javascripts/hydra-editor/field_manager.es6
+    removeFromList( event ) {
+        event.preventDefault();
+        var $field = $(event.target).parents(this.fieldWrapperClass).remove();
+        this.element.trigger("managed_field:remove", $field);
+
+        this._manageFocus();
     }
 
 }
