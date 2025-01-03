@@ -3,8 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception, prepend: true
 
-  force_ssl if: :ssl_configured?
-
   before_action :set_locale
 
   helper Openseadragon::OpenseadragonHelper
@@ -110,9 +108,5 @@ class ApplicationController < ActionController::Base
 
     def add_honeybadger_context
       Honeybadger.context(user_email: current_user.email) if current_user
-    end
-
-    def ssl_configured?
-      ActiveRecord::Type::Boolean.new.cast(Settings.ssl_configured)
     end
 end
