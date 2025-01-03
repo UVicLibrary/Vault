@@ -28,6 +28,10 @@
     margin-right: 0rem;
 }
 
+.fast-update-form-group .fa-minus {
+    margin-right: 0.5rem;
+}
+
 #fast-update-search-preview {
     margin-right: 0.5rem;
 }
@@ -83,6 +87,10 @@
 #fast-update-tabs {
     margin-top: 5rem;
     padding-left: 0rem;
+}
+
+#fast-update-tabs a.active {
+    border-top: 2px solid #337ab7;
 }
 
 .fast-update-container {

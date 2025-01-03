@@ -26,7 +26,7 @@
             <% when :created_at %>
               <td><%= change.created_at.in_time_zone.strftime('%B %d %Y, %I:%M %p') %></td>
             <% when :collection_id %>
-              <td><%= change.collection_id == "All" ? "Everything" : Collection.find(change.collection_id).title.first %></td>
+              <td><%= change.collection_id.downcase == "all" ? "Everything" : Hyrax.config.collection_class.find(change.collection_id).title.first %></td>
             <% else %>
               <% if change.send(attr).class == Array %>
                 <td class="col-md-2"><%= sanitize(change.send(attr).join("<br/>")) %></td>
