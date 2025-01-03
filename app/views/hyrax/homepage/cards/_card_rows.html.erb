@@ -1,12 +1,10 @@
 <div class="card-row row">
   <% presenters.each do |presenter| %>
-    <% cache presenter do %>
-      <% case presenter %>
-      <% when Hyrax::CollectionPresenter %>
-        <%= render 'hyrax/homepage/cards/collection_card', presenter: presenter, card_width: bootstrap_card_width(presenters.count), cached: true %>
-      <% when VaultWorkShowPresenter %>
-        <%= render 'hyrax/homepage/cards/work_card', presenter: presenter, card_width: bootstrap_card_width(presenters.count), cached: true %>
-      <% end %>
+    <% case presenter %>
+    <% when Hyrax::CollectionPresenter %>
+      <%= render 'hyrax/homepage/cards/collection_card', presenter: presenter, card_width: bootstrap_card_width(presenters.count), cached: true %>
+    <% when VaultWorkShowPresenter %>
+      <%= render 'hyrax/homepage/cards/work_card', presenter: presenter, card_width: bootstrap_card_width(presenters.count), cached: true %>
     <% end %>
   <% end %>
 </div>
