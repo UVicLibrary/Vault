@@ -123,10 +123,9 @@ module VaultHomepageHelper
       %w[ 14XX 15XX 16XX 17XX 18XX 19XX ]
     end
 
-    def subject_facets
-      # ["Anarchism", "Artists", "Authors", "Families", "Gender identity", "Literature", "Local history", "Military history", "World War (1939-1945)"]
-      ["Anarchism", "Artists", "Authors", "Families", "Gender identity", "Indigenous peoples", "Literature", "Local history", "Transgender"]
-    end
+  def subject_facets
+    ["Artists", "Authors", "Families", "Gender identity", "Literature", "Local history", "Military history", "World War (1939-1945)"]
+  end
 
     def place_facets
       ["British Columbia--Victoria", "British Columbia--Vancouver Island", "British Columbia", "Canada", "China", "England", "France", "Ireland", "Japan"]
