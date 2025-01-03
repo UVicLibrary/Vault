@@ -1,7 +1,8 @@
 <% if @response %>
+  <p>Showing results for <%= label %> (<%= uri %>). Click "Search Preview" to refresh results.</p>
   <%= render 'facets', uri: uri, label: label %>
   <%= render 'constraints' %>
-  <%= render 'default_group', docs: docs, uri: uri %>
+  <%= render 'default_group', docs: docs, uri: uri, label: label %>
   <%= render 'results_pagination' %>
 <% else %>
   <p>No URIs selected. Select a URI (above) to delete or replace and click "Search Preview" to see works that would have one or more URIs replaced with the current parameters.</p>
