@@ -1,3 +1,4 @@
+<%# Used to render attribute rows. This view does not exist in Hyrax 4. %>
 <dl class="collection-show <%= dom_class(presenter) %>" <%= presenter.microdata_type_to_html %>>
   <%= render 'hyrax/collections/attribute_rows', presenter: presenter %>
   <%= presenter.attribute_to_html(:embargo_release_date, render_as: :date, html_dl: true) %>

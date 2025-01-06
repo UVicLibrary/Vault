@@ -1,64 +1,66 @@
+<%# Override Hyrax 4.0 to display custom visibility, featured collection buttons %>
 <h2 class="sr-only"><%= t('hyrax.collection.actions.header') %></h2>
 
-<div class="button-wrapper">
-
-<% if can? :edit, presenter.solr_document %>
-    <%= link_to t('hyrax.collection.actions.edit.label'),
-                hyrax.edit_dashboard_collection_path(presenter),
-                title: t('hyrax.collection.actions.edit.desc'),
-                class: 'btn btn-primary',
-                data: { turbolinks: false } %>
-<% end %>
-<% if presenter.collection_type_is_nestable? && presenter.user_can_nest_collection? %>
-<!-- The user should have deposit access to the parent and read access to the child (the collection we are already showing, so no test is necessary). -->
-    <%= button_tag '',
-                  class: 'btn btn-primary add-to-collection',
-                  title: t("hyrax.collection.actions.nested_subcollection.desc"),
-                  type: 'button',
-                  data: { nestable: presenter.collection_type_is_nestable?,
-                          hasaccess: true } do %>
-                  <%= t('hyrax.collection.actions.nested_subcollection.button_label') %>
-                <% end %>
-<% end %>
-
-<% if can? :destroy, presenter.solr_document %>
-    <%= link_to t('hyrax.collection.actions.delete.label'),
-                hyrax.dashboard_collection_path(presenter),
-                title: t('hyrax.collection.actions.delete.desc'),
-                class: 'btn btn-danger',
-                data: { confirm: t('hyrax.collection.actions.delete.confirmation'),
-                        method: :delete } %>
-<% end %>
-</div>
-
-<!-- 2nd row of buttons -->
-<div class="button-wrapper flex-container">
-  <!-- Change visibility of the collection, all of its works, and all of its filesets -->
-  <% if can? :edit, presenter.solr_document %>
-    <%= link_to "Make Public", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'open'),
-                remote: :true, method: :post, class: 'btn btn-default', id: 'make-public-button' %>
-    <%= link_to "Make UVic-Only", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'authenticated'),
-                remote: :true, method: :post, class: 'btn btn-default', id: 'make-uvic-only-button' %>
-    <%= link_to "Make Private", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'restricted'),
-                remote: :true, method: :post, class: 'btn btn-default', id: 'make-private-button' %>
-  <% end %>
-</div>
-
-  <div class="button-wrapper">
-    <!-- Feature/Unfeature Collections -->
-      <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
-          <%= link_to "Feature", featured_collection_path(collection_id: params[:id], order: 1, format: :json),
-                      data: { behavior: 'feature' },
-                      class: presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
-                      id: 'feature-coll-link' %>
-          <%= link_to "Unfeature", featured_collection_path(collection_id: params[:id], format: :json),
-                      data: { behavior: 'unfeature' },
-                      class: presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
-                      id: 'unfeature-coll-link' %>
-      <% else %>
-          <%= render_featured_help_message(presenter) %>
+<div class="buttons-wrapper">
+  <div class="button-row">
+    <% if can? :edit, presenter.solr_document %>
+      <%= link_to t('hyrax.collection.actions.edit.label'),
+                  hyrax.edit_dashboard_collection_path(presenter),
+                  title: t('hyrax.collection.actions.edit.desc'),
+                  class: 'btn btn-primary',
+                  data: { turbolinks: false } %>
+    <% end %>
+    <% if presenter.collection_type_is_nestable? && presenter.user_can_nest_collection? %>
+      <!-- The user should have deposit access to the parent and read access to the child (the collection we are already showing, so no test is necessary). -->
+      <%= button_tag '',
+                     class: 'btn btn-primary add-to-collection',
+                     title: t("hyrax.collection.actions.nested_subcollection.desc"),
+                     type: 'button',
+                     data: { nestable: presenter.collection_type_is_nestable?,
+                             hasaccess: true } do %>
+        <%= t('hyrax.collection.actions.nested_subcollection.button_label') %>
       <% end %>
+    <% end %>
+
+    <% if can? :destroy, presenter.solr_document %>
+      <%= link_to t('hyrax.collection.actions.delete.label'),
+                  hyrax.dashboard_collection_path(presenter),
+                  title: t('hyrax.collection.actions.delete.desc'),
+                  class: 'btn btn-danger',
+                  data: { confirm: t('hyrax.collection.actions.delete.confirmation'),
+                          method: :delete } %>
+    <% end %>
   </div>
+
+  <!-- 2nd row of buttons -->
+  <div class="button-row">
+    <!-- Change visibility of the collection, all of its works, and all of its filesets -->
+    <% if can? :edit, presenter.solr_document %>
+      <%= link_to "Make Public", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'open'),
+                  remote: :true, method: :post, class: 'btn btn-default', id: 'make-public-button' %>
+      <%= link_to "Make UVic-Only", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'authenticated'),
+                  remote: :true, method: :post, class: 'btn btn-default', id: 'make-uvic-only-button' %>
+      <%= link_to "Make Private", main_app.inherit_collection_visibility_path(id: presenter.id, user_email: current_user, visibility: 'restricted'),
+                  remote: :true, method: :post, class: 'btn btn-default', id: 'make-private-button' %>
+    <% end %>
+  </div>
+
+    <div class="button-row">
+      <!-- Feature/Unfeature Collections -->
+        <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
+            <%= link_to "Feature", main_app.featured_collection_path(collection_id: params[:id], order: 1, format: :json),
+                        data: { behavior: 'feature' },
+                        class: presenter.display_unfeature_link? ? 'btn btn-default collapse' : 'btn btn-default',
+                        id: 'feature-coll-link' %>
+            <%= link_to "Unfeature", main_app.featured_collection_path(collection_id: params[:id], format: :json),
+                        data: { behavior: 'unfeature' },
+                        class: presenter.display_feature_link? ? 'btn btn-default collapse' : 'btn btn-default',
+                        id: 'unfeature-coll-link' %>
+        <% else %>
+            <%= render_featured_help_message(presenter) %>
+        <% end %>
+    </div>
+</div>
 
 
 

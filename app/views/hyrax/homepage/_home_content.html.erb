@@ -10,12 +10,12 @@
   <h1 id="featured-header" class="fade-in-text">Featured Collections</h1>
   <button type="button" class="btn btn-default list-collections-button collapse" href="#list-collections" aria-label="list all collections" data-toggle="tab" data-header="All Collections">List All</button>
   <button type="button" class="btn btn-default all-collections-button collapse" href="#all-collections" aria-label="card view for all collections" data-toggle="tab"  data-header="All Collections">Card View</button>
-  <ul id="featured-nav" role="tablist">
+  <ul id="featured-nav" role="tablist" class="nav nav-tabs">
     <li>
       <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" data-header="All Collections" aria-controls="all-collections" aria-selected="true" tabindex="-1">All Collections</button>
     </li>
-    <li class="active">
-      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0">Featured Collections</button>
+    <li>
+      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0" class="active">Featured Collections</button>
     </li>
     <li>
       <button id="featured-works-tab" href="#featured-works" data-toggle="tab" role="tab" data-header="Featured Works" aria-controls="featured-works" aria-selected="false" tabindex="-1">Featured Works</button>
@@ -30,7 +30,7 @@
 </div>
 
 <!------------------- Card Rows -------------------->
-<div class="tab-content" >
+<div class="cards-container tab-content" >
 
   <!---------------------------- All Collections ----------------------------->
   <div class="tab-pane fade" role="tabpanel" id="all-collections"  aria-selected="true">
@@ -52,7 +52,6 @@
   </div><!-- .tab-pane -->
 
   <!---------------------------- Featured Collections ----------------------------->
-    <% @featured_collection_list.add_solr_document_to_collections %>
     <div class="tab-pane active" id="featured-collections" role="tabpanel"  aria-selected="true">
       <div class="container-fluid card-container">
         <% if FeaturedCollection.any? %>
@@ -100,20 +99,14 @@
 
     <% if can? :update, FeaturedCollection %>
         <div class="col-sm-6">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab">Featured Collections</a></li>
-            <li class=""><a aria-expanded="false" href="#tab-col2-second" role="tab" data-toggle="tab"><%= t('hyrax.homepage.featured_researcher.tab_label') %></a></li>
+          <ul class="nav nav-tabs" role="list">
+            <li class="nav-link active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab">Featured Collections</a></li>
           </ul>
 
         <div class="tab-content">
-          <div class="tab-pane active" id="tab-col2-first">
-            <h2 class="sr-only">Featured Collections</h2>
+          <div class="tab-pane show active" id="tab-col2-first">
+            <h2 class="sr-only"><%= t('hyrax.homepage.admin_sets.title') %></h2>
             <%= render 'featured_collections' %>
-          </div>
-          <div class="tab-pane" id="tab-col2-second">
-            <h2 class="sr-only"><%= t('hyrax.homepage.featured_researcher.title') %></h2>
-            <%#= render 'featured_researcher' %>
-            <%#= link_to "Edit Featured Researcher", edit_content_blocks_path(anchor: "researcher"), class: "btn btn-default" %>
           </div>
         </div>
       </div><!-- .col-sm-6 -->
@@ -122,10 +115,10 @@
   <% if can? :update, FeaturedWork %>
       <div class="col-sm-6">
         <ul id="homeTabs" class="nav nav-tabs">
-          <li class="active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
+          <li class="nav-link active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane fade in active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
+          <div class="tab-pane show active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
             <%= render 'featured_works' %>
           </div>
         </div>

@@ -18,10 +18,12 @@ module Hyrax
       private
 
       def no_english_label?
+        return false if rdf_label.first.is_a? String
         rdf_label.map{ |r| r if r.language.match(/en/) }.compact.empty?
       end
 
       def get_english_label(labels)
+        return labels.first if labels.first.is_a? String
         label = labels.find { |label| label if label.language == :en }
         return label if label.present?
 

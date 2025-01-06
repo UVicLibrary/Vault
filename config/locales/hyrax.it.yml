@@ -18,8 +18,11 @@ it:
       fields:
         facet:
           admin_set_sim: Collezione
+          collection_type_gid_ssim: Tipo di raccolta
+          member_of_collections_ssim: Collezione
           resource_type_sim: Tipo di risorsa
           suppressed_bsi: Stato
+          visibility_ssi: Visibilità
         show:
           admin_set: 'In Impostazione amministrativa:'
           based_near_label: luogo
@@ -28,6 +31,9 @@ it:
       filters:
         title: 'Filtro per:'
       start_over: Cancellare i filtri
+  download:
+    one: e 1 download
+    other: e %{count} download
   errors:
     messages:
       carrierwave_download_error: Impossibile scaricare l'immagine.
@@ -37,6 +43,7 @@ it:
       extension_whitelist_error: 'Non è consentito caricare i file %{extension}, i tipi consentiti: %{allowed_types}'
   helpers:
     action:
+      accept: Accettare
       add: Inserisci
       admin_set:
         new: Crea nuovo set amministrativo
@@ -45,9 +52,11 @@ it:
       cancel: Annulla
       close: Vicino
       collection:
-        new: Nuova collezione
+        new: Aggiungi nuova collezione
       delete: Elimina
       edit: Modifica
+      less: Di meno
+      more: Di Più
       refresh: ricaricare
       remove: Rimuovere
       work:
@@ -168,9 +177,145 @@ it:
           header: Crea nuovo set amministrativo
         show:
           breadcrumb: Visualizza set
-          confirm_delete: Sei sicuro di voler eliminare questo set amministrativo? Questa azione non può essere annullata.
           header: Impostazione amministrativa
           item_list_header: Funziona in questo set
+        show_actions:
+          confirm_delete: Sei sicuro di voler eliminare questo set amministrativo? Questa azione non può essere annullata.
+      analytics:
+        collection_reports:
+          custom_range:
+            collection_home_page_views: Visualizzazioni della home page della raccolta
+            date_range_heading: Personalizza intervallo di date
+            summary_heading: Riepilogo dell'attività dell'utente
+            work_downloads: Download di opere
+            work_views: Viste delle opere
+          index:
+            activity: Attività
+            and: e
+            custom_range: Gamma personalizzata
+            date_range_heading: Personalizza rapporto
+            downloads: download
+            enable_analytics: Abilita Analytics per visualizzare i report
+            export: Esportare
+            monthly: Mensile
+            repo_summary: Il repository contiene
+            repo_summary_2: che collettivamente hanno avuto
+            report_generated_on: Questo rapporto è stato generato il
+            report_header: Report collezioni personalizzate
+            summary: Riepilogo
+            title: Report collezioni
+            views: visualizzazioni di pagina
+          monthly_summary:
+            collection_views: Visualizzazioni della home page della raccolta
+            monthly_subtitle: Stato mese per mese per gli ultimi 12 mesi fino a
+            work_downloads: Download di opere
+            work_views: Viste delle opere
+          show:
+            collection_type: Tipo di raccolta
+            created_by: Creato da
+            custom_range: Gamma personalizzata
+            last_updated: Ultimo aggiornamento il
+            monthly: Mensile
+            return_to_btn: Torna al rapporto sulle collezioni
+            summary: Riepilogo
+            title: Rapporto di raccolta
+            view_collection_btn: Visualizza raccolta
+            visibility: Visibilità
+          summary:
+            all_time: Sempre
+            collection_home_page_views: Visualizzazioni della home page della raccolta
+            date_range: Intervallo di date
+            subtitle: Riepilogo dell'attività dell'utente
+            this_month: Questo mese
+            this_week: Questa settimana
+            this_year: Quest'anno
+            today: Oggi
+            work_downloads: Download di opere
+            work_views: Viste delle opere
+          top_collections:
+            collection_page_views: Visualizzazioni della pagina della raccolta
+            collection_title: Titolo della raccolta
+            deleted: Raccolta eliminata
+            export: Esportare
+            file_downloads_in_collection: Download di set di file in questa raccolta
+            top_collections: Collezioni migliori
+            works_in_collection_views: Funziona in questa collezione Viste
+        date_range_form:
+          date_range_heading: Personalizza intervallo di date
+          end_date: Data di fine
+          reset_date_range: Reimposta intervallo di date
+          set_date_range: Imposta l'intervallo di date del rapporto
+          start_date: Data d'inizio
+        work_reports:
+          custom_range:
+            date_range_heading: Personalizza intervallo di date
+            file_downloads: Download di file
+            page_views: Visualizzazioni di pagina
+            summary_heading: Riepilogo dell'attività dell'utente
+            unique_visitors: visitatori Singoli
+          index:
+            access_to: Hai accesso a
+            activity: Attività
+            and: e
+            custom_range: Gamma personalizzata
+            date_range_heading: Personalizza rapporto
+            downloads: download
+            enable_analytics: Abilita Analytics per visualizzare i report
+            export: Esportare
+            monthly: Mensile
+            repo_summary: in questo deposito che collettivamente hanno avuto
+            report_generated_on: Questo rapporto è stato generato il
+            report_header: Rapporto sui lavori personalizzati
+            subtitle: Riepilogo dell'attività dell'utente
+            summary: Riepilogo
+            title: Relazione sui lavori
+            views: visualizzazioni
+            works: lavori
+          monthly_summary:
+            file_downloads: Download di file
+            monthly_subtitle: Stato mese per mese per gli ultimi 12 mesi fino a
+            page_views: Visualizzazioni di pagina
+          show:
+            custom_range: Gamma personalizzata
+            deposited_by: Depositato da
+            monthly: Mensile
+            resource_type: Tipo di risorsa
+            return_to_btn: Ritorno al resoconto dei lavori
+            status: Stato
+            summary: Riepilogo
+            title: Rapporto di lavoro
+            view_work_btn: Visualizza lavoro
+            visibility: Visibilità
+            work_type: Tipo di lavoro
+          summary:
+            all_time: Sempre
+            date_range: Intervallo di date
+            file_downloads: Download di file
+            page_views: Visualizzazioni di pagina
+            subtitle: Riepilogo dell'attività dell'utente
+            this_month: Questo mese
+            this_week: Questa settimana
+            this_year: Quest'anno
+            today: Oggi
+            unique_visitors: visitatori Singoli
+          top_file_set_downloads:
+            file: File
+            file_downloads: Download di file
+            file_name: Nome del file
+            top_downloads: Download di file principali
+          top_works:
+            export: Esportare
+            file_downloads: Download di file
+            top_works: I migliori lavori
+            work_title: Titolo del lavoro
+            work_views: Visualizzazioni della pagina di lavoro
+          work_counts:
+            child_works: bambino lavora
+            files: File
+            total_size: dimensione totale
+          work_files:
+            title: File
+            total_downloads: Download totali
       appearances:
         show:
           header: Aspetto
@@ -192,6 +337,7 @@ it:
           not_empty: Il tipo di raccolta non può essere modificato in quanto ha collezioni
         form:
           tab:
+            appearance: Colore distintivo
             metadata: Descrizione
             participants: I partecipanti
             settings: impostazioni
@@ -211,7 +357,9 @@ it:
             title: I gestori
             type: genere
         form_participants:
+          add_group: Aggiungere gruppo
           add_participants: Aggiungi partecipanti
+          add_user: Aggiungi utente
           current_participants: Partecipanti attuali
           header: Partecipanti alla raccolta
           instructions: Puoi designare sia gruppi che utenti come creatori e gestori di raccolte di questo tipo
@@ -239,6 +387,7 @@ it:
             name: Nome
         multiple_membership_checker:
           error_preamble: 'Errore: hai specificato più di uno degli stessi tipi di raccolta a membro singolo'
+          error_type_and_collections: "(tipo: %{type}, collezioni: %{collections})"
         new:
           header: Crea un nuovo tipo di raccolta
           submit: Salvare
@@ -252,11 +401,15 @@ it:
           header: Caratteristiche
       sidebar:
         activity: Attività
+        analytics: Analisi
         appearance: Aspetto
         collection_types: Tipi di raccolta
         collections: collezioni
+        collections_report: Report collezioni
         configuration: Configurazione
         content_blocks: Blocchi di contenuti
+        dashboard: Pannello di controllo
+        delete_all: Cancella tutto
         notifications: notifiche
         pages: pagine
         profile: Profilo
@@ -271,6 +424,8 @@ it:
         workflow_review: Revisione degli inviti
         workflow_roles: Ruoli di flusso di lavoro
         works: Lavori
+        works_listing: Elenco delle opere
+        works_report: Relazione sui lavori
       stats:
         deposited_form:
           end_label: Fine [impostazione predefinita]
@@ -283,6 +438,10 @@ it:
             unpublished: inedito
         user_deposits:
           end_label: Fine [impostazione predefinita]
+          headers:
+            main: Statistiche di lavoro
+            total: 'Opere totali:'
+            visibility: Totali per visibilità
           heading: Visualizza file depositati dagli utenti
           start_label: Di partenza
         works:
@@ -306,6 +465,7 @@ it:
           delete:
             confirm: Sei sicuro?
           header:
+            name: Nome
             roles: ruoli
             user: Utente
           new_role: Assegna ruolo
@@ -337,11 +497,37 @@ it:
         default: La risorsa che hai tentato di modificare non può essere modificata in base alla tua richiesta.
     background_attribution_html: ''
     base:
+      attributes:
+        table_attribute_name: nome attributo
+        table_heading_attributes: attributi
+        table_values: Valore
+        visibility: Visibilità
       citations:
+        citations: citazioni
+        endnote: EndNote
         header: 'citazioni:'
+        mendeley: Mendeley
+        zotero: Zotero
+      currently_shared:
+        currently_sharing: Attualmente condiviso con
+        table_title_access: Livello di accesso
+        table_title_user: Persona / Gruppo
+      file_manager:
+        back_to: Torna alla
+        toolbar: Barra degli strumenti
+      file_manager_actions:
+        save: Salva
+        sort_alphabetically: Ordinare in ordine alfabetico
+      file_manager_member_resource_options:
+        representative_media: Rappresentante Dei Media
+        thumbnail: Miniatura
+      form:
+        batch_link: Caricamento in batch
+        batch_upload_hint: Per creare un'opera separata per ciascuno dei file, vai a
       form_child_work_relationships:
         actions:
           remove: Rimuovi da questo lavoro
+        add: Inserisci
         attach_new_work: Deposita un nuovo lavoro come figlio di questo lavoro
         caption: Attualmente questo lavoro contiene queste opere per bambini
         confirm:
@@ -352,6 +538,9 @@ it:
           actions: Azione
           title: Titolo del lavoro
       form_files:
+        add_files: Aggiungi file
+        add_folder: Aggiungi cartella
+        cancel_upload: Annulla caricamento
         dropzone: Drop file qui.
         local_upload_browse_everything_html: |
           <p>È possibile aggiungere uno o più file da associare a questo lavoro.</p>
@@ -359,10 +548,14 @@ it:
           periodo di tempo, il provider di cloud potrebbe non essere in grado di
           accogliere la tua richiesta. Se si verificano errori di caricamento
           dalla nube, fateci sapere tramite %{contact_href}.</p>
-        local_upload_html: "<p>È possibile aggiungere uno o più file da associare a questo lavoro.</p>"
+          <p>I caricamenti sono limitati a %{upload_file_limit} file, %{upload_size_limit} MB ciascuno.</p>
+        local_upload_html: |
+          <p>È possibile aggiungere uno o più file da associare a questo lavoro.</p>
+          <p>I caricamenti sono limitati a %{upload_file_limit} file, %{upload_size_limit} MB ciascuno.</p>
       form_member_of_collections:
         actions:
           remove: Rimuovi dalla raccolta
+        add: Inserisci
         caption: Questo lavoro è attualmente in queste raccolte
         confirm:
           cancel: Annulla
@@ -371,6 +564,8 @@ it:
         header:
           actions: Azione
           title: Titolo della collezione
+      form_permission:
+        visibility: Visibilità <small> Chi dovrebbe essere in grado di visualizzare o scaricare questo contenuto? </small>
       form_permission_under_embargo:
         help_html: "<strong>Questo lavoro è sotto embargo.</strong> È possibile modificare le impostazioni dell'embargo qui oppure è possibile visitare lo %{edit_link} per disattivarlo."
         legend_html: Visibilità <small>Chi dovrebbe essere in grado di visualizzare o scaricare questo contenuto?</small>
@@ -380,10 +575,13 @@ it:
         legend_html: Visibilità <small>Chi dovrebbe essere in grado di visualizzare o scaricare questo contenuto?</small>
         management_page: Gestione delle locazioni
       form_progress:
+        proxy_depositors: Depositanti proxy - Seleziona l'utente per conto del quale stai depositando
         required_agreement: Controllare l'accordo di deposito
         required_descriptions: Descrivi il tuo lavoro
         required_files: Aggiungere i file
         requirements: Requisiti
+        saving_your_work: Salvare il tuo lavoro. Questo potrebbe richiedere alcuni minuti
+        yourself: Te
       form_rendering:
         help_html: Selezionare i file da offrire come download per ogni immagine in Universal Viewer, ad esempio un PDF dell'intero lavoro.
         legend_html: Rendering
@@ -391,12 +589,37 @@ it:
         help_html: Seleziona il file con il supporto che rappresenta questo lavoro.
         legend_html: Media rappresentativo
       form_share:
+        access_type_to_grant: Tipo di accesso da concedere
+        account_label_without_suffix: "%{account_label} (senza la parte %{suffix})"
         add_sharing: Aggiungi condivisione
+        add_this_group_html: Aggiungi <span class = "sr-only"> questo gruppo </span>
         currently_sharing: Attualmente condiviso con
+        depositor: Depositante
         directions: Indipendentemente dalle impostazioni di visibilità per questo lavoro, puoi anche condividerlo con altri utenti e gruppi.
+        group: Gruppo
+        permissions_save_note_html: Le autorizzazioni <strong> non </strong> vengono salvate fino a quando & quot; Salva & quot; il pulsante viene premuto nella parte inferiore della pagina.
+        use_add_button: Utilizzare il pulsante Aggiungi per dare accesso a uno %{account_label} alla volta (verrà aggiunto all'elenco seguente). Seleziona l'utente, per nome o %{account_label} \. Quindi selezionare il livello di accesso che si desidera concedere e fare clic su Aggiungi questo %{account_label} per completare l'aggiunta dell'autorizzazione.
       form_thumbnail:
         help_html: Seleziona il file da utilizzare come anteprima per questo lavoro.
         legend_html: Thumbnail
+      form_visibility_component:
+        visibility: Visibilità
+        subtitle_html: <small>Chi dovrebbe essere in grado di visualizzare o scaricare questo contenuto?</small>
+      inspect_work:
+        back_to: Torna a
+        entity_id: ID entità
+        id: ID
+        name: Nome
+        object_name: Nome oggetto
+        persistence: Persistenza
+        processing_entity_id: ID entità di elaborazione
+        proxy_for: Proxy per
+        roles: ruoli
+        state: Stato
+        state_name: Nome dello stato
+        users: utenti
+        workflow: Flusso di lavoro
+        workflow_comments: Commenti sul flusso di lavoro
       items:
         actions: Azioni
         date_uploaded: Data caricata
@@ -404,23 +627,82 @@ it:
         header: Elementi
         thumbnail: Thumbnail
         title: Titolo
+        unauthorized: Non ci sono articoli disponibili pubblicamente in questo %{type}.
         visibility: Visibilità
       relationships:
         empty: Questo %{type} non è in una raccolta.
         header: Le relazioni
       relationships_parent_row:
         label: 'In %{type}:'
+      share_with:
+        definition_heading: Definizioni di autorizzazione
+        definitions_html: "<strong>Visualizza / Scarica:</strong> questo file (sia i contenuti che i metadati) è accessibile dall'interno di %{application_name}. <br /> <strong>Modifica:</strong> questo file (sia i contenuti che i metadati) può essere modificato. È possibile concedere questa autorizzazione solo agli utenti e / o ai gruppi %{institution_name}."
+        share_with_html: È possibile concedere l'accesso "Visualizza / Scarica" ​​o "Modifica" per utenti specifici e / o gruppi ai file. Immettere uno %{account_name} valido, uno alla volta, selezionare il livello di accesso per quell'utente e fare clic su + Aggiungi.
       show:
+        items: Articoli
         last_modified: Ultima modifica
+        relationships: Relazioni
+      show_actions:
+        analytics: Analytics
+        attach_child: Allegare Bambino
+        confirm_delete: Eliminare questo %{work_type} ?
+        delete: Eliminare
+        edit: Modifica
+        feature: Funzione
+        unfeature: Unfeature
       social_media:
         facebook: Facebook
+        facebook_share: Condividi su Facebook
         google: Google+
+        google_share: Condividi su Google+
         tumblr: Tumblr
+        tumblr_share: Condividi su Tumblr
         twitter: cinguettio
+        twitter_share: Condividi su Twitter
+      unauthorized:
+        id: 'ID: %{id}'
+        is_private: Lo %{type} a cui hai provato ad accedere è privato
+        page_is_private: La pagina a cui hai tentato di accedere è privata
+        unauthorized: non autorizzato
+      work_button_row:
+        analytics: analitica
+        attach: Allega %{type}
+        delete: Elimina
+        delete_type: Eliminare questo %{type}?
+        edit: modificare
+        feature: caratteristica
+        unfeature: Unfeature
+      workflow_actions:
+        actions: Azioni
+        previous_comments: Commenti precedenti
+        review_comment: Commento di revisione
+        title: Revisione e approvazione
+    base/unauthorized:
+      is_private: Lo %{type} a cui hai provato ad accedere è privato
+      unauthorized: non autorizzato
     batch:
       help:
         resource_type: È possibile selezionare più tipi da applicare a tutti i file
         title: Il nome del file sarà il titolo predefinito. Fornire un titolo più significativo e i nomi dei file saranno ancora conservati dal sistema.
+    batch_edits:
+      check_all:
+        select_to_access_selection_options: Selezionare per accedere all'opzione di selezione
+      currently_shared:
+        share_batch_with: Condividi batch con
+        table_title_access: Livello di accesso
+        table_title_user: Persona / Gruppo
+      delete_selected:
+        button_label: Elimina Selezionato
+        deleting_file_from: L'eliminazione di un file da %{application_name} è permanente. Fare clic su OK per eliminare questo file da %{application_name} o Annulla per annullare questa operazione
+      edit:
+        apply_changes_to: 'Le modifiche verranno applicate a: (funziona %{x_number_of})'
+        batch_edit_descriptions: Descrizioni modifica batch & nbsp; & nbsp; & nbsp; <small> Fai clic sulle etichette sottostanti per modificare le descrizioni dei lavori. </small>
+        clear_batch: Cancella batch
+        descriptions: descrizioni
+        descriptions_title: 'descrizioni:'
+        permissions: permessi
+        sharing: compartecipazione
+        visibility: Visibilità
     batch_uploads:
       disabled: Caratteristica disabilitata dall'amministratore
       files:
@@ -428,6 +710,7 @@ it:
         instructions: Ogni file verrà caricato in un nuovo lavoro separato che crea un lavoro per file caricato.
         upload_type_instructions: Per creare un singolo lavoro per tutti i file, vai a
       new:
+        breadcrumb: Crea un gruppo di opere
         header: Creazione di batch di nuove opere
         in_collections: Queste opere in collezioni
         in_other_works: Questo lavoro in altre opere
@@ -436,6 +719,9 @@ it:
         header: Salva lavori
     bread_crumb:
       search_results: Torna ai risultati della ricerca
+    citations:
+      work:
+        citation_formats: Formati di citazione
     collection:
       actions:
         add_existing_works:
@@ -466,12 +752,14 @@ it:
           desc: Aggiungi raccolte esistenti a questa raccolta
           modal_title: Aggiungi questa collezione in un'altra raccolta
           select_label: Seleziona raccolta
+      also_belongs_to: Anche questo lavoro appartiene a
       browse_view: Sfoglia la vista
       document_list:
         edit: Modifica
         no_visible_works: La raccolta è vuota o non contiene elementi a cui è possibile accedere.
       edit:
         manage_items: Gestisci elementi in questa raccolta
+      edit_view: Modifica visualizzazione
       form:
         additional_fields: Campi aggiuntivi
         description: descrizioni
@@ -500,6 +788,7 @@ it:
         buttons:
           remove_from_collection: Rimuovere
           remove_this_sub_collection: Rimuovere
+        item_count: Articolo
         no_visible_parent_collections: Non ci sono raccolte genitori visibili.
         no_visible_subcollections: Non ci sono sottoraccolte visibili.
         parent_collection_header: Collezioni principali
@@ -507,6 +796,10 @@ it:
         show_more_parent_collections: mostra di più...
         subcollection_count: sottoraccolte
         works_in_collection: Funziona in questa collezione
+      sort_and_per_page:
+        number_of_results_to_display_per_page: Numero di risultati da visualizzare per pagina
+        results_per_page: 'Risultati per la pagina:'
+        sort_by_html: "<span>Ordina per:</span>"
     contact_form:
       button_label: Inviare
       email_label: La tua email
@@ -522,6 +815,7 @@ it:
       notice: Utilizza il modulo di contatto per inviare domande su questo sistema; Per segnalare un problema che si sta verificando con il sistema; Richiedere l'assistenza tramite il sistema; O per fornire risposte generali. Consultare la pagina della Guida per ulteriori informazioni su questo sistema.
       select_type: Selezionare un tipo di problema
       subject_label: Soggetto
+      title: Contattaci
       type_label: tipo di problema
     content_blocks:
       cancel: Annulla
@@ -549,13 +843,17 @@ it:
       authorize_proxies: Autorizzare i Proxy
       breadcrumbs:
         admin: Amministrazione
+        collections_report: Report collezioni
+        works_report: Relazione sui lavori
       collection_type_actions:
         close: Vicino
         create_collection: Crea raccolta
         select_type_of_collection: Seleziona il tipo di collezione
       collections:
+        collection_title: Titolo della raccolta
         edit:
           header: 'Modifica collezione: %{title}'
+        files: File
         form:
           permission_update_errors:
             error: Opzione di aggiornamento non valida per modello di autorizzazione.
@@ -569,15 +867,22 @@ it:
             relationships: Le relazioni
             sharing: compartecipazione
         form_branding:
+          alt_text: 'Il Testo Alt:'
           banner:
             description: Un'immagine da visualizzare nella parte superiore della pagina di raccolta. Per risultati ottimali, carica un'immagine (JPG, GIF o PNG) di almeno 120 pixel di altezza e 1200 pixel di larghezza.
             label: bandiera
           branding:
             description: Facoltativamente, puoi caricare un'immagine banner e / o immagini logo da associare a questa raccolta. Se caricate, queste immagini verranno visualizzate nella parte superiore della pagina di raccolta per fornire un marchio univoco per la raccolta.
             label: Branding
+          choose_file: Scegliere File
+          link_url: 'URL del Link:'
           logo:
             description: Una o più immagini da visualizzare nella parte superiore della pagina di raccolta. Per risultati ottimali, carica un'immagine (JPG, GIF o PNG) di altezza pari a 40 pixel. Le immagini più grandi verranno ridimensionate a 40 pixel in altezza.
             label: Logo
+          previous: Precedente
+          remove: Rimuovere
+          remove_current_banner: Rimuovere Corrente Banner
+          remove_logo: Rimuovere Il Logo
         form_discovery:
           para1: Queste impostazioni determinano chi è in grado di scoprire e visualizzare la pagina di destinazione di questa raccolta; non influenzano la visibilità degli oggetti nella collezione.
           para2: Se hai scelto di non rendere questa raccolta accessibile, puoi comunque condividere la raccolta con utenti e gruppi specifici utilizzando la scheda Condivisione.
@@ -592,6 +897,7 @@ it:
             this_collection_in_other_collections: Questa collezione in altre collezioni
           modals:
             remove_from_collection_description: La rimozione di questa raccolta non la rimuoverà dal repository, ma solo come genitore di questa raccolta. Sei sicuro di voler rimuovere questa raccolta?
+            remove_parent_collection_deny: Non disponi di privilegi sufficienti per la raccolta principale per poterlo rimuovere.
             remove_this_sub_collection_description: La rimozione di questa sotto-raccolta non la rimuoverà dal repository, solo da questa raccolta genitore. Sei sicuro di voler rimuovere questa sottoraccolta?
           sub_collections_of_collection_description: Queste raccolte sono attualmente sotto-raccolte di questa collezione
           table:
@@ -603,7 +909,13 @@ it:
           add_sharing: Aggiungi condivisione
           add_user: Aggiungi utente
           current_shared: Attualmente condiviso con
+          depositor: Depositante
+          manager: Manager
           note: Indipendentemente dalle impostazioni di visibilità di questa raccolta, puoi condividere questa raccolta con gruppi e utenti specifici.
+          search_for_a_group: La ricerca di un gruppo...
+          search_for_a_user: Cercare un utente...
+          select_a_role: Selezionare un ruolo...
+          viewer: Visualizzatore
         form_share_table:
           allow_all_registered: Consenti tutti registrati
           depositors:
@@ -632,17 +944,48 @@ it:
             remove: Rimuovere
             title: Gli spettatori
             type: genere
+        last_updated: Ultimo aggiornamento
         new:
           header: Crea nuova collezione
+        recent_activity: Attività Recente
         show:
           header: Collezione
           item_count: Lavori
+          metadata_header: Dettagli della collezione
           parent_collection_header: Collezioni principali
           public_view_label: Visione pubblica della collezione
           search_results: Risultati della ricerca all'interno di questa raccolta
           show_less_parent_collections: "...mostra meno"
           show_more_parent_collections: mostra di più...
           subcollection_count: sottoraccolte
+        show_descriptions:
+          descriptions: descrizioni
+        show_document_list:
+          action: Azione
+          date_added: Data aggiunta
+          list_items_in_collection: Elenco di articoli in questa raccolta
+          owner: Proprietario
+          title: Titolo
+          visibility: Visibilità
+        show_document_list_menu:
+          select: Selezionare
+        show_document_list_row:
+          creator: 'Creatore:'
+          depositor: 'Depositante:'
+          edit_access: 'Modifica accesso:'
+        sort_and_per_page:
+          show_par_page_html: Mostra %{select} per pagina
+          sort_by: 'Ordina Per:'
+        title: Collezioni
+        work_action_menu:
+          delete_work: Elimina lavoro
+          deleting_from_work: L'eliminazione di un'opera da %{application_name} è permanente. Fai clic su OK per eliminare quest'opera da %{application_name} o Annulla per annullare questa operazione
+          edit_work: Modifica lavoro
+          press_to: Premere per
+          remove_from_collection: Rimuovi dalla raccolta
+          select_an_action: Seleziona un'azione
+          transfer_ownership_of_work: Trasferimento della proprietà del lavoro
+        works: Lavori
       create_work: Crea lavoro
       current_proxies: Proxy attuali
       delete_notification: Elimina notifica
@@ -660,12 +1003,14 @@ it:
           add_to_collection_only: Le azioni consentite sono limitate all'aggiunta di membri
           admin_set_confirmation: L'eliminazione di un set di amministratori da %{application_name} è permanente. Fare clic su OK per eliminare questo set di amministratori da %{application_name}, o Annulla per annullare questa operazione
           collection_create_success: La raccolta è stata creata con successo.
-          collection_delete_fail: Collezione %{id} non può essere cancellata
-          collection_delete_success: La raccolta %{id} è stata cancellata con successo
+          collection_delete_fail: Collezione non può essere cancellata
+          collection_delete_success: La raccolta è stata cancellata con successo
           collection_deny_add_members: Non disponi di privilegi sufficienti per aggiungere membri alla raccolta
           collection_update_success: La raccolta è stata aggiornata con successo.
           collections_confirmation_html: L'eliminazione di <span class='pluralized'>questa raccolta</span> rimuove definitivamente <span class='pluralized'>questa raccolta</span> dal repository. Gli articoli di <span class='pluralized'>questa raccolta</span> rimarranno nel repository. Sei sicuro di voler eliminare <span class='pluralized'>questa raccolta</span> ?
           collections_confirmation_no_items_html: Sei sicuro di voler eliminare questa raccolta? Questa azione non può essere annullata.
+          collections_confirmation_plural: queste collezioni
+          collections_confirmation_singular: questa collezione
           delete_admin_set: Elimina raccolta
           delete_admin_set_deny: Questa raccolta è definita come Imposta amministratore e non è vuota. Per eliminare questo set di amministrazione, devi prima rimuovere (eliminare o spostare in un'altra raccolta di un gruppo di amministratori) tutti gli elementi dal set di amministrazione.
           delete_collection: Elimina raccolta
@@ -678,7 +1023,7 @@ it:
           edit_collection_deny: Non disponi di privilegi sufficienti per modificare questa raccolta.
           edit_selected: Modifica selezionato
           edit_work: Modifica lavoro
-          highlight: Evidenziare il Savoro sul Profilo
+          highlight: Evidenziare il savoro sul profilo
           members_no_access: Non hai privilegi sufficienti per nessuno dei membri selezionati
           nesting_not_allowed: Le raccolte di questo tipo non supportano il nesting.
           nesting_permission_denied: Non disponi di privilegi sufficienti per aggiungere questa raccolta a un'altra raccolta.
@@ -694,15 +1039,24 @@ it:
           description: 'Descrizione:'
           edit_access: 'Modifica accesso:'
           groups: 'gruppi:'
+          managed_access:
+            deposit: Depositare
+            manage: Gestire
+            view: vista
           users: 'utenti:'
         collections: Le tue collezioni
+        collections_report: Report collezioni
         facet_label:
           collections: 'Collezioni filtro:'
           highlighted: 'Filtra i punti salienti:'
           shared: 'Condivisione di filtri:'
           works: 'Funzioni di filtro:'
         heading:
+          access: Accesso
           action: Azioni
+          caption: Elenco di articoli in questa raccolta
+          collection:
+            visibility: Visibilità della raccolta
           collection_type: Tipo di raccolta
           date_modified: Ultima modifica
           date_uploaded: Data aggiunta
@@ -712,6 +1066,8 @@ it:
           title: Titolo
           type: genere
           visibility: Visibilità
+          work:
+            visibility: Visibilità del lavoro
         highlighted: I miei punti salienti
         shared: Opere condivise con me
         sr:
@@ -719,50 +1075,102 @@ it:
           check_all_label: Seleziona tutti i file da aggiungere a una raccolta o modificati
           detail_label: Visualizza dettagli riepilogo di
           listing: Elenco di articoli che hai depositato
+          number_of_results_to_display_per_page: Numero di risultati da visualizzare per pagina
           press_to: Premere per
           results_per_page: Numero di risultati da visualizzare per pagina
           show_label: Visualizza tutti i dettagli di
+          thumbnail: miniatura
         works: Le tue opere
+        works_report: Relazione sui lavori
+        your_collections: Le tue collezioni
+        your_works: I tuoi lavori
       nest_collections_form:
         create_under: "'%{child_title}' è stato aggiunto a '%{parent_title}'"
         create_within: "'%{child_title}' è stato aggiunto a '%{parent_title}'"
         removed_relationship: "'%{child_title}' è stato rimosso da '%{parent_title}'"
       no_activity: L'utente non ha attività recenti
       no_notifications: L'utente non ha notifiche
+      no_proxies: Non ci sono proxy assegnati
       no_transfer_requests: Non hai ricevuto richieste di trasferimento di lavoro
       no_transfers: Non hai trasferito alcun lavoro
+      profiles:
+        edit_primary:
+          change_picture: <i class = "fa fa-camera"> </i> Cambia immagine
+          delete_picture: Elimina foto
+          delete_picture_data_content: Se desideri rimuovere completamente la tua foto, seleziona la casella e salva il tuo profilo.
+          delete_picture_data_original_title: Elimina immagine
+          facebook_handle: <i class = "fa fa-facebook" aria-hidden = "true"> </i> Handle di Facebook
+          google_handle: <i class = "fa fa-google-plus"> </i> Handle di Google+
+          help_change_picture_type: JPG, GIF o PNG (meno di 2 MB)
+          save_profile: <i class = "fa fa-floppy-o"> </i> Salva profilo
+          twitter_handle: <i class = "fa fa-twitter" aria-hidden = "true"> </i> Handle di Twitter
       proxy_activity: Attività proxy
+      proxy_add_deny: Non puoi renderti un proxy
       proxy_delete: Elimina proxy
+      proxy_help: Seleziona un utente che può depositare opere per tuo conto. Sarai il proprietario delle opere che questo utente deposita per te. È possibile revocare un proxy facendo clic sul pulsante Elimina proxy.
       proxy_user: Utente Proxy
+      repository_growth:
+        collections: collezioni
+        date: Data
+        objects: Oggetti
+        subtitle: Ultimi 90 giorni
+        title: Crescita del repository
+        works: Lavori
+      repository_objects:
+        status: Stato attuale
+        subtitle: Stato attuale
+        title: Oggetti del repository
+      resource_type_graph:
+        count: Contare
+        resource_type: Tipo di risorsa
+        title: Tipi di risorse
       show_admin:
+        current_registered_users: Corrente
+        graph_reports: Rapporti grafici personalizzati
         new_visitors: Nuovi visitatori
+        past_30_days: Ultimi 30 giorni
         registered_users: Utente registrato
-        repository_growth:
-          subtitle: Ultimi 90 giorni
-          title: Crescita dei repository
-        repository_objects:
-          subtitle: Stato attuale
-          title: Oggetti di repository
         returning_visitors: Visitatori di ritorno
         total_visitors: Totale visitatori
-        user_activity:
-          subtitle: Nuove iscrizioni degli utenti
-          title: Attività utente
       stats:
         collections: Collezioni create
         file_downloads: Scaricare
         file_views: vista
         files: File depositati
         heading: Le tue statistiche
+        joined_on: Unito
         works: Opere create
+      tabs:
+        admin_sets: Set di amministrazione
       title: la mia scrivania
       transfer_of_ownership: Trasferimenti di proprietà
       transfer_works_link: Seleziona le opere da trasferire
       transfers_received: Trasferimenti ricevuti
       transfers_sent: Trasferimenti inviati
-      user_activity: Attività utente
+      user_activity:
+        date: Data
+        new_users: Nuovi utenti
+        new_visitors: Nuovi visitatori
+        registered_users: utente registrato
+        returning_visitors: Visitatori di ritorno
+        subtitle: Nuove iscrizioni utente
+        title: Attività dell'utente
+        total_visitors: Visitatori totali
+        user_summary: Riepilogo utente
+      user_activity_graph:
+        date: Data
+        new_users: Nuovi utenti
+        new_visits: Nuove visite
+        return_visits: Visite di ritorno
+        total_visits: Visite totali
       user_notifications: Notifiche utente
       view_files: Vedi files
+      visibility_graph:
+        visibility: Visibilità
+      work_type_graph:
+        count: Contare
+        title: Tipi di lavoro
+        work_type: Tipo di lavoro
     document_language: it
     edit_profile: Modifica Profilo
     embargoes:
@@ -789,12 +1197,15 @@ it:
         deactivate: Disattiva Embargo
         deactivate_selected: Disattiva gli embarghi per la selezione
         missing: Attualmente non esistono embarghi scaduti.
+        select_all: Seleziona tutto
       table_headers:
         release_date: Data di rilascio embargo
         title: Titolo
         type: Tipo di lavoro
         viz_after: La visibilità cambierà
         viz_current: Visibilità attuale
+      update:
+        embargo_deactivated: Disattivazione riuscita!
     featured_researchers: Ricercatori in primo piano
     file_manager:
       link_text: File Manager
@@ -803,14 +1214,103 @@ it:
       show:
         download: Scarica il file
         downloadable_content:
+          audio_link: Scarica audio
+          audio_tag_not_supported: Il tuo browser non supporta il tag audio.
           default_link: Download file
           heading: Contenuto scaricabile
           image_link: Scarica l'immagine
           office_link: Download file
           pdf_link: Scarica il pdf
+          video_link: Scarica video
+          video_tag_not_supported: Il tuo browser non supporta il tag video.
     file_sets:
+      actions:
+        delete: Elimina
+        delete_confirm: L'eliminazione di %{file_set} da %{application_name} è permanente. Fare clic su OK per eliminare questo da %{application_name}, o Annulla per annullare questa operazione
+        delete_title: Elimina %{file_set}
+        download: Scaricare
+        download_title: Scarica %{file_set}
+        edit: modificare
+        edit_title: Modifica %{file_set}
+        header: Seleziona un'azione
+        press_to: Premere per
+        versions: versioni
+        versions_title: Mostra le versioni precedenti
+      asset_deleted_flash:
+        message: Il file è stato eliminato.
+      asset_saved_flash:
+        message:
+          one: Il file %{saved_files} è stato salvato.
+          other: Il file %{saved_files} sono stati salvati.
+      asset_updated_flash:
+        message: Il file %{link_to_file} è stata aggiornata.
+      descriptions:
+        save: Salva descrizioni
+        title: descrizioni
+      edit:
+        descriptions: descrizioni
+        header: Modifica %{file_set}
+        permissions: permessi
+        versions: versioni
+      extra_fields_modal:
+        additional: addizionale
+        label: "%{label} aggiuntivi"
+      form:
+        attach_to: Allegare a %{parent}
+        cancel: Annulla
+        save: Salvare
+        title: Titolo
       groups_description:
         description_html: L'elenco dei gruppi nel menu a discesa contrassegnato con "Seleziona un gruppo" è un elenco di Gruppi gestiti utente di cui sei membro. È possibile selezionare un gruppo specifico e assegnare un livello di accesso per un file all'interno di %{application_name}, analogamente ad aggiungere livelli di accesso utente.
+      permission:
+        save: Salvare
+      permission_form:
+        add_new_group_skel: Aggiungi questo gruppo
+        add_new_user_skel: Aggiungi questo %{account_label}
+        applied_to: "(applicato a tutti i file appena caricati)"
+        bulk: Massa
+        depositor: Depositante
+        enter: Inserisci %{account_label} (uno alla volta)
+        header: permessi
+        new_group_help_text: Utilizzare il pulsante Aggiungi per consentire l'accesso a un gruppo alla volta (verrà aggiunto all'elenco seguente).
+        new_group_name_skel: Gruppo
+        new_group_permission_skel: Tipo di accesso da concedere
+        new_user_help_text: Utilizzare il pulsante Aggiungi per dare accesso a uno %{account_label} alla volta (verrà aggiunto all'elenco seguente). Seleziona l'utente, per nome o %{account_label}. Quindi selezionare il livello di accesso che si desidera concedere e fare clic su Aggiungi questo %{account_label} per completare l'aggiunta dell'autorizzazione.
+        new_user_name_skel: "%{account_label} (senza la parte %{suffix})"
+        new_user_permission_skel: Tipo di accesso da concedere
+        optional: "(opzionale)"
+        save_note_html: Le autorizzazioni <strong>non</strong> vengono salvate finché <strong>non</strong> viene premuto il pulsante "Salva" nella parte inferiore della pagina.
+        select_group: Seleziona un gruppo
+        share_with: Condividi con
+        user_search: Cerca un utente
+      proxy:
+        message: "%{sending_user} ha depositato il file %{title} per tuo conto."
+      show_actions:
+        analytics: Analytics
+        confirm_delete_this: Delete %{type}?
+        delete_this: Delete %{type}
+        edit_this: Modificare questo %{type}
+      show_details:
+        characterization: Caratterizzazione
+        date_modified: La Data Di Modifica
+        date_uploaded: Data Caricato
+        depositor: Depositante
+        file_details: Dettagli File
+        fixity_check: Fissità Di Controllo
+        not_yet_characterized: Non Ancora Caratterizzati
+      versioning:
+        choose_file: Scegli New Version File
+        current: Versione attuale
+        header: versioni
+        previous: Precedente
+        remove: Rimuovere
+        remove_current_files: Rimuovi file correnti
+        remove_new_version: Rimuovi nuovo file versione
+        restore: Ripristina la versione precedente
+        restore_from: Ripristina da
+        save: Salva revisione
+        save_your_note: Devi fare clic su "Salva revisione" per ripristinare una versione precedente di questo file
+        upload: Carica nuova versione
     help:
       header: Supporto utente
       override_text: Utilizza app / views / static / help.html.erb per ignorare questo file.
@@ -818,6 +1318,7 @@ it:
       admin_sets:
         link: Visualizza tutte le collezioni
         tab_label: Esplora collezioni
+        thumbnail: miniatura
         title: Esplora collezioni
       featured_researcher:
         missing: Nessun ricercatore è stato presentato.
@@ -904,6 +1405,73 @@ it:
         single: È stato salvato.
         subject: Caricamento batch completato
         title: I file sono stati caricati correttamente
+    models:
+      file_set: Set di file
+      hyrax/pcdm_collection: Collezione
+      hyrax/work: Opera
+    my:
+      count:
+        collections:
+          collections_listing: Elenco delle collezioni
+          in_repo: "<strong> collezioni %{total_count} </strong> nel repository"
+          you_manage: "<strong> collezioni %{total_count} </strong> che puoi gestire nel repository"
+          you_own: "<strong> collezioni %{total_count} </strong> che possiedi nel repository"
+        works:
+          in_repo: "<strong> %{total_count} funziona </strong> nel repository"
+          works_listing: Elenco delle opere
+          you_manage: "<strong> %{total_count} funziona </strong> che puoi gestire nel repository"
+          you_own: "<strong> %{total_count} funziona </strong> nel repository"
+      sort_and_per_page:
+        number_of_results_to_display_per_page: Numero di risultati da visualizzare per pagina
+    nav_safety:
+      change_tab_message: Sei sicuro di voler lasciare questa scheda? Tutti i dati non salvati andranno persi.
+    notifications:
+      batch_create_failure:
+        message: 'Il batch creato per %{user} non è riuscito: %{messages}'
+        subject: Creazione batch fallita
+      batch_create_success:
+        message: Il batch creato per %{user} è passato.
+        subject: Passando creare batch
+      fixity_check_failure:
+        message: Il controllo di fissità eseguito su %{log_date} per %{file_title} (%{uri}) non è riuscito.
+        subject: Verifica di Fixing non riuscita
+      import_url_failure:
+        subject: Errore di importazione del file
+      proxy_deposit_request:
+        transfer_on_create:
+          message: "%{user_link} vuole trasferirti un lavoro. Revisione di tutto %{transfer_link}"
+          subject: Richiesta di modifica della proprietà
+          transfer_link_label: le richieste di trasferimento
+        transfer_on_update:
+          comments: 'Commenti: %{receiver_comment}'
+          message: La tua richiesta di trasferimento era %{status}.
+          subject: Modifica proprietà %{status}
+        validation:
+          open_transfer: È necessario chiudere il trasferimento aperto sull'opera prima di crearne uno nuovo
+          sender_is_not_receiver: Specifica un altro utente per ricevere il lavoro
+          valid_username: Deve essere un utente esistente
+      proxy_depositor_added:
+        grantee_message: "%{grantor} ti ha assegnato come depositante proxy"
+        grantor_message: Hai assegnato %{grantee} come depositante proxy
+        subject: Depositor proxy aggiunto
+      workflow:
+        changes_required:
+          message: |-
+            %{title} (%{link}) richiede ulteriori modifiche prima dell'approvazione.
+             '%{comment}'
+          subject: Il tuo deposito richiede modifiche
+        deposited:
+          message: "%{title} (%{link}) è stato approvato da %{user}. %{comment}"
+          subject: Il deposito è stato approvato
+        pending_review:
+          message: "%{title} (%{link}) è stato depositato da %{user} ed è in attesa di approvazione %{comment}"
+          subject: Il deposito richiede una revisione
+    operations:
+      index:
+        operations_type: Tipo di operazioni
+        status: Stato
+        title: operazioni
+        updated: aggiornato
     pages:
       cancel: Annulla
       tabs:
@@ -913,9 +1481,18 @@ it:
         terms_page: Condizioni d'uso
       updated: Pagine aggiornate.
     passive_consent_to_agreement: Salvo questo lavoro accetto il
+    permission_levels:
+      edit: Accesso in modifica
+      options:
+        edit: modificare
+        none: Scegli Accesso
+        read: Visualizza / Scarica
+      owner:
+        edit: Accesso in modifica
+      read: Visualizza / Scarica
     search:
       button:
-        html: <span class="glyphicon glyphicon-search"></span> Partire
+        html: <span class="fa fa-search"></span> Partire
         text: Ricerca
       form:
         option:
@@ -959,7 +1536,31 @@ it:
         link: collegamento
         no_links: Nessun link è stato generato
       title: Collegamenti monouso
+    single_use_links_viewer:
+      single_use_error:
+        help: '%{application_name} non è stato in grado di individuare il collegamento monouso. Questo link è scaduto o era stato utilizzato in precedenza. Ci scusiamo per il disagio. Potresti essere interessato a utilizzare <a href="/help/"> la pagina di aiuto </a> per cercare soluzioni.'
+        link_expired_not_found: Link monouso scaduto o non trovato
+        link_not_found: Link monouso non trovato
     sort_label: Ordina l'elenco degli articoli
+    static:
+      mendeley:
+        contact_form: Modulo di Contatto
+        export_to_mendeley: Esporta in Mendeley
+        export_to_mendeley_details: L'esportazione in Mendeley è supportata tramite metadati incorporati. Se Mendeley non raccoglie automaticamente i metadati per i file depositati, segnala il problema tramite il
+      zotero:
+        contact_form: Modulo di Contatto
+        export_to_zotero: Esporta in Zotero
+        export_to_zotero_details: L'esportazione in Zotero è supportata tramite metadati incorporati. Se Zotero non raccoglie automaticamente i metadati per i file depositati, segnala il problema tramite il
+    stats:
+      downloads:
+        downloads: Download
+      pageviews:
+        pageviews: Visualizzazioni di pagina
+      work:
+        and: e
+        downloads: Download
+        header: Analisi del lavoro
+        pageviews: Visualizzazioni di pagina
     toolbar:
       dashboard:
         menu: Cruscotto
@@ -980,6 +1581,29 @@ it:
         placeholder: Cerca un utente
         sr_only_description: Seleziona un utente per trasferire "%{work_title}", aggiungere commenti opzionali e quindi premere il trasferimento.
         title: Trasferimento di proprietà di "%{work_title}"
+      received:
+        accept: Accettare
+        accept_the_file_and_allow_the_original_depositor_to_retain_access_and_authorize: Accetta il file e consenti al depositante originale di conservare l'accesso e autorizza il depositante originale come proxy a depositare il file per tuo conto.
+        accept_the_file_and_allow_the_original_depositor_to_retain_access_to_edit_the_file_and_metadata: Accetta il file e consenti al depositante originale di conservare l'accesso per modificare il file e i metadati.
+        accept_the_file_remove_access_from_the_original_depositor: Accetta il file rimuovi l'accesso dal depositante originale.
+        allow_depositor_to_retain_edit_access: Consenti al depositante di conservare l'accesso in modifica
+        are_you_sure_you_want_to_reject_this_request: Sei sicuro di voler rifiutare questa richiesta?
+        authorize_depositor_as_proxy: Autorizza il depositante come procuratore
+        comments: Commenti
+        date: Data
+        from: A partire dal
+        reject: Rifiutare
+        remove_depositor_access: Rimuovere l'accesso del depositante
+        status: Stato
+        title: Titolo
+      sent:
+        are_you_sure_you_want_to_cancel_this_request: Sei sicuro di voler annullare questa richiesta?
+        cancel: Annulla
+        comments: Commenti
+        date: Data
+        from: A partire dal
+        status: Stato
+        title: Titolo
     upload:
       alert:
         contact_href_text: Modulo di Contatto
@@ -995,6 +1619,7 @@ it:
       change_access_flash_message: Aggiornamento dei livelli di accesso ai file. Questo potrebbe richiedere alcuni minuti. Potresti voler aggiornare il tuo browser o tornare a questo disco in un secondo momento per vedere i livelli di accesso ai file aggiornati.
       change_access_message_html: "<p> Hai <i>modificato</i> il livello di accesso sul lavoro <i>%{curation_concern}</i> , rendendolo accessibile ad altri utenti o gruppi per visualizzare o modificare. </p><p> Vuoi cambiare tutti i file all'interno del lavoro per avere gli stessi utenti di accesso, i gruppi e la visibilità? </p>"
       change_access_no_message: No. Lo aggiornerò manualmente.
+      change_access_title_html: Applicare le modifiche al contenuto?
       change_access_yes_message: Sì grazie.
       change_permissions_message_html: "<p> Hai modificato le autorizzazioni di questo %{curation_concern_human_readable_type}, <i>%{curation_concern}</i> , <i>rendendolo</i> visibile a <b>%{visibility_badge}</b> . </p><p> Vuoi cambiare tutti i file all'interno di <b>%{curation_concern_human_readable_type}</b> anche <b>%{visibility_badge}</b> ? </p>"
       local_ingest:
@@ -1005,6 +1630,34 @@ it:
         tab_label: Il mio computer
       permissions_message: Aggiornamento delle autorizzazioni di file. Questo potrebbe richiedere alcuni minuti. Potresti voler aggiornare il tuo browser o tornare a questo disco in seguito per vedere le autorizzazioni di file aggiornate.
       processing: Il file è in fase di elaborazione; Puoi modificare quando l'elaborazione è terminata
+    uploads:
+      js_templates:
+        display_label: Etichetta di visualizzazione
+        error: Errore
+        set_all_to_this_resource_type: Impostare tutto su questo tipo di risorsa
+        start: Inizio
+      js_templates_branding:
+        alt_text: 'Testo alternativo:'
+        error: Errore
+        link_url: 'URL del link:'
+        previous: precedente
+        remove: Rimuovere
+        remove_new_banner: Rimuovi nuovo banner
+        remove_new_logo: Rimuovi nuovo logo
+      js_templates_versioning:
+        display_label: Etichetta display
+        error: Errore
+        options:
+          messages:
+            accept_file_types: Tipo di file non consentito
+            max_file_size: Il file è troppo grande
+            max_number_of_files: Numero massimo di file superato
+            min_file_size: Il file è troppo piccolo
+        previous: precedente
+        remove: Rimuovere
+        remove_new_version: Rimuovi nuovo file versione
+        set_all_to_this_resource_type: Imposta tutto su questo tipo di risorsa
+        start: Inizio
     user_profile:
       orcid:
         alt: Icona ORCID
@@ -1017,6 +1670,24 @@ it:
         connected: Collegato!
         label: Profilo di Zotero
         unlinked: Link con Zotero
+    users:
+      activity_log:
+        date: Data
+        user_activity: Attività dell'utente
+      index:
+        avatar: Avatar
+        department: Dipartimento
+        user_id: ID utente
+        user_name: Nome utente
+        users: utenti
+        works_created: Opere create
+      left_sidebar:
+        view_users: Visualizza utenti
+      proxies:
+        proxies: Proxy
+      search_form:
+        go: Partire
+        search_users: Cerca utenti
     visibility:
       authenticated:
         note_html: Limitare l'accesso a soli utenti e / o gruppi da %{institution}
@@ -1036,12 +1707,15 @@ it:
         note_html: Solo utenti e / o gruppi che hanno ricevuto l'accesso specifico nella sezione "Condividi con".
         text: Privato
       restricted_title_attr: Cambiare la visibilità di questa risorsa
+    work_button_row:
+      attach_child: Allega bambino
     workflow:
       default:
         deposit: Depositare
       load:
         state_error: 'Il flusso di lavoro: %{workflow_name} non è stato aggiornato. Stai rimuovendo uno stato: %{state_name} con entità / i %{entity_count}. Uno stato non può essere rimosso mentre ha entità attive!'
       unauthorized: Il lavoro non è attualmente disponibile perché non ha ancora completato il processo di approvazione
+      unauthorized_parent: Il file non è attualmente disponibile perché il suo lavoro principale non ha ancora completato il processo di approvazione
     works:
       create:
         after_create_html: I file vengono elaborati da %{application_name} in background. I metadati e i controlli di accesso specificati vengono applicati. Potrebbe essere necessario aggiornare questa pagina per visualizzare questi aggiornamenti.
@@ -1060,6 +1734,7 @@ it:
           relationships: Le relazioni
           share: Condividere
         visibility_until: fino a
+      missing_title: Senza titolo
       progress:
         header: Salva lavoro
       show:
@@ -1090,6 +1765,7 @@ it:
         allow_multiple_membership: Consenti alle opere di appartenere a più raccolte di questo tipo
         assigns_visibility: Consenti a raccolte di questo tipo di assegnare le impostazioni di visibilità iniziale a una nuova opera
         assigns_workflow: Consenti a raccolte di questo tipo di assegnare un flusso di lavoro a una nuova opera
+        brandable: Consenti alle raccolte di questo tipo di essere marchiate
         description: Una breve dichiarazione dello scopo generale di questo tipo di raccolta. Gli utenti vedranno questo se hanno più di un tipo di raccolta tra cui scegliere durante la creazione di una nuova raccolta.
         discoverable: Consenti a raccolte di questo tipo di essere rilevabili
         nestable: Consenti l'inserimento di raccolte di questo tipo (una raccolta può contenere altre raccolte)
@@ -1098,6 +1774,8 @@ it:
         share_applies_to_new_works: Quando vengono creati nuovi lavori direttamente nella raccolta, concedere la condivisione di autorizzazioni di utenti e gruppi per il nuovo lavoro in base ai rispettivi ruoli di raccolta.
         title: ''
       defaults:
+        abstract: Un breve riassunto di un articolo di ricerca, tesi, revisione, atti del convegno o qualsiasi analisi approfondita di un particolare argomento.
+        access_right: Contiene informazioni su chi può accedere alla risorsa o un'indicazione del suo stato di sicurezza.
         based_near: Un nome di posto relativo al lavoro, come il suo sito di pubblicazione, o la città, lo stato o il paese sono i contenuti del lavoro. Chiama il <a href='http://www.geonames.org'> servizio Web di GeoNames </a>.
         contributor: Una persona o un gruppo che si desidera riconoscere per svolgere un ruolo nella creazione del lavoro, ma non il ruolo primario.
         creator: La persona o il gruppo responsabile del lavoro. Di solito questo è l'autore del contenuto. Devono essere inseriti i nomi personali con l'ultimo nome, ad esempio & Quot; Smith, John. & Quot ;.
@@ -1110,6 +1788,7 @@ it:
         publisher: La persona o il gruppo che rende disponibile il lavoro. Generalmente questa è l'istituzione.
         related_url: Un collegamento a un sito web o ad altri contenuti specifici (audio, video, documento PDF) correlati al lavoro. Un esempio è l'URL di un progetto di ricerca da cui è stato derivato il lavoro.
         resource_type: Categorie predefinite per descrivere il tipo di contenuto che viene caricato, ad esempio "articolo" O "set di dati". Possono essere selezionati più di un tipo.
+        rights_notes: Contiene informazioni sui diritti detenuti all'interno e sulla risorsa.
         subject: Intestazioni o termini dell'indice che descrivono ciò che il lavoro riguarda; Questi devono essere conformi a un vocabolario esistente.
         title: Un nome per aiutare a identificare un lavoro.
     labels:
@@ -1120,6 +1799,8 @@ it:
         allow_multiple_membership: MULTIPLE MEMBERSHIP
         assigns_visibility: VISIBILITÀ
         assigns_workflow: FLUSSO DI LAVORO
+        badge_color: Colore distintivo
+        brandable: IL BRANDING
         description: Tipo descrizione
         discoverable: SCOPERTA
         nestable: inseribile
@@ -1128,6 +1809,8 @@ it:
         share_applies_to_new_works: SI APPLICA A NUOVE OPERE
         title: Digita il nome
       defaults:
+        abstract: Astratto
+        access_right: Diritti di accesso
         admin_set_id: Set Amministrativo
         based_near: luogo
         creator: Creatore
@@ -1140,6 +1823,7 @@ it:
         license: Licenza
         member_of_collection_ids: Aggiungere alla collezione
         related_url: URL correlato
+        rights_notes: Note sui diritti
         rights_statement: Dichiarazione dei diritti
         title: Titolo
         visibility_after_embargo: Poi aprila fino a
@@ -1154,4 +1838,7 @@ it:
         find_child_work: Cerca un lavoro ...
         member_of_collection_ids: Seleziona una collezione ...
     required:
-      html: <span class="label label-info required-tag">necessario</span>
+      html: <span class="badge badge-info required-tag">necessario</span>
+  total_view:
+    one: Quest'opera ha 1 vista totale
+    other: Questo lavoro ha %{count} visualizzazioni totali

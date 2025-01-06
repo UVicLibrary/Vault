@@ -66,6 +66,20 @@ module Hyrax
       end
     end
 
+    # Override to force Content-Type to 'application/json'
+    # This may not be necessary after Rails > 6.1
+    def manifest
+      json = iiif_manifest_builder.manifest_for(presenter: iiif_manifest_presenter)
+
+      respond_to do |format|
+        format.any {
+          response.headers['Content-Type'] = 'application/json;charset=utf-8'
+          response.headers['Access-Control-Allow-Origin'] = '*'
+          render json: json
+        }
+      end
+    end
+
     private
 
     def set_default_response_format

@@ -1,17 +1,15 @@
 <% appearance = Hyrax::Forms::Admin::Appearance.new %>
-<footer class="navbar navbar-inverse site-footer" style="padding: 0px; height: fit-content; background-color: <%= appearance.header_background_color %>">
+<footer class="site-footer" style="background-color: <%= appearance.header_background_color %>">
   <div class="container-fluid">
     <% if request.base_url.include?("vault") %>
       <div class="row" >
-        <div class="col-xs-4 col-lg-2 col-md-2 col-sm-4 footer-logo-container">
+        <div class="col-xs-4 col-lg-2 col-md-4 col-sm-4 footer-logo-container">
           <a class="footer-link" id="logo-link" href="https://www.uvic.ca/library/" target="_blank">
-<!--            <div id="footer-logo" style="background: url(<%#= asset_path 'lib-logo-white.png' %>) center center no-repeat;">-->
-<!--            </div>-->
             <img id="footer-logo" alt="UVic Libraries logo" src="<%= asset_path 'lib-logo-white.png' %>" />
           </a>
         </div>
 
-        <div class="col-xs-6 col-lg-2 col-md-2 col-sm-4 navbar-text">
+        <div class="col-xs-6 col-lg-2 col-md-4 col-sm-4 footer-text">
           <h4>Quicklinks</h4>
           <ul class="unstyled-list">
             <li>
@@ -24,25 +22,22 @@
               <a aria-label="Digital exhibits footer link" class="footer-link" href="https://exhibits.library.uvic.ca/" target="_blank">Digital Exhibits</a>
             </li>
             <!-- Policy from https://libguides.uvic.ca/uvicspace/policies/access -->
-            <li><a aria-label="Terms of use footer link" class="footer-link" href="https://vault.library.uvic.ca/about?locale=en" target="_blank">Terms of Use</a>&ensp;/&ensp;
-              <a aria-label="Withdrawal policy footer link" class="footer-link" href="http://vault.library.uvic.ca/about?locale=en" target="_blank">Withdrawal Policy</a></li>
+            <li><a aria-label="Terms of use footer link" class="footer-link" href="/about" target="_blank">Terms of Use</a>&ensp;/&ensp;
+              <a aria-label="Withdrawal policy footer link" class="footer-link" href="/about" target="_blank">Withdrawal Policy</a></li>
           </ul>
-          <span>&copy; 2024 University of Victoria</span>
+          <span>&copy; 2025 University of Victoria</span>
         </div>
-        <div class="col-xs-6 col-lg-2 col-md-2 col-sm-4 navbar-text" >
+        <div class="col-xs-6 col-lg-2 col-md-4 col-sm-4 footer-text" >
           <h4>Contact</h4>
           <ul aria-label="Contact information" class="unstyled-list">
             <li>
-              <a aria-label="Contact form footer link" class="footer-link" href="https://vault.library.uvic.ca/contact?locale=en">Contact Form</a></li>
-            <li>
-              <a class="footer-link" aria-label="Main library phone number 250-721-8230" href="tel:1-250-721-8230">
-                <span aria-hidden="true" class="glyphicon glyphicon-earphone"></span>250-721-8230</a>
+              <a class="footer-link" href="/contact">
+                <i class="fa fa-envelope footer-icon" aria-hidden="true"></i>Contact Form
+              </a>
             </li>
-            <li>
-              <a class="footer-link" aria-label="Text the library at 1-778-400-4518" href="sms://+17784004518">
-                <span aria-hidden="true" class="glyphicon glyphicon-envelope"></span>778-400-4518</a>
-            </li>
-            <li><a aria-label="More library contact info footer link" class="footer-link" href="https://www.uvic.ca/library/home/home/contact/index.php" target="_blank">More Library Contact Info</a></li>
+            <li><i class="fa fa-phone footer-icon" aria-hidden="true"></i>Tel: 250-721-8230</li>
+            <li><img src="/footer-sms-icon.png" class="sms-icon footer-icon" aria-hidden="true" />SMS: 778-400-4518</li>
+            <li><a aria-label="More library contact info" class="footer-link" href="https://www.uvic.ca/library/help/ask/index.php" target="_blank">More Library Contact Info</a></li>
           </ul>
           <h5 id="social-media-header" class="visually-hidden">Social Media </h5>
           <ul aria-labelledby="social-media-header" class="unstyled-list">
@@ -52,12 +47,12 @@
               </a>
             </li>
             <li>
-              <a aria-label="UVic Libraries Instagram" class="footer-link social-media-link" href="https://www.instagram.com/uviclibraries/?hl=en" target="_blank">
+              <a aria-label="UVic Libraries Instagram" class="footer-link social-media-link" href="https://www.instagram.com/uviclibraries" target="_blank">
                 <i aria-hidden="true" class="fa fa-instagram footer-icon"></i>
               </a>
             </li>
             <li>
-              <a aria-label="UVic Libraries Facebook" class="footer-link social-media-link" href="https://www.facebook.com/UVicLibraries/" target="_blank">
+              <a aria-label="UVic Libraries Facebook" class="footer-link social-media-link" href="https://www.facebook.com/UVicLibraries" target="_blank">
                 <i aria-hidden="true" class="fa fa-facebook-square footer-icon"></i>
               </a>
             </li>

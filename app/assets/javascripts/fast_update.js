@@ -1,13 +1,17 @@
+// EXTENDS Hyrax 4.0
+// This file imports and extends several Hyrax JS classes:
+//     - LinkedData and Resource for autcomplete with FAST API (Note: the first
+//       autocomplete initialization is handled on line 160 by FastUpdateFormManager
+//     - ControlledVocabulary to leverage add/remove controls for multiple URIs
+// ConfirmRemoveDialog handles a confirmation popup before deleting a URI
+
 var LinkedData = require('hyrax/autocomplete/linked_data');
 var Resource = require('hyrax/autocomplete/resource');
-var ControlledVocabulary = require('hyrax/editor/controlled_vocabulary');
-var Handlebars = require('handlebars');
 var ConfirmRemoveDialog = require('hyrax/relationships/confirm_remove_dialog');
-
+var ControlledVocabulary = require('hyrax/editor/controlled_vocabulary');
 
 $(document).on('turbolinks:load', function() {
     new FastUpdateFormManager($('#new_fast_update_change'));
-    new FastUpdateFieldManager($('.form-group.fast_update_change_new_uris'), 'fast_update_change')
 });
 
 // Global function used by FastUpdateLinkedData and FastUpdateFormManager
@@ -17,90 +21,6 @@ function setFastUpdateParams(label, uri) {
     url.searchParams.append('old_uri', uri);
     url.searchParams.append('old_label', label);
     $('#fast-update-search-preview').attr('href', url.pathname + url.search);
-}
-
-
-class FastUpdateFieldManager extends ControlledVocabulary {
-
-    constructor(element, paramKey) {
-        let options = {
-            /* callback to run after add is called */
-            add:    null,
-            /* callback to run after remove is called */
-            remove: null,
-
-            controlsHtml:      '<span class=\"input-group-btn field-controls\">',
-            fieldWrapperClass: '.field-wrapper',
-            warningClass:      '.has-warning',
-            listClass:         '.listing',
-            inputTypeClass:    '.controlled_vocabulary',//'.fast_update_form_field',
-
-            addHtml:          '<button type=\"button\" class=\"btn btn-link add\"><span class=\"glyphicon glyphicon-plus\"></span><span class="controls-add-text"></span></button>',
-            addText:           'Add another',
-
-            removeHtml:        '<button type=\"button\" class=\"btn btn-link remove\"><span class=\"glyphicon glyphicon-remove\"></span><span class="controls-remove-text"></span> <span class=\"sr-only\"> previous <span class="controls-field-name-text">field</span></span></button>',
-            removeText:         'Remove',
-
-            labelControls:      true,
-            /* the selector for the text input tag to add autocomplete to */
-
-        }
-
-        super(element, $.extend({}, options, $(element).data()))
-        this.paramKey = paramKey
-    }
-
-    init() {
-        this._addInitialClasses();
-        this._addAriaLiveRegions();
-        this._appendControls();
-        this._attachEvents();
-        this._addCallbacks();
-        this.addAutocompleteToEditor($('#new_labels_and_uris_0'));
-    }
-
-    _attachEvents() {
-        this.element.on('click', this.removeSelector, (e) => this.removeFromList(e))
-        this.element.on('click', this.addSelector, (e) => this.addToList(e))
-    }
-
-    _newFieldTemplate(target) {
-        let index = this._maxIndex()
-        let rowTemplate = this._template();
-        let controls = this.controls.clone()//.append(this.remover)
-        let row =  $(rowTemplate({ "paramKey": this.paramKey,
-            "name": this.fieldName,
-            "index": index,
-            "class": "controlled_vocabulary" }))
-            .append(controls)
-        return row
-    }
-
-    _template() {
-        return Handlebars.compile(this._source)
-    }
-
-    get _source() {
-        return "<li class=\"field-wrapper input-group input-append\">" +
-            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[new_labels_and_uris][{{index}}][label]\" value=\"\" placeholder=\"Search for an entity\" id=\"{{paramKey}}_{{name}}_{{index}}\" data-attribute=\"{{name}}\" data-autocomplete-type=\"linked\" type=\"text\">" +
-            "<input name=\"{{paramKey}}[new_labels_and_uris][{{index}}][uri]\" value=\"\" id=\"{{paramKey}}_{{name}}_{{index}}\" type=\"hidden\" data-id=\"remote\">"
-    }
-
-    /**
-     * Make new element have autocomplete behavior
-     * @param {jQuery} input - The <input type="text"> tag
-     */
-    addAutocompleteToEditor(input) {
-        let autocomplete = new FastUpdateAutocomplete()
-        autocomplete.setup(input, this.element.data('fieldName'), this.element.data('autocomplete-url'))
-    }
-
-    createAddHtml(options) {
-        var $addHtml  = $('<button type=\"button\" class=\"btn btn-link add\"><span class=\"glyphicon glyphicon-plus\"></span><span class="controls-add-text"></span></button>')
-        $addHtml.find('.controls-add-text').html(options.addText + options.label);
-        return $addHtml;
-    }
-
 }
 
 class FastUpdateAutocomplete extends autocompleteModule {
@@ -131,19 +51,28 @@ class FastUpdateAutocomplete extends autocompleteModule {
 // when selected
 class FastUpdateLinkedData extends LinkedData {
 
-    selected(elem) {
+    selected(_) {
         let result = this.element.select2("data")
+
+        // Set the label
+        this.element.val(result.label);
+
         if (result.id.startsWith("fst")) {
+            // In some Hyrax repos, the id comes back as "fst<id no.>"
+            // when we actually want the URI for this instead.
+            // This is an ugly, last-resort JS patch, but a better
+            // Ruby fix for this is in config/initializers/qa_fast_authority.rb
             let uri = uriFromId(result['id']);
             // set the URI
             this.setIdentifier(uri);
-            // Set the label
-            this.element.val(result['label']);
             if (this.element.attr('id') == "old-label") {
                 setFastUpdateParams(result['label'], uri);
             }
         } else {
             this.setIdentifier(result.id);
+            if (this.element.attr('id') == "old-label") {
+                setFastUpdateParams(result.label, result.id);
+            }
         }
         $('#fast-update-submit-button').removeClass('disabled');
 
@@ -206,14 +135,16 @@ class ConfirmRemoveUriDialog extends ConfirmRemoveDialog {
 
 }
 
+// Based on Hydra editor's FieldManager class
 class FastUpdateFormManager {
 
     constructor(element) {
         this.element = $(element);
         // The selectors for elements to add autocomplete to
-        this.autocompleteSelectors = ['#old-label','#fast_update_change_collection_id'];
+        this.autocompleteSelectors = ['#old-label', '#new_labels_and_uris_0','#fast_update_change_collection_id'];
         this.submitButton = $('#fast-update-submit-button');
         this.oldURIField = $('#fast_update_change_old_uri');
+        this.controlledVocabulary = new FastUpdateControlledVocabulary($('.fast_update_change_new_uris'), 'fast_update_change');
         this.init();
     }
 
@@ -298,4 +229,33 @@ class FastUpdateFormManager {
             else { return; }
         });
     }
+}
+
+class FastUpdateControlledVocabulary extends ControlledVocabulary {
+
+    get _source() {
+        return "<li class=\"field-wrapper input-group input-append\">" +
+            "<input class=\"string {{class}} optional form-control {{paramKey}}_{{name}} form-control multi-text-field\" name=\"{{paramKey}}[new_labels_and_uris][{{index}}][label]\" value=\"\" id=\"new_label_{{index}}\" data-autocomplete=\"new_uris\" data-autocomplete-type=\"linked\" data-autocomplete-url=\"/authorities/search/assign_fast/all\" placeholder=\"Search for an entity\" type=\"text\">" +
+            "<input name=\"{{paramKey}}[new_labels_and_uris][{{index}}][uri]\" value=\"\" id=\"{{paramKey}}_new_uri_{{index}}\" type=\"hidden\" data-id=\"remote\">"
+    }
+
+    /**
+     * Make new element have autocomplete behavior
+     * @param {jQuery} input - The <input type="text"> tag
+     */
+    addAutocompleteToEditor(input) {
+        var autocomplete = new FastUpdateAutocomplete()
+        autocomplete.setup(input, this.fieldName, this.searchUrl)
+    }
+
+    // Fall back to the FieldManager function, which removes the whole field
+    // https://github.com/samvera/hydra-editor/blob/main/app/assets/javascripts/hydra-editor/field_manager.es6
+    removeFromList( event ) {
+        event.preventDefault();
+        var $field = $(event.target).parents(this.fieldWrapperClass).remove();
+        this.element.trigger("managed_field:remove", $field);
+
+        this._manageFocus();
+    }
+
 }

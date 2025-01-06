@@ -1,5 +1,24 @@
 source 'https://rubygems.org'
 
+# This is the Rails version normally allowed by Hyrax 4
+# gem 'rails', '~> 6.0.5'
+
+# This is the Rails version that Hyku 6 (Hyrax 5) uses
+gem 'rails', '~> 6.0', github: 'rails/rails', branch: '6-1-stable', ref: 'd16199e507086e3d54d94253b7e1d87ead394d9f'
+
+gem 'hyrax', '~> 4.0'
+gem 'sass-rails', '~> 6.0'
+gem 'bootstrap', '~> 4.0'
+gem 'riiif', '~> 2.0'
+gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
+
+# TO DO: Relax reqs for cdm_migrator
+gem 'cdm_migrator', git: 'https://github.com/UVicLibrary/cdm_migrator'
+# gem 'to_spotlight', '~> 0.2.7'
+
+# Prevents an error like ffi-1.17.0 requires rubygems version >= 3.3.22
+gem "ffi", "< 1.17.0"
+
 gem 'ruby-vips'
 gem 'carrierwave-vips'
 
@@ -13,16 +32,14 @@ gem 'redlock', '~> 1.3.2'
 # DO NOT USE 5.10.9
 gem 'tinymce-rails', '5.10.7'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>5.2.4.6'
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
+
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -34,17 +51,9 @@ gem 'jquery-rails'
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
-# bundle exec rake doc:rails generates the API under doc/api.
-# gem 'sdoc', '~> 0.4.0', group: :doc
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-gem 'active-fedora', '~> 13.1' #, '>= 11.1.4'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 gem 'byebug'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   #gem 'byebug'
@@ -97,9 +106,8 @@ group :development do
   gem 'scss_lint', require: false
 end
 
-gem 'blacklight', '~> 6.7'
-gem 'blacklight_oai_provider', '~> 6.0'
-gem 'blacklight_range_limit', '~> 6.5'
+gem 'blacklight_oai_provider'
+gem 'blacklight_range_limit'
 gem 'blacklight_advanced_search'
 
 # For exporting bagit bags from Vault
@@ -108,23 +116,22 @@ gem 'posix-spawn'
 gem 'http_parser.rb'
 gem 'bagit'
 
-gem 'hyrax', '3.6'
-gem 'dry-monads', '< 1.5'
-
 # Loading the env fails if psych > 3.0
 gem 'psych', '3.3.4'
+
 # ActiveFedora::Cleaner.clean! fails with addressable > 2.8.1
 gem 'addressable', '2.8.1'
 
-gem 'hyrax-doi', git: 'https://github.com/samvera-labs/hyrax-doi.git', branch: 'hyrax_upgrade'
+gem 'hyrax-doi', github: 'samvera-labs/hyrax-doi', branch: 'rails_hyrax_upgrade'
+
 gem 'rsolr', '~> 2.0'
 
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
-gem 'devise_invitable', '~> 1.6' #, '~> 2.0.6'
+gem 'devise_invitable', '~> 1.6'
 
-gem 'apartment'
+gem 'apartment', github: 'scientist-softserv/apartment', branch: 'development'
 gem 'config', '~> 2.2', '>= 2.2.1'
 gem 'is_it_working'
 gem 'rolify'
@@ -135,7 +142,6 @@ gem 'lograge'
 gem 'zk'
 
 gem 'mods', '~> 2.1'
-gem 'riiif', '~> 1.1'
 
 gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
@@ -143,9 +149,6 @@ gem 'draper'
 gem 'sidekiq', '~> 6.4.0'
 gem 'redis', '4.6'
 gem 'sidekiq-cron'
-
-gem 'cdm_migrator', '3.4.2'
-gem 'to_spotlight', '~> 0.2.7'
 
 gem 'secure_headers'
 

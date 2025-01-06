@@ -72,6 +72,21 @@ class SolrDocument
       model: 'has_model_ssim'
   )
 
+  # Override Blacklight 7.38
+  # This method is used by Blacklight OAI to display a record responses in XML
+  def to_semantic_values
+    super.tap do |values_hash|
+      values_hash[:date] = values_hash[:date].map do |val|
+        begin
+          EdtfDateService.new(val).humanized
+        # if date is unparseable, just render what we have
+        rescue EdtfDateService::InvalidEdtfDateError
+          val
+        end
+      end
+    end
+  end
+
   def subject
       fetch('subject_tesim', [])
   end
