@@ -68,8 +68,9 @@ group :development, :test do
   gem 'fcrepo_wrapper', '~> 0.4'
   gem 'solr_wrapper', '~> 2.0'
 
-  gem 'rubocop', '~> 0.50', '<= 0.52.1'
-  gem 'rubocop-rspec', '~> 1.22', '<= 1.22.2'
+  # gem 'rubocop', '~> 0.50', '<= 0.52.1'
+  # gem 'rubocop-rspec', '~> 1.22', '<= 1.22.2'
+  gem 'rubocop', require: false
 
   gem 'shoulda-matchers', require: false
   gem 'shoulda-callback-matchers', require: false
@@ -118,6 +119,7 @@ gem 'bagit'
 
 # Loading the env fails if psych > 3.0
 gem 'psych', '3.3.4'
+gem 'stringio' # v.3.1.2 to 
 
 # ActiveFedora::Cleaner.clean! fails with addressable > 2.8.1
 gem 'addressable', '2.8.1'

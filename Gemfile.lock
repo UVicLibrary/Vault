@@ -1048,8 +1048,6 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-rspec (1.22.2)
-      rubocop (>= 0.52.1)
     ruby-box (1.15.0)
       addressable
       json
@@ -1173,6 +1171,7 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.8)
+    stringio (3.1.2)
     sxp (1.2.4)
       matrix (~> 0.4)
       rdf (~> 3.2)
@@ -1315,8 +1314,7 @@ DEPENDENCIES
   rspec-its
   rspec-rails (>= 3.6.0)
   rspec-sidekiq
-  rubocop (~> 0.50, <= 0.52.1)
-  rubocop-rspec (~> 1.22, <= 1.22.2)
+  rubocop
   ruby-prof
   ruby-vips
   sass-rails (~> 6.0)
@@ -1332,6 +1330,7 @@ DEPENDENCIES
   solr_wrapper (~> 2.0)
   spring (~> 1.7)
   spring-watcher-listen (~> 2.0.0)
+  stringio
   tinymce-rails (= 5.10.7)
   turbolinks (~> 5)
   twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
