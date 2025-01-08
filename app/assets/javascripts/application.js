@@ -19,6 +19,9 @@
 //= require dataTables.bootstrap4
 //= require turbolinks
 
+// Required by AblePlayer (audio/video player)
+//= require js.cookie-2.2.1.min
+
 // Required by Blacklight
 //= require blacklight/blacklight
 //= require blacklight_advanced_search
