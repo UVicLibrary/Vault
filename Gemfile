@@ -119,7 +119,7 @@ gem 'bagit'
 
 # Loading the env fails if psych > 3.0
 gem 'psych', '3.3.4'
-gem 'stringio' # v.3.1.2 to 
+gem 'stringio' # v.3.1.2 to fix Passenger/Psych error
 
 # ActiveFedora::Cleaner.clean! fails with addressable > 2.8.1
 gem 'addressable', '2.8.1'
