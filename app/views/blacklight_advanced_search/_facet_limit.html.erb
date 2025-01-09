@@ -4,8 +4,10 @@
     <ul class="list-unstyled facet-values">
     <% advanced_query.filters[facet_field.key].each do |value| %>
         <li>
-            <span class="selected"><%= h(value) %></span>
-            <%= link_to(remove_advanced_facet_param(facet_field.key, value, params), :class => "remove") do %>
+            <span class="selected">
+              <%= facet_field.helper_method.presence ? public_send(facet_field.helper_method, value) : h(value) %>
+            </span>
+            <%= link_to(remove_advanced_facet_param(facet_field.key, value, params), class: "remove") do %>
                 <span class="remove-icon"></span>✖<span class="sr-only">[remove]</span>
             <% end %>
         </li>
