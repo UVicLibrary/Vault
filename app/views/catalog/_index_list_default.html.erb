@@ -17,7 +17,7 @@
   <% end %>
   <div class="metadata">
     <dl>
-    <% doc_presenter = index_presenter(document) %>
+    <% doc_presenter = document_presenter(document) %>
     <%# Render description for collections but not works %>
     <% if document.collection? && document['description_tesim'].presence %>
         <div class="row">
@@ -25,13 +25,11 @@
           <dd class="col-md-8 col-sm-12"><%= truncate_field_values(value: document['description_tesim']) %></dd>
         </div>
     <% end %>
-    <% index_fields(document).each do |field_name, field| -%>
-      <% if should_render_index_field? document, field %>
+      <% doc_presenter.fields_to_render.each do |field_name, field| %>
         <div class="row">
-          <dt class="col-md-4 col-sm-12" data-solr-field-name="<%= field_name %>"><%= render_index_field_label document, field: field_name %></dt>
+          <dt class="col-md-4 col-sm-12" data-solr-field-name="<%= field_name %>"><%= field.label %></dt>
           <dd class="col-md-8 col-sm-12"><%= doc_presenter.field_value field %></dd>
         </div>
-      <% end %>
     <% end %>
     </dl>
   </div>
