@@ -82,13 +82,13 @@ class CustomRangeLimitBuilder < Hyrax::CatalogSearchBuilder
   # of allowed models
   def models
     if self.blacklight_params.try(:[], 'f').try(:[], 'has_model_ssim').try(:include?, "FileSet")
-      super + Hyrax::FileSetSearchBuilder.new("").send(:models)
+      super + [FileSet, Hyrax::FileSet]
     else
       super
     end
   end
 
-  # OVERRIDE Hyrax 3.5: Delete the file sets only filter in order to
+  # OVERRIDE Hyrax 4.0: Delete the file sets only filter in order to
   # include all models (works, collections, file sets) in keyword search.
   def filter_models(solr_parameters)
     solr_parameters[:fq] ||= []
