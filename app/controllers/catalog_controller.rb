@@ -125,24 +125,24 @@ class CatalogController < ApplicationController
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
     config.add_index_field "alternative_title_tesim", label: "Alternative Title", helper_method: :truncate_field_values
-    config.add_index_field "tag_tesim", itemprop: 'keywords'
+    config.add_index_field "tag_tesim", itemprop: 'keywords', label: "Tag"
     config.add_index_field "subject_label_tesim", itemprop: 'about', label: "Subject"
     config.add_index_field "creator_label_tesim", itemprop: 'creator', link_to_search: "creator_label_sim", label: "Creator"
     config.add_index_field "contributor_label_tesim", itemprop: 'contributor', label: "Contributor"
-    config.add_index_field "publisher_tesim", itemprop: 'publisher'
-    config.add_index_field "based_near_label_tesim", itemprop: 'contentLocation'
-    config.add_index_field "language_tesim", itemprop: 'inLanguage'
-    config.add_index_field "date_uploaded_tesim", itemprop: 'datePublished'
-    config.add_index_field "date_modified_tesim", itemprop: 'dateModified'
-    config.add_index_field "date_created_tesim", itemprop: 'dateCreated', helper_method: :humanize_date_created
+    config.add_index_field "publisher_tesim", itemprop: 'publisher', label: "Publisher"
+    config.add_index_field "based_near_label_tesim", itemprop: 'contentLocation', label: "Location"
+    config.add_index_field "language_tesim", itemprop: 'inLanguage', label: "Language"
+    config.add_index_field "date_uploaded_tesim", itemprop: 'datePublished', label: "Date uploaded"
+    config.add_index_field "date_modified_tesim", itemprop: 'dateModified', label: "Date modified"
+    config.add_index_field "date_created_tesim", itemprop: 'dateCreated', label: "Date created", helper_method: :humanize_date_created
     config.add_index_field "rights_statement_tesim", label: "Rights Statement", helper_method: :rights_statement_links
     # config.add_index_field "license_tesim", label: "License"
     config.add_index_field "resource_type_tesim", label: "Resource Type", helper_method: :resource_type_index_links
-    config.add_index_field "file_format_tesim", link_to_search: "file_format_sim"
-    config.add_index_field "identifier_tesim"
+    config.add_index_field "file_format_tesim", link_to_search: "file_format_sim", label: "File format"
+    config.add_index_field "identifier_tesim", label: "Identifier"
     config.add_index_field "embargo_release_date_dtsi", label: "Embargo release date", helper_method: :human_readable_date
     config.add_index_field "lease_expiration_date_dtsi", label: "Lease expiration date", helper_method: :human_readable_date
-    config.add_index_field "extent_tesim"
+    config.add_index_field "extent_tesim", label: "Extent"
 
     #custom index fields
     config.add_index_field "edition_tesim", itemprop: "Edition", label: "Edition"
@@ -150,7 +150,7 @@ class CatalogController < ApplicationController
     config.add_index_field "coordinates_tesim", itemprop: "Coordinates", label: "Coordinates"
     config.add_index_field "chronological_coverage_tesim", itemprop: "Chronological Coverage", label: "Chronological Coverage"
     config.add_index_field "additional_physical_characteristics_tesim", itemprop:"Additional Physical Characteristics", label: "Additional Physical Characteristics", helper_method: :truncate_field_values
-    config.add_index_field "has_format_tesim", itemprop: "Has Format"
+    config.add_index_field "has_format_tesim", itemprop: "Has Format", label: "Has format"
     config.add_index_field "physical_repository_label_tesim", itemprop: "Physical Repository", label: "Physical Repository"
     config.add_index_field "collection_tesim", itemprop: "Collection", label: "Collection"
     config.add_index_field "provenance_tesim", itemprop: "Provenance", label: "Provenance", helper_method: :extract_external_links
