@@ -17,11 +17,15 @@ module MetadataFieldHelper
     '<a href="' + url + '">' + url + '</a>'
   end
 
-  # A Blacklight index field helper_method
-  # @param [Hash] options from blacklight helper_method invocation. Maps license URIs to links with labels.
-  # @return [ActiveSupport::SafeBuffer] license links, html_safe
-  def resource_type_links(options)
-    to_sentence([options].map { |right| Hyrax::ResourceTypesService.label(right) })
+  # Renders human-readable values for the Resource type facet by
+  # fetching the label for the URI.
+  # @param[Array or String] URI values for the Resource type facet
+  # (e.g. "http://purl.org/dc/dcmitype/MovingImage" or
+  # ["http://purl.org/dc/dcmitype/MovingImage"])
+  def resource_type_values(values)
+    # We need to wrap options in an array and flatten because options can
+    # be an array when coming from Advanced Search
+    to_sentence([values].flatten.map { |value| Hyrax::ResourceTypesService.label(value) })
   end
 
   def resource_type_index_links(options)

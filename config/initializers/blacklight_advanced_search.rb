@@ -24,13 +24,19 @@ Rails.application.config.to_prepare do
     # otherwise call super.
     def render_constraints_filters(my_params = params)
       content = super(my_params)
+
       if advanced_query
         advanced_query.filters.each_pair do |field, value_list|
+
+          # Fix double-render of Resource Type constraint
+          next if my_params.filters.map(&:key).include? field
+
           label = facet_field_label(field)
-          content << render_constraint_element(label,
-                                               safe_join(Array(value_list), " <strong class='text-muted constraint-connector'>OR</strong> ".html_safe),
-                                               :remove => search_action_path(remove_advanced_filter_group(field, my_params).except(:controller, :action))
-          )
+          remove_path = search_action_path(remove_advanced_filter_group(field, my_params).except(:controller, :action))
+          value = safe_join(Array(value_list), " <strong class='text-muted constraint-connector'>OR</strong> ".html_safe)
+
+          content << render(partial: "catalog/constraints_element",
+                            locals: { label: label, value: value, options: { remove: remove_path } })
         end
       end
 
@@ -46,6 +52,8 @@ Rails.application.config.to_prepare do
     end
 
     def remove_advanced_filter_group(field, my_params = params)
+      my_params = my_params.to_h.symbolize_keys
+
       if (my_params[:f_inclusive])
         my_params = Blacklight::SearchState.new(params, blacklight_config).to_h.symbolize_keys
         my_params[:f_inclusive] = my_params[:f_inclusive].dup

@@ -22,7 +22,9 @@
                         class: "advanced-search-facet-select") do %>
           <% display_facet.items.each do |facet_item| %>
             <%= content_tag :option, value: facet_item.value, selected: facet_value_checked?(display_facet.name, facet_item.value) do %>
-              <%= facet_item.label %><%#= number_with_delimiter facet_item.hits %>
+              <% facet_field = blacklight_config.facet_fields[display_facet.name] %>
+              <%= facet_field.helper_method.presence ? public_send(facet_field.helper_method, facet_item.value) : facet_item.label %>
+              <%#= number_with_delimiter facet_item.hits %>
             <% end %>
           <% end %>
         <% end %>
@@ -52,7 +54,12 @@
       let selected = $(e.target).closest('.advanced-search-facet')
                                 .find('.select2-search-choice').toArray()
                                 .filter(function(el) {
-                                  return $(el).find('div').text().includes(e.added.id);
+                                  if ($(el).find('div').text().includes(e.added.id).length > 0) {
+                                      return $(el).find('div').text().includes(e.added.id);
+                                  } else {
+                                      // For fields with helper methods (e.g. Resource Type)
+                                      return $(el).find('div').text().includes(e.added.text);
+                                  }
                                 })
       let text = "Remove option: " + e.added.id;
 
