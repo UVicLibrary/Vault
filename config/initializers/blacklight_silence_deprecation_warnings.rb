@@ -1,0 +1,47 @@
+# OVERRIDE Blacklight v.7
+
+Blacklight::Parameters.class_eval do
+
+  # Our logs are blowing up with Blacklight deprecation warnings
+  # about params like :utf8 and :locale that can and should be filtered
+  # out harmlessly by Blacklight anyway. This patch prevents those warnings.
+  #
+  private
+
+  def warn_about_deprecated_parameter_handling(params, permitted_params)
+    diff = Hashdiff.diff(params.to_unsafe_h, params.permit(*permitted_params).to_h)
+
+    return if diff.empty?
+    # If diff only contains keys we want to ignore
+    return if (diff.map { |_op, key, *| key } - ignored_params).empty?
+
+    Deprecation.warn(Blacklight::Parameters, "Blacklight 8 will filter out non-search parameter, including: #{diff.map { |_op, key, *| key }.to_sentence}")
+  end
+
+  def ignored_params
+    %W[utf8 locale]
+  end
+
+end
+
+Blacklight::FacetItemPresenter.class_eval do
+
+  # The catalog/facet_limit parital eventually calls
+  # search_state#add_facet_params_and_redirect , which calls
+  # search_state#add_facet_params, which blows up our logs with
+  # the warning "add_facet_params is deprecated..."
+
+  # @private
+  def add_href(path_options = {})
+    if facet_config.url_method
+      view_context.public_send(facet_config.url_method, facet_config.key, facet_item)
+    else
+      # view_context.search_action_path(search_state.add_facet_params_and_redirect(facet_config.key, facet_item).merge(path_options))
+      view_context.search_action_path(
+          search_state.filter(facet_config.key).add(facet_item)
+              .to_h.with_indifferent_access.merge(path_options)
+      )
+    end
+  end
+
+end
