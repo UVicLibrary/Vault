@@ -39,5 +39,14 @@ module HyraxHelper
     facet_all["f"] = facet_type["f"].merge(facet_depositor["f"])
     facet_all
   end
+
+  # OVERRIDE Hyrax 4.0 to prevent Blacklight deprecation warning for #add_facet_params_and_redirect
+  def link_to_facet(item, field)
+    path = main_app.search_catalog_path(
+             # search_state.add_facet_params_and_redirect(field, item)
+             search_state.filter(field).add(item).to_h.with_indifferent_access
+           )
+    link_to(item, path)
+  end
   
 end
