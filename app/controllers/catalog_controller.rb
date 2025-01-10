@@ -105,7 +105,7 @@ class CatalogController < ApplicationController
     # all the facet fields because we only render a subset of them
     # on the advanced search page
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
-    excluded_advanced_facet_fields = ['year_range_isim', 'has_model_ssim',
+    excluded_advanced_facet_fields = ['year_range_isim', 'has_model_ssim', 'keyword_sim',
                                       'fonds_identifier_sim', 'fonds_title_sim']
     # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
