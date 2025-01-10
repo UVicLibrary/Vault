@@ -5,8 +5,7 @@
     Logic taken from facets_helper_behavior.rb, #render_facet_partials and
     #render_facet_limit.
 %>
-
-<% facets_from_request(facet_field_names).each do |display_facet| %>
+<% facets_from_request(facet_field_names, @response).each do |display_facet| %>
   <%# Omit Year Range facet because we will render it in the form %>
   <% if display_facet.items.present? %>
     <div class="form-group advanced-search-facet">
