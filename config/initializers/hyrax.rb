@@ -31,7 +31,8 @@ Hyrax.config do |config|
   # Google Analytics. Note that we hide the work stats page, but we
   # still configure analytics in order to render the gtag that collects
   # data and sends it to the Google Analytics dashboard.
-  config.analytics_provider = "ga4"
+  config.analytics = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS', 'false'))
+  config.analytics_provider = ENV.fetch('HYRAX_ANALYTICS_PROVIDER', 'google')
 
   # The group name to use for registered users, which CanCan uses to check
   # permissions for the "Institution" visibility option. The default value
