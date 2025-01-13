@@ -19,7 +19,8 @@ module NestedCollectionFacetBehavior
     collections = Hyrax::SolrService.get(
                     fq: ["has_model_ssim:Collection"],
                     rows: 5000, # Set to a comically huge number
-                    fl: "id, title_sort_ssi"
+                    fl: "id, title_sort_ssi",
+                    sort: "title_sort_ssi asc"
                   )['response']['docs']
 
     collections.each_with_object({}) do |document, facet_hash|
