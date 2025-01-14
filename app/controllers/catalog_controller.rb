@@ -4,9 +4,6 @@ class CatalogController < ApplicationController
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
   include BlacklightOaiProvider::Controller
-  include NestedCollectionFacetBehavior
-
-  before_action :configure_collection_facet, only: :index
 
   # These before_action filters apply the hydra access controls
   before_action :enforce_show_permissions, only: :show
@@ -89,6 +86,7 @@ class CatalogController < ApplicationController
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
     # Note: the member_of_collections_ssim facet is handled by NestedCollectionFacetBehavior
+    config.add_facet_field "member_of_collections_ssim", limit: 10, label: 'Collections'
     config.add_facet_field "genre_label_sim", label: 'Genre', limit: 10
     # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
     config.add_facet_field "year_range_isim", label: "Year Range", range: true
