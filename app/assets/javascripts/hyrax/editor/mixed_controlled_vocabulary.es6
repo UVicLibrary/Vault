@@ -97,13 +97,14 @@ export default class MixedControlledVocabulary extends FieldManager {
     }
 
     // Based on ControlledVocabulary's createNewField
-    // Removes the 2nd id input, which is not necessary for string
-    // values. (This also helps distinguish it from URIs later
-    // in the controller.)
+    // Updates the hidden id input with the text value.
+    // This is necessary later for #clean_controlled_properties
+    // in app/actors/generic_work_actor.rb
     createNewTextField() {
         let $newField = this._baseTemplate()
-        let idToDelete = `#${this.paramKey}_${this.controlledVocabulary.fieldName}_attributes_${this._maxIndex()}_id`
-        $(idToDelete, $newField).remove()
+        let idInput = $($newField.find('input')[1])
+        let textInput = $($newField.find('input')[0])
+        $($newField.find('input')[0]).on('change', function() { idInput.val(textInput.val()) });
         return $newField
     }
 
