@@ -10,9 +10,10 @@ module CdmMigrator
       if params[:file]
         check_csv params[:file].path
         if @error_list.blank?
-          flash[:notice] = "All data are valid."
+          redirect_to csv_checker_path, notice: "All data are valid."
         else
           flash[:error] = "The CSV Checker found some errors in the CSV. Please correct them and check again."
+          render :csv_checker
         end
       end
     end
