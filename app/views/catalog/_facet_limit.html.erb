@@ -7,8 +7,9 @@
     <%= render 'blacklight_advanced_search/facet_limit', facet_field: facet_field %>
   <% end %>
 
-  <%# Normal facet list. This is copied straight from Hyrax and will be deprecated in future. %>
-  <%= render_facet_limit_list paginator, facet_field.key %>
+  <%= render(Blacklight::FacetFieldListComponent.new(
+      facet_field: facet_field_presenter(facet_field, display_facet),
+      layout: false)) %>
 
   <% unless paginator.last_page? || params[:action] == "facet" %>
     <li class="more_facets_link">
