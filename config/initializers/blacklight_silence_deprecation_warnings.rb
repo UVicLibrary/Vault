@@ -19,7 +19,7 @@ Blacklight::Parameters.class_eval do
   end
 
   def ignored_params
-    %W[utf8 locale]
+    %W[utf8 locale id parent_id catalog]
   end
 
 end
