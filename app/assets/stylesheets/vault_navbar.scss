@@ -121,6 +121,11 @@
 // Search bar
 .expanded-search-container {
 
+  .btn-primary {
+    background-color: #337ab7;
+    border-color: #337ab7;
+  }
+
   // Make the search bar background a bit darker to
   // contrast the main navbar
   box-shadow: inset 0 0 99999px rgba(0, 0, 0, 0.5);
