@@ -1,7 +1,0 @@
-<%# Override blacklight 7.38 - add Advanced Search link at the bottom %>
-<% Deprecation.silence(Blacklight::Facet) { facet_group_names }.each do |groupname| %>
-  <%= render 'facet_group', groupname: groupname %>
-<% end %>
-<% if request.base_url.include? "vault" %>
-  <%= link_to "Advanced Search", "/advanced", class: "advanced-search-link", data: { turbolink: false } %>
-<% end %>
