@@ -12,8 +12,13 @@ Blacklight::Parameters.class_eval do
     diff = Hashdiff.diff(params.to_unsafe_h, params.permit(*permitted_params).to_h)
 
     return if diff.empty?
+
     # If diff only contains keys we want to ignore
     return if (diff.map { |_op, key, *| key } - ignored_params).empty?
+
+    # If diff contains only facet params like f.genre_label_sim, f.year_sort_dtsim., etc.
+    # These have changed to f[genre_label_sim][]= ... since Blacklight 7
+    return if (diff.map { |_op, key, *| key } - ignored_params).all? { |key| key.start_with?('f.') }
 
     Deprecation.warn(Blacklight::Parameters, "Blacklight 8 will filter out non-search parameter, including: #{diff.map { |_op, key, *| key }.to_sentence}")
   end
