@@ -50,3 +50,24 @@ Blacklight::FacetItemPresenter.class_eval do
   end
 
 end
+
+# OVERRIDE Hyrax v.4.0 to silence deprecation warnings about
+# scope.current_ability.
+# WhY IS HyrAX RaiSInG DeprECAtioN WarNIngS OVeR UNmOdiFiEd mEtHOds
+# ThAT iT CaLLs ITsELf
+Hyrax::SearchService.class_eval do
+
+  def method_missing(method_name, *arguments, &block)
+    if scope&.respond_to?(method_name)
+      if method_name != :current_ability
+        Deprecation.warn(self.class, "Calling `#{method_name}` on scope " \
+            'is deprecated and will be removed in Blacklight 8. Call #to_h first if you ' \
+            ' need to use hash methods (or, preferably, use your own SearchState implementation)')
+      end
+      scope&.public_send(method_name, *arguments, &block)
+    else
+      super
+    end
+  end
+
+end
