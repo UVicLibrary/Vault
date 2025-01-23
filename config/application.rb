@@ -7,6 +7,8 @@ require 'i18n/debug' if ENV['I18N_DEBUG']
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+ENV["IRB_USE_AUTOCOMPLETE"] = "false"
+
 module Hyku
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
