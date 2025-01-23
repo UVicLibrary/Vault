@@ -47,7 +47,7 @@ module Hyrax
         end
         env.curation_concern.attributes = qa_attributes
         env.curation_concern.to_controlled_vocab
-        # save(env)
+        save(env)
         attributes
       end
 
