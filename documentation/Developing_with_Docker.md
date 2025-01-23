@@ -51,7 +51,7 @@ or `ls`) would be helpful if you're unfamiliar. There are many tutorials and res
 1. Open the terminal (bash/command line) on Mac, or in Ubuntu or Powershell on Windows (or open a Powershell/Ubuntu tab in your 
 Windows Terminal). We recommend using Ubuntu on Windows for better performance (see [Speeding up Docker on Windows](./Speeding_up_Docker_on_Windows.md)).
 2. Navigate to the folder/directory you downloaded Vault into (`cd file/path`)
-3. Run `docker-compose build` to build the application. This can take a while depending on your computer's specs.
+3. Run `docker-compose build` to build the application. This can take a while depending on your computer's specs. If you get an error message about loading metadata and you are using a VPN, you may need to disconnect from the VPN. 
 
 Once built, here is a non-exhaustive list of services and where they are configured:
 
@@ -74,8 +74,9 @@ If this step fails, see our [Troubleshooting Docker](./Troubleshooting.md) page.
 3. There are 3 commands we need to run once each before starting the server: 
     ```
     bundle exec rails zookeeper:upload
-    rails db:migrate
-    rake hyku:superadmin:create
+    rails db:create RAILS_ENV=development
+    rails db:schema:load
+    rails hyku:superadmin:create
     ```
     1. The first command configuration file to zookeeper (Solr).
     2. The second sets up the database and makes necessary migrations (if this command doesn't work, try `bundle exec rails db:migrate`.
