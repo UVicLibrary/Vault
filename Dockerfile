@@ -1,4 +1,4 @@
-FROM ruby:2.7.8
+FROM ruby:3.2.6
 RUN apt-get update -qq && \
     apt-get install -y \
         build-essential \
@@ -46,8 +46,9 @@ WORKDIR /home/app/webapp
 ADD Gemfile /home/app/webapp/Gemfile
 ADD Gemfile.lock /home/app/webapp/Gemfile.lock
 ADD .irbrc /root/.irbrc
+RUN gem install rails -v 6.1
 RUN bundle install
-RUN rails db:migrate RAILS_ENV=development
+RUN bundle exec rails db:migrate RAILS_ENV=development
 ADD . /home/app/webapp
 EXPOSE 3000
 CMD /bin/bash
