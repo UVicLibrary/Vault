@@ -1,7 +1,12 @@
-require_dependency Hyrax::Engine.root.join('app/indexers/hyrax/deep_indexing_service.rb')
+# OVERRIDE class from Hyrax v. 4.0
+#   - Fix solrize error for ActiveTriples::Resource
+#   - Prevent Solr from indexing empty strings for controlled vocabulary fields
+module DeepIndexingServiceDecorator
 
-# OVERRIDE class from Hyrax v. 3.1.0
-Hyrax::DeepIndexingService.class_eval do
+  def append_to_solr_doc(solr_doc, solr_field_key, field_info, val)
+    return if val == ""
+    super
+  end
 
   # Appends the uri to the default solr field and puts the label (if found) in the label solr field
   # @param [Hash] solr_doc
@@ -25,3 +30,4 @@ Hyrax::DeepIndexingService.class_eval do
     val.instance_of?(ActiveTriples::Resource) ? [val.id, { label: "#{val.rdf_label.first}$#{val.id}" }] : val.solrize
   end
 end
+Hyrax::DeepIndexingService.prepend(DeepIndexingServiceDecorator)
