@@ -46,7 +46,13 @@ user.save
 ```
 
 4. Visit `vault.localhost:3000` and login to see your new tenant in action!
-5. **Optional but recommended:** in `home/webapp/app`, run `rake hyrax:default_collection_types:create` to create the "User Collection" collection type.
+
+### Creating Default Collection and Work Types (Recommended)
+
+5. In `home/webapp/app`, stop the server if you're running it. Then run the command `rails hyrax:default_collection_types:create` to create the "User Collection" collection type.
+
+
+6. Start the server again (`rails s -b 0.0.0.0`) and navigate to Dashboard > Settings > Available Work Types. Check the box next to GenericWork. Click "Save Changes".
 
 ### Troubleshooting Solr and Fedora Connections
 If you get an error message, the application may not be connecting to Solr or Fedora properly, or it may not have created the necessary Solr collection or Fedora container. Here are some things to try if you're seeing errors:
