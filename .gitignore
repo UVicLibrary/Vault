@@ -72,3 +72,6 @@ public/robots.txt
 solr_data
 
 .env
+
+# Ignore Zone.Identifier files created by Windows
+*.Identifier
