@@ -6,7 +6,7 @@
       <ul class="nav nav-tabs" role="tablist">
         <% (tabs - ['share']).each_with_index do | tab, i | %>
           <li role="presentation" class="nav-item">
-            <a class="nav-link <% if tab == "metadata" %>active<% end %>" href="#<%= tab %>" aria-controls="<%= tab %>" role="tab">
+            <a class="nav-link <% if tab == "metadata" %>active<% end %>" href="#<%= tab %>" aria-controls="<%= tab %>" role="tab" data-toggle="tab">
               <%= form_tab_label_for(form: f.object, tab: tab) %>
             </a>
           </li>
