@@ -144,8 +144,6 @@ gem 'lograge'
 gem 'zk'
 
 gem 'mods', '~> 2.1'
-
-gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
 gem 'sidekiq', '~> 6.4.0'
