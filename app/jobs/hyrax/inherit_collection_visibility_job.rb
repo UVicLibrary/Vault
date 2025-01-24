@@ -22,7 +22,7 @@ module Hyrax
       end
       # In Valkyrie, this query may become:
       # collection = Hyrax.query_service.find_by(id: collection_id)
-      collection = Collection.find(collection_id)
+      collection = Hyrax.config.collection_class.find(collection_id)
       change_visibility(collection, visibility)
       collection.save!
       # Send an email when done
