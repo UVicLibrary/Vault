@@ -33,7 +33,7 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
 
       # Allow public users to discover items with institution visibility
       if object.visibility == "authenticated"
-        solr_doc["discover_access_group_ssim"] = "public"
+        solr_doc["discover_access_group_ssim"] = ["public"]
       end
 
       unless object.date_created.empty?
