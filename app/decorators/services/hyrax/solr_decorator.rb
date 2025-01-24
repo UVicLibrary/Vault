@@ -25,7 +25,7 @@ Hyrax::SolrService.class_eval do
     solr_path = args.delete(:path) || Hyrax.config.solr_select_path
     args = args.merge(q: query) if query.present?
     # Original was unless query.blank? || use_valkyrie?
-    args = args.merge(qt: 'standard') unless query.blank?
+    args = args.merge(qt: 'standard') unless (query.blank? && args[:q].blank?)
     connection.post(solr_path, data: args)
   end
 
