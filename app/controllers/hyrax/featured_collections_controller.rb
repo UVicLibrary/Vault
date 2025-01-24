@@ -8,7 +8,7 @@ module Hyrax
       respond_to do |format|
         if @featured_collection.save
           format.json {
-             render json: @featured_collection, status: :created
+            render json: @featured_collection, status: :created
           }
         else
           format.json { render json: @featured_collection.errors, status: :unprocessable_entity }
