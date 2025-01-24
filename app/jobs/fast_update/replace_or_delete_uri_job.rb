@@ -4,7 +4,7 @@ module FastUpdate
     def perform(change_id, collection_id = nil)
       begin
         change = Change.find(change_id)
-        collection = collection_id ? Collection.find(collection_id) : nil
+        collection = collection_id ? Hyrax.config.collection_class.find(collection_id) : nil
         service = UriConversionService.new(change.old_uri, change.new_uris, collection, action: change.action)
         if service.search_for_uri.any?
           service.search_for_uri.each do |document|

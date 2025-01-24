@@ -16,6 +16,8 @@ module FastUpdate
       end
     end
 
+    private
+
     def service_class
       LinkedDataSearchService
     end

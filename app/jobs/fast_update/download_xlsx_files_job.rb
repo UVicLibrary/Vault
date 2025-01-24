@@ -4,11 +4,13 @@ module FastUpdate
     # @param start_date [ActiveSupport::TimeWithZone] The time object. You can use Time.zone.parse("date string")
     # @param end_date [ActiveSupport::TimeWithZone] The time object. You can use Time.zone.parse("date string")
     # Default behaviour is to select changes from 2-3 months ago. It takes about 3 months for the FAST Changes
-    # to get into the API, which we use to update metadata.
+    # to reach the API, which we use to update metadata.
     def perform(start_date = 3.month.ago, end_date = 2.month.ago)
 
-      download_dir = "./public/fast_update/downloads"
+      download_dir = Rails.root.join('public','fast_update','downloads')
       fast_url = "http://fast.oclc.org/fastChanges"
+
+      FileUtils.mkdir_p(download_dir) unless Dir.exist?(download_dir)
 
       # Parse FAST Changes site using Nokogiri
       document = Nokogiri::HTML.parse(URI.open(fast_url))
@@ -16,7 +18,7 @@ module FastUpdate
       table = document.search('table').first
       # Omit the first row since it's actually a header
       rows = table.search('tr')[1...]
-      
+
       recent_changes = rows.select do |row|
         Time.zone.parse(row.children[1].text).between?(start_date, end_date)
       rescue ArgumentError

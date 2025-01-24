@@ -1,9 +1,14 @@
 # frozen_string_literal: true
-class FastUpdateInput < ControlledVocabularyInput # < Hydra Editor's MultiValueInput: https://github.com/samvera/hydra-editor/blob/main/app/inputs/multi_value_input.rb
+class FastUpdateInput < ControlledVocabularyInput
+# Inherits from Hydra Editor's MultiValueInput:
+# https://github.com/samvera/hydra-editor/blob/main/app/inputs/multi_value_input.rb
 
   private
 
-    def build_field(value, index)
+    # @param [Integer]
+    # In the parent class, the first argument is the value. Since we only render this input for
+    # new changes, the value is always nil.
+    def build_field(_, index)
       options = input_html_options.dup
 
       options[:required] = nil if @rendered_first_element

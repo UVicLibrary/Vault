@@ -11,6 +11,8 @@ module FastUpdate
       end
     end
 
+    private
+
     def service_class
       FastUpdate::StringConversionService
     end
