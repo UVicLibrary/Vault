@@ -1,28 +1,17 @@
-class FeaturedCollectionList < ApplicationRecord
+# frozen_string_literal: true
+
+class FeaturedCollectionList
   include ActiveModel::Model
-  delegate :empty?, to: :featured_collections
 
   # @param [ActionController::Parameters] a collection of nested perameters
   def featured_collections_attributes=(attributes_collection)
     attributes_collection = attributes_collection.to_h if attributes_collection.respond_to?(:permitted?)
     # rubocop:disable Layout/LineLength
     attributes_collection = attributes_collection.sort_by { |i, _| i.to_i }.map { |_, attributes| attributes } if attributes_collection.is_a? Hash
-
     attributes_collection.each do |attributes|
-      if FeaturedCollection.exists?(attributes['id'])
-        existing_record = FeaturedCollection.find(attributes['id'])
-        existing_record.update(attributes.except('id'))
-      else # If a featured collection has been deleted (Record not found)
-        attributes_collection.delete(attributes)
-        reset_order
-      end
-    end
-  end
-
-  def reset_order
-    @featured_collections.each do |collection|
-      collection.order = @featured_collections.index(collection) + 1
-      collection.save
+      raise "Missing id" if attributes['id'].blank?
+      existing_record = FeaturedCollection.find(attributes['id'])
+      existing_record.update(attributes.except('id'))
     end
     # rubocop:enable Metrics/MethodLength
   end
@@ -47,9 +36,7 @@ class FeaturedCollectionList < ApplicationRecord
                                       presenter_args: ability)
   end
 
-  def collection_with_id(id)
-    @featured_collections.find { |c| c.collection_id == id }
-  end
+  private
 
   def add_solr_document_to_collections
     collection_presenters.each do |presenter|
