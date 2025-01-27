@@ -141,7 +141,7 @@ class FastUpdateFormManager {
     constructor(element) {
         this.element = $(element);
         // The selectors for elements to add autocomplete to
-        this.autocompleteSelectors = ['#old-label', '#new_labels_and_uris_0','#fast_update_change_collection_id'];
+        this.autocompleteSelectors = ['#old-label', '.fast_update_change_new_uris input[data-autocomplete=new_uris]','#fast_update_change_collection_id'];
         this.submitButton = $('#fast-update-submit-button');
         this.oldURIField = $('#fast_update_change_old_uri');
         this.controlledVocabulary = new FastUpdateControlledVocabulary($('.fast_update_change_new_uris'), 'fast_update_change');
