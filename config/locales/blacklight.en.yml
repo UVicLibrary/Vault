@@ -2,8 +2,6 @@ en:
   blacklight:
     application_name: 'Hyku'
     search:
-      per_page:
-        aria_label: 'Results navigation'
       fields:
         facet:
           based_near_label_sim: Location
@@ -34,7 +32,9 @@ en:
           license: Rights
         show:
           based_near_label_tesim: Location
+          contributor_label: Contributor
           contributor_tesim: Contributor
+          creator_label: Creator
           creator_tesim: Creator
           date_created_tesim: Date Created
           date_modified_dtsi: Date Modified
@@ -42,12 +42,17 @@ en:
           description_tesim: Description
           extent_tesim: Extent
           file_format_tesim: File Format
+          genre_label: Genre
+          geographic_coverage_label: Geographic Coverage
           identifier_tesim: Identifier
           keyword_tesim: Keyword
           language_tesim: Language
+          physical_repository_label: Physical Repository
+          provider_label: Provider
           publisher_tesim: Publisher
           rights_tesim: Rights
           subject_tesim: Subject
+          subject_label: Subject
           title_tesim: Title
           related_url: Relation
           license: Rights
