@@ -15,6 +15,8 @@ class GeonamesHierarchyService
 
     private
 
+    # @return [Array <String>] An array with a location's name, admin_region, country, and continent. If the location is
+    # on Vancouver Island, the array also includes "Vancouver Island."
     def hierarchy
       # Index "Vancouver Island" if place is on Vancouver Island
       if within?("8630140") # The Geonames id for Vancouver Island
