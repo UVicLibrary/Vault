@@ -2,6 +2,7 @@
     margin-top: 2rem;
     display: flex;
     font-size: 1rem;
+    width: 100%;
 }
 
 #new_fast_update_change .field-wrapper:first-child {
