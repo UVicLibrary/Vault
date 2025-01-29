@@ -3,11 +3,6 @@
 #   - Prevent Solr from indexing empty strings for controlled vocabulary fields
 module DeepIndexingServiceDecorator
 
-  def append_to_solr_doc(solr_doc, solr_field_key, field_info, val)
-    return if val == ""
-    super
-  end
-
   # Appends the uri to the default solr field and puts the label (if found) in the label solr field
   # @param [Hash] solr_doc
   # @param [String] solr_field_key
