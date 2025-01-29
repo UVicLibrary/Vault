@@ -137,6 +137,7 @@ Then open bash in the web container (`docker exec -it vault_web_1 bash`) and run
 1. Go to the Solr Dashboard at [localhost:8983](http://localhost:8983).
 2. In the left sidebar, click **Collections > Add Collection**.
 3. Name the new collection **test** and select the hyku config set. Then click **Add Collection**. You can change the name if you wish, but it must match `config/blacklight.yml` and `config/solr.yml`.
+4. Using the same steps above, add another collection called **hyrax-valkyrie**. This is needed to run the test suite (specs).
 
 #### Create the Fedora test container
 1. Open the Fedora interface as described above (under Verify the Fedora container). After entering the tenant container, the test container may already have been created.
