@@ -4,12 +4,6 @@ module Hyrax
   module Actors
     class GenericWorkActor < Hyrax::Actors::BaseActor
 
-    	def update(env)
-        apply_update_data_to_curation_concern(env)
-        apply_save_data_to_curation_concern(env)
-        next_actor.update(env) && save(env) && run_callbacks(:after_update_metadata, env)
-      end
-
       def apply_save_data_to_curation_concern(env)
         cleaned_attributes = clean_attributes(env.attributes)
         env.curation_concern.attributes = clean_controlled_properties(env, cleaned_attributes)
