@@ -4,6 +4,14 @@
 class VipsDerivativesService < Hyrax::FileSetDerivativesService
   extend ActiveSupport::Concern
 
+
+  # Overriding to omit webm files for performance reasons
+  def create_video_derivatives(filename)
+    Hydra::Derivatives::VideoDerivatives.create(filename,
+                                                outputs: [{ label: :thumbnail, format: 'jpg', url: derivative_url('thumbnail') },
+                                                          { label: 'mp4', format: 'mp4', url: derivative_url('mp4') }])
+  end
+
   def create_pdf_derivatives(filename)
     # Fix bug where filename is sometimes assigned to a directory
     filename = Dir["#{filename}/*"].first.to_s if File.directory?(filename)
