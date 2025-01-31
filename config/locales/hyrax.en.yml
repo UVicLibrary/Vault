@@ -1301,7 +1301,8 @@ en:
       options:
         edit: Edit
         none: Choose Access
-        read: View/Download
+        read: View
+        download: Download
       owner:
         edit: Edit access
       read: View/Download
