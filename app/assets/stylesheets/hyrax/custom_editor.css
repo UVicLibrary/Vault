@@ -42,3 +42,8 @@ span.controls-add-string {
     /* Restore bootstrap 4 default */
     padding-left: 0.375rem;
 }
+
+select#new_user_permission_skel,
+select#new_group_permission_skel {
+    margin-left: 0.5rem;
+}
