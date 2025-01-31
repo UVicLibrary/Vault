@@ -148,6 +148,23 @@ RSpec.describe Hyrax::Actors::GenericWorkActor do
         end
       end
 
+      context "when removing download permissions from a public work" do
+        let(:visibility) { Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC }
+        let(:attributes) do
+          attributes_for(:generic_work, admin_set_id: admin_set.id, visibility: visibility).tap do |a|
+            a[:permissions_attributes] = [type: "group", name: "public", access: "download", _destroy: true]
+          end
+        end
+
+        it "keeps the work public" do
+          expect(middleware.create(env)).to be true
+          curation_concern.reload
+          expect(curation_concern.permissions.map(&:to_hash)).not_to include(type: "group", name: "public", access: "download")
+          expect(curation_concern.visibility).to eq "open"
+        end
+
+      end
+
       context 'with a file' do
         let(:attributes) do
           attributes_for(:generic_work, admin_set_id: admin_set.id, visibility: visibility).tap do |a|
