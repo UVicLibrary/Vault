@@ -1,46 +1,52 @@
+<%# OVERRIDE Hyrax 4.0
+      - Add feature work buttons and help message
+      - Disable link to Analytics page (we use the Google Analytics dashboard directly instead)
+%>
 <div class="row show-actions button-row-top-two-column">
   <div class="col-sm-6 text-left">
-    <% if presenter.display_feature_link? || presenter.display_unfeature_link? %>
-      <%= link_to "Feature", hyrax.featured_work_path(presenter, format: :js),
-                  id: 'featured_work_button',
-                  data: { behavior: 'feature' },
-                  class: presenter.display_feature_link? ? 'btn btn-default' : 'btn btn-default collapse'  %>
-      <%= link_to "Unfeature", hyrax.featured_work_path(presenter, format: :js),
-                  id: 'unfeatured_work_button',
-                  data: { behavior: 'unfeature' },
-                  class: presenter.display_unfeature_link? ? 'btn btn-default' : 'btn btn-default collapse' %>
-    <% elsif current_ability.can?(:edit, presenter.solr_document) %>
-      <%= render_featured_help_message(presenter) %>
+    <% if !workflow_restriction?(presenter) %>
+      <%# if presenter.show_deposit_for?(collections: @user_collections) %>
+  <!--      <input type="checkbox" aria-label="Batch Documents" style="display:none" name="batch_document_ids[]" id="batch_document_<%##= presenter.id %>" value="<%##= presenter.id %>" class="batch_document_selector" checked="checked" /> -->
+        <%#= button_tag t('hyrax.dashboard.my.action.add_to_collection'),
+                       class: 'btn btn-secondary submits-batches submits-batches-add'
+                       data: { toggle: "modal", target: "#collection-list-container" } %>
+      <%# end %>
+      <% if presenter.work_featurable? %>
+        <%= link_to "Feature", hyrax.featured_work_path(presenter, format: :js),
+                    id: 'featured_work_button',
+                    data: { behavior: 'feature' },
+                    class: presenter.display_feature_link? ? 'btn btn-default' : 'btn btn-default collapse'  %>
+        <%= link_to "Unfeature", hyrax.featured_work_path(presenter, format: :js),
+                    id: 'unfeatured_work_button',
+                    data: { behavior: 'unfeature' },
+                    class: presenter.display_unfeature_link? ? 'btn btn-default' : 'btn btn-default collapse' %>
+      <% elsif current_ability.can?(:edit, presenter.solr_document) %>
+        <%= render_featured_help_message(presenter) %>
+      <% end %>
     <% end %>
-
     <%# if Hyrax.config.analytics? %>
-      <%#= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default', data: { turbolinks: false } %>
+      <%# turbolinks needs to be turned off or the page will use the cache and the %>
+      <%# analytics graph will not show unless the page is refreshed. %>
+      <%#= link_to t('.analytics'), presenter.stats_path, id: 'stats', class: 'btn btn-secondary', data: { turbolinks: false } %>
     <%# end %>
   </div>
 
   <div class="col-sm-6 text-right">
-    <% if presenter.show_deposit_for?(collections: @user_collections) %>
-      <input type="checkbox"  style="display:none" name="batch_document_ids[]" id="batch_document_<%= presenter.id %>" value="<%= presenter.id %>" class="batch_document_selector" checked="checked" />
-      <%= button_tag t('hyrax.dashboard.my.action.add_to_collection'),
-                    class: 'btn btn-default submits-batches submits-batches-add',
-                    data: { toggle: "modal", target: "#collection-list-container" } %>
-    <% end %>
-    <% if presenter.editor? %>
-      <%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default', method: :get, data: { turbolinks: false } %>
+    <% if presenter.editor? && !workflow_restriction?(presenter) %>
+      <%= link_to t('.edit'), edit_polymorphic_path([main_app, presenter]), class: 'btn btn-secondary' %>
       <% if presenter.member_count > 1 %>
-          <%= link_to t("hyrax.file_manager.link_text"), polymorphic_path([main_app, :file_manager, presenter]), class: 'btn btn-default' %>
+          <%= link_to t("hyrax.file_manager.link_text"), polymorphic_path([main_app, :file_manager, presenter]), class: 'btn btn-secondary' %>
       <% end %>
       <% if presenter.valid_child_concerns.length > 0 %>
         <div class="btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" type="button" id="dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Attach Child <span class="caret"></span></button>
-            <ul class="dropdown-menu">
-              <% presenter.valid_child_concerns.each do |concern| %>
-                <li>
-                  <%= link_to "Attach #{concern.human_readable_type}", polymorphic_path([main_app, :new, :hyrax, :parent, concern.model_name.singular.to_sym], parent_id: presenter.id) %>
-                </li>
-              <% end %>
-            </ul>
+          <button type="button" class="btn btn-secondary dropdown-toggle" type="button" id="dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= t('.attach_child') %>
+          </button>
+          <div class="dropdown-menu">
+            <% presenter.valid_child_concerns.each do |concern| %>
+              <%= link_to "Attach #{concern.human_readable_type}", polymorphic_path([main_app, :new, :hyrax, :parent, concern.model_name.singular.to_sym], parent_id: presenter.id), class: "dropdown-item" %>
+            <% end %>
+          </div>
         </div>
       <% end %>
       <%= link_to t('.delete'), [main_app, presenter], class: 'btn btn-danger', data: { confirm: t('.confirm_delete', work_type: presenter.human_readable_type) }, method: :delete %>
