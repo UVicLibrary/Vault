@@ -50,7 +50,7 @@ RSpec.describe AttachFilesToWorkJob, perform_enqueued: [AttachFilesToWorkJob, In
 
           it 'skips files that already have a FileSet and are attached to the work' do
             expect { described_class.perform_now(generic_work, [uploaded_file1, uploaded_file2]) }
-                .to change { generic_work.file_sets.count }.to eq 1
+              .to change { generic_work.file_sets.count }.to eq 1
           end
 
           context 'when a file already has a FileSet that is *not* attached to the work' do
@@ -64,7 +64,7 @@ RSpec.describe AttachFilesToWorkJob, perform_enqueued: [AttachFilesToWorkJob, In
               expect(generic_work.file_sets).to contain_exactly(file_set)
               expect(FileSet.all.count).to eq 1
             end
-        end
+          end
 
         end
       end
@@ -116,6 +116,12 @@ RSpec.describe AttachFilesToWorkJob, perform_enqueued: [AttachFilesToWorkJob, In
     before do
       allow(uploaded_file1).to receive(:user).and_return(user)
       allow(uploaded_file2).to receive(:user).and_return(user)
+      # Silence many, many "already initialized constant" warnings
+      $VERBOSE=nil
+    end
+
+    after do
+      $VERBOSE=true
     end
 
     shared_examples 'a file attacher', perform_enqueued: [described_class, IngestJob] do
@@ -124,13 +130,22 @@ RSpec.describe AttachFilesToWorkJob, perform_enqueued: [AttachFilesToWorkJob, In
         described_class.perform_now(generic_work, [uploaded_file1, uploaded_file2])
         # perform_enqueued configuration in spec_helper doesn't seem to work
         # so we perform them inline here instead
-        enqueued_jobs.select { |hash| hash[:job] == IngestJob }.each do |job|
-          wrapper_id = job[:args].first.values.first.split('/').last.to_i
-          IngestJob.perform_now(JobIoWrapper.find(wrapper_id))
+        enqueued_jobs.select { |hash| hash[:job] == IngestJob || hash[:job] == ValkyrieIngestJob }.each do |job|
+          job_class = job[:job]
+          args_id = job[:args].first.values.first.split('/').last.to_i
+          args_class = job[:job] == IngestJob ? JobIoWrapper : Hyrax::UploadedFile
+
+          job_class.perform_now(args_class.find(args_id))
         end
 
         id = generic_work.id
-        expect(CharacterizeJob).to have_been_enqueued.at_least(:twice)
+
+        if generic_work.class == GenericWork
+          expect(CharacterizeJob).to have_been_enqueued.at_least(:twice)
+        else
+          expect(ValkyrieCreateDerivativesJob).to have_been_enqueued.at_least(:twice)
+        end
+
         generic_work = Hyrax.query_service.find_by(id: id)
         file_sets = Hyrax.custom_queries.find_child_filesets(resource: generic_work)
         expect(file_sets.count).to eq 2
