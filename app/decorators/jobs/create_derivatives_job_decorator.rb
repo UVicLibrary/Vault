@@ -1,19 +1,29 @@
-class CreateDerivativesJob < Hyrax::ApplicationJob
-  queue_as Hyrax.config.ingest_queue_name
+# OVERRIDE Hyrax 4.0
+#   - If the file set is a PDF, resave the parent work so that it
+#       indexes the full text. Calling #update_index doesn't work (?),
+#       but calling #save does
+#   - If the work was created over 3 months ago, export the new file to
+#       OLRC for preservation
+module CreateDerivativesJobDecorator
 
   # @param [FileSet] file_set
   # @param [String] file_id identifier for a Hydra::PCDM::File
   # @param [String, NilClass] filepath the cached file within the Hyrax.config.working_path
   def perform(file_set, file_id, filepath = nil)
     return if file_set.video? && !Hyrax.config.enable_ffmpeg
-    filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
-    file_set.create_derivatives(filename)
+
+    # Ensure a fresh copy of the repo file's latest version is being worked on, if no filepath is directly provided
+    filepath = Hyrax::WorkingDirectory.copy_repository_resource_to_working_directory(Hydra::PCDM::File.find(file_id), file_set.id) unless filepath && File.exist?(filepath)
+
+    file_set.create_derivatives(filepath)
     # Reload from Fedora and reindex for thumbnail and extracted text
     file_set.reload
     file_set.update_index
     file_set.parent.save if parent_needs_reindex?(file_set)
     export_new_files(file_set)
   end
+
+  private
 
   # If this file_set is the thumbnail for the parent work,
   # then the parent also needs to be reindexed.
@@ -34,4 +44,6 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     # When working with Hyrax::FileSet, change fs.pdf? to Hyrax::FileSetTypeService.new(file_set: file_set).pdf?
     file_set.pdf? && file_set.extracted_text.present?
   end
+
 end
+CreateDerivativesJob.prepend(CreateDerivativesJobDecorator)
