@@ -19,7 +19,6 @@ class FeaturedCollectionList
   def featured_collections
     return @collections if @collections
     @collections = FeaturedCollection.all
-    # byebug
     add_solr_document_to_collections
     @collections = @collections.reject do |collection|
       collection.destroy if collection.presenter.blank?

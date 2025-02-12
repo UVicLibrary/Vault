@@ -14,10 +14,9 @@ gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 
 # TO DO: Relax reqs for cdm_migrator
 gem 'cdm_migrator', git: 'https://github.com/UVicLibrary/cdm_migrator'
-# gem 'to_spotlight', '~> 0.2.7'
 
 # Prevents an error like ffi-1.17.0 requires rubygems version >= 3.3.22
-gem "ffi", "< 1.17.0"
+# gem "ffi", "< 1.17.0"
 
 gem 'ruby-vips'
 gem 'carrierwave-vips'
@@ -131,7 +130,7 @@ gem 'rsolr', '~> 2.0'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise-i18n'
-gem 'devise_invitable', '~> 1.6'
+gem 'devise_invitable'
 
 gem 'apartment', github: 'scientist-softserv/apartment', branch: 'development'
 gem 'config', '~> 2.2', '>= 2.2.1'
@@ -144,8 +143,6 @@ gem 'lograge'
 gem 'zk'
 
 gem 'mods', '~> 2.1'
-
-gem 'iiif_manifest', '~> 0.5.0'
 gem 'draper'
 
 gem 'sidekiq', '~> 6.4.0'
@@ -154,7 +151,7 @@ gem 'sidekiq-cron'
 
 gem 'secure_headers'
 
-gem 'honeybadger', '~> 3.0'
+gem 'honeybadger'
 
 gem 'pdfjs_viewer-rails'
 

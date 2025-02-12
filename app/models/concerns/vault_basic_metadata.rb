@@ -84,7 +84,7 @@ module VaultBasicMetadata
         # Convert Strings (URIs) to the proper classes
         values =  self[field].map do |val|
           val.include?("http") ? class_name.new(val.strip) : val
-        end
+        end.reject { |val| val == "" }
         self.send(field.to_s + "=", values)
       end
     end

@@ -1,5 +1,5 @@
 <div class="load-more-button-wrapper col-lg-12 col-md-12 col-sm-12" aria-live="polite">
-  <button class="btn load-more-button" tabindex="-1">
+  <button class="btn load-more-button">
     <%= link_to "Load More", main_app.load_more_path(start: 8, append_to: parent_id), type: "button", method: :get, remote: :true, data: { start: 8, total: total_count } %>
   </button>
 </div>

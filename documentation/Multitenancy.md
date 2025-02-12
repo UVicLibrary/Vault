@@ -46,7 +46,13 @@ user.save
 ```
 
 4. Visit `vault.localhost:3000` and login to see your new tenant in action!
-5. **Optional but recommended:** in `home/webapp/app`, run `rake hyrax:default_collection_types:create` to create the "User Collection" collection type.
+
+### Creating Default Collection and Work Types (Recommended)
+
+5. In `home/webapp/app`, stop the server if you're running it. Then run the command `rails hyrax:default_collection_types:create` to create the "User Collection" collection type.
+
+
+6. Start the server again (`rails s -b 0.0.0.0`) and navigate to Dashboard > Settings > Available Work Types. Check the box next to GenericWork. Click "Save Changes".
 
 ### Troubleshooting Solr and Fedora Connections
 If you get an error message, the application may not be connecting to Solr or Fedora properly, or it may not have created the necessary Solr collection or Fedora container. Here are some things to try if you're seeing errors:
@@ -131,6 +137,7 @@ Then open bash in the web container (`docker exec -it vault_web_1 bash`) and run
 1. Go to the Solr Dashboard at [localhost:8983](http://localhost:8983).
 2. In the left sidebar, click **Collections > Add Collection**.
 3. Name the new collection **test** and select the hyku config set. Then click **Add Collection**. You can change the name if you wish, but it must match `config/blacklight.yml` and `config/solr.yml`.
+4. Using the same steps above, add another collection called **hyrax-valkyrie**. This is needed to run the test suite (specs).
 
 #### Create the Fedora test container
 1. Open the Fedora interface as described above (under Verify the Fedora container). After entering the tenant container, the test container may already have been created.

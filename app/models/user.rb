@@ -116,7 +116,6 @@ class User < ApplicationRecord
   private
 
   def add_default_roles
-    # byebug
     # Do not add the default admin role in test mode
     add_role :admin, Site.instance unless
       # self.class.any? || Account.global_tenant?

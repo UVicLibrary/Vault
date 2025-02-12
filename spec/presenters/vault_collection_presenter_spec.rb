@@ -280,13 +280,13 @@ RSpec.describe VaultCollectionPresenter do
       it { is_expected.to eq 0 }
     end
 
-    context('when parent_collections is has no collections') do
+    context('when parent_collections has no collections') do
       let(:parent_docs) { [] }
 
       it { is_expected.to eq 0 }
     end
 
-    context('when parent_collections is has collections') do
+    context('when parent_collections has collections') do
       let(:collection1) { build(:collection_lw, title: ['col1']) }
       let(:collection2) { build(:collection_lw, title: ['col2']) }
       let!(:parent_docs) { [collection1, collection2] }
@@ -308,7 +308,7 @@ RSpec.describe VaultCollectionPresenter do
 
     subject { presenter.collection_type_badge }
 
-    it { is_expected.to eq "<span class=\"label\" style=\"background-color: #ffa510;\">" + collection_type.title + "</span>" }
+    it { is_expected.to eq "<span class=\"badge\" style=\"background-color: #ffa510;\">" + collection_type.title + "</span>" }
   end
 
   describe "#user_can_nest_collection?" do

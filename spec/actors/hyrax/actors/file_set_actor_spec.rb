@@ -11,7 +11,7 @@ RSpec.describe Hyrax::Actors::FileSetActor do
       let(:file)          { fixture_file_upload(file_path, 'image/png') } # we will override for the different types of File objects
       let(:local_file)    { File.open(file_path) }
       let(:file_set)      { create(:file_set, content: local_file) }
-      let(:actor)         { described_class.new(file_set, user, use_valkyrie: use_valkyrie) }
+      let(:actor)         { described_class.new(file_set, user) } # , use_valkyrie: use_valkyrie
       let(:relation)      { :original_file }
       let(:file_actor)    { Hyrax::Actors::FileActor.new(file_set, relation, user) }
 
@@ -369,7 +369,7 @@ RSpec.describe Hyrax::Actors::FileSetActor do
         end
 
         it "restores the first versions's content and metadata" do
-          pending 'implementation of valkyrized versioning of files' if use_valkyrie
+          # pending 'implementation of valkyrized versioning of files' if use_valkyrie
           actor.revert_content(version1)
           expect(restored_content.original_name).to eq file1
         end

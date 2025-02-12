@@ -8,10 +8,7 @@ class EdtfDateService
   # For extended examples of different types of dates and
   # what they index as, see
   # spec/services/edtf_date_service_spec.rb
-  #
-  # For more on expected behaviour, see
-  # https://connect.uvic.ca/sites/library/units/tech/cat/_layouts/15/WopiFrame2.aspx?sourcedoc=/sites/library/units/tech/cat/Documents/Metadata%20Documents/Vault/Vault_EDTF_Table.xlsx&action=default
-  #
+  # #
   # Based on the edtf gem by Sylvester Keil
   # (https://github.com/inukshuk/edtf-ruby)
   # and the edtf-humanize gem from Duke Libraries.

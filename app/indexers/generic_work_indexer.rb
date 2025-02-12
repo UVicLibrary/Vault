@@ -24,8 +24,8 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index file sets' extracted text for display in search results
-      if full_text_contents = object.file_sets.select { |fs| fs.extracted_text.present? } and full_text_contents.present?
-        solr_doc['full_text_tsi'] = full_text_contents.map {|fs| fs.extracted_text.content }.join("")
+      if full_text = object.file_sets.select { |fs| fs.extracted_text.present? } and full_text.present?
+        solr_doc['full_text_tsi'] = full_text.map {|fs| fs.extracted_text.content }.join("")
       end
 
       solr_doc['identifier_tesim'] = object.identifier

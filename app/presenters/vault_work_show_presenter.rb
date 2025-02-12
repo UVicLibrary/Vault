@@ -48,17 +48,4 @@ class VaultWorkShowPresenter < Hyku::WorkShowPresenter
              :sponsor, :format, :transcript, :archival_item_identifier,
              to: :solr_document
 
-    private
-
-    def authorized_item_ids(filter_unreadable: Flipflop.hide_private_items?)
-      @member_item_list_ids ||=
-          if filter_unreadable
-            ordered_ids.reject do |hash|
-              !current_ability.can?(:read, hash['id'])
-            end.pluck('id')
-          else
-            ordered_ids
-          end
-    end
-
 end

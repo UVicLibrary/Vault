@@ -44,8 +44,6 @@ module BatchExport
       download_objects(file_set, bag_dir)
       extract_text(file_set, bag_dir)
       write_file_metadata(file_set, "#{bag_dir}/data/metadata.txt")
-
-      # parent = file_set.parent
       CdmMigrator::CsvExportService.new([GenericWork]).write_to_csv([file_set.parent_id],"#{bag_dir}/work_and_file_set_metadata.csv")
       write_collection_ids_and_titles(file_set.parent_id, bag_dir)
 
@@ -118,19 +116,12 @@ module BatchExport
       FileUtils.mkdir_p("#{dirname}/data/objects")
       object_dir = "#{dirname}/data/objects"
       id = file_set.id
-      url = "#{host_url}/downloads/#{id}"
       ext = File.extname(File.basename(file_set.files.first.file_name.first))
-      begin
-        Down::Wget.download(url, :no_check_certificate, destination: (object_dir + "/bitstream_#{file_set.id}"))
-        FileUtils.copy_file("#{object_dir}/bitstream_#{id}", "#{object_dir}/#{id}#{ext}")
-      rescue Down::ClientError # Fallback to curl
-        user = ActiveFedora.fedora_config.credentials[:user]
-        password = ActiveFedora.fedora_config.credentials[:password]
-        filename = file_set.files.first.file_name.first
-        `curl #{file_set.files.first.uri.to_s} -u #{user}:#{password} -L -O -J`
-        File.rename("#{object_dir}/#{filename}", "#{object_dir}/#{id}#{ext}")
-        FileUtils.copy_file("#{object_dir}/#{id}#{ext}", "#{object_dir}/bitstream_#{id}")
-      end
+      user = ActiveFedora.fedora_config.credentials[:user]
+      password = ActiveFedora.fedora_config.credentials[:password]
+
+      `curl #{file_set.files.first.uri.to_s} -u #{user}:#{password} -o #{object_dir}/#{id}#{ext} -L -O -J`
+      FileUtils.copy_file("#{object_dir}/#{id}#{ext}", "#{object_dir}/bitstream_#{id}")
     end
 
     def host_url

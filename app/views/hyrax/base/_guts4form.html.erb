@@ -1,3 +1,6 @@
+<%# OVERRIDE Hyrax 4.0 and hyrax-doi gem (rails_hyrax_upgrade branch)
+    to show metadata tab by default (instead of DOI tab)
+%>
 <% # we will yield to content_for for each tab, e.g. :files_tab %>
 <div class="row">
   <div class="col-12 col-sm-8">
@@ -6,7 +9,7 @@
       <ul class="nav nav-tabs" role="tablist">
         <% (tabs - ['share']).each_with_index do | tab, i | %>
           <li role="presentation" class="nav-item">
-            <a class="nav-link <% if tab == "metadata" %>active<% end %>" href="#<%= tab %>" aria-controls="<%= tab %>" role="tab">
+            <a class="nav-link <% if tab == "metadata" %>active<% end %>" href="#<%= tab %>" aria-controls="<%= tab %>" role="tab" data-toggle="tab">
               <%= form_tab_label_for(form: f.object, tab: tab) %>
             </a>
           </li>

@@ -4,12 +4,6 @@ module Hyrax
   module Actors
     class GenericWorkActor < Hyrax::Actors::BaseActor
 
-      def update(env)
-        apply_update_data_to_curation_concern(env)
-        apply_save_data_to_curation_concern(env)
-        next_actor.update(env) && save(env) && run_callbacks(:after_update_metadata, env)
-      end
-
       def apply_save_data_to_curation_concern(env)
         cleaned_attributes = clean_attributes(env.attributes)
         begin
@@ -20,6 +14,12 @@ module Hyrax
         # permissions and the Hydra::AccessControls gem.
         rescue NoMethodError
         end
+        # save(env)
+        # Bug: removing download permissions occasionally makes a work private.
+        # To fix it, we re-add public read permissions if the visibility is set to public
+        # (maybe has to do with the order that permissions from hydra-access-controls
+        # and blacklight-access_controls gems are applied?)
+        reapply_public_read_access(env)
         env.curation_concern.date_modified = TimeService.time_in_utc
       end
 
@@ -47,8 +47,22 @@ module Hyrax
         end
         env.curation_concern.attributes = qa_attributes
         env.curation_concern.to_controlled_vocab
-        # save(env)
         attributes
+      end
+
+      def reapply_public_read_access(env)
+        permissions = env.curation_concern.permissions.map(&:to_hash).dup
+        public_view_access = { name: "public", type: "group", access: "read" }
+
+        if env.attributes['visibility'] == "open" && permissions.exclude?(public_view_access)
+          permissions.push(public_view_access)
+          # Need to reset permissions before setting them, or else we can end
+          # up with multiples of exactly the same access type. Same logic
+          # is used in app/jobs/toggle_downloads_job
+          env.curation_concern.permissions = []
+          env.curation_concern.permissions_attributes = permissions.uniq
+          save(env)
+        end
       end
 
     end

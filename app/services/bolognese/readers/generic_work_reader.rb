@@ -192,6 +192,8 @@ module Bolognese
         # This happens for some locations such as https://id.worldcat.org/fast/1204373.rdf.xml
         return [] if (latitude == "?" || longitude == "?")
         [latitude, longitude]
+      rescue NoMethodError # This happens if a place has no coordinates
+        return []
       end
 
       # @param [Hash] - metadata attributes from the work.to_json
@@ -282,4 +284,3 @@ module Bolognese
     end
   end
 end
-
