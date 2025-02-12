@@ -72,8 +72,8 @@ module FullTextProcessorDecorator
   # @return [String] The extracted text
   def read_from_local
     if system "pdftocairo -v"
-      `pdftotext "#{source_path}" "/cache/tmp/#{File.basename(source_path, '.pdf')}.txt"`
-      File.open("/cache/tmp/#{File.basename(source_path, '.pdf')}.txt").read.rstrip
+      `pdftotext "#{source_path}" "/tmp/#{File.basename(source_path, '.pdf')}.txt"`
+      File.open("tmp/#{File.basename(source_path, '.pdf')}.txt").read.rstrip
     else
       raise "Poppler utils is not installed"
     end
