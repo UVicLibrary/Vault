@@ -4,8 +4,14 @@ module VaultPermissionsHelper
   # Returns True if badges should be displayed and False if not
   def badge_visibility?(item)
     if item.is_a?(Array)
+      if item.map(&:visibility).any?("authenticated") # Authenticated users may only need view access as opposed to edit access
+        controller.can?(:show, item)
+      end
       controller.can?(:edit, item) || item.map(&:visibility).any?(!"open")
     else
+      if item.visibility == "authenticated"
+        controller.can?(:show, item)
+      end
       controller.can?(:edit, item) || item.visibility != "open"
     end
   end
