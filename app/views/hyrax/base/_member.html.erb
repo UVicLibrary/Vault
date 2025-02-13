@@ -1,11 +1,10 @@
 <tr class="<%= dom_class(member) %> attributes">
   <td class="thumbnail">
-    <%= document_presenter(member.solr_document)&.thumbnail&.thumbnail_tag( { alt: "file details" } )%>
+    <%= render_thumbnail_tag member, { alt: "file details" } %>
   </td>
   <td class="attribute attribute-filename ensure-wrapped"><%= link_to(member.link_name, contextual_path(member, @presenter)) %></td>
   <td class="attribute attribute-date_uploaded"><%= member.try(:date_uploaded) %></td>
-  <!-- OVERRIDE Hyrax 4.0.0 - check if user permissions to display visibility badges-->
-  <% if badge_visibility?(member) %>
+  <% if work_permissions(member) %>
     <td class="attribute attribute-permission"><%= member.permission_badge %></td>
   <% end %>
   <td>

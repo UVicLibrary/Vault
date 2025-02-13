@@ -3,8 +3,7 @@
     <% if index == 0 %>
       <div class="title-with-badges">
         <h1><%= title %></h1>
-        <!-- OVERRIDE Hyrax 4.0.0 - check if user permissions to display visibility badges-->
-        <% if badge_visibility?(presenter.solr_document) %>
+        <% if work_permissions(presenter.solr_document) %>
           <%= presenter.permission_badge %>
         <% end %>
         <%= presenter.workflow.badge %>

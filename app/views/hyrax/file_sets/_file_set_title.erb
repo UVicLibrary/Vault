@@ -2,8 +2,7 @@
   <% if index == 0 %>
     <h1 class="ensure-wrapped">
       <%= title %>
-      <!-- OVERRIDE Hyrax 4.0.0 - check if user permissions to display visibility badges-->
-      <% if badge_visibility?(presenter) %>
+      <% if file_set_permissions(presenter) %>
         <%= presenter.permission_badge %>
       <% end %>
     </h1>

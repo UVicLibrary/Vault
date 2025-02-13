@@ -8,8 +8,7 @@
       <th><%= t('.thumbnail') %></th>
       <th><%= t('.title') %></th>
       <th><%= t('.date_uploaded') %></th>
-      <!-- OVERRIDE Hyrax 4.0.0 - check if user permissions to display visibility badges-->
-      <% if badge_visibility?(presenter) %>
+      <% if members.map(&:visibility).any?(!"open") || work_permissions(members.first)%>
         <th><%= t('.visibility') %></th>
       <% end %>
       <th><%= t('.actions') %></th>
