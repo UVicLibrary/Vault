@@ -3,14 +3,15 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
   # provide your own metadata and indexing.
   include Hyrax::IndexesBasicMetadata
 
-  # For ingest into main UVic library (alma primo) catalog
-  include IndexesOAIFields
-
   # Fetch remote labels for based_near. You can remove this if you don't want
   # this behavior
   include Hyrax::IndexesLinkedMetadata
 
+  # For ingest into main UVic library (alma primo) catalog
+  include IndexesOAIFields
+
   include IndexesDownloadPermissions
+  include IndexesNestedParentCollections
 
   self.thumbnail_path_service = VaultThumbnailPathService
 

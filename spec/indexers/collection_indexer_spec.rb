@@ -92,4 +92,21 @@ RDFXML
       expect(collection.creator.first.id).to eq "http://id.worldcat.org/fast/549011"
     end
   end
+
+  describe 'with nested parent collections' do
+    let(:parent) { create(:collection_lw, title: ["Parent collection"]) }
+    let(:child) { build(:collection_lw, title: ["Subcollection"] ) }
+
+    before do
+      child.member_of_collections = [parent]
+      child.save
+      collection.member_of_collections = [child]
+      collection.save
+    end
+
+    it 'indexes (nested) parent collection titles' do
+      expect(solr_document.fetch('nested_member_of_collections_ssim')).to eq ["Parent collection", "Subcollection"]
+    end
+
+  end
 end
