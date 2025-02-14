@@ -24,6 +24,7 @@ module Hyku
     config.paths.add "#{root}/app/services/doi", eager_load: true
     config.paths.add "#{root}/app/services/identifier", eager_load: true
     config.paths.add "#{root}/app/services/custom_searches", eager_load: true
+    config.paths.add "#{root}/app/indexers/custom_indexing", eager_load: true
 
     config.to_prepare do
       Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|

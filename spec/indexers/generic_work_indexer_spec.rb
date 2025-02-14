@@ -7,8 +7,7 @@ RSpec.describe GenericWorkIndexer do
   # TODO: file_set_ids returns an empty set unless you persist the work
   let(:user) { create(:user) }
   let(:service) { described_class.new(work) }
-  # let(:work) { create(:generic_work) }
-  let(:work) { create(:generic_work, creator: ["http://id.worldcat.org/fast/549011"],
+  let(:work) { build(:generic_work, creator: ["http://id.worldcat.org/fast/549011"],
                       geographic_coverage: ["http://id.worldcat.org/fast/1243522"],
                       chronological_coverage: ["1943/1945"],
                       date_created: date_created,
@@ -202,20 +201,28 @@ RSpec.describe GenericWorkIndexer do
     end
 
     before do
-      allow(PowerConverter).to receive(:convert_to_sipity_entity).with(work).and_return(sipity_entity)
+      work.save
+      allow(Sipity).to receive(:Entity).with(work).and_return(sipity_entity)
       allow(Hyrax::Workflow::PermissionQuery).to receive(:scope_roles_associated_with_the_given_entity)
-                                                     .and_return(['approve', 'reject'])
+        .and_return(['approve', 'reject'])
     end
+
     it "indexed the roles and state" do
       expect(solr_document.fetch('actionable_workflow_roles_ssim')).to eq [
-                                                                              "#{sipity_entity.workflow.permission_template.source_id}-#{sipity_entity.workflow.name}-approve",
-                                                                              "#{sipity_entity.workflow.permission_template.source_id}-#{sipity_entity.workflow.name}-reject"
-                                                                          ]
+        "#{sipity_entity.workflow.permission_template.source_id}-#{sipity_entity.workflow.name}-approve",
+        "#{sipity_entity.workflow.permission_template.source_id}-#{sipity_entity.workflow.name}-reject"
+      ]
       expect(solr_document.fetch('workflow_state_name_ssim')).to eq "initial"
     end
   end
 
   describe "with a remote resource (based near)" do
+    # You can get the original RDF+XML here:
+    # https://sws.geonames.org/5037649/about.rdf Note: in this RDF+XML
+    # document, the only "English readable" identifying attributes are
+    # the nodes: `gn:name` and `gn:countryCode`.  In other words the
+    # helpful administrative container (e.g. Minnesota) is not in this
+    # document.
     mpls = <<RDFXML.strip_heredoc
       <?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
@@ -228,21 +235,45 @@ RDFXML
     before do
       allow(service).to receive(:rdf_service).and_return(Hyrax::DeepIndexingService)
       work.based_near_attributes = [{ id: 'http://sws.geonames.org/5037649/' }]
+      work.save
+
       stub_request(:get, "http://sws.geonames.org/5037649/")
-          .to_return(status: 200, body: mpls,
-                     headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
+        .to_return(status: 200, body: mpls,
+                   headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
+
+      stub_request(:get, 'http://www.geonames.org/getJSON')
+        .with(query: hash_including({ 'geonameId': '5037649' }))
+        .to_return(status: 200, body: File.open(File.join(fixture_path, 'geonames.json')))
     end
 
     it "indexes id and label" do
       expect(solr_document.fetch('based_near_sim')).to eq ["http://sws.geonames.org/5037649/"]
-      expect(solr_document.fetch('based_near_label_sim')).to eq ["Minneapolis"]
+      expect(solr_document.fetch('based_near_label_sim')).to eq ["Minneapolis, Minnesota, United States"]
     end
-  end
 
-  describe '#to_controlled_vocab' do
-    it "converts the object's controlled properties" do
-      expect(work.creator.first).to be_instance_of(Hyrax::ControlledVocabularies::Creator)
-      expect(work.creator.first.id).to eq "http://id.worldcat.org/fast/549011"
+    describe '#to_controlled_vocab' do
+      it "converts the object's controlled properties" do
+        expect(work.creator.first).to be_instance_of(Hyrax::ControlledVocabularies::Creator)
+        expect(work.creator.first.id).to eq "http://id.worldcat.org/fast/549011"
+      end
     end
+
+    describe 'with nested parent collections' do
+      let(:parent) { create(:collection_lw, title: ["Parent collection"]) }
+      let(:child) { build(:collection_lw, title: ["Subcollection"] ) }
+
+      before do
+        child.member_of_collections = [parent]
+        child.save
+        work.member_of_collections = [child]
+        work.save
+      end
+
+      it 'indexes (nested) parent collection titles' do
+        expect(solr_document.fetch('nested_member_of_collections_ssim')).to eq ["Parent collection", "Subcollection"]
+      end
+
+    end
+
   end
 end
