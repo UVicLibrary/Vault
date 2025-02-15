@@ -1,5 +1,3 @@
-require_dependency Hyrax::Engine.root.join('app/controllers/hyrax/dashboard/collections_controller.rb')
-
 # OVERRIDE class from Hyrax v. 4.0
 Hyrax::Dashboard::CollectionsController.class_eval do
 
@@ -193,12 +191,18 @@ Hyrax::Dashboard::CollectionsController.class_eval do
     end
     return valkyrie_update if @collection.is_a?(Valkyrie::Resource)
 
+    # If a collection's title changes, reindex the collection's nested members
+    # asynchronously. This ensures the Collection facet has the right count
+    # and search results include all nested collections & works.
+    members_need_reindex = params[:collection][:title].reject(&:blank?) != @collection.title.to_a
+
     @collection.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @collection.discoverable?
     @collection.attributes = collection_params.except(:members)
     @collection.to_controlled_vocab
 
     if @collection.save!
-      after_update
+      ReindexNestedMembersJob.perform_later(@collection.id) if members_need_reindex
+      after_update_response
     else
       after_update_errors(@collection.errors)
     end
@@ -218,7 +222,7 @@ Hyrax::Dashboard::CollectionsController.class_eval do
         format.json { render json: @collection, status: :updated, location: dashboard_collection_path(@collection) }
       end
     end
-    end
+  end
 
   def new_permissions
     # Reject blank attributes
