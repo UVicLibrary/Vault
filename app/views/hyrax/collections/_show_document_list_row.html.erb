@@ -18,7 +18,7 @@
       </div>
     </div>
   </td>
-  <td class="text-center"><%= EdtfDateService.new(document.date_created.first).humanized %> </td>
+  <td class="text-center"><%= EdtfDateService.new(document.date_created.first).humanized if document.date_created.any? %> </td>
   <td class="text-center"><%= document.date_uploaded %> </td>
   <!-- OVERRIDE Hyrax 4.0.0 - check if user permissions to display visibility badges-->
   <% if badge_visibility?(document) %>
