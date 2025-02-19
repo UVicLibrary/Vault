@@ -24,7 +24,7 @@ Blacklight::Parameters.class_eval do
   end
 
   def ignored_params
-    %W[utf8 locale id parent_id catalog]
+    %W[utf8 locale id parent_id catalog range.year_range_isim.missing]
   end
 
 end
