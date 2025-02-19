@@ -226,8 +226,7 @@ Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::
 #
 # @example Add a custom partial to the tasks sidebar block
 Hyrax::DashboardController.sidebar_partials[:tasks] += ["hyrax/dashboard/sidebar/batch_processing",
-                                                        "hyrax/dashboard/sidebar/replace_or_delete_fast_uris",
-                                                        "hyrax/dashboard/sidebar/review_transfers"]
+                                                        "hyrax/dashboard/sidebar/replace_or_delete_fast_uris"]
 
 Hyrax::DownloadsController.class_eval do
   skip_before_action :set_locale
