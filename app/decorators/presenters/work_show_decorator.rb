@@ -1,7 +1,7 @@
-require_dependency Hyrax::Engine.root.join('app/presenters/hyrax/work_show_presenter.rb')
-
-# OVERRIDE class from Hyrax v. 3.1.0
-Hyrax::WorkShowPresenter.class_eval do
+# OVERRIDE Hyrax v. 4
+#   - Use per-tenant metadata fields (set in config/initializers/hyrax)
+#   - Fix bug where works that are not in any collections appear to be in all collections
+module Hyrax::WorkShowPresenterDecorator
 
   delegate :visibility, to: :solr_document
 
@@ -26,5 +26,13 @@ Hyrax::WorkShowPresenter.class_eval do
     end.select(&:present?)
   end
 
+  # @return [Array<String>] member_of_collection_ids with current_ability access
+  def member_of_authorized_parent_collections
+    return [] unless self.member_of_collection_ids.any?
+    super
+  end
+
 end
+Hyrax::WorkShowPresenter.prepend(Hyrax::WorkShowPresenterDecorator)
+
 
