@@ -12,11 +12,6 @@ class Collection < ActiveFedora::Base
   # VaultBasicMetadata
   property :in_scua, predicate: ::RDF::URI.new('http://library.uvic.ca/ns/uvic#in_scua'), multiple: false
 
-  property :date_modified, predicate: ::RDF::Vocab::DC.modified, multiple: true do |index|
-    index.type :date
-    index.as :stored_sortable
-  end
-
   # These lines must appear AFTER all custom properties are declared.
   # include Hyrax::BasicMetadata
   include ::VaultBasicMetadata
