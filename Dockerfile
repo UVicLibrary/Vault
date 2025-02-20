@@ -17,6 +17,7 @@ RUN apt-get update -qq && \
         lsof \
         yarn \
         unzip \
+        p7zip-full \
         poppler-utils && \
         apt-get clean && \
     rm -rf /var/lib/apt/lists/*
