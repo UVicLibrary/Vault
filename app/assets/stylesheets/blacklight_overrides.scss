@@ -1,5 +1,10 @@
 // Hyrax & Blacklight overrides for displaying metadata
 
+// Make facet labels wider in "More" modal
+.modal-body .facet-values span.facet-label {
+  width: 90%;
+}
+
 // De-bold metadata field labels
 .search-result-wrapper {
 
