@@ -54,7 +54,7 @@ Hyrax::HomepageController.class_eval do
   end
 
   def get_recent_collections(start)
-    @recent_collections ||= presenter.collections.sort_by(&:timestamp).reverse
+    @recent_collections ||= presenter.collections.sort_by(&:create_date).reverse
     @recent_collections.slice(start,8)
   end
 
@@ -99,6 +99,6 @@ Hyrax::HomepageController.class_eval do
   end
 
   def sort_field
-    "timestamp desc"
+    "system_create_dtsi desc"
   end
 end
