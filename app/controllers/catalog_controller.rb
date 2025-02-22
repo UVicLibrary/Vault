@@ -86,7 +86,7 @@ class CatalogController < ApplicationController
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
     # Note: the member_of_collections_ssim facet is handled by NestedCollectionFacetBehavior
-    config.add_facet_field "member_of_collections_ssim", limit: 10, label: 'Collections'
+    config.add_facet_field "nested_member_of_collections_ssim", limit: 10, label: 'Collections'
     config.add_facet_field "genre_label_sim", label: 'Genre', limit: 10
     # Field for blacklight (date) range limit sorting: https://github.com/projectblacklight/blacklight_range_limit
     config.add_facet_field "year_range_isim", label: "Year Range", range: true
