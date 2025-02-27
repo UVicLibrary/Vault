@@ -26,6 +26,8 @@ module Hyku
     config.paths.add "#{root}/app/services/custom_searches", eager_load: true
     config.paths.add "#{root}/app/indexers/custom_indexing", eager_load: true
 
+    config.paths.add "lib/queue_adapters", eager_load: true
+
     config.to_prepare do
       Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
         require_dependency(c)
@@ -45,15 +47,6 @@ module Hyku
       config.middleware.use WebConsole::Middleware
     end
 
-    # config.middleware.use WebConsole::Middleware
-    #     if defined? ActiveElasticJob
-    #       Rails.application.configure do
-    #         config.active_elastic_job.process_jobs = Settings.worker == 'true'
-    #         config.active_elastic_job.aws_credentials = lambda { Aws::InstanceProfileCredentials.new }
-    #         config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
-    #       end
-    # end
-
     config.to_prepare do
     	#Hyrax::ApplicationController.helper CdmMigrator::Application.helpers
       # Do dependency injection after the classes have been loaded.
@@ -62,15 +55,13 @@ module Hyku
       Hyrax::Admin::AppearancesController.form_class = AppearanceForm
     end
 
-    config.before_initialize do
-      if defined? ActiveElasticJob
-        Rails.application.configure do
-          config.active_elastic_job.process_jobs = Settings.worker == 'true'
-          config.active_elastic_job.aws_credentials = lambda { Aws::InstanceProfileCredentials.new }
-          config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
-        end
+    if defined?(ActiveElasticJob) && ENV.fetch('HYRAX_ACTIVE_JOB_QUEUE', '') == 'elastic'
+      Rails.application.configure do
+        process_jobs = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_ELASTIC_JOBS', false))
+        config.active_elastic_job.process_jobs = process_jobs
+        config.active_elastic_job.aws_credentials = -> { Aws::InstanceProfileCredentials.new }
+        config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
       end
-      Object.include(AccountSwitch)
     end
 
     ##

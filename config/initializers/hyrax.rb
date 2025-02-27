@@ -17,7 +17,8 @@ Hyrax.config do |config|
                                 'Edit' => "edit" }
 
   # Email recipient of messages sent via the contact form
-  config.contact_email = Settings.contact_email
+  # This is set in account settings
+  # config.contact_email = 'changeme@example.com'
 
   # Text prefacing the subject entered in the contact form
   # config.subject_prefix = "Contact form:"
@@ -95,10 +96,10 @@ Hyrax.config do |config|
   # config.minter_statefile = '/tmp/minter-state'
 
   # Specify the prefix for Redis keys:
-  config.redis_namespace = Settings.redis.default_namespace
+  config.redis_namespace = ENV.fetch('HYRAX_REDIS_NAMESPACE', 'hyrax')
 
   # Specify the path to the file characterization tool:
-  config.fits_path = Settings.fits_path
+  config.fits_path = ENV.fetch('HYRAX_FITS_PATH', '/app/fits/fits.sh')
 
   # Specify the path to the file derivatives creation tool:
   # config.libreoffice_path = "soffice"
@@ -125,7 +126,8 @@ Hyrax.config do |config|
 
   # Location autocomplete uses geonames to search for named regions.
   # Specify the user for connecting to geonames:
-  config.geonames_username = Settings.geonames_username
+  # This is set in account settings
+  # config.geonames_username = ''
 
   # Should the acceptance of the licence agreement be active (checkbox), or
   # implied when the save button is pressed? Set to true for active.
@@ -155,15 +157,25 @@ Hyrax.config do |config|
 
   # Temporary path to hold uploads before they are ingested into FCrepo.
   # This must be a lambda that returns a Pathname
-  if Settings.multitenancy.enabled
-   config.upload_path = ->() do
-     if Settings.s3.upload_bucket
-       "uploads/#{Apartment::Tenant.current}"
-     else
-       Rails.root + 'tmp' + 'uploads' + Apartment::Tenant.current
-     end
-   end
-  end
+  config.upload_path = lambda {
+    if Site.account&.s3_bucket.present?
+      # For S3, no need to create directories
+      "uploads/#{Apartment::Tenant.current}"
+    else
+      # Determine the base upload path
+      base_path = if ENV['HYRAX_UPLOAD_PATH'].present?
+                    Pathname.new(File.join(ENV['HYRAX_UPLOAD_PATH'], Apartment::Tenant.current))
+                  else
+                    Rails.root.join('tmp', 'uploads', Apartment::Tenant.current)
+                  end
+
+      # Create the directory if it doesn't exist
+      FileUtils.mkdir_p(base_path) unless Dir.exist?(base_path)
+
+      # Return the path
+      base_path
+    end
+  }
 
   # Location on local file system where derivatives will be stored.
   # If you use a multi-server architecture, this MUST be a shared volume.
