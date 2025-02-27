@@ -13,7 +13,7 @@ class User < ApplicationRecord
   # Connects this user object to Hyrax behaviors.
   include Hyrax::User
   include Hyrax::UserUsageStats
-  
+
   # Connects this user object to Blacklights Bookmarks.
   include Blacklight::User
   # Include default devise modules. Others available are:
@@ -116,9 +116,8 @@ class User < ApplicationRecord
   private
 
   def add_default_roles
-    # Do not add the default admin role in test mode
-    add_role :admin, Site.instance unless
-      # self.class.any? || Account.global_tenant?
-      self.class.joins(:roles).where("roles.name = ?", "admin").any? || Account.global_tenant?
+    return if Account.global_tenant?
+    return unless Rails.env.development?
+    add_role :admin, Site.instance unless self.class.joins(:roles).where("roles.name = ?", "admin").any?
   end
 end
