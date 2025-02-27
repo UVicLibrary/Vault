@@ -1,6 +1,6 @@
 <%# Override Hyrax v.4.0 to add advanced facet constraints %>
 <ul class="facet-values list-unstyled">
-  <% paginator = facet_paginator(facet_field, display_facet) %>
+  <% facet_field_presenter = facet_field_presenter(facet_field, display_facet) %>
 
   <%# Selected advanced facets %>
   <% if advanced_query && advanced_query.filters.keys.include?(facet_field.key) %>
@@ -8,10 +8,10 @@
   <% end %>
 
   <%= render(Blacklight::FacetFieldListComponent.new(
-      facet_field: facet_field_presenter(facet_field, display_facet),
+      facet_field: facet_field_presenter,
       layout: false)) %>
 
-  <% unless paginator.last_page? || params[:action] == "facet" %>
+  <% unless facet_field_presenter.paginator.last_page? || params[:action] == "facet" %>
     <li class="more_facets_link">
       <%= link_to t("more_#{field_name}_html", scope: 'blacklight.search.facets', default: :more_html, field_name: facet_field_label(facet_field.field).pluralize),
           search_facet_path(id: facet_field.key), class: "more_facets_link", data: { blacklight_modal: 'trigger' } %>
