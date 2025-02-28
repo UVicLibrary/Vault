@@ -1,0 +1,29 @@
+# OVERRIDE Hyku v.5
+#   - Change the default Fedora username/password to env vars
+#   - Increase the timeout in production
+#   - Note: Although the other settings may be used in specs, they are not used
+#     in dev or prod environments because the Fedora URL is set by account settings.
+development:
+  user: <%= ENV['FCREPO_USER'] || 'fedoraAdmin' %>
+  password: <%= ENV['FCREPO_PASSWORD'] || 'fedoraAdmin' %>
+  url: http://<%= ENV['FCREPO_HOST'] || 'localhost' %>:<%= ENV['FCREPO_DEVELOPMENT_PORT'] || ENV['FCREPO_PORT'] || 8984 %>/<%= ENV['FCREPO_REST_PATH'] || 'rest' %>
+  base_path: <%= ENV['FCREPO_DEV_BASE_PATH'] %>
+test:
+  user: <%= ENV['FCREPO_USER'] || 'fedoraAdmin' %>
+  password: <%= ENV['FCREPO_PASSWORD'] || 'fedoraAdmin' %>
+  url: http://<%= ENV['FCREPO_HOST'] || 'localhost' %>:<%= ENV['FCREPO_TEST_PORT'] || ENV['FCREPO_PORT'] || 8986 %>/<%= ENV['FCREPO_REST_PATH'] || 'rest' %>
+  base_path: <%= ENV['FCREPO_TEST_BASE_PATH'] || '/test' %>
+staging:
+  user: <%= ENV['FCREPO_USER'] || 'fedoraAdmin' %>
+  password: <%= ENV['FCREPO_PASSWORD'] || 'fedoraAdmin' %>
+  url: http://<%= ENV['FCREPO_HOST'] || 'localhost' %>:<%= ENV['FCREPO_PORT'] || 8080 %>/<%= ENV['FCREPO_REST_PATH'] || 'rest' %>
+  base_path: <%= ENV['FCREPO_STAGING_BASE_PATH'] || ENV['FCREPO_BASE_PATH'] || '/staging' %>
+production:
+  user: <%= ENV['FCREPO_USER'] || 'fedoraAdmin' %>
+  password: <%= ENV['FCREPO_PASSWORD'] || 'fedoraAdmin' %>
+  url: http://<%= ENV['FCREPO_HOST'] || 'localhost' %>:<%= ENV['FCREPO_PORT'] || 8080 %>/<%= ENV['FCREPO_REST_PATH'] || 'rest' %>
+  base_path: <%= ENV['FCREPO_BASE_PATH'] %>
+  request:
+    # Increase these numbers to lengthen the timeout for slow fcrepo queries
+    timeout: 4800
+    open_timeout: 4800
