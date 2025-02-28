@@ -72,7 +72,7 @@ If this step fails, see our [Troubleshooting Docker](./Troubleshooting.md) page.
 2. Run `docker exec -it vault_web_1 bash` to start a terminal session in the web container.
 3. There are 3 commands we need to run once each before starting the server: 
     ```
-    bundle exec rails zookeeper:upload
+    bin/solrcloud-upload-configset.sh /home/app/webapp/solr/config
     rails db:create RAILS_ENV=development
     rails db:schema:load
     rails hyku:superadmin:create

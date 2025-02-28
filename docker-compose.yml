@@ -89,8 +89,9 @@ services:
     env_file:
       - .env
     # Commands to run on first install:
-      # bundle exec rails zookeeper:upload
-      # rails db:migrate
+      # bin/solrcloud-upload-configset.sh /home/app/webapp/solr/config
+      # rails db:create
+      # rails db:schema:load
     environment:
       - IN_DOCKER=true
       - LD_LIBRARY_PATH=/opt/fits/tools/mediainfo/linux
