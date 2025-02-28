@@ -59,13 +59,17 @@ module Hyku
       Hyrax::Admin::AppearancesController.form_class = AppearanceForm
     end
 
-    if defined?(ActiveElasticJob) && ENV.fetch('HYRAX_ACTIVE_JOB_QUEUE', '') == 'elastic'
-      Rails.application.configure do
-        process_jobs = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_ELASTIC_JOBS', false))
-        config.active_elastic_job.process_jobs = process_jobs
-        config.active_elastic_job.aws_credentials = -> { Aws::InstanceProfileCredentials.new }
-        config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
+    config.before_initialize do
+      if defined?(ActiveElasticJob) && ENV.fetch('HYRAX_ACTIVE_JOB_QUEUE', '') == 'elastic'
+        Rails.application.configure do
+          process_jobs = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_ELASTIC_JOBS', false))
+          config.active_elastic_job.process_jobs = process_jobs
+          config.active_elastic_job.aws_credentials = -> { Aws::InstanceProfileCredentials.new }
+          config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
+        end
       end
+
+      Object.include(AccountSwitch)
     end
 
     ##
