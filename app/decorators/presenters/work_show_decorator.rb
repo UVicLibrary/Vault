@@ -3,7 +3,7 @@
 #   - Fix bug where works that are not in any collections appear to be in all collections
 module Hyrax::WorkShowPresenterDecorator
 
-  delegate :visibility, to: :solr_document
+  delegate :visibility, :thumbnail_path, to: :solr_document
 
   # IIIF metadata for inclusion in the manifest
   #  Called by the `iiif_manifest` gem to add metadata
