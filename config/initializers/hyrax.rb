@@ -101,6 +101,11 @@ Hyrax.config do |config|
   # Specify the path to the file characterization tool:
   config.fits_path = ENV.fetch('HYRAX_FITS_PATH', '/app/fits/fits.sh')
 
+  # Fits gets stuck on v.1.0.5 unless we include these lines
+  Hydra::FileCharacterization.configure do |hydra_config|
+    hydra_config.tool_path(:fits, Hyrax.config.fits_path)
+  end
+
   # Specify the path to the file derivatives creation tool:
   # config.libreoffice_path = "soffice"
 
