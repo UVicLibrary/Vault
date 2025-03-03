@@ -126,7 +126,7 @@ module BatchExport
     end
 
     def host_url
-      if Settings.multitenancy.enabled
+      if ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_MULTITENANT', false))
         "https://#{Account.find_by(tenant: Apartment::Tenant.current).cname}"
       else
         "http://#{Settings.multitenancy.host}"

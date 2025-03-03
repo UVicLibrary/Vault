@@ -160,7 +160,8 @@ module CdmMigrator
       end
 
       def load_config
-        if Settings.multitenancy.enabled
+        # multitenant? defined in ApplicationController
+        if multitenant?
           tenant = Account.find_by(tenant: Apartment::Tenant.current).cname
         else
           tenant = "default"
@@ -324,7 +325,8 @@ module CdmMigrator
       end
 
       def admin_host?
-        false unless Settings.multitenancy.enabled
+        # multitenant? defined in ApplicationController
+        false unless multitenant?
       end
 
       def available_translations

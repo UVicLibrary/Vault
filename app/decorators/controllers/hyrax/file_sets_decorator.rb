@@ -11,7 +11,7 @@ Hyrax::FileSetsController.class_eval do
 
   def show_presenter
     # Tenant-specific file set presenters
-    if Settings.multitenancy.enabled
+    if multitenant?
       if current_account.cname.include? "vault"
         VaultFileSetPresenter
       elsif current_account.cname.include? "iaff"

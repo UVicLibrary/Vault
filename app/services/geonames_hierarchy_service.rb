@@ -71,7 +71,7 @@ class GeonamesHierarchyService
     # @param [String] the Geonames ID
     # @return [Hash] The regions containing the location described by @geonames_id
     def get_hierarchy(geonames_id)
-      url = "http://api.geonames.org/hierarchyJSON?geonameId=#{geonames_id}&username=#{Settings.geonames_username}"
+      url = "http://api.geonames.org/hierarchyJSON?geonameId=#{geonames_id}&username=#{ENV['HYKU_GEONAMES_USERNAME']}"
       response = JSON.parse(Faraday.get(url).body)
       response['geonames']
     end
