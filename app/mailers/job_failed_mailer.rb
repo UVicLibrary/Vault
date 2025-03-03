@@ -10,7 +10,7 @@ class JobFailedMailer < ActionMailer::Base
   # @param[Array <String>] failures - a list of IDs that failed
   # @param [Class] - the job class, e.g. AuditBatchExportJob
   def mail_failures(params)
-    @user_email = (ENV['JOB_FAILED_USER_EMAIL'] || Settings.fixity_email)
+    @user_email = (ENV['JOB_FAILED_USER_EMAIL'] || Hyrax.config.contact_email)
     @failures = params[:failures]
     job_class = (params[:job_class] || "" )
     mail(to: @user_email, subject: "#{job_class} Failed")
@@ -19,7 +19,7 @@ class JobFailedMailer < ActionMailer::Base
   def fixity_failures(params)
     @file_sets = params[:file_sets]
     # Get a user email from config
-    user_email = (ENV['JOB_FAILED_USER_EMAIL'] || Settings.fixity_email)
+    user_email = (ENV['JOB_FAILED_USER_EMAIL'] || Hyrax.config.contact_email)
     mail(to: user_email, subject: "Fixity Check - Possible Corrupted Files")
   end
 
