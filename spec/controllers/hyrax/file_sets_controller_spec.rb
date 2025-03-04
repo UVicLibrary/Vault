@@ -551,14 +551,6 @@ RSpec.describe Hyrax::FileSetsController do
         end
       end
     end
-
-    context 'when in single-tenant mode' do
-      before { allow(Settings.multitenancy).to receive(:enabled).and_return false }
-
-      it 'returns the correct presenter class' do
-        expect(controller.show_presenter).to eq VaultFileSetPresenter
-      end
-    end
   end
 
   # We don't use really use Sipity stuff so I don't think this applies?

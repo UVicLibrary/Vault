@@ -53,8 +53,10 @@ RSpec.describe Account, type: :model do
     end
 
     it 'returns canonicalized value' do
-      allow(Settings.multitenancy).to receive(:default_host).and_return("%{tenant}.DEMO.hydrainabox.org.")
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with('HYKU_DEFAULT_HOST', anything).and_return("%{tenant}.DEMO.hydrainabox.org.")
       expect(described_class.default_cname('foobar')).to eq 'foobar.demo.hydrainabox.org'
+      expect(described_class.default_cname('fooBAR')).to eq 'foobar.demo.hydrainabox.org'
       expect(described_class.default_cname('fooBAR')).to eq 'foobar.demo.hydrainabox.org'
       expect(described_class.default_cname('ONE.two.3')).to eq 'one-two-3.demo.hydrainabox.org'
     end
@@ -70,25 +72,29 @@ RSpec.describe Account, type: :model do
 
   describe '.admin_host' do
 
-    before do
-      allow(ENV).to receive(:[]).and_call_original
-    end
-
     it 'uses the configured setting' do
-      allow(Settings.multitenancy).to receive(:admin_host).and_return('admin-host')
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with('HYKU_ADMIN_HOST', anything).and_return('admin-host')
       expect(described_class.admin_host).to eq 'admin-host'
     end
 
     it 'falls back to the HOST environment variable' do
-      allow(Settings.multitenancy).to receive(:admin_host).and_return(nil)
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with('HYKU_ADMIN_HOST', anything).and_return(nil)
+      allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with('HOST').and_return('system-host')
       expect(described_class.admin_host).to eq 'system-host'
+      allow(ENV).to receive(:[]).and_call_original # "un-stub" ENV
     end
 
     it 'falls back to localhost' do
-      allow(Settings.multitenancy).to receive(:admin_host).and_return(nil)
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with('HYKU_ADMIN_HOST', anything).and_return(nil)
+      allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with('HOST').and_return(nil)
       expect(described_class.admin_host).to eq 'localhost'
+      allow(ENV).to receive(:[]).and_call_original # "un-stub" ENV
     end
   end
 
@@ -273,20 +279,25 @@ RSpec.describe Account, type: :model do
 
       context 'is set' do
         it 'builds default cname from name and default_host' do
-          allow(Settings.multitenancy).to receive(:default_host).and_return "%{tenant}.dev"
+          allow(ENV).to receive(:fetch).and_call_original
+          allow(ENV).to receive(:fetch).with('HYKU_DEFAULT_HOST', anything).and_return("%{tenant}.dev")
           expect(account1.errors).to be_empty
           expect(account1.domain_names.first.cname).to eq('example.dev')
         end
       end
 
       context 'is unset' do
+        around do |example|
+          default = ENV['HYKU_DEFAULT_TENANT']
+          example.run
+          ENV['HYKU_DEFAULT_TENANT'] = default
+        end
+
         it 'builds default cname from name and admin_host' do
-          original = Settings.multitenancy.default_host
-          Settings.multitenancy.default_host = nil
-          allow(Settings.multitenancy).to receive(:admin_host).and_return('admin-host')
+          allow(ENV).to receive(:fetch).and_call_original
+          allow(ENV).to receive(:fetch).with('HYKU_ADMIN_HOST', anything).and_return('admin-host')
           expect(account1.errors).to be_empty
           expect(account1.domain_names.first.cname).to eq('example.admin-host')
-          Settings.multitenancy.default_host = original
         end
       end
     end
@@ -378,7 +389,8 @@ RSpec.describe Account, type: :model do
 
     context 'single tenant in production environment' do
       before do
-        allow(Settings.multitenancy).to receive(:enabled).and_return false
+        allow(ENV).to receive(:fetch).and_call_original
+        allow(ENV).to receive(:fetch).with('HYKU_MULTITENANT', anything).and_return(false)
         allow(Rails.env).to receive(:test?).and_return false
       end
 
@@ -387,7 +399,8 @@ RSpec.describe Account, type: :model do
 
     context 'default tenant in a multitenant production environment' do
       before do
-        allow(Settings.multitenancy).to receive(:enabled).and_return true
+        allow(ENV).to receive(:fetch).and_call_original
+        allow(ENV).to receive(:fetch).with('HYKU_MULTITENANT', anything).and_return(true)
         allow(Rails.env).to receive(:test?).and_return false
         allow(Apartment::Tenant).to receive(:current_tenant).and_return Apartment::Tenant.default_tenant
       end
