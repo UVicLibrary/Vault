@@ -227,7 +227,7 @@ RSpec.describe Hyrax::GenericWorksController do
           get :show, params: { id: work.id, format: :ttl }
           expect(response).to be_successful
           expect(response.body).to eq "ttl graph"
-          expect(response.content_type).to eq 'text/turtle'
+          expect(response.content_type).to include 'text/turtle'
         end
       end
     end

@@ -41,7 +41,7 @@ RSpec.describe Hyrax::Admin::AppearancesController, type: :controller, singleten
 
         it "sets a banner image" do
           expect(Site.instance.banner_image?).to be false
-          f = fixture_file_upload('/images/nypl-hydra-of-lerna.jpg', 'image/jpg')
+          f = fixture_file_upload('images/nypl-hydra-of-lerna.jpg', 'image/jpg')
           post :update, params: { admin_appearance: { banner_image: f } }
           expect(response).to redirect_to(hyrax.admin_appearance_path(locale: 'en'))
           expect(flash[:notice]).to include("The appearance was successfully updated")

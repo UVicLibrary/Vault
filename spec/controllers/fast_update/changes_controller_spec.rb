@@ -3,7 +3,7 @@ RSpec.describe FastUpdate::ChangesController, type: :controller do
   # Create and index actions are in spec/requests/fast_update/changes_spec.rb
 
   describe "#search_builder_class" do
-    subject { controller.search_builder_class }
+    subject { controller.blacklight_config.search_builder_class }
     it { is_expected.to eq FastUpdate::UriSearchBuilder }
   end
 
