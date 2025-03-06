@@ -20,9 +20,12 @@ Hyrax::HomepageController.class_eval do
       @recent_collection_presenters = build_presenters(get_recent_collections(0), Hyrax::CollectionPresenter)
 
       # @response is used by the homepage "Time period" facet
-      # The other instance variables are used by the Recent Works tab
-      @response, @recent_works = works_search_service.search_results
-      @recent_work_presenters = build_presenters(@recent_works, VaultWorkShowPresenter)
+      # @recent works is used for the Recent Works tab
+      @response, @recent_works = works_search_service.search_results do |builder|
+        builder.merge(sort: sort_field, rows: 8)
+      end
+
+      @recent_work_presenters = build_presenters(@recent_works, Hyrax::WorkShowPresenter)
 
       # Limit ourselves to maximum 40 recent works
       @work_count = @response['response']['numFound'] < 40 ? @response['response']['numFound'] : 40
@@ -41,7 +44,7 @@ Hyrax::HomepageController.class_eval do
       when "recent-collections-wrapper"
         presenters = build_presenters(get_recent_collections(params[:start].to_i), Hyrax::CollectionPresenter)
       when "recent-works-wrapper"
-        presenters = build_presenters(get_recent_works(params[:start].to_i), VaultWorkShowPresenter)
+        presenters = build_presenters(get_recent_works(params[:start].to_i), Hyrax::WorkShowPresenter)
       end
       format.js { render 'hyrax/homepage/cards/load_more.js.erb', locals: { presenters: presenters, append_to: params[:append_to] } }
     end
@@ -69,16 +72,16 @@ Hyrax::HomepageController.class_eval do
   end
 
   def get_recent_works(start)
-    works_search_service.search_results do |builder|
-      builder.start(start)
-    end[1]
+    _, recent_works = works_search_service.search_results do |builder|
+      builder.merge(sort: sort_field, rows: 8, start: start)
+    end
+    recent_works
   rescue Blacklight::Exceptions::ECONNREFUSED, Blacklight::Exceptions::InvalidRequest
     []
   end
 
   def works_search_service
     Hyrax::SearchService.new(config: blacklight_config,
-                             user_params: { q: '', sort: sort_field, rows: 8 },
                              scope: self,
                              search_builder_class: Hyrax::WorksSearchBuilder)
   end
