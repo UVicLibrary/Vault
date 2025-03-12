@@ -23,7 +23,7 @@ Hyrax::Actors::DOIActor.class_eval do
     # Commented out the following 3 lines because:
     # 1. they don't update the DOI status when the work visibility changes, but we
     #    want it to change.
-    # 2. Does we really need to update and save again when the previous actor
+    # 2. Do we really need to update and save again when the previous actor
     #    has already applied and saved changes? Resaving the work seems to slow down
     #    the saving process unnecessarily.
     #

@@ -73,6 +73,13 @@ Rails.application.routes.draw do
 
   mount Hyrax::Engine, at: '/'
   mount Hyrax::DOI::Engine, at: '/doi', as: 'hyrax_doi'
+
+  # Add paths for doi tombstones
+  scope module: 'hyrax/doi', path: 'doi', as: 'hyrax_doi' do
+    resources :tombstones, only: [:new, :create]
+    resources :tombstones, only: [:show], param: :doi, constraints: { doi: /\d+.\d+\/[A-Za-z0-9]{4}-[A-Za-z0-9]{4}/ }
+  end
+
   #mount ToSpotlight::Engine, at: '/to_spotlight'
 
   # OVERRIDE here to add featured collection routes

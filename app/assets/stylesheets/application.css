@@ -12,6 +12,7 @@
  *
  *= require hyrax/custom_editor
  *= require hyrax/sidebar_patch
+ *= require hyrax/doi/tombstone
  *= require hyrax
  *= require dataTables.bootstrap4
  *= require custom
