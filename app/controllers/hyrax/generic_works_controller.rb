@@ -3,6 +3,7 @@ module Hyrax
     # Adds Hyrax behaviors to the controller.
     include Hyrax::WorksControllerBehavior
     include Hyrax::BreadcrumbsForWorks
+    include Hyrax::DOI::TombstoneWorksControllerBehavior
 
     # Defined in the hydra-head gem
     # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
