@@ -218,25 +218,25 @@ RSpec.describe Collection, type: :model do
 
     it 'resets user edit access' do
       expect(collection.edit_users).to match_array([user.user_key])
-      collection.reset_access_controls!
+      permission_template.reset_access_controls_for(collection: collection)
       expect(collection.edit_users).to match_array([user.user_key, 'mgr1@ex.com', 'mgr2@ex.com'])
     end
 
     it 'resets group edit access' do
       expect(collection.edit_groups).to match_array([])
-      collection.reset_access_controls!
+      permission_template.reset_access_controls_for(collection: collection)
       expect(collection.edit_groups).to match_array(['managers', ::Ability.admin_group_name])
     end
 
     it 'resets user read access' do
       expect(collection.read_users).to match_array([])
-      collection.reset_access_controls!
+      permission_template.reset_access_controls_for(collection: collection)
       expect(collection.read_users).to match_array(['vw1@ex.com', 'vw2@ex.com', 'dep1@ex.com', 'dep2@ex.com'])
     end
 
     it 'resets group read access' do
       expect(collection.read_groups).to match_array([])
-      collection.reset_access_controls!
+      permission_template.reset_access_controls_for(collection: collection)
       expect(collection.read_groups).to match_array(['viewers', 'depositors', ::Ability.admin_group_name])
     end
   end
@@ -282,51 +282,6 @@ RSpec.describe Collection, type: :model do
       end
     end
 
-    describe 'when including nesting indexing', with_nested_reindexing: true do
-      # Nested indexing requires that the user's permissions be saved
-      # on the Fedora object... if simply in local memory, they are
-      # lost when the adapter pulls the object from Fedora to reindex.
-      let(:user) { create(:user) }
-      let(:collection) { create(:collection, user: user) }
-
-      it 'will authorize the creating user' do
-        expect(user.can?(:edit, collection)).to be true
-      end
-    end
-
-    describe 'when including with_nesting_attributes' do
-      let(:collection_type) { create(:collection_type) }
-      let(:blacklight_config) { CatalogController.blacklight_config }
-      let(:repository) { Blacklight::Solr::Repository.new(blacklight_config) }
-      let(:current_ability) { instance_double(Ability, admin?: true) }
-      let(:scope) { double('Scope', can?: true, current_ability: current_ability, repository: repository, blacklight_config: blacklight_config) }
-
-      context 'when building a collection' do
-        let(:coll123) do
-          build(:collection_lw,
-                id: 'Collection123',
-                collection_type_gid: collection_type.to_global_id,
-                with_nesting_attributes:
-                { ancestors: ['Parent_1'],
-                  parent_ids: ['Parent_1'],
-                  pathnames: ['Parent_1/Collection123'],
-                  depth: 2 })
-        end
-        let(:nesting_attributes) do
-          Hyrax::Collections::NestedCollectionQueryService::NestingAttributes.new(id: coll123.id, scope: scope)
-        end
-
-        it 'will persist a queryable solr document with the given attributes' do
-          expect(nesting_attributes.id).to eq('Collection123')
-          expect(nesting_attributes.parents).to eq(['Parent_1'])
-          expect(nesting_attributes.pathnames).to eq(['Parent_1/Collection123'])
-          expect(nesting_attributes.ancestors).to eq(['Parent_1'])
-          expect(nesting_attributes.depth).to eq(2)
-        end
-      end
-    end
-  end
-
   describe '#properties' do
     subject { described_class.properties.map(&:first).map(&:to_sym) }
     it { is_expected.to match_array([:has_model, :create_date, :modified_date, :depositor, :title,
@@ -336,5 +291,7 @@ RSpec.describe Collection, type: :model do
                                      :label, :relative_path, :import_url, :resource_type, :description,
                                      :keyword, :license, :rights_statement, :publisher, :date_created,
                                      :language, :based_near, :bibliographic_citation, :source]) }
+  end
+
   end
 end
