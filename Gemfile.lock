@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/UVicLibrary/cdm_migrator
-  revision: e3deaf2723586b90de2f6c21573c579127c610b0
+  revision: 8488aecc27cb2e5082f722887c5dc691e1cba831
   specs:
     cdm_migrator (3.6.2)
       hyrax (>= 3.2, < 5.0)
