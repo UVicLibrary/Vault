@@ -13,12 +13,12 @@ Hyrax::IiifHelper.module_eval do
   def universal_viewer_base_url(work_presenter)
     if request.base_url.include? "vault"
       if can?(:download, work_presenter.id)
-        "#{request&.base_url}/uv/uv.html"
+        "/uv/uv.html"
       else
-        "#{request&.base_url}/uv/uv-no-download.html"
+        "/uv/uv-no-download.html"
       end
     else
-      "#{request&.base_url}/uv/uv.html"
+      "/uv/uv.html"
     end
   end
 
@@ -26,12 +26,12 @@ Hyrax::IiifHelper.module_eval do
   def universal_viewer_config_url(work_presenter)
     if request.base_url.include? "vault"
       if can?(:download, work_presenter.id)
-        "#{request&.base_url}/uv/uv-config.json"
+        "/uv/uv-config.json"
       else
-        "#{request&.base_url}/uv/uv-config-no-download.json"
+        "/uv/uv-config-no-download.json"
       end
     else
-      "#{request&.base_url}/uv/uv-config.json"
+      "/uv/uv-config.json"
     end
   end
 
