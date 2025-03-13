@@ -5,11 +5,6 @@ Hyrax::IiifHelper.module_eval do
   #   1. If current tenant is Vault, check whether the user has download permissions
   #   2. If tenant is not Vault, allow anyone who can read the work to download
 
-  def iiif_viewer_display(work_presenter, locals = {})
-    render iiif_viewer_display_partial(work_presenter),
-           locals.merge(presenter: work_presenter)
-  end
-
   def iiif_viewer_display_partial(work_presenter)
     'hyrax/base/iiif_viewers/' + work_presenter.iiif_viewer.to_s
   end

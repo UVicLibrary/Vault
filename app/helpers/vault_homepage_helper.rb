@@ -2,7 +2,7 @@ module VaultHomepageHelper
 
   def search_or_homepage?
     request.base_url.include?("vault") &&
-        (current_page?(root_path) || request.path.include?("catalog"))
+        (current_page?(main_app.root_path) || request.path.include?("catalog"))
   end
 
   # Size cards dynamically based on whether there are 6 or 8 featured works

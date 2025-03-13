@@ -10,18 +10,18 @@ RSpec.describe Hyrax::IiifHelper, type: :helper do
   describe '#iiif_viewer_display' do
     before do
       allow(helper).to receive(:iiif_viewer_display_partial).with(presenter)
-                           .and_return(uv_partial_path)
+                                                            .and_return(uv_partial_path)
     end
 
     it "renders a partial" do
       expect(helper).to receive(:render)
-                            .with(uv_partial_path, presenter: presenter)
+        .with(uv_partial_path, presenter: presenter)
       helper.iiif_viewer_display(presenter)
     end
 
     it "takes options" do
       expect(helper).to receive(:render)
-                            .with(uv_partial_path, presenter: presenter, transcript_id: '123')
+        .with(uv_partial_path, presenter: presenter, transcript_id: '123')
       helper.iiif_viewer_display(presenter, transcript_id: '123')
     end
   end
