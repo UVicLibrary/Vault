@@ -1,7 +1,8 @@
 module CdmMigrator
   class CsvController < ApplicationController
-    helper_method :default_page_title, :admin_host?, :available_translations, :available_works
+    helper_method :default_page_title, :admin_host?, :multitenant?, :available_translations, :available_works
     include ActionView::Helpers::UrlHelper
+    include HykuHelper if defined?(HykuHelper)
     layout 'hyrax/dashboard' if Hyrax
     before_action :authenticate, except: :index
     before_action :load_config, only: :csv_checker
