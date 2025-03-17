@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 module Hyrax
   module DOI
-    class TombstonesController < ApplicationController
+    class TombstonesController < ::ApplicationController
 
       with_themed_layout 'dashboard'
 
       def new
+        authorize! :destroy, params[:hyrax_id]
         # Renders the form for a new tombstones using params passed in from works controller
         @tombstone = Tombstone.new(doi: params[:doi], hyrax_id: params[:hyrax_id])
       end
