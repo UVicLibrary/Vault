@@ -19,7 +19,7 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  # config.assets.js_compressor = :terser # Uglifier.new(harmony: true, mangle: false)
+  #config.assets.js_compressor = :terser
 
   config.cache_store = :file_store, "#{root}/tmp/cache"
 
