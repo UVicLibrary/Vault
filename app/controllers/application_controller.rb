@@ -111,7 +111,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_url_options(options={})
-    options.merge(protocol: :https) if ActiveRecord::Type::Boolean.new.cast(ENV.fetch('HYKU_SSL_CONFIGURED', false))
+    ActiveRecord::Type::Boolean.new.cast(ENV.fetch('HYKU_SSL_CONFIGURED', false)) ? options.merge(protocol: :https) : options
   end
 
 
