@@ -27,6 +27,8 @@ module Hyrax
         sequence['canvases']&.each do |canvas|
           canvas['label'] = sanitize_value(canvas['label'])
           canvas['images'].each do |image|
+            # Request image URLs with https if in production
+            image['resource']['service']['@id'] = image['resource']['service']['@id'].gsub('http','https') if ActiveRecord::Type::Boolean.new.cast(ENV.fetch('HYKU_SSL_CONFIGURED', false))
             file_set_id = image['resource']['@id'].split('/').last
             fsp = member_presenters.detect { |p| p.id == file_set_id }
             add_file_set_metadata(image, fsp)
