@@ -9,6 +9,10 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
+  #config.assets.js_compressor = :terser
+
+  config.cache_store = :file_store, "#{root}/tmp/cache"
+  
   # Show full error reports.
   config.consider_all_requests_local = true
 
