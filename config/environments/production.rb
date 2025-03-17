@@ -46,7 +46,8 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  #
+  # Change this to false if using a load balancer or proxy server that terminates SSL. Instead,
+  # add HYKU_SSL_CONFIGURED=true to your .env.
   config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
@@ -58,8 +59,8 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
-
-  config.cache_store = :redis_cache_store, { url: ENV['RAILS_CACHE_STORE_URL'] } if /^redis/.match?(ENV.fetch('RAILS_CACHE_STORE_URL', ''))
+  # config.cache_store = :redis_cache_store, { url: ENV['RAILS_CACHE_STORE_URL'] } if /^redis/.match?(ENV.fetch('RAILS_CACHE_STORE_URL', ''))
+  config.cache_store = :file_store, ENV['HYKU_CACHE_ROOT']
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # if the active_elastic_job gem is installed (Vault doesn't use it).
@@ -120,5 +121,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
 end
 # rubocop:enable Metrics/BlockLength
