@@ -19,7 +19,7 @@ module VideoProcessorDecorator
   end
 
   def halfway(path)
-    `ffmpeg -i #{path} 2>&1 | grep Duration | awk '{print $2}' | tr -d , | awk -F ':' '{print ($3+$2*60+$1*3600)/2}'`.gsub("\n","")
+    `ffmpeg -i "#{path}" 2>&1 | grep Duration | awk '{print $2}' | tr -d , | awk -F ':' '{print ($3+$2*60+$1*3600)/2}'`.gsub("\n","")
   end
 
 end

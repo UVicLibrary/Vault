@@ -8,8 +8,7 @@ class VipsDerivativesService < Hyrax::FileSetDerivativesService
   # Overriding to omit webm files for performance reasons
   def create_video_derivatives(filename)
     Hydra::Derivatives::VideoDerivatives.create(filename,
-                                                outputs: [{ label: :thumbnail, format: 'jpg', url: derivative_url('thumbnail') },
-                                                          { label: 'mp4', format: 'mp4', url: derivative_url('mp4') }])
+                                                outputs: [{ label: :thumbnail, format: 'jpg', url: derivative_url('thumbnail') }])
   end
 
   def create_pdf_derivatives(filename)
