@@ -29,14 +29,16 @@ module HykuHelper
   end
 
   def parent_path(parent_doc)
-    model = case parent_doc
-            when Hyrax::Resource, ActiveFedora::Base
-              parent_doc
-            when SolrDocument
-              parent_doc['has_model_ssim'].first.constantize
-            else
-              raise "Unknown parent_doc type: #{parent_doc.class}"
-            end
+    # The presenter object's ancestor class
+    model = parent_doc.model_name.name.constantize
+    case
+    when model <= Hyrax::Resource, ActiveFedora::Base
+      parent_doc
+    when model <= SolrDocument
+      parent_doc['has_model_ssim'].first.constantize
+    else
+      raise "Unknown parent_doc type: #{parent_doc.class}"
+    end
 
     path = "#{model.model_name.singular_route_key}_path"
     main_app.send(path, parent_doc.id)
