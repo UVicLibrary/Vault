@@ -26,7 +26,7 @@ module FastUpdate
         false
       end
 
-      recent_changes.each do |row|
+      Array.wrap(recent_changes).flatten.each do |row|
         filename = row.search('a')[0][:href]
         dest = "#{download_dir}/#{filename}"
         next if File.file?(dest) or filename.nil?
