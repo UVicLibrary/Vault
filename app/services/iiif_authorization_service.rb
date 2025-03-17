@@ -35,6 +35,6 @@ class IIIFAuthorizationService < Hyrax::IiifAuthorizationService
 
   def uv_page?(request)
     return false unless request.referer.presence
-    (Addressable::URI.parse(request.referer).path =~ /^\/uv\/uv(-no-download)?\.html/).present?
+    Addressable::URI.parse(request.referer).path.match?(/^\/uv\/uv(-no-download)?\.html/)
   end
 end
