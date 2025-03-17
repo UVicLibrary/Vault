@@ -1,6 +1,4 @@
 module FastUpdateHelper
-  include Blacklight::RenderConstraintsHelperBehavior
-  include Blacklight::FacetsHelperBehavior
 
   # Render cell in changes table
   # @param [FastUpdate::Change]
