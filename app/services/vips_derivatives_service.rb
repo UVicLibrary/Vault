@@ -1,39 +1,36 @@
 # Based on Hyrax 4.0's FileSetDerivatvesService
-#   - Omit creation of image derivatives
-#   - Use libvips (instead of ImageMagick) to create PDF derivatives
+#   - Omit creation of video derivatives other than thumbnail
+#   - Use libvips (instead of ImageMagick) to create image & PDF derivatives
 class VipsDerivativesService < Hyrax::FileSetDerivativesService
   extend ActiveSupport::Concern
 
-
-  # Overriding to omit webm files for performance reasons
+  # Overriding to omit webm files because it takes way too long
   def create_video_derivatives(filename)
     Hydra::Derivatives::VideoDerivatives.create(filename,
                                                 outputs: [{ label: :thumbnail, format: 'jpg', url: derivative_url('thumbnail') }])
   end
 
   def create_pdf_derivatives(filename)
-    # Fix bug where filename is sometimes assigned to a directory
-    filename = Dir["#{filename}/*"].first.to_s if File.directory?(filename)
-
-    # If vips is installed
-    if system "vips -v"
-      create_vips_thumbnail(filename)
-    else
-      Hydra::Derivatives::PdfDerivatives.create(filename,
-                                                outputs: [{
-                                                            label: :thumbnail,
-                                                            format: 'jpg',
-                                                            size: '338x493',
-                                                            url: derivative_url('thumbnail'),
-                                                            layer: 0
-                                                          }])
-    end
+    # We are transitioning from saving PDF thumbnails in the public
+    # folder back to the Hyrax default URL ("downloads/#{file_set.id}?file=thumbnail")
+    # now that hydra-derivatves has been configured to use libvips.
+    #
+    # For now, we will create thumbnails in both places. Once all PDF
+    # thumbs have been regenerated, we will switch back to using
+    # hydra-derivatives only.
+    create_vips_thumbnail(filename)
+    Hydra::Derivatives::PdfDerivatives.create(filename,
+                                              outputs: [{
+                                                          label: :thumbnail,
+                                                          format: 'jpg',
+                                                          size: '338x493',
+                                                          url: derivative_url('thumbnail'),
+                                                          layer: 0
+                                                        }])
     extract_full_text(filename, uri)
   end
 
-  # Resize, create and save a thumbnail in assets directory
-  # Find what collection the fileset belongs to and create a folder named after it
-  # Use a "misc" folder if it's not in any collection.
+  # Resize, create and save a thumbnail in the public directory
   def create_vips_thumbnail(filepath)
     `vips thumbnail "#{filepath}" #{pdf_thumbnail_dir}/#{@file_set.id}-thumb.jpg 493x`
   end
@@ -48,8 +45,14 @@ class VipsDerivativesService < Hyrax::FileSetDerivativesService
     "#{dir}/#{@file_set.id}-thumb.jpg"
   end
 
-  def create_image_derivatives(_)
-    # Left intentionally blank. We don't need to create image derivatives since we use IIIF for them.
+  def create_image_derivatives(filename)
+    # We're asking for layer 0, because otherwise pyramidal tiffs flatten all the layers together into the thumbnail
+    Hydra::Derivatives::ImageDerivatives.create(filename,
+                                                outputs: [{ label: :thumbnail,
+                                                            format: 'jpg',
+                                                            size: '300x150>',
+                                                            url: derivative_url('thumbnail'),
+                                                            layer: 0 }])
   end
 
 end
