@@ -8,10 +8,6 @@ by the order they appear on the page */
   padding-left: 1em;
   padding-right: 1em;
 
-  p {
-    font-size: 16px;
-  }
-
   a {
     text-decoration: underline;
   }
@@ -40,7 +36,6 @@ by the order they appear on the page */
 .home-content ul[role=tablist] li {
   margin-right: 0.3em;
   margin-left: 0.3em;
-  font-size: 16px;
 
   button {
     border: none;
@@ -79,7 +74,6 @@ by the order they appear on the page */
 }
 
 a.homepage-facet-link {
-  font-size: 16px;
   min-width: 48px;
 }
 
@@ -110,7 +104,6 @@ a.homepage-facet-link {
 
   .control-label {
     font-weight: 400;
-    font-size: 16px;
   }
 
   input[type=text] {
@@ -161,7 +154,6 @@ a.homepage-facet-link {
 #list-collections a {
   margin-top: 0.5em;
   display: inline-block;
-  font-size: 16px;
 }
 
 #homepage-works-and-collections {
