@@ -18,6 +18,14 @@ gem 'cdm_migrator', git: 'https://github.com/UVicLibrary/cdm_migrator'
 # Prevents an error like ffi-1.17.0 requires rubygems version >= 3.3.22
 # gem "ffi", "< 1.17.0"
 
+# Use a branch that includes the ability to configure different
+# processors for image derivatives. This lets us override the gem
+# to use libvips for image derivatives instead of imagemagick/graphicsmagick.
+# (Note: hydra-derivatives v.4 will also include this feature.)
+# The current branch is pinned to Hyrax 4.x, hydra-derivatives < 4, Rails 6.
+# Original commit/context: https://github.com/samvera/hydra-derivatives/pull/255
+gem 'hydra-derivatives', git: 'https://github.com/samvera/hydra-derivatives.git', ref: 'f38ea44deb23033e7aac5d8dbce9c2a2502f05f3'
+
 gem 'ruby-vips'
 gem 'carrierwave-vips'
 
