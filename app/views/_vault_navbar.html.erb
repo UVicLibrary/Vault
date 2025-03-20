@@ -4,7 +4,8 @@
   <div class="container">
     <div class="row">
       <div class="collapse <%= 'show' if search_or_homepage? %>" id="search-top-navbar-collapse" >
-        <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
+        <search>
+          <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
           <%# Provide a blank search_state if there isn't one and we're rendering from a non-Hyrax controller %>
           <% search_state = (search_state ||= Blacklight::SearchState.new(params.except(:q, :search_field, :qt, :page, :utf8), CatalogController.blacklight_config)) %>
           <%= hidden_field_tag :search_field, 'all_fields' %>
@@ -14,7 +15,7 @@
                 <%= t("hyrax.search.form.q.label", application_name: application_name) %>
               </label>
               <%= text_field_tag :q, current_search_parameters , class: "q form-control typeahead", id: "search-field-header",
-                                 placeholder: t("hyrax.search.form.q.placeholder"), role: "combobox" %>
+                                 placeholder: t("hyrax.search.form.q.placeholder"), role: "combobox", aria: { autocomplete: "list" } %>
 
               <div class="input-group-btn">
                 <button type="submit" class="btn btn-primary" id="search-submit-header">
@@ -24,6 +25,7 @@
             </div><!-- /.input-group -->
           </div><!-- /.form-group -->
         <% end %>
+        </search>
         <a href="/advanced" class="adv-search" data-turbolinks="false">Advanced Search</a>
       </div>
     </div>
@@ -33,27 +35,25 @@
 <nav class="vault_nav navbar navbar-expand-lg navbar-dark navbar-static-top" style="background-color: <%= appearance.header_background_color %>" role="navigation">
   <div class="container">
     <div class="row">
-
-    <!-- logo -->
-    <a id="vault_logo" class="navbar-brand ml-lg-1" href="<%= hyrax.root_path %>" data-turbolinks="false">
+      <a id="vault_logo" class="navbar-brand ml-lg-1" aria-label="Vault home page" href="<%= hyrax.root_path %>" data-turbolinks="false">
         <span>Vault</span>
         <div ><span class="institution_name">University of Victoria</span><%= image_tag('UVIC-VRGB-White.svg', id: "wordmark", aria: { hidden: true } ) %></div>
         <span>Libraries</span>
-    </a>
+      </a>
 
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div id="navbar-right-different">
+
       <label class="visually-hidden" for="expand-search-button">
         <%= t("hyrax.search.form.q.label", application_name: "Vault") %>
       </label>
-      <button type="button" id="expand-search-button" class="btn dropdown-toggle <%= 'collapsed' unless search_or_homepage? %>" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="false">
+      <button type="button" id="expand-search-button" class="btn dropdown-toggle <%= 'collapsed' unless search_or_homepage? %>" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="<%= 'false' unless search_or_homepage? %>">
         <%= blacklight_icon('search', aria_hidden: true) %>
       </button>
-
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top-navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
+
+      <!-- Brand and toggle get grouped for better mobile display -->
       <div class="collapse navbar-collapse navbar-dark" id="top-navbar-collapse">
         <% if admin_host? %>
           <%= render '/admin_util_links' %>
@@ -61,7 +61,6 @@
           <%= render '/user_util_links', appearance: appearance %>
         <% end %>
       </div>
-    </div>
 
     </div>
   </div>
