@@ -11,6 +11,7 @@ InheritPermissionsJob.class_eval do
     else
       Hyrax.persister.save(resource: work)
     end
+    retry_job
   end
 
 end
