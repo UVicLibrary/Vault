@@ -41,5 +41,8 @@ body {
   }
   .site-footer {
     height: 2 * $footer-height;
+    // This prevents the footer from covering the sign in
+    // button on the login page
+    bottom: auto;
   }
 }
