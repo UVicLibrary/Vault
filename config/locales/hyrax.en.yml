@@ -1328,7 +1328,7 @@ en:
             label_short: My Works
         q:
           label: Search %{application_name}
-          placeholder: Enter search terms
+          placeholder: Enter search terms or collection name
     select_type:
       description: General purpose worktype
       name: Work
