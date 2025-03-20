@@ -163,6 +163,7 @@ search {
   // Search form
   .input-group {
     height: 37.5px;
+    flex-wrap: nowrap;
 
     // Autocomplete for collection titles
     .twitter-typeahead,
