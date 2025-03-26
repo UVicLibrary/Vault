@@ -36,8 +36,7 @@ module Hydra::Derivatives::Processors::ImageDecorator
 
   def create_image
     if Hydra::Derivatives::ImageService.processor == :libvips
-      image = load_image_transformer
-      yield image if block_given?
+      image = block_given? ? yield(load_image_transformer) : load_image_transformer
       write_image_with_vips(image, directives)
     else
       xfrm = selected_layers(load_image_transformer)
