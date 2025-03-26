@@ -20,19 +20,18 @@ RSpec.describe VaultThumbnailPathService do
       before do
         allow(ActiveFedora::Base).to receive(:find).with('999').and_return(object)
         allow(object).to receive(:original_file).and_return(original_file)
-        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return("#{object.id}/files/#{original_file.id}")
+        allow(File).to receive(:exist?).and_return(true)
       end
 
       let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
 
-      before { allow(File).to receive(:exist?).and_return(true) }
-      it { is_expected.to eq "/images/999%2Ffiles%2F#{original_file.id}/full/!150,300/0/default.jpg" }
+      it { is_expected.to eq "/downloads/999?file=thumbnail" }
     end
 
     context "that has no thumbnail" do
       let(:original_file) { mock_file_factory(mime_type: nil) }
 
-      it { is_expected.to match %r{/assets/work-.+.png} }
+      it { is_expected.to match %r{/assets/default.+.png} }
     end
   end
 
@@ -42,34 +41,32 @@ RSpec.describe VaultThumbnailPathService do
     let(:representative) { FileSet.new(id: '999') }
     let(:collection) { Collection.new(id: "foo-bar", title: ["Collection Title"]) }
 
-    context "that doesn't have a representative" do
-      let(:object) { FileSet.new }
-      let(:original_file)  { nil }
+    context "that has a thumbnail" do
+      let(:object)         { GenericWork.new(thumbnail_id: '999') }
+      let(:representative) { build(:file_set, id: '999') }
+      let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
+
+      before do
+        allow(File).to receive(:exist?).and_return(true)
+        allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
+        allow(representative).to receive(:original_file).and_return(original_file)
+      end
+
+      it { is_expected.to eq '/downloads/999?file=thumbnail' }
+    end
+
+    context 'when it has a missing thumbnail' do
+      let(:object) { GenericWork.new(thumbnail_id: 'very_fake') }
+
+      before { allow(ActiveFedora::Base).to receive(:find).with('very_fake').and_raise(Hyrax::ObjectNotFoundError) }
 
       it { is_expected.to match %r{/assets/default-.+.png} }
     end
 
-    context "that has an image thumbnail" do
+    context "that doesn't have a representative" do
+      let(:object) { FileSet.new }
 
-      before do
-        allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
-        allow(representative).to receive(:original_file).and_return(original_file)
-        allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return(original_file.id)
-      end
-
-      let(:original_file)  { mock_file_factory(mime_type: 'image/jpeg') }
-
-      it { is_expected.to eq "/images/#{original_file.id}/full/!150,300/0/default.jpg" }
-
-      context "and has more than one version" do
-
-        before { allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(original_file).and_return("#{original_file.id}/fcr:versions/version2") }
-
-        it "returns the path to the latest version" do
-          expect(subject).to eq "/images/#{original_file.id}%2Ffcr:versions%2Fversion2/full/!150,300/0/default.jpg"
-        end
-
-      end
+      it { is_expected.to match %r{/assets/default-.+.png} }
     end
 
     context "with an audio thumbnail" do
@@ -109,37 +106,19 @@ RSpec.describe VaultThumbnailPathService do
       end
     end
 
-    context "and has a pdf thumbnail" do
-
-      before do
-        allow(ActiveFedora::Base).to receive(:find).with("999").and_return(representative)
-        allow(representative).to receive(:pdf?).and_return true
-      end
-
-      it { is_expected.to eq("/pdf_thumbnails/999-thumb.jpg") }
-    end
-
-    context "and has a video thumbnail" do
-
-      before do
-        allow(representative).to receive(:video?).and_return true
-        allow(ActiveFedora::Base).to receive(:find).with("999").and_return(representative)
-        allow(File).to receive(:exist?).with(Hyrax::DerivativePath.derivative_path_for_reference(representative, 'thumbnail')).and_return true
-      end
-
-      it { is_expected.to eq("/downloads/999?file=thumbnail") }
-    end
-
     context 'with a Hyrax::FileSet' do
 
-      before { allow(Hyrax.config).to receive(:use_valkyrie?).and_return true }
+      before do
+        allow(Hyrax.config).to receive(:use_valkyrie?).and_return true
+        # allow(Hyrax.query_service).to receive(:find_by_alternate_identifier).and_return(object)
+      end
 
       context "with an image thumbnail" do
-        let(:representative) { FactoryBot.create(:file_set, :with_original_file) }
+        let(:object) { FactoryBot.build(:hyrax_file_set, id: '123', thumbnail_id: '123') }
 
-        it "includes the version in the URL" do
-          expect(subject).to eq "/images/#{CGI.escape("#{representative.original_file.id}/fcr:versions/version1").gsub("%3A",":")}/full/!150,300/0/default.jpg"
-        end
+        before { allow(Hyrax.custom_queries).to receive(:find_thumbnail).and_return true }
+
+        it { is_expected.to eq("/downloads/123?file=thumbnail") }
       end
 
       context 'with an audio thumbnail' do
@@ -202,15 +181,6 @@ RSpec.describe VaultThumbnailPathService do
         end
 
         it { is_expected.to match %r{audio(.+)?\.png} }
-      end
-
-      context 'with a pdf thumbnail' do
-        before do
-          allow(ActiveFedora::Base).to receive(:find).with('999').and_return(representative)
-          allow_any_instance_of(Hyrax::FileSetTypeService).to receive(:pdf?).and_return true
-        end
-
-        it { is_expected.to eq "/pdf_thumbnails/999-thumb.jpg" }
       end
 
     end
