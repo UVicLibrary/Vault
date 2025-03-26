@@ -27,10 +27,9 @@ class IIIFAuthorizationService < Hyrax::IiifAuthorizationService
   end
 
   def thumbnail?
-    @controller.params[:size] == VaultThumbnailPathService.image_thumbnail_size ||
-      @controller.params[:size] == CollectionThumbnailPathService.image_thumbnail_size ||
       # The size for thumbnails in search results view
-      @controller.params[:size] == '!150,300' || @controller.params[:size] == '!300,300'
+      @controller.params[:size] == '!150,300' || @controller.params[:size] == '!300,300' ||
+      @controller.params[:size] == CollectionThumbnailPathService.image_thumbnail_size
   end
 
   def uv_page?(request)
