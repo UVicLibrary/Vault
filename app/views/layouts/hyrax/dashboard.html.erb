@@ -15,28 +15,27 @@
       <%= render '/masthead' %>
     <% end %>
     <%= content_for(:navbar) %>
-    <div id="content-wrapper" role="main">
-      <div class="sidebar maximized">
-        <%= render 'hyrax/dashboard/sidebar' %>
-      </div>
-      <div class="main-content maximized<%= " admin-stats" if request.fullpath.include? '/admin/stats' %>">
-        <%= render_breadcrumbs builder: Hyrax.config.breadcrumb_builder %>
-        <%= render '/flash_msg' %>
-        <% if content_for?(:page_header) %>
-          <div class="row">
-            <div class="col-12 main-header">
-              <%= yield(:page_header) %>
+    
+    <div class="sidebar maximized">
+      <%= render 'hyrax/dashboard/sidebar' %>
+    </div>
+    <main id="skip-to-content">
+        <div class="main-content maximized<%= " admin-stats" if request.fullpath.include? '/admin/stats' %>">
+          <%= render_breadcrumbs builder: Hyrax.config.breadcrumb_builder %>
+          <%= render '/flash_msg' %>
+          <% if content_for?(:page_header) %>
+            <div class="row">
+              <div class="col-12 main-header">
+                <%= yield(:page_header) %>
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
 
-          <a name="skip-to-content" id="skip-to-content"></a>
-          <%= render 'shared/read_only' if Flipflop.read_only? %>
-          <%= content_for?(:content) ? yield(:content) : yield %>
+            <%= render 'shared/read_only' if Flipflop.read_only? %>
+            <%= content_for?(:content) ? yield(:content) : yield %>
 
-      </div>
-
-    </div><!-- /#content-wrapper -->
+        </div>
+    </main>
     <%= render 'shared/modal' %>
   </body>
 </html>
