@@ -22,6 +22,16 @@ $(document).on('turbolinks:load', function() {
             source: collections
             }
         );
+
+        // Because it has autocomplete, add the aria-controls attribute to the
+        // main search bar (required for elements with the combobox role)
+        // See https://www.digitala11y.com/combobox-role/
+        $('.typeahead').each(function() {
+            let listbox = $(this).parent().find('.tt-dataset')
+            listbox.attr('id','autocomplete_list')
+            $(this).attr("aria-controls", 'autocomplete_list');
+        });
+
         // When a selection is made, redirect to the collection page
         $('.typeahead').bind('typeahead:select', function(event,suggestion) {
             window.location.href = suggestion.link;

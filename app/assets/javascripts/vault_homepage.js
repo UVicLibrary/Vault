@@ -44,7 +44,7 @@ $(document).on('turbolinks:load', function() {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
             buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
             // Update the header
-            var header = $($(this).closest('div').find('h1'));
+            var header = $($(this).closest('div:not([role=tablist])').find('h2'));
             var container = header.parent();
             var newHeader = header.clone().html($(this).data('header'));
             header.remove();
@@ -58,7 +58,7 @@ $(document).on('turbolinks:load', function() {
     $('button[data-toggle="tab"]').keydown(function(e) {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
             // Get the index of the current button
-            var buttons = $(e.target.closest('ul')).find('button');
+            var buttons = $(e.target.closest('div[role=tablist]')).find('button');
             var currentIdx = buttons.index(e.target);
 
             // When pressing right (39) or left (37) arrow keys
