@@ -23,7 +23,15 @@ by the order they appear on the page */
   width: 100%;
 }
 
-.home-content ul[role=tablist] {
+.home-content h2 {
+  font-size: 2.5rem;
+}
+
+.home-content section {
+  width: 100%;
+}
+
+.home-content div[role=tablist] {
   margin-bottom: 0;
   margin-top: 1.5em;
   border: none;
@@ -33,38 +41,34 @@ by the order they appear on the page */
   flex-wrap: wrap;
 }
 
-.home-content ul[role=tablist] li {
+.home-content div[role=tablist] button {
   margin-right: 0.3em;
   margin-left: 0.3em;
+  border: none;
+  border-radius: 6px;
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  background: none;
+  color: #005493;
 
-  button {
-    border: none;
-    border-radius: 6px;
-    position: relative;
-    display: block;
-    padding: 10px 15px;
-    background: none;
-    color: #005493;
-
-    &:hover {
-      text-decoration: underline;
-      background-color: #ccdde9;
-      color: #333;
-    }
+  &:hover {
+    text-decoration: underline;
+    background-color: #ccdde9;
+    color: #333;
   }
+}
 
-  button.active {
-    text-decoration: none;
-    background-color: #005493 !important;
-    color: #fff;
+.home-content div[role=tablist] button.active {
+  text-decoration: none;
+  background-color: #005493 !important;
+  color: #fff;
 
-    &:hover {
-      // Overrides button:hover class above
-      color:#fff;
-      text-decoration: underline;
-    }
+  &:hover {
+    // Overrides button:hover class above
+    color:#fff;
+    text-decoration: underline;
   }
-
 }
 
 
@@ -84,11 +88,11 @@ a.homepage-facet-link {
   flex-wrap: wrap;
 }
 
-#genre-homepage-facet ul,
-#subject-homepage-facet ul,
-#place-homepage-facet ul,
-#year-range-homepage-facet ul {
-  margin-top: 1em;
+#genre-homepage-facet > div,
+#subject-homepage-facet > div,
+#place-homepage-facet > div,
+#year-range-homepage-facet > div {
+  margin-top: 0.5rem;
 }
 
 .homepage-year-range-form {

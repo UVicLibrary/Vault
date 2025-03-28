@@ -1,25 +1,20 @@
-<div class="browse-by-container">
-  <h1 id="browse-by-header" class="fade-in-text">Browse by Genre</h1>
-  <ul id="browse-by-nav" class="nav nav-tabs" role="tablist" >
-    <li class="nav-item">
-      <button class="nav-link" href="#genre-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Genre" aria-controls="genre" aria-selected="true" tabindex="0">Genre</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" href="#year-range-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Time Period" aria-controls="time-period" tabindex="-1">Time Period</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" href="#subject-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Subject" aria-controls="subject" tabindex="-1">Subject</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" href="#place-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Place" aria-controls="place" tabindex="-1">Place</button>
-    </li>
-  </ul>
+<section>
+  <div class="browse-by-container">
+    <h2 id="browse-by-header" class="fade-in-text">Browse by Genre</h2>
+    <div id="browse-by-nav" class="nav nav-tabs" role="tablist" >
+      <button class="nav-link active" href="#genre-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Genre" aria-label="Browse items by genre" aria-controls="genre-homepage-facet" aria-selected="true" tabindex="0">Genre</button>
+      <button class="nav-link" href="#year-range-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Time Period" aria-label="Browse items by time period" aria-controls="year-range-homepage-facet" tabindex="-1">Time Period</button>
+      <button class="nav-link" href="#subject-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Subject" aria-controls="subject-homepage-facet" aria-label="Browse items by subject" tabindex="-1">Subject</button>
+      <button class="nav-link" href="#place-homepage-facet" data-toggle="tab" role="tab" data-header="Browse by Place" aria-label="Browse items by place" aria-controls="place-homepage-facet" tabindex="-1">Place</button>
+    </div>
 
-  <div class="tab-content" >
-    <%# Homepage facet links are configured in VaultHomepageHelper %>
-    <%= render 'hyrax/homepage/facets/genre_facet', field_name: "genre_label_sim" %>
-    <%= render 'hyrax/homepage/facets/year_range_facet', field_name: "year_range_isim" %>
-    <%= render 'hyrax/homepage/facets/subject_facet', field_name: "subject_label_sim" %>
-    <%= render 'hyrax/homepage/facets/geographic_coverage_facet', field_name: "geographic_coverage_label_sim" %>
+    <div class="tab-content" >
+      <%# Homepage facet links are configured in VaultHomepageHelper %>
+      <%= render 'hyrax/homepage/facets/genre_facet', field_name: "genre_label_sim" %>
+      <%= render 'hyrax/homepage/facets/year_range_facet', field_name: "year_range_isim" %>
+      <%= render 'hyrax/homepage/facets/subject_facet', field_name: "subject_label_sim" %>
+      <%= render 'hyrax/homepage/facets/geographic_coverage_facet', field_name: "geographic_coverage_label_sim" %>
+    </div>
   </div>
-</div>
+</section>
+

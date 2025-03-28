@@ -45,7 +45,7 @@
       <label class="visually-hidden" for="expand-search-button">
         <%= t("hyrax.search.form.q.label", application_name: "Vault") %>
       </label>
-      <button type="button" id="expand-search-button" class="btn dropdown-toggle <%= 'collapsed' unless search_or_homepage? %>" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="<%= 'false' unless search_or_homepage? %>">
+      <button type="button" id="expand-search-button" aria-label="Toggle search button" class="btn dropdown-toggle <%= 'collapsed' unless search_or_homepage? %>" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="<%= 'false' unless search_or_homepage? %>">
         <%= blacklight_icon('search', aria_hidden: true) %>
       </button>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top-navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
