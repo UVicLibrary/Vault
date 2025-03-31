@@ -51,7 +51,8 @@ module Hydra::Derivatives::Processors::ImageDecorator
     output_io = StringIO.new
     format = directives.fetch(:format, "jpg")
     quality = directives.fetch(:quality, nil)
-    output_io.write(image.write_to_buffer(".#{format}#{"[Q=#{quality}]" if quality}"))
+    format_string = ".#{format}#{"[Q=#{quality}]" if quality}"
+    output_io.write(image.write_to_buffer(format_string))
     output_io.rewind
     output_file_service.call(output_io, directives)
   end
