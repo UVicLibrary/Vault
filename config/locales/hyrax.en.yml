@@ -1165,6 +1165,8 @@ en:
     icons:
       collection: fa fa-cubes
       default: fa fa-cube
+    institution_name:
+      Institution
     leases:
       edit:
         header:
