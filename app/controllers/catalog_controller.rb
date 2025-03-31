@@ -46,8 +46,8 @@ class CatalogController < ApplicationController
 
   configure_blacklight do |config|
     config.view.gallery(document_component: Blacklight::Gallery::DocumentComponent)
-    config.view.masonry(document_component: Blacklight::Gallery::DocumentComponent)
-    config.view.slideshow(document_component: Blacklight::Gallery::SlideshowComponent)
+    # config.view.masonry(document_component: Blacklight::Gallery::DocumentComponent)
+    # config.view.slideshow(document_component: Blacklight::Gallery::SlideshowComponent)
 
 
     config.search_builder_class = ::CustomRangeLimitBuilder # Hyrax::CatalogSearchBuilder
@@ -55,6 +55,8 @@ class CatalogController < ApplicationController
     # Because too many times on Samvera tech people raise a problem regarding a failed query to SOLR.
     # Often, it's because they inadvertently exceeded the character limit of a GET request.
     config.http_method = Hyrax.config.solr_default_method
+
+    config.per_page = [10,20,50]
 
     # config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     # config.show.partials.insert(1, :openseadragon)
