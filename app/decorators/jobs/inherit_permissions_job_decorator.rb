@@ -7,11 +7,19 @@ InheritPermissionsJob.class_eval do
     work = arguments[0]
     case work
     when ActiveFedora::Base
-      work.save!
+      work.save! && work.update_index
     else
       Hyrax.persister.save(resource: work)
     end
     retry_job
+  end
+
+  after_perform do |job|
+    work = job.arguments.first
+    case work
+    when ActiveFedora::Base
+      work.update_index
+    end
   end
 
 end
