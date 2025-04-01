@@ -5,11 +5,25 @@ class CatalogController < ApplicationController
   include Hydra::Controller::ControllerBehavior
   include BlacklightOaiProvider::Controller
 
+  before_action :count_params, only: [:index, :facet]
+
   # These before_action filters apply the hydra access controls
   before_action :enforce_show_permissions, only: :show
 
   # Allow all search options when in read-only mode
   skip_before_action :check_read_only
+
+  WHITELISTED_CRAWLERS = %w['Googlebot', 'bingbot','Applebot','facebookexternalhit']
+
+  # Attempt to block bots that frequently stuff parameters into the catalog search path
+  def count_params
+    if URI.parse(request.url).query
+      if URI.decode_www_form(URI.parse(request.url).query).flatten.count > 7 && WHITELISTED_CRAWLERS.none? { |str| request.user_agent.include? str }
+        render file: 'public/404.html', layout: false
+        return
+      end
+    end
+  end
 
   def self.created_field
     'date_created_ssi'
