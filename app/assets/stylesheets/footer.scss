@@ -54,7 +54,11 @@
     height: 22px;
   }
 
-  ul[aria-labelledby=social-media-header] li {
+  ul.social-media-links {
+    display: flex;
+  }
+
+  ul.social-media-links li {
     display: inline-block;
   }
 }
