@@ -15,6 +15,7 @@ RSpec.describe Hyrax::DOI::TombstonesController, type: :controller do
   end
 
   describe '#new' do
+    before { allow(controller).to receive(:authorize!) }
 
     it 'builds a new tombstone from params' do
       get :new, params: params
