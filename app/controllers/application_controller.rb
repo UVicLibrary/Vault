@@ -110,9 +110,8 @@ class ApplicationController < ActionController::Base
     Honeybadger.context(user_email: current_user.email) if current_user
   end
 
-  def default_url_options(options={})
+  def default_url_options(options = super)
     ActiveRecord::Type::Boolean.new.cast(ENV.fetch('HYKU_SSL_CONFIGURED', false)) ? options.merge(protocol: :https) : options
   end
-
 
 end
