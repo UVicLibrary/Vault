@@ -216,7 +216,7 @@ body {
 
 @media screen and (min-width: 768px) {
     body {
-        margin-bottom: 25%; /*overwrites 133px that's showing up only in prod*/
+        margin-bottom: 30%; /*overwrites 133px that's showing up only in prod*/
     }
 }
 
