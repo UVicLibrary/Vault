@@ -10,6 +10,7 @@ $(document).on('turbolinks:load', function() {
         var collections  = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: 15,
             local: response
         });
         $('#search-field-header').typeahead(
