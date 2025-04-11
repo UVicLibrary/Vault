@@ -11,12 +11,12 @@ RSpec.describe Hyrax::Forms::FileSetEditForm do
           :language, :identifier, :based_near, :visibility_during_embargo,
           :visibility_after_embargo, :embargo_release_date,
           :visibility_during_lease, :visibility_after_lease,
-          :lease_expiration_date, :visibility, :genre, :provider, :format,
+          :lease_expiration_date, :visibility, :genre, :provider,
           :alternative_title, :geographic_coverage, :coordinates,
           :chronological_coverage, :extent, :identifier,
-          :additional_physical_characteristics, :has_format, :physical_repository,
-          :provenance, :provider, :sponsor, :genre, :format, :is_referenced_by,
-          :date_digitized, :transcript, :technical_note, :year]
+          :additional_physical_characteristics, :has_format, :format,
+          :physical_repository, :provenance, :provider, :sponsor, :genre,
+          :is_referenced_by, :date_digitized, :transcript, :technical_note]
       )
     end
 
@@ -42,11 +42,11 @@ RSpec.describe Hyrax::Forms::FileSetEditForm do
     it 'contains all the same fields as a GenericWork' do
       expect(described_class.secondary_terms).to eq [:resource_type, :creator,
        :contributor, :keyword, :license, :publisher, :date_created, :subject,
-       :language, :identifier, :based_near, :genre, :provider, :format,
+       :language, :identifier, :based_near, :genre, :provider,
        :alternative_title, :geographic_coverage, :coordinates, :chronological_coverage,
-       :extent, :identifier, :additional_physical_characteristics, :has_format,
-       :physical_repository, :provenance, :provider, :sponsor, :genre, :format,
-       :is_referenced_by, :date_digitized, :technical_note, :year]
+       :extent, :identifier, :additional_physical_characteristics, :has_format, :format,
+       :physical_repository, :provenance, :provider, :sponsor, :genre,
+       :is_referenced_by, :date_digitized, :technical_note]
     end
   end
 
@@ -59,14 +59,13 @@ RSpec.describe Hyrax::Forms::FileSetEditForm do
          {:based_near=>[]}, :visibility_during_embargo, :visibility_after_embargo,
          :embargo_release_date, :visibility_during_lease, :visibility_after_lease,
          :lease_expiration_date, :visibility, {:genre=>[]}, {:provider=>[]},
-         {:format=>[]}, {:alternative_title=>[]}, {:geographic_coverage=>[]},
+         {:alternative_title=>[]}, {:geographic_coverage=>[]},
          {:coordinates=>[]}, {:chronological_coverage=>[]}, {:extent=>[]},
          {:identifier=>[]}, {:additional_physical_characteristics=>[]},
-         {:has_format=>[]}, {:physical_repository=>[]}, {:provenance=>[]},
-         {:provider=>[]}, {:sponsor=>[]}, {:genre=>[]}, {:format=>[]},
+         {:has_format=>[]}, {:format=>[]}, {:physical_repository=>[]},
+         {:provenance=>[]}, {:provider=>[]}, {:sponsor=>[]}, {:genre=>[]},
          {:is_referenced_by=>[]}, {:date_digitized=>[]}, {:transcript=>[]},
-         {:technical_note=>[]}, {:year=>[]},
-         {:permissions_attributes=>[:type, :name, :access, :id, :_destroy]},
+         {:technical_note=>[]}, {:permissions_attributes=>[:type, :name, :access, :id, :_destroy]},
          {:creator_attributes=>[:id, :_destroy], :contributor_attributes=>[:id, :_destroy],
           :physical_repository_attributes=>[:id, :_destroy],
           :provider_attributes=>[:id, :_destroy], :subject_attributes=>[:id, :_destroy],

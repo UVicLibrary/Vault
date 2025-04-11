@@ -1,0 +1,185 @@
+attributes:
+  alternative_title:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/alternative
+    index_keys:
+      - "alternative_title_sim"
+      - "alternative_title_tesim"
+  bibliographic_citation:
+    type: string
+    multiple: true
+    predicate: http://purl.org/dc/terms/bibliographicCitation
+  # Controlled property field
+  based_near:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://schema.org/spatialCoverage
+    class_name: Hyrax::ControlledVocabularies::Location
+  # Controlled property field, facet field
+  contributor:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/elements/1.1/contributor
+    class_name: Hyrax::ControlledVocabularies::Contributor
+    index_keys:
+      - "contributor_sim"
+      - "contributor_tesim"
+  # Controlled property field, facet field
+  creator:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/elements/1.1/creator
+    class_name: Hyrax::ControlledVocabularies::Creator
+    index_keys:
+      - "creator_sim"
+      - "creator_tesim"
+  date_created:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/created
+    index_keys:
+      - "date_created_sim"
+      - "date_created_tesim"
+#  description:
+#    type: string
+#    multiple: true
+#    form:
+#      secondary: true
+#    predicate: http://purl.org/dc/elements/1.1/description
+#    index_keys:
+#      - "description_tesim"
+  # Controlled property field, facet field
+  genre:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://schema.org/genre
+    class_name: Hyrax::ControlledVocabularies::Genre
+    index_keys:
+      - "genre_sim"
+      - "genre_tesim"
+  # Controlled property field, facet field
+  geographic_coverage:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/spatial
+    class_name: Hyrax::ControlledVocabularies::GeographicCoverage
+    index_keys:
+      - "geographic_coverage_sim"
+      - "geographic_coverage_tesim"
+  import_url:
+    type: string
+    multiple: false
+    predicate: http://scholarsphere.psu.edu/ns#importUrl
+  keyword:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/elements/1.1/relation
+#  label:
+#    type: string
+#    index_keys:
+#      - "label_sim"
+#      - "label_tesim"
+    # predicate is specified on individual model metadata
+    # predicate:
+  language:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/elements/1.1/language
+    index_keys:
+      - "language_tesim"
+#  license:
+#    type: string
+#    multiple: true
+#    form:
+#      primary: true
+#    predicate: http://purl.org/dc/terms/rights
+#    index_keys:
+#      - "license_tesim"
+  # Controlled property, facet field
+  physical_repository:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://www.w3.org/ns/prov#atLocation
+    class_name: Hyrax::ControlledVocabularies::PhysicalRepository
+    index_keys:
+      - "physical_repository_sim"
+      - "physical_repository_tesim"
+  # Controlled property
+#  provider:
+#    type: string
+#    multiple: true
+#    form:
+#      required: true
+#      primary: true
+#    predicate: http://www.europeana.eu/schemas/edm/provider
+#    class_name: Hyrax::ControlledVocabularies::Provider
+#    index_keys:
+#      - "provider_tesim"
+  publisher:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/elements/1.1/publisher
+    index_keys:
+      - "publisher_tesim"
+  relative_path:
+    type: string
+    multiple: false
+    multiple: false
+    predicate: http://scholarsphere.psu.edu/ns#relativePath
+  resource_type:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/type
+    index_keys:
+      - "resource_type_sim"
+      - "resource_type_tesim"
+  rights_statement:
+    type: string
+    multiple: true
+    predicate: http://purl.org/dc/terms/type
+    index_keys:
+      - "rights_statement_tesim"
+  source:
+    type: string
+    multiple: true
+#    form:
+#      secondary: true
+    predicate: http://purl.org/dc/terms/source
+    index_keys:
+      - "source_tesim"
+  # Controlled property, facet field
+  subject:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/elements/1.1/subject
+    class_name: Hyrax::ControlledVocabularies::Subject
+    index_keys:
+      - "subject_sim"
+      - "subject_tesim"
