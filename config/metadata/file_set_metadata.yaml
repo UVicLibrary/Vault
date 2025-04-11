@@ -1,0 +1,157 @@
+# OVERRIDE Hyrax 4.0 to provide our own custom metadata schema
+#
+# This is the metadata used for `Hyrax::FileSet`s` and a replacement
+# for the file of the same name in the Hyrax gem.
+#
+# Terms which are already present in `vault_basic_metadata.yaml`
+# are not repeated here.
+attributes:
+  additional_physical_characteristics:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://schema.org/description
+    index_keys:
+      - "additional_physical_characteristics_tesim"
+  chronological_coverage:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/temporal
+    index_keys:
+      - "chronological_coverage_sim"
+      - "chronological_coverage_tesim"
+  coordinates:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://schema.org/geo
+    index_keys:
+      - "coordinates_sim"
+      - "coordinates_tesim"
+  date_digitized:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/date
+    index_keys:
+      - "date_digitized_sim"
+      - "date_digitized_tesim"
+  description:
+    type: string
+    multiple: true
+    form:
+      primary: true
+      predicate: http://purl.org/dc/elements/1.1/description
+      index_keys:
+        - "description_tesim"
+  edition:
+    type: string
+    multiple: true
+#    form:
+#      secondary: true
+    predicate: http://schema.org/bookEdition
+    index_keys:
+      - "edition_sim"
+      - "edition_tesim"
+  extent:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://schema.org/bookEdition
+    index_keys:
+      - "extent_sim"
+      - "extent_tesim"
+  has_format:
+    type: string
+    multiple: true
+    predicate: http://purl.org/dc/terms/hasFormat
+    form:
+      secondary: true
+    index_keys:
+      - "has_format_sim"
+      - "has_format_tesim"
+  identifier:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/identifier
+    index_keys:
+      - "identifier_tesim"
+  is_referenced_by:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    index_keys:
+      - "is_referenced_by_sim"
+      - "is_referenced_by_tesim"
+  label:
+    type: string
+    multiple: false
+    predicate: info:fedora/fedora-system:def/model#downloadFilename
+    index_keys:
+      - "label_sim"
+      - "label_tesim"
+  last_fixity_check:
+    type: string
+    multiple: false
+    predicate: http://library.uvic.ca/ns/uvic#last_fixity_check
+  license:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/rights
+    index_keys:
+      - "license_tesim"
+  provenance:
+    type: string
+    form:
+      secondary: true
+    predicate: http://purl.org/dc/terms/provenance
+    index_keys:
+      - "provenance_sim"
+      - "provenance_tesim"
+  provider:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://www.europeana.eu/schemas/edm/provider
+    class_name: Hyrax::ControlledVocabularies::Provider
+    index_keys:
+      - "provider_tesim"
+  sponsor:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://schema.org/sponsor
+    index_keys:
+      - "sponsor_sim"
+      - "sponsor_tesim"
+  transcript:
+    type: string
+    multiple: true
+    form:
+      primary: true
+    predicate: http://schema.org/transcript
+    index_keys:
+      - "transcript_sim"
+      - "transcript_tesim"
+  technical_note:
+    type: string
+    multiple: true
+    form:
+      secondary: true
+    predicate: http://uvic.ca/ns/uvic#technicalNote
+    index_keys:
+      - "technical_note_sim"
+      - "technical_note_tesim"
