@@ -8,9 +8,8 @@ $(document).on('turbolinks:load', function() {
       response = JSON.parse(JSON.stringify(data));
         // instantiate the bloodhound suggestion engine
         var collections  = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+            datumTokenizer: Bloodhound.tokenizers.obj.nonword('title'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 15,
             local: response
         });
         $('#search-field-header').typeahead(
@@ -19,8 +18,9 @@ $(document).on('turbolinks:load', function() {
                 hint: false
             },
             {
-            displayKey: 'title',
-            source: collections
+                limit: Number.MAX_VALUE,
+                displayKey: 'title',
+                source: collections
             }
         );
 
