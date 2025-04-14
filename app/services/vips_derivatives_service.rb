@@ -24,7 +24,7 @@ class VipsDerivativesService < Hyrax::FileSetDerivativesService
                                                           label: :thumbnail,
                                                           format: 'jpg',
                                                           size: '250x250>',
-                                                          quality: 65,
+                                                          quality: 70,
                                                           url: derivative_url('thumbnail'),
                                                           layer: 0
                                                         }])
@@ -52,7 +52,7 @@ class VipsDerivativesService < Hyrax::FileSetDerivativesService
                                                 outputs: [{ label: :thumbnail,
                                                             format: 'jpg',
                                                             size: '250x250>',
-                                                            quality: 65,
+                                                            quality: 70,
                                                             url: derivative_url('thumbnail'),
                                                             layer: 0 }])
   end
