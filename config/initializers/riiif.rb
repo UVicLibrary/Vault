@@ -38,6 +38,8 @@ Rails.application.reloader.to_prepare do
 
   Riiif::Engine.config.cache_duration = 1.year
 
+  Riiif::Engine.config.use_vips = true
+
   Riiif::ImagesController.class_eval do
     # Defined in the hydra-head gem
     # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb

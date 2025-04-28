@@ -9,7 +9,9 @@ gem 'rails', '~> 6.0', github: 'rails/rails', branch: '6-1-stable', ref: 'd16199
 gem 'hyrax', '~> 4.0'
 gem 'sass-rails', '~> 6.0'
 gem 'bootstrap', '~> 4.0'
-gem 'riiif', '~> 2.0'
+
+gem 'riiif', git: 'https://github.com/UVicLibrary/riiif.git'
+
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 
 # TO DO: Relax reqs for cdm_migrator
