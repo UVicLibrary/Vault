@@ -29,12 +29,15 @@ Rails.application.reloader.to_prepare do
   Riiif::Image.authorization_service = IIIFAuthorizationService # Hyrax::IIIFAuthorizationService
 
   # Only in prod
-  Riiif::ImagemagickCommandFactory.external_command = "gm convert"
-  Riiif::ImageMagickInfoExtractor.external_command = "gm identify"
-  Riiif::Image.file_resolver.cache_path = '/mnt/nfs/cache'
+  # Riiif::ImagemagickCommandFactory.external_command = "gm convert"
+  # Riiif::ImageMagickInfoExtractor.external_command = "gm identify"
+  
+  if Rails.env.production?
+	Riiif::Image.file_resolver.cache_path = '/mnt/nfs/cache'
+  end
 
-  Riiif.not_found_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
-  Riiif.unauthorized_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
+  Riiif.not_found_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg').to_s
+  Riiif.unauthorized_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg').to_s
 
   Riiif::Engine.config.cache_duration = 1.year
 
