@@ -10,7 +10,7 @@ gem 'hyrax', '~> 4.0'
 gem 'sass-rails', '~> 6.0'
 gem 'bootstrap', '~> 4.0'
 
-gem 'riiif', git: 'https://github.com/UVicLibrary/riiif.git'
+gem 'riiif', git: 'https://github.com/UVicLibrary/riiif'
 
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 

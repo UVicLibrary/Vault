@@ -28,8 +28,8 @@ Rails.application.reloader.to_prepare do
 
   Riiif::Image.authorization_service = IIIFAuthorizationService # Hyrax::IIIFAuthorizationService
 
-  Riiif.not_found_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
-  Riiif.unauthorized_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
+  Riiif.not_found_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg').to_s
+  Riiif.unauthorized_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg').to_s
 
   Riiif::Engine.config.cache_duration = 1.year
 

@@ -7,8 +7,8 @@ GIT
       rails (>= 5.0, < 7.0)
 
 GIT
-  remote: https://github.com/UVicLibrary/riiif.git
-  revision: 538fbcae1f58d6683eef4e11f8d7010b40edb4d4
+  remote: https://github.com/UVicLibrary/riiif
+  revision: 0d9b4b1cdd1237a22839d6680304d36006ed1e46
   specs:
     riiif (2.7.0)
       deprecation (>= 1.0.0)
