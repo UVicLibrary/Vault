@@ -1,0 +1,26 @@
+<% content_for :page_title, "New DOI Tombstone" %>
+<div class="hyrax_doi_tombstone_form row">
+  <div class="row">
+    <%= simple_form_for @tombstone, url: main_app.hyrax_doi_tombstones_path, html: { class: 'simple-form col-12' } do |f| %>
+
+      <div class="field-wrapper col-8 col-xs-12">
+        <%= t('tombstones.form.help_message_html') %>
+
+        <% reason_options = ["rights or privacy restrictions", "technical or structural issues"] %>
+
+        <div class="form-group row mt-4 ml-1">
+          <strong><%= f.label :reason, t('tombstones.form.reason_label'), class: "col-form-label" %></strong>
+          <%= f.input :reason, as: :select, collection: reason_options, class: 'form-control',
+                                            required: true, label: false, include_blank: "Select a reason" %>
+        </div>
+
+        <%# Hidden fields automatically filled using params %>
+        <%= f.hidden_field :doi %>
+        <%= f.hidden_field :hyrax_id %>
+
+        <%= f.submit 'Submit', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

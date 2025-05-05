@@ -1,0 +1,7 @@
+<% content_for :page_title, "Item not available: #{@metadata['titles'].values.first}" %>
+<h3 class="unavailable-doi-heading">Item not available: <%= @metadata['titles'].values.first %></h3>
+<div class="doi-tombstone-text-container">
+  <p><%= t('tombstones.message', reason: @tombstone.reason) %></p>
+  <%# See helpers/hyrax/doi/tombstone_helper.rb %>
+  <strong>Citation:</strong> <%= build_citation(@metadata) %>
+</div>

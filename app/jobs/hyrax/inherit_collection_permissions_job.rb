@@ -2,7 +2,7 @@ module Hyrax
   class InheritCollectionPermissionsJob < Hyrax::ApplicationJob
 
     def perform(collection_id, user_email, host)
-      coll = Collection.find(collection_id)
+      coll = Hyrax.config.collection_class.find(collection_id)
       works = GenericWork.where(member_of_collection_ids_ssim: collection_id)
       coll_permissions = coll.permissions.map(&:to_hash)
         # Copy collection permissions to works

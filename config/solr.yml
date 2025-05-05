@@ -1,0 +1,11 @@
+# This is up to date with Hyku v.5
+# This is a sample config file that points to a solr server for each environment.
+# It is used by ActiveFedora::SolrService (which may be deprecated in future),
+# and therefore some specs, although it's not used in dev/prod since
+# the Fedora URL is set in account settings.
+development:
+  url: <%= ENV['SOLR_URL'] || "http://127.0.0.1:#{ENV.fetch('SOLR_DEVELOPMENT_PORT', 8983)}/solr/hydra-development" %>
+test:
+  url: <%= ENV['SOLR_URL'] ? ENV['SOLR_URL'] + '/solr/test' : "http://127.0.0.1:#{ENV.fetch('SOLR_TEST_PORT', 8985)}/solr/test" %>
+production:
+  url: <%= ENV['SOLR_URL'] || "http://#{ENV.fetch('SOLR_ADMIN_USER', 'admin')}:#{ENV.fetch('SOLR_ADMIN_PASSWORD', 'admin')}@#{ENV.fetch('SOLR_HOST', 'solr')}:#{ENV.fetch('SOLR_PORT', '8983')}/solr/" %>

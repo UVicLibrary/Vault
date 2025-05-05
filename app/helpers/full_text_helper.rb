@@ -2,6 +2,7 @@ module FullTextHelper
 
   # Search a solr field for a substring and then show the surrounding words
   def excerpt_search_term(options={})
+    return truncated_text(options[:value].first) if @current_search_session.nil?
     search_term = @current_search_session['query_params']['q']
     if search_term.nil? # No search term, show the first 3 rows
       truncated_text(options[:value].first)

@@ -1,12 +1,12 @@
-<div class="card work-card col-lg-<%= card_width %> col-md-<%= card_width %> col-sm-<%= card_width %> col-xs-12">
+<div class="homepage-card work-card col-lg-<%= card_width %> col-md-<%= card_width  %> col-sm-<%= card_width  %> col-xs-12">
   <div class="wrapper" style="background: url(<%= presenter.thumbnail_path.gsub('!150,300', '!500,900') if presenter.thumbnail_path %>); background-size: cover; background-position: center;">
     <%= link_to [main_app, presenter], class: "plain-link work-card-link homepage-tab-link" do %>
       <div class="data">
         <div class="content">
-          <h3 class="card-title work-card-title"><%= presenter.title.first.truncate(55, separator: /\s/) %></h3>
+          <h4 class="homepage-card-title work-card-title"><%= presenter.title.first.truncate(55, separator: /\s/) %></h4>
           <p class="text">
             <% if presenter.description.first.present? %>
-              <%= sanitize(presenter.description.first.truncate(95, separator: /\s/)) %>
+              <%= presenter.description.first.truncate(95, separator: /\s/) %>
             <% else %>
               No description available.
             <% end %>

@@ -9,9 +9,8 @@
     margin-bottom: 2rem;
 }
 
-.feature-work-message {
-    display: inline-block;
-    margin-right: 1rem;
+.show-actions button, .show-actions a.btn {
+    margin-bottom: 1rem;
 }
 
 /*From https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/*/
@@ -33,4 +32,8 @@
     -webkit-hyphens: auto;
     hyphens: auto;
 
+}
+
+.feature-work-message {
+    margin-right: 1rem;
 }

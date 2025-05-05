@@ -6,7 +6,11 @@ class SitesController < ApplicationController
   def update
     params.require(:remove_banner_image)
     @site.remove_banner_image!
-    redirect_to hyrax.admin_appearance_path, notice: 'The appearance was successfully updated.'
+    if @site.save!
+      redirect_to hyrax.admin_appearance_path, notice: 'The appearance was successfully updated.'
+    else
+      redirect_to hyrax.admin_appearance_path, flash: { error: 'Updating the appearance was unsuccessful.' }
+    end
   end
 
   private

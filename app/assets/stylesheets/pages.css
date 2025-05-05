@@ -12,6 +12,10 @@ ul.contents-link {
     list-style-type: none;
 }
 
-h2.help-page-section-heading {
-    margin-top: 1em;
+.help-page-section-heading {
+    margin-top: 1.5rem;
+}
+
+.help-page-subheading {
+    margin-top: 1rem;
 }

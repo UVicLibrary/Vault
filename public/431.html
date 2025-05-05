@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Headers or Cookies Too Large - Redirecting</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        body {
+            background-color: #EFEFEF;
+            color: #2E2F30;
+            /*text-align: center;*/
+            font-family: arial, sans-serif;
+            margin: 0;
+        }
+
+        div.dialog {
+            width: 95%;
+            max-width: 33em;
+            margin: 4em auto 0;
+        }
+
+        div.dialog > div {
+            border: 1px solid #CCC;
+            border-right-color: #999;
+            border-left-color: #999;
+            border-bottom-color: #BBB;
+            border-top: #B00100 solid 4px;
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
+            background-color: white;
+            padding: 7px 7% 0;
+            box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #730E15;
+            line-height: 1.5em;
+        }
+
+        div.dialog > p {
+            margin: 0 0 1em;
+            padding: 1em;
+            background-color: #F7F7F7;
+            border: 1px solid #CCC;
+            border-right-color: #999;
+            border-left-color: #999;
+            border-bottom-color: #999;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-top-color: #DADADA;
+            color: #666;
+            box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
+        }
+        h3 {
+            color: #730E15;
+        }
+        ol li {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+    <body>
+        <!-- This file lives in public/431.html -->
+        <div class="dialog">
+            <div>
+                <h1>Error 431: Request Headers Too Large</h1>
+                <p>To resolve this error, you need to clear your cookies for this specific domain.
+                    <a href="https://web.archive.org/web/20250116221440/https://www.lifewire.com/clear-cookies-for-one-site-4587347" target="_blank">
+                    Instructions with screenshots are available here</a>, with text instructions for <a href="#chrome">Chrome</a>,
+                    <a href="#edge">Edge</a>, <a href="#firefox">Firefox</a>, and <a href="#safari">Safari</a> below.</p>
+                <p><strong>Please email <span style="color: #730E15; text-decoration: underline;">askus@uvic.ca</span> for assistance.</strong></p>
+                <p>If your browser is not included below, you may need to search online for instructions on how to clear cookies/cache
+                    for a specific website.
+                </p>
+                <h3><a name="chrome"><strong>Instructions for Chrome</strong></a></h3>
+                <ol>
+                    <li>Select <strong>Menu</strong> > <strong>Settings</strong> > <strong>Privacy and Security</strong> >
+                        <strong>Third-party cookies</strong> or <strong>Cookies and site data</strong> (depending on Chrome version).
+                    </li>
+                    <li>
+                        Select <strong>See all cookies and site data</strong> and <strong>search for uvic.ca</strong>.
+                        Click to <strong>expand the dropdown</strong> and click <strong>the trash icon for
+                        vault.library.uvic.ca</strong>.
+                    </li>
+                </ol>
+                <h3><a name="edge"><strong>Instructions for Edge</strong></a></h3>
+                <ol>
+                    <li>
+                        Select <strong>Settings and more ...</strong> > <strong>Settings</strong> >
+                        <strong>Cookies and site permissions.</strong>
+                    </li>
+                    <li>
+                        Under Cookies and data stored, select <strong>Manage and delete cookies and site data</strong>
+                        > <strong>See all cookies and site data</strong>. <strong>Search</strong> for vault.library.uvic.ca.
+                    </li>
+                    <li>
+                        <strong>Select the down arrow</strong> to the right of the site and select <strong>Delete</strong>.
+                    </li>
+                </ol>
+                <h3><a name="firefox"><strong>Instructions for Firefox</strong></a></h3>
+                <ol>
+                    <li>Click the <strong>three horizontal lines</strong> to open the menu > <strong>Privacy & Security</strong>.</li>
+                    <li>Under <strong>Cookies and Site Data</strong>, select <strong>Manage Data</strong>.</li>
+                    <li>Search for uvic.ca. Select <strong>uvic.ca</strong> and click <strong>Remove Selected</strong>.</li>
+                </ol>
+                <h3><a name="safari"><strong>Instructions for Safari</strong></a></h3>
+                <ol>
+                    <li>Go to <strong>Safari</strong> > <strong>Preferences</strong> > <strong>Privacy</strong> >
+                        <strong>Manage Website Data</strong>.</li>
+                    <li>Choose the website and select <strong>Remove</strong>.</li>
+                </ol>
+            </div>
+        </div>
+    </body>
+</html>

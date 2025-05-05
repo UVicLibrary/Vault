@@ -4,18 +4,33 @@
     display: inline-block;
 }
 
-.collection-title-row-content.flex-container {
-    flex-wrap: wrap;
-    justify-content: flex-end;
+.collection-title-row-content .buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 0.5rem;
 }
 
-.collection-title-row-content.flex-container .button-wrapper {
-    margin-bottom: 2%;
+.collections-list-table ul.dropdown-menu li {
+    margin-left: 1rem;
 }
-.collection-title-row-content.flex-container .button-wrapper:last-child {
-    text-align: right;
-    margin-left: 4px;
+
+/* Make the "Search X" label smaller so that the search bar renders on one line */
+.dashboard .search-form label[for=search-field-header] {
+    flex: 0 0 16.66666667%;
+    max-width: 16.66666667%;
 }
+
+/* Round button corners on filters for dashboard/my/collections and works */
+.dashboard .list-filters .btn-group .btn.btn-secondary {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.vault-dashboard .metadata-collections .collection-details-wrapper {
+    margin-left: 15px;
+}
+
 
 span.feature-collection-error {
     display: inline-block;
@@ -59,10 +74,19 @@ span.feature-collection-error {
     margin-bottom: 1.5rem;
 }
 
-.sharing-row-form:first-of-type {
-    margin-top: 2rem;
+.sharing-row-form {
+    align-items: start;
 }
 
-.sharing-row-form select {
-    margin-right: 1rem;
+/* branding tab */
+.branding-banner-list {
+
+    .container {
+        margin-left: 0;
+    }
+
+    .banner-image img {
+        object-fit: cover;
+    }
+
 }

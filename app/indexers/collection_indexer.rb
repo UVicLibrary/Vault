@@ -8,6 +8,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
   include Hyrax::IndexesLinkedMetadata
 
   include IndexesOAIFields
+  include IndexesNestedParentCollections
 
   # Use thumbnails served by RIIIF
   self.thumbnail_path_service = CollectionThumbnailPathService
@@ -16,13 +17,13 @@ class CollectionIndexer < Hyrax::CollectionIndexer
     # Convert ActiveTriples::Resource to Hyrax::ControlledVocabulary::[field name]
     # This is needed for Hyrax::DeepIndexingService
     object.to_controlled_vocab
-	
+
     super.tap do |solr_doc|
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Allow public users to see the metadata (so they can decide to request access or not)
       if object.visibility == "authenticated"
-        solr_doc["discover_access_group_ssim"] = "public"
+        solr_doc["discover_access_group_ssim"] = ["public"]
       end
 
       solr_doc['in_scua_bsi'] = object.in_scua

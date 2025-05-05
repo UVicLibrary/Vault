@@ -1,0 +1,85 @@
+<%# alternate version of facets on form that renders using multi-select.
+    Has to copy and paste more code from blacklight than default, making
+    it somewhat more fragile.
+
+    Logic taken from facets_helper_behavior.rb, #render_facet_partials and
+    #render_facet_limit.
+%>
+<% facets_from_request(facet_field_names, @response).each do |display_facet| %>
+  <%# Omit Year Range facet because we will render it in the form %>
+  <% if display_facet.items.present? %>
+    <div class="form-group advanced-search-facet">
+      <%= label_tag display_facet.name.parameterize, class: "col-sm-10 h4 mt-3" do %>
+        <%= facet_field_label(display_facet.name) %>
+      <% end %>
+
+      <div class="col-12">
+        <%= content_tag(:select, multiple: true,
+                        name: "f_inclusive[#{display_facet.name}][]",
+                        id: display_facet.name.parameterize,
+                        multiple: "multiple", # tells select2 that this tag allows multiple selections
+                        class: "advanced-search-facet-select") do %>
+          <% display_facet.items.each do |facet_item| %>
+            <%= content_tag :option, value: facet_item.value, selected: facet_value_checked?(display_facet.name, facet_item.value) do %>
+              <% facet_field = blacklight_config.facet_fields[display_facet.name] %>
+              <%= facet_field.helper_method.presence ? public_send(facet_field.helper_method, facet_item.value) : facet_item.label %>
+              <%#= number_with_delimiter facet_item.hits %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<script>
+  // Initialize select2 (JS library) to provide autocomplete.
+  // Override select2-rails gem v.3.5.11 (included in Hyrax)
+  // to make the remove button look more like Blacklight v.7's
+  // remove button
+  $('.advanced-search-facet-select').select2({
+      placeholder: 'Start typing or click to see options'
+      // theme: "bootstrap",
+      // In later versions of select2-rails, we may be able
+      // to use the following parameter instead of on change:
+      // createTag: function (params) {
+      //   Do something
+      // }
+  }).on("change.select2", (e) => {
+
+      if (e.hasOwnProperty('removed')) {
+          return // Do nothing if the element was removed
+      }
+
+      let selected = $(e.target).closest('.advanced-search-facet')
+                                .find('.select2-search-choice').toArray()
+                                .filter(function(el) {
+                                  if ($(el).find('div').text().includes(e.added.id).length > 0) {
+                                      return $(el).find('div').text().includes(e.added.id);
+                                  } else {
+                                      // For fields with helper methods (e.g. Resource Type)
+                                      return $(el).find('div').text().includes(e.added.text);
+                                  }
+                                })
+      let text = "Remove option: " + e.added.id;
+
+      // Append some extra blacklight elements to the remove link
+      let spans = ['<span class="remove-icon" aria-hidden="true">✖</span>',
+                    '<span class="sr-only visually-hidden"',
+                        text,
+                    '</span>'].join('')
+
+      $(selected).find('a').append(spans).hover(
+          // Select2 CSS adds !important to
+          // the background property, so this is a
+          // workaround to get the background to change
+          // on hover. This may not be necessary
+          // once upgraded to select2-rails v. 4
+          function () {
+              $(this).addClass("red-bg");
+          },
+          function () {
+              $(this).removeClass("red-bg");
+          }
+      );
+  });
+</script>

@@ -1,14 +1,24 @@
 #new_fast_update_change {
     margin-top: 2rem;
+    display: flex;
+    font-size: 1rem;
+    width: 100%;
+}
+
+#new_fast_update_change .field-wrapper:first-child {
+    margin-bottom: 0.5rem;
 }
 
 #new_fast_update_change .collection_radio_buttons {
     margin-left: 0.5rem;
-    vertical-align: -webkit-baseline-middle;
 }
 
-.fast-update-form-group, div[role=radiogroup] {
-    height: 3rem;
+.fast-update-buttons-container {
+    margin-left: 0;
+}
+
+.fast-update-form-group, div[role=radiogroup] label {
+    margin-bottom: 0.5rem;
 }
 
 .fast-update-form-group span:first-of-type > label {
@@ -17,6 +27,10 @@
 
 .fast-update-form-group .collection_radio_buttons {
     margin-right: 0rem;
+}
+
+.fast-update-form-group .fa-minus {
+    margin-right: 0.5rem;
 }
 
 #fast-update-search-preview {
@@ -34,6 +48,7 @@
 .fast-update-table thead, .fast-update-table thead th {
     background-color: #286090; /* #50504db5 */
     color: #fff;
+    min-width: 130px;
     font-weight: normal;
 }
 
@@ -54,6 +69,11 @@
     /*padding-left: 1.25em;*/
     padding-left: 1em;
 }
+
+.dashboard .fast-update-table-container .list-filters {
+    margin-bottom: 0;
+}
+
 .dashboard .fast-update-table-container .list-filters .facet-label {
     width: 100%;
 }
@@ -62,6 +82,7 @@
     background-color: #fff;
     border: 1px solid #dedede;
     border-top: none;
+    padding: 2rem;
 }
 
 #fast-update-tabs {
@@ -69,8 +90,12 @@
     padding-left: 0rem;
 }
 
+#fast-update-tabs a.active {
+    border-top: 2px solid #337ab7;
+}
+
 .fast-update-container {
-    width: 100%;
+    margin-top: 1rem;
 }
 
 .label-count-display {
@@ -124,7 +149,7 @@
 .fast-update-or-span {
     margin-bottom: 15px;
     display: inline-block;
-    font-weight: 600;
+    /*font-weight: 600;*/
 }
 
 .fast-update-icon {

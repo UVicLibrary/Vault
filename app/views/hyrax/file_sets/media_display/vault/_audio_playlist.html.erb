@@ -7,6 +7,7 @@
   <% audio_files.each do |file| %>
     <li>
       <span class="able-source" data-type="audio/mpeg" data-src="<%= hyrax.download_path(file) %>"></span>
+      <%= render_multi_track_tag(file) %>
       <button><%= file.title.first %></button>
     </li>
   <% end %>

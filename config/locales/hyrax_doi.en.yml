@@ -1,0 +1,30 @@
+---
+en:
+  hyrax:
+    works:
+      form:
+        mint:
+          button:
+            disable_with: Creating draft DOI...
+        autofill:
+          button:
+            disable_with: Autofilling form...
+            confirm: This operation is destructive and will replace any information already filled in on this form.
+        tab:
+          doi: DOI
+  tombstones:
+    form:
+      help_message_html: "<p>The work you're about to delete has a registered or findable DataCite DOI. According to 
+      <a href=\"https://support.datacite.org/docs/tombstone-pages\" target=\"_blank\">best practice</a>, 
+      the DOI should be altered to resolve to a tombstone page with a citation and a 
+      <a href=\"https://support.datacite.org/docs/tombstone-pages#include-a-statement-of-unavailability\" target=\"blank\">
+      statement of unavailability.</a></p>
+      
+      <p>Please select a reason for deletion below, which will be used to generate the statement of
+      unavailability. The citation will be automatically generated from the DOI's metadata.</p>"
+      reason_label: "This item is no longer available due to "
+    message: ! "This item is no longer available due to %{reason}. A citation is provided below so you may 
+              verify that you've located the right resource."
+  errors:
+    doi_minting:
+      disabled: DOI minting is disabled by your administrator

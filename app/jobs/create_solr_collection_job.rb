@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Create a new account-specific Solr collection using the base templates
-class CreateSolrCollectionJob < ActiveJob::Base
+class CreateSolrCollectionJob < ApplicationJob
   non_tenant_job
 
   ##
@@ -36,48 +38,55 @@ class CreateSolrCollectionJob < ActiveJob::Base
 
     private
 
-      def transform_entry(k, v)
-        case v
-        when Hash
-          v.map do |k1, v1|
-            ["#{transform_key(k)}.#{transform_key(k1)}", v1]
-          end
-        else
-          [transform_key(k), v]
+    def transform_entry(k, v)
+      case v
+      when Hash
+        v.map do |k1, v1|
+          ["#{transform_key(k)}.#{transform_key(k1)}", v1]
         end
+      else
+        [transform_key(k), v]
       end
+    end
 
-      def transform_key(k)
-        k.to_s.camelize(:lower)
-      end
+    def transform_key(k)
+      k.to_s.camelize(:lower)
+    end
   end
 
   private
 
-    def client
-      Blacklight.default_index.connection
-    end
+  def client
+    Blacklight.default_index.connection
+  end
 
-    def collection_options
-      CollectionOptions.new(Settings.solr.collection_options.to_hash).to_h
-    end
+  def collection_options
+    CollectionOptions.new(Settings.solr.collection_options.to_hash).to_h
+  end
 
-    def collection_exists?(name)
-      response = client.get '/solr/admin/collections', params: { action: 'LIST' }
-      collections = response['collections']
+  def collection_exists?(name)
+    response = client.get '/solr/admin/collections', params: { action: 'LIST' }
+    collections = response['collections']
 
-      collections.include? name
-    end
+    collections.include? name
+  end
 
-    def collection_url(name)
-      normalized_uri = if Settings.solr.url.ends_with?('/')
-                         Settings.solr.url
-                       else
-                         "#{Settings.solr.url}/"
-                       end
+  def collection_url(name)
+    uri ||= ENV['SOLR_URL']
+    uri = URI(normalize_uri(uri)) + name
+    uri.to_s
+  end
 
-      uri = URI(normalized_uri) + name
-
-      uri.to_s
+    def normalize_uri(uri)
+      unless uri.ends_with?("solr/")
+        if uri.ends_with?('/')
+          uri = "#{uri}solr/"
+        elsif uri.ends_with?('solr')
+          uri = "#{uri}/"
+        else
+          uri = "#{uri}/solr/"
+        end
+      end
+      uri
     end
 end

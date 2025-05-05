@@ -82,8 +82,16 @@
     margin-top: 1em;
 }
 
+.hyc-bl-sort .view-type {
+    margin-bottom: 1em;
+}
+
 .hyc-bl-results {
     width: 100%;
     overflow-x: auto;
     margin: 0em 0 2em;
+}
+
+.media-heading span, .works-list-description {
+    font-size: 0.9em;
 }

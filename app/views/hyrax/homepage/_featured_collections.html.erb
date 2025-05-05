@@ -1,13 +1,12 @@
 <h2 class="sr-only"><%= t('hyrax.homepage.featured_works.title') %></h2>
 <% if @featured_collection_list.featured_collections.empty? %>
-  <p>You have no featured collections</p>
+  <p id='no-collections'><%= t('hyrax.homepage.featured_collections.no_collections') %></p>
 <% else %>
-  <% @featured_collection_list.add_solr_document_to_collections %>
-  <%= form_for @featured_collection_list do |f| %>
-    <div class="panel-group dd" id="dd">
+  <%= form_for [main_app, @featured_collection_list] do |f| %>
+    <div class="panel-group dd" id="ff">
       <ol id="featured_collections">
         <%= f.fields_for :featured_collections do |featured| %>
-          <%= render 'sortable_featured', f: featured, presenter: Hyrax::CollectionPresenter.new(SolrDocument.find(featured.object.collection_id), current_ability), featured_category: FeaturedCollection %>
+          <%= render 'sortable_featured_collections', f: featured %>
         <% end %>
       </ol>
     </div>

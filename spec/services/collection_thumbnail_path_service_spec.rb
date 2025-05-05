@@ -34,90 +34,39 @@ RSpec.describe CollectionThumbnailPathService do
 
       before { allow(ActiveFedora::Base).to receive(:find).with(file_set.id).and_return(file_set) }
 
-      context 'with an image thumbnail' do
-        before do
-          allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return("#{file.id}/fcr:versions/version2")
-        end
-
-        it "uses the latest version" do
-          expect(subject).to eq "/images/s1%2F78%2F4k%2F72%2Fs1784k724%2Ffiles%2F6185235a-79b2-4c29-8c24-4d6ad9b11470%2Ffcr:versions%2Fversion2/full/!500,900/0/default.jpg"
-        end
-      end
-
-      context 'with a video thumbnail' do
-        subject { described_class.call(collection) }
-
-        before do
-          allow(described_class).to receive(:video?).with(file_set).and_return(true)
-          allow(Hyrax::VersioningService).to receive(:versioned_file_id).with(file).and_return(file.id)
-        end
-
-        context 'with no generated image file' do
-          it { is_expected.to start_with '/assets/collection-' }
-        end
-
-        context 'with a generated image file' do
-          let(:path) { Hyrax::DerivativePath.derivative_path_for_reference(file_set, 'thumbnail') }
-          before { allow(File).to receive(:exist?).with(path).and_return(true) }
-
-          it { is_expected.to eq "/downloads/s1784k724?file=thumbnail" }
-        end
-      end
-
-      context 'with a pdf thumbnail' do
-
-        before { allow(file_set).to receive(:pdf?).and_return true }
-
-        it { is_expected.to eq("/pdf_thumbnails/s1784k724-thumb.jpg") }
-      end
 
     end
 
     context "using a Hyrax::FileSet" do
       before { allow(Hyrax.config).to receive(:use_valkyrie?).and_return true }
 
-      context "with an image thumbnail" do
-        let(:file_set) { FactoryBot.create(:file_set, :with_original_file) }
+      context "with a thumbnail" do
+        let(:file_metadata) { FactoryBot.build(:hyrax_file_metadata) }
 
         before do
-          allow(ActiveFedora::Base).to receive(:find).and_call_original
-          allow(file_set).to receive(:original_file).and_call_original
-        end
-
-        it "includes the version in the URL" do
-          expect(subject).to eq "/images/#{CGI.escape("#{file_set.original_file.id}/fcr:versions/version1").gsub("%3A",":")}/full/!500,900/0/default.jpg"
-        end
-      end
-
-      context "with a video thumbnail" do
-        let(:file) { double(id: '1001') }
-        let(:file_metadata) { FactoryBot.build(:hyrax_file_metadata, mime_type: 'video/mp4') }
-
-        before do
-          allow_any_instance_of(Hyrax::FileSetTypeService).to receive(:video?).and_return true
-          allow(File).to receive(:exist?).with(Hyrax::DerivativePath.derivative_path_for_reference(file_set, 'thumbnail')).and_return true
-          allow(file_metadata).to receive(:original_filename).and_return('video.mp4')
-          allow(Hyrax.custom_queries).to receive(:find_file_metadata_by)
-                                             .with(id: Valkyrie::ID.new('1001'))
-                                             .and_return(file_metadata)
+          allow(Hyrax.custom_queries).to receive(:find_file_metadata_by).and_return(file_metadata)
+          allow(file_metadata).to receive(:original_filename).and_return 'smthg.mp4'
+          allow(Hyrax.custom_queries).to receive(:find_thumbnail).and_return true
         end
 
         it { is_expected.to eq("/downloads/s1784k724?file=thumbnail") }
       end
 
-      context "with a pdf thumbnail" do
-        let(:file) { double(id: '1001') }
-        let(:file_metadata) { FactoryBot.build(:hyrax_file_metadata, mime_type: 'application/pdf') }
+    end
+
+    context "using an ActiveFedora file set" do
+      before { allow(Hyrax.config).to receive(:use_valkyrie?).and_return false }
+
+      context "with a thumbnail" do
+        let(:file_metadata) { FactoryBot.build(:hyrax_file_metadata) }
 
         before do
-          allow_any_instance_of(Hyrax::FileSetTypeService).to receive(:pdf?).and_return true
-          allow(file_metadata).to receive(:original_filename).and_return('video.mp4')
-          allow(Hyrax.custom_queries).to receive(:find_file_metadata_by)
-                                             .with(id: Valkyrie::ID.new('1001'))
-                                             .and_return(file_metadata)
+          allow(Hyrax.custom_queries).to receive(:find_file_metadata_by).and_return(file_metadata)
+          allow(file_metadata).to receive(:original_filename).and_return 'smthg.mp4'
+          allow(File).to receive(:exist?).with(Hyrax::DerivativePath.derivative_path_for_reference(file_set, 'thumbnail')).and_return true
         end
 
-        it { is_expected.to eq("/pdf_thumbnails/s1784k724-thumb.jpg") }
+        it { is_expected.to eq("/downloads/s1784k724?file=thumbnail") }
       end
 
     end

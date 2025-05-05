@@ -21,7 +21,7 @@ class Ability
     can :create, [Hyrax::UploadedFile, BatchUploadItem]
     can :destroy, Hyrax::UploadedFile, user: current_user
 
-    if can? [:manage, :create], Collection
+    if can? [:manage, :create], Hyrax.config.collection_class
       can [:create, :destroy, :update], FeaturedCollection
     end
   end
@@ -50,7 +50,7 @@ class Ability
       alias_action :show, to: :read
       alias_action :discover, to: :read
       can :manage, ::AdminSet
-  	  can :manage, ::Collection
+  	  can :manage, Hyrax.config.collection_class
   	  can :manage, ::FileSet
   	  can [:manage, :edit], ::SolrDocument
   	  can [:read, :create, :edit, :manage], curation_concerns_models 

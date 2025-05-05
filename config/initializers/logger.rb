@@ -17,7 +17,7 @@ if Rails.env.production?
       [ActiveFedora::ObjectNotFoundError, ActionController::RoutingError,
        Blacklight::Exceptions::RecordNotFound, Ldp::Gone, FrozenError,
        Riiif::ConversionError, Hyrax::ObjectNotFoundError, ActionController::UnknownFormat,
-       Blacklight::Exceptions::InvalidRequest, I18n::InvalidLocale]
+       Blacklight::Exceptions::InvalidRequest, I18n::InvalidLocale, Riiif::ImageNotFoundError]
     end
   end
 end

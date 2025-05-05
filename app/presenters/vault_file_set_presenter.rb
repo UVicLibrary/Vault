@@ -18,8 +18,7 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
 
     # Extra Metadata Methods
     delegate :provider_label, :creator_label, :subject_label, :contributor_label,
-             :physical_repository_label, :genre_label, :geographic_coverage_label,
-              :visibility, to: :solr_document
+             :physical_repository_label, :genre_label, :geographic_coverage_label, to: :solr_document
 
     delegate :alternative_title, :geographic_coverage, :coordinates, :chronological_coverage, :extent,
              :additional_physical_characteristics, :has_format, :physical_repository, :provenance,
@@ -59,7 +58,7 @@ class VaultFileSetPresenter < Hyrax::FileSetPresenter
         ids.each do |id|
           doc = ::SolrDocument.find(id)
           next if current_ability.can?(:edit, doc)
-          raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
+          raise Hyrax::WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
         end
         Hyrax::PresenterFactory.build_for(ids: ids,
                                           presenter_class: VaultWorkShowPresenter,

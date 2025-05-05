@@ -3,14 +3,15 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
   # provide your own metadata and indexing.
   include Hyrax::IndexesBasicMetadata
 
-  # For ingest into main UVic library (alma primo) catalog
-  include IndexesOAIFields
-
   # Fetch remote labels for based_near. You can remove this if you don't want
   # this behavior
   include Hyrax::IndexesLinkedMetadata
 
+  # For ingest into main UVic library (alma primo) catalog
+  include IndexesOAIFields
+
   include IndexesDownloadPermissions
+  include IndexesNestedParentCollections
 
   self.thumbnail_path_service = VaultThumbnailPathService
 
@@ -24,8 +25,8 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
       solr_doc['title_sort_ssi'] = object.title.first unless object.title.empty?
 
       # Index file sets' extracted text for display in search results
-      if full_text_contents = object.file_sets.select { |fs| fs.extracted_text.present? } and full_text_contents.present?
-        solr_doc['full_text_tsi'] = full_text_contents.map {|fs| fs.extracted_text.content }.join("")
+      if full_text = object.file_sets.select { |fs| fs.extracted_text.present? } and full_text.present?
+        solr_doc['full_text_tsi'] = full_text.map {|fs| fs.extracted_text.content }.join("")
       end
 
       solr_doc['identifier_tesim'] = object.identifier
@@ -33,7 +34,7 @@ class GenericWorkIndexer < Hyrax::WorkIndexer
 
       # Allow public users to discover items with institution visibility
       if object.visibility == "authenticated"
-        solr_doc["discover_access_group_ssim"] = "public"
+        solr_doc["discover_access_group_ssim"] = ["public"]
       end
 
       unless object.date_created.empty?

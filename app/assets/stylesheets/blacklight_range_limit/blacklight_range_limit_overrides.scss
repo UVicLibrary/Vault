@@ -1,0 +1,24 @@
+.limit_content.range_limit div.more_facets a {
+  display: none;
+}
+
+div.flot-tick-label {
+  max-width: 33px !important;
+}
+
+.limit_content.range_limit #range_year_range_isim_begin {
+  margin-right: 1rem;
+}
+
+.slider.slider-horizontal .slider-selection,
+.slider-track .slider-handle {
+  background-image: linear-gradient(to bottom, #26A739, #008538);
+}
+
+/* ensures the increment/decrement arrows always display.
+   may not work in Firefox according to caniuse.com and MDN,
+   but manual testing shows it may work in some versions? */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  opacity: 1;
+}

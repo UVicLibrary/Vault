@@ -8,127 +8,46 @@
 }
 
 .image-masthead {
-  border-bottom: 1px solid $navbar-default-border;
-  margin-bottom: $padding-large-vertical * 2.5;
+  border-bottom: 1px solid $nav-divider-color;
+  margin-bottom: $navbar-padding-y * 2.5;
   position: relative;
-
-  .navbar-default {
-    background-color: rgba(0, 0, 0, 0.35);
-  }
-
-  #background-logo-container {
-    z-index: 1;
-    display: inline-block;
-    width:20%;
-  }
-
-  #background-logo-container img {
-    width: 100%;
-  }
-
-  /*#edge {
-    width: 50%;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }*/
-
-  @media only screen and (min-width: 991px ) {
-    .site-title-container {
-      margin-left: 8.333%;
-    }
-  }
-
-  @media only screen and (max-width: 768px ) {
-    #edge {
-      height: 50%;
-    }
-    .navbar {
-      //background-image: linear-gradient(#002754,#005493);
-
-      .active > a {
-        &,
-        &:hover,
-        &:focus {
-        background-color: rgba(51, 122, 183,0.8) !important;
-      }
-    }
-    }
-  }
-
-  .form-group .control-label {
-    font-weight: normal;
-  }
 
   .background-container {
     @include masthead-background-containers();
     background-repeat: no-repeat;
     background-size: cover;
-    z-index: -1;
 
+    // Add small amount of blur to help text stand out
     -webkit-filter: blur($masthead-image-blur);
     filter: blur($masthead-image-blur);
   }
 
   .background-container-gradient {
     @include masthead-background-containers();
-    background:
-      linear-gradient(
-        rgba(0, 0, 0, 0.0),
-        rgba(0, 0, 0, 0.4),
-        rgba(0, 0, 0, 0.5)
-      );
+    background: linear-gradient(
+                    rgba(0, 0, 0, 0),
+                    rgba(0, 0, 0, 0.4),
+                    rgba(0, 0, 0, 0.5)
+    );
   }
 
   .site-title {
-    min-height: 60px;//$title-height;
+    min-height: $title-height;
     padding-bottom: 6px;
     position: relative;
-  }
-
-  .site-title.h1 {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  .navbar {
-    //background-color: rgba(0, 0, 0, 0.4);//$navbar-transparent-bg;
-    margin-bottom: 0;
-    color: #fff;
-    margin-bottom: 0;
-
-    .navbar-nav {
-
-      margin: 0;
-      padding-right: 0;
-
-      a {
-        color: $navbar-transparent-link-color;
-        //text-transform: uppercase;
-
-        &:hover,
-        &:focus {
-          background-color: $navbar-transparent-link-hover-bg;
-          color: $navbar-transparent-link-hover-color;
-        }
-      }
-    }
-
-    .active > a {
-      &,
-      &:hover,
-      &:focus {
-        background-color: rgba(1,86,168,0.4);//$navbar-transparent-link-active-bg;
-        color: $navbar-transparent-link-active-color;
-      }
-    }
   }
 }
 
 .home-content {
   .nav {
-    margin-bottom: 20px;
+    margin-bottom: $navbar-padding-y * 2;
+  }
+
+  // Give some separation between the Works and Collections columns, which stack up vertically on mobile
+  @media screen and (max-width: 640px) {
+    > div {
+      margin-bottom: $navbar-padding-y * 3;
+    }
   }
 }
 
@@ -143,17 +62,17 @@
   }
 }
 
-.home_share_work {
-  margin-bottom: $padding-large-vertical * 2.5;
+.home-share-work {
+  margin-bottom: $navbar-padding-y * 4;
+  margin-top: $navbar-padding-y * 2;
 
-  p {
-    margin: 0.25em auto;
-    width: 40%;
+  .terms-of-use {
+    margin-top: $navbar-padding-y;
   }
 }
 
 .home_marketing_text {
-  color: #fff !important/*$marketing-text-color*/;
+  color: $marketing-text-color;
   text-shadow: $marketing-text-shadow;
 }
 
@@ -180,7 +99,7 @@ div#announcement {
 
 ol.list-group.list-group-striped {
   li:nth-of-type(odd) {
-    background: $table-bg-accent;
+    background: $table-accent-bg;
   }
 
   li:nth-of-type(even) {

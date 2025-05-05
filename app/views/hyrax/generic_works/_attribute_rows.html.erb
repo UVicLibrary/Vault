@@ -37,7 +37,7 @@
 <%= presenter.attribute_to_html(:transcript) %>
 <%= presenter.attribute_to_html(:technical_note) %>
 <%= presenter.attribute_to_html(:year) %>
-<%#= presenter.attribute_to_html(:license, render_as: :license, html_dl: true) %>
+<%= presenter.attribute_to_html(:license, render_as: :license, html_dl: true) %>
 <% if respond_to?(:render_doi?) && render_doi?(presenter) && presenter.doi %>
   <%= render 'hyrax/attributes/doi', presenter: presenter %>
 <% else %>

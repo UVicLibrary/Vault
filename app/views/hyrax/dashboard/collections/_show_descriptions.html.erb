@@ -1,0 +1,13 @@
+<%# Override Hyrax 4.0 to de-centre collection metadata values
+TO DO: Does the <dt> still need to render for accessibility purposes?
+    How to do that without making the display wonky?
+%>
+<h2 class="sr-only"><%= t('.descriptions') %></h2>
+<dl class="metadata-collections">
+  <div class="row">
+    <% @presenter.terms_with_values.each do |field_name| %>
+  <!--      <dt class="col-5 text-right"><%#= collection_metadata_label(@presenter, field_name) %></dt>-->
+      <dd><%= collection_metadata_value(@presenter, field_name) %></dd>
+    <% end %>
+  </div>
+</dl>

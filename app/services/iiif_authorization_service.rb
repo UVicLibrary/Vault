@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
+class IIIFAuthorizationService < Hyrax::IiifAuthorizationService
   # Modifies #file_set_id_for to decode the image URL.
   # Restricts access to IIIF image URLs to download
   # users/groups only (except for thumbnails).
@@ -27,14 +27,13 @@ class IIIFAuthorizationService < Hyrax::IIIFAuthorizationService
   end
 
   def thumbnail?
-    @controller.params[:size] == VaultThumbnailPathService.image_thumbnail_size ||
-      @controller.params[:size] == CollectionThumbnailPathService.image_thumbnail_size ||
       # The size for thumbnails in search results view
-      @controller.params[:size] == '!150,300' || @controller.params[:size] == '!300,300'
+      @controller.params[:size] == '!150,300' || @controller.params[:size] == '!300,300' ||
+      @controller.params[:size] == CollectionThumbnailPathService.image_thumbnail_size
   end
 
   def uv_page?(request)
     return false unless request.referer.presence
-    (Addressable::URI.parse(request.referer).path =~ /^\/uv\/uv(-no-download)?\.html/).present?
+    Addressable::URI.parse(request.referer).path.match?(/^\/uv\/uv(-no-download)?\.html/)
   end
 end

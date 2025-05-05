@@ -19,6 +19,8 @@ Rails.application.config.to_prepare do
         Blacklight.logger.debug("Solr query: #{blacklight_config.http_method} #{path} #{solr_params.to_hash.inspect}")
         Blacklight.logger.debug("Solr response: #{solr_response.inspect}") if defined?(::BLACKLIGHT_VERBOSE_LOGGING) and ::BLACKLIGHT_VERBOSE_LOGGING
         solr_response
+      rescue BlacklightRangeLimit::InvalidRange => e
+        raise Blacklight::Exceptions::InvalidRequest, "Invalid date range. #{e.message}."
       rescue Errno::ECONNREFUSED => e
         raise Blacklight::Exceptions::ECONNREFUSED, "Unable to connect to Solr instance using #{connection.inspect}: #{e.inspect}"
       rescue RSolr::Error::Http => e

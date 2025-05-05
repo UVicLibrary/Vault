@@ -10,7 +10,7 @@ module Hyrax
       # Add filter for file sets to the link if we are on a file set page
       def search_path(value)
         Rails.application.routes.url_helpers.search_catalog_path(
-            "f[#{search_field}][]": value,
+            "f[keyword_sim][]": value,
             "f[has_model_ssim][]": "FileSet",
             locale: I18n.locale
         )

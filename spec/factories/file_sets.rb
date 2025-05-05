@@ -25,10 +25,21 @@ FactoryBot.define do
       content { File.open(Hyrax::Engine.root + 'spec/fixtures/world.png') }
     end
 
+    trait :pdf do
+      content { File.open(Rails.root + 'spec/fixtures/issue_01_combined.pdf') }
+    end
+
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
             .call(file_set, File.open(Hyrax::Engine.root + 'spec/fixtures/world.png'), :original_file)
+      end
+    end
+
+    trait :with_pdf_file do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open(Rails.root + 'spec/fixtures/issue_01_combined.pdf'), :original_file)
       end
     end
 

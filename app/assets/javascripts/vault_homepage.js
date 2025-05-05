@@ -44,7 +44,7 @@ $(document).on('turbolinks:load', function() {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
             buttons.removeAttr('aria-expanded') // We will manage aria separately using aria-selected
             // Update the header
-            var header = $($(this).closest('div').find('h1'));
+            var header = $($(this).closest('div:not([role=tablist])').find('h2'));
             var container = header.parent();
             var newHeader = header.clone().html($(this).data('header'));
             header.remove();
@@ -58,7 +58,7 @@ $(document).on('turbolinks:load', function() {
     $('button[data-toggle="tab"]').keydown(function(e) {
         if (!$(this).hasClass('list-collections-button') && !$(this).hasClass('all-collections-button')) {
             // Get the index of the current button
-            var buttons = $(e.target.closest('ul')).find('button');
+            var buttons = $(e.target.closest('div[role=tablist]')).find('button');
             var currentIdx = buttons.index(e.target);
 
             // When pressing right (39) or left (37) arrow keys
@@ -98,4 +98,46 @@ $(document).on('turbolinks:load', function() {
         $(this).prop('disabled', true);
     });
 
+    window.addEventListener('workCardsLoaded', function(e) { transformCards() });
+
+    function transformCards() {
+        // Adjust position of work-card titles based on height
+        $('.homepage-card.work-card .data').each(function(index) {
+            card = $($('.homepage-card.work-card .data')[index]);
+            hideDescr(card);
+        });
+        // Move the description up so it is visible on hover
+        $('.homepage-card.work-card .wrapper').on({
+            mouseenter: function() {
+                showDescr($(this).find('.data'));
+            }, mouseleave: function() {
+                hideDescr($(this).find('.data'));
+            }
+        })
+
+        function hideDescr(card) {
+            cardHeight = card.closest('.wrapper').outerHeight();
+            titleHeight= $(card.find('.homepage-card-title')).outerHeight();
+
+            link = card.closest('.wrapper').find('.card-collection-link');
+            linkHeight = (link.length != 0 ? link.outerHeight() : 0);
+
+            card.css('transform','translateY(' + (cardHeight - (titleHeight + linkHeight + 33)) + 'px)');
+        }
+
+        function showDescr(card) {
+            cardHeight = card.closest('.wrapper').outerHeight();
+            titleHeight= $(card.find('.homepage-card-title')).outerHeight();
+
+            link = card.closest('.wrapper').find('.card-collection-link');
+            linkHeight = (link.length != 0 ? link.outerHeight() : 0);
+
+            card.css('transition', 'transform 0.3s').css('transform', 'translateY(' + (cardHeight - (titleHeight + linkHeight + 112)) + 'px)');
+        }
+    }
+
+
+
 });
+
+

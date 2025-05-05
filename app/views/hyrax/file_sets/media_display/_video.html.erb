@@ -1,6 +1,3 @@
-<% if request.base_url.include? "vault" %>
-  <%= render 'hyrax/file_sets/media_display/vault/video', file_set: file_set %>
-  <% else %>
     <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
       <source src="<%= hyrax.download_path(file_set) %>" type="video/mp4" />
       <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
@@ -25,4 +22,3 @@
                 id: "transcript_file_download",
                 data: { label: transcript.id } %>
   <% end %>
-<% end %>

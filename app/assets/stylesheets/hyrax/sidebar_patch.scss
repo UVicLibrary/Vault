@@ -1,0 +1,16 @@
+// Added to allow sidebar to collapse properly.
+// This is copied from stylesheets/hyrax/sidebar.scss
+// (can't simply include sidebar.scss directly due
+//  to some missing sass variables)
+
+$drawer-small: 40px;
+$drawer-large: 260px;
+
+.sidebar .nav-item {
+  transition: width 0.1s;
+  width: $drawer-small;
+}
+
+.sidebar.maximized .nav-item {
+  width: $drawer-large;
+}

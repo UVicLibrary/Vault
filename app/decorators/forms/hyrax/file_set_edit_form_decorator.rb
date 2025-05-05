@@ -6,11 +6,11 @@ Hyrax::Forms::FileSetEditForm.class_eval do
   include HydraEditor::Form
   include HydraEditor::Form::Permissions
 
-  self.terms += [:genre, :provider, :format, :alternative_title, :geographic_coverage,
+  self.terms += [:genre, :provider, :alternative_title, :geographic_coverage,
                  :coordinates, :chronological_coverage, :extent, :identifier,
-                 :additional_physical_characteristics, :has_format,
+                 :additional_physical_characteristics, :has_format, :format,
                  :physical_repository, :provenance, :provider, :sponsor, :genre,
-                 :format, :is_referenced_by, :date_digitized, :transcript, :technical_note, :year]
+                 :is_referenced_by, :date_digitized, :transcript, :technical_note]
   self.terms -= [:related_url]
 
   # Only required field should be :title

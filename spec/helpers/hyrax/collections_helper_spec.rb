@@ -82,15 +82,9 @@ RSpec.describe Hyrax::CollectionsHelper do
     context 'when a GenericWork belongs to collections' do
       let(:coll_ids) { ['111', '222'] }
       let(:coll_titles) { ['Collection 111', 'Collection 222'] }
-      let(:coll1_attrs) { { id: coll_ids[0], title_tesim: [coll_titles[0]] } }
-      let(:coll2_attrs) { { id: coll_ids[1], title_tesim: [coll_titles[1]] } }
+      let!(:coll1) { create(:collection_lw, id: coll_ids[0], title: [coll_titles[0]]) }
+      let!(:coll2) { create(:collection_lw, id: coll_ids[1], title: [coll_titles[1]]) }
       let!(:work_doc) { SolrDocument.new(id: '123', title_tesim: ['My GenericWork'], member_of_collection_ids_ssim: coll_ids) }
-
-      before do
-        Hyrax::SolrService.add(coll1_attrs)
-        Hyrax::SolrService.add(coll2_attrs)
-        Hyrax::SolrService.commit
-      end
 
       it 'renders a list of links to the collections' do
         expect(helper.render_collection_links(work_doc)).to match(/Is part of/i)
@@ -126,15 +120,9 @@ RSpec.describe Hyrax::CollectionsHelper do
     context 'when a GenericWork belongs to more than one collection' do
       let(:coll_ids) { ['111', '222'] }
       let(:coll_titles) { ['Collection 111', 'Collection 222'] }
-      let(:coll1_attrs) { { id: coll_ids[0], title_tesim: [coll_titles[0]] } }
-      let(:coll2_attrs) { { id: coll_ids[1], title_tesim: [coll_titles[1]] } }
+      let!(:coll1) { create(:collection_lw, id: coll_ids[0], title: [coll_titles[0]]) }
+      let!(:coll2) { create(:collection_lw, id: coll_ids[1], title: [coll_titles[1]]) }
       let!(:work_doc) { SolrDocument.new(id: '123', title_tesim: ['My GenericWork'], member_of_collection_ids_ssim: coll_ids) }
-
-      before do
-        Hyrax::SolrService.add(coll1_attrs)
-        Hyrax::SolrService.add(coll2_attrs)
-        Hyrax::SolrService.commit
-      end
 
       it 'renders a list of links to the collections' do
         expect(helper.render_other_collection_links(work_doc, coll_ids[0])).to match(/This work also belongs to/i)

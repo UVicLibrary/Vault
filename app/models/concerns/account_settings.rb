@@ -157,9 +157,9 @@ module AccountSettings
       Hyrax.config do |config|
         config.contact_email = contact_email
         config.analytics = google_analytics_id.present?
-        config.google_analytics_id = google_analytics_id if google_analytics_id.present?
+        config.google_analytics_id = google_analytics_id if (google_analytics_id.present? && config.respond_to?(:google_analytics_id=))
         config.geonames_username = geonames_username
-        config.uploader[:maxFileSize] = file_size_limit
+        config.uploader[:maxFileSize] = file_size_limit.to_i
       end
 
       Devise.mailer_sender = contact_email

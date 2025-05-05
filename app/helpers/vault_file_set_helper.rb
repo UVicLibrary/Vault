@@ -61,7 +61,7 @@ module VaultFileSetHelper
   # @param [VaultFileSetPresenter or VaultWorkShowPresenter]
   def display_pdf_download_link?(presenter)
     pdf = pdf_file_set(presenter)
-    pdf.present? && display_media_download_link?(file_set: pdf)
+    pdf.present? && display_media_download_link?(file_set: pdf) && work_show_page?
   end
 
   # @param [VaultFileSetPresenter]

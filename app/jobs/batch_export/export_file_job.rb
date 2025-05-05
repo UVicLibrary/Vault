@@ -1,6 +1,6 @@
 module BatchExport
   class ExportFileJob < ActiveJob::Base
-    # require 'down/wget'
+    require 'down/wget'
     require 'bagit'
 
     include BatchExport::SharedMethods
@@ -27,17 +27,18 @@ module BatchExport
     #     |__[file set id].txt - The full text contents (transcript) of the file if available
 
     # Where to temporarily store the bags until they're uploaded to OLRC
-    EXPORT_DIR = "/cache/vault_tmp/exports"
+    EXPORT_DIR = ENV['BATCH_EXPORT_DIR']
     # The name of the OLRC container to upload to
-    CONTAINER_NAME = "vault"
+    CONTAINER_NAME = ENV['BATCH_EXPORT_CONTAINER_NAME']
 
     def perform(file_set, dirname = EXPORT_DIR)
       bag_dir = "#{dirname}/#{file_set.id}"
-      # file_set = FileSet.find(file_set)
+
+      # In older versions of Sidekiq, this helps reduce memory usage
       GC.compact
 
       # Omit thumbnails for primarily audio/video works
-      return if skip_thumbnail?(file_set) # or already_uploaded?("#{file_set.id}.7z")
+      return if skip_thumbnail?(file_set)
 
       # Create a new directory named after the file set id
       FileUtils.mkdir_p(bag_dir) && FileUtils.mkdir_p("#{bag_dir}/data")
@@ -55,7 +56,7 @@ module BatchExport
       # Clean up after ourselves
       FileUtils.rm_rf bag_dir
       # Files less than 5kb are likely an error
-      upload_to_olrc("#{bag_dir}.7z") if File.size("#{bag_dir}.7z") / 1024 >= 5
+      upload_to_olrc("#{bag_dir}.7z") if File.size("#{bag_dir}.7z") / 1024 >= 5 && Rails.env.production?
       # Start "garbage collection" to decrease memory load
       GC.start
     end
@@ -125,7 +126,7 @@ module BatchExport
     end
 
     def host_url
-      if Settings.multitenancy.enabled
+      if ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_MULTITENANT', false))
         "https://#{Account.find_by(tenant: Apartment::Tenant.current).cname}"
       else
         "http://#{Settings.multitenancy.host}"

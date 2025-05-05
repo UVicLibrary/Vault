@@ -3,80 +3,65 @@
 <div class="expanded-search-container" style="background-color: <%= appearance.header_background_color %>">
   <div class="container">
     <div class="row">
-      <div class="collapse <%= 'in' if search_or_homepage? %>" id="search-top-navbar-collapse" >
-        <div class="flex-wrapper">
+      <div class="collapse <%= 'show' if search_or_homepage? %>" id="search-top-navbar-collapse" >
+        <search>
           <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
-            <%# Provide a blank search_state if there isn't one and we're rendering from a non-Hyrax controller %>
-            <% search_state = (search_state ||= Blacklight::SearchState.new(params, CatalogController.blacklight_config)) %>
-            <%= render_hash_as_hidden_fields(search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
-            <%= hidden_field_tag :search_field, 'all_fields' %>
-            <div class="form-group">
-              <div class="input-group">
-                <label class="visually-hidden" for="search-field-header">
-                  <%= t("hyrax.search.form.q.label", application_name: application_name) %>
-                </label>
-                <%= text_field_tag :q, current_search_parameters , class: "q form-control typeahead", id: "search-field-header",
-                                   placeholder: t("hyrax.search.form.q.placeholder"), role: "combobox" %>
+          <%# Provide a blank search_state if there isn't one and we're rendering from a non-Hyrax controller %>
+          <% search_state = (search_state ||= Blacklight::SearchState.new(params.except(:q, :search_field, :qt, :page, :utf8), CatalogController.blacklight_config)) %>
+          <%= hidden_field_tag :search_field, 'all_fields' %>
+          <div class="form-group">
+            <div class="input-group">
+              <label class="visually-hidden" for="search-field-header">
+                <%= t("hyrax.search.form.q.label", application_name: application_name) %>
+              </label>
+              <%= text_field_tag :q, current_search_parameters , class: "q form-control typeahead", id: "search-field-header",
+                                 placeholder: t("hyrax.search.form.q.placeholder"), role: "combobox", aria: { autocomplete: "list" } %>
 
-                <div class="input-group-btn">
-                  <button type="submit" class="btn btn-primary" id="search-submit-header">
-                    <%= t('hyrax.search.button.html') %>
-                  </button>
-                </div><!-- /.input-group-btn -->
-              </div><!-- /.input-group -->
-            </div><!-- /.form-group -->
-          <% end %>
-          <a href="/advanced" class="adv-search" data-turbolinks="false">Advanced Search</a>
-        </div>
+              <div class="input-group-btn">
+                <button type="submit" class="btn btn-primary" id="search-submit-header">
+                  <%= t('hyrax.search.button.html') %>
+                </button>
+              </div><!-- /.input-group-btn -->
+            </div><!-- /.input-group -->
+          </div><!-- /.form-group -->
+        <% end %>
+        </search>
+        <a href="/advanced" class="adv-search" data-turbolinks="false">Advanced Search</a>
       </div>
     </div>
   </div>
 </div>
-<!--search form-->
-<nav class="vault_nav navbar navbar-inverse navbar-static-top" role="navigation">
-  <div class="container"><!-- fluid -->
+<!-- Main navbar -->
+<nav class="vault_nav navbar navbar-expand-lg navbar-dark navbar-static-top" style="background-color: <%= appearance.header_background_color %>" role="navigation">
+  <div class="container">
     <div class="row">
-
-    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-collapse" aria-expanded="false">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-
-    <!--logo-->
-    <a id="vault_logo" class="navbar-brand" href="<%= hyrax.root_path %>" data-turbolinks="false">
-      <div class="col-md-3 col-sm-3">
+      <a id="vault_logo" class="navbar-brand ml-lg-1" aria-label="Vault home page" href="<%= hyrax.root_path %>" data-turbolinks="false">
         <span>Vault</span>
-      </div>
-      <div class="col-md-5 col-sm-5">
-        <span class="institution_name"><%= image_tag('uvic-wordmark-colour_white.svg', id: "wordmark") %></span>
-      </div>
-      <div class="col-md-7 col-sm-7">
+        <div ><span class="institution_name">University of Victoria</span><%= image_tag('UVIC-VRGB-White.svg', id: "wordmark", aria: { hidden: true } ) %></div>
         <span>Libraries</span>
-      </div>
-    </a>
+      </a>
 
-    <!-- controls -->
-    <!-- Brand and toggle get grouped for better mobile display -->
-      <div id="navbar-right-different">
-        <div id="search_button">
-          <label class="visually-hidden" for="expand-search-button">
-            <%= t("hyrax.search.form.q.label", application_name: "Vault") %>
-          </label>
-          <button type="button" id="expand-search-button" class="btn btn-primary" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="false" style="background-color: <%= appearance.header_background_color %>; border-color: <%= appearance.header_background_color %>">
-            <i class="glyphicon glyphicon-search"></i>
-            <span class="caret"></span>
-          </button>
-        </div>
-      <div class="collapse navbar-collapse" id="top-navbar-collapse" style="background-color: <%= appearance.header_background_color %>">
+
+      <label class="visually-hidden" for="expand-search-button">
+        <%= t("hyrax.search.form.q.label", application_name: "Vault") %>
+      </label>
+      <button type="button" id="expand-search-button" aria-label="Toggle search button" class="btn dropdown-toggle <%= 'collapsed' unless search_or_homepage? %>" data-toggle="collapse" data-target="#search-top-navbar-collapse" aria-expanded="<%= 'false' unless search_or_homepage? %>">
+        <%= blacklight_icon('search', aria_hidden: true) %>
+      </button>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top-navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="collapse navbar-collapse navbar-dark" id="top-navbar-collapse">
         <% if admin_host? %>
           <%= render '/admin_util_links' %>
         <% else %>
           <%= render '/user_util_links', appearance: appearance %>
         <% end %>
       </div>
-    </div>
+
     </div>
   </div>
 </nav>

@@ -5,7 +5,7 @@ var cardDiv = $('#' + cardDivId);
 // 1. Render and append cards to card wrapper element
 // TO DO: Make this an array of JS(ON) objects instead of Ruby presenters
 <% case presenters.first %>
-<% when VaultWorkShowPresenter %>
+<% when Hyrax::WorkShowPresenter %>
     <% presenters.each do |pres| %>
     var card = $("<%= j (render partial: "hyrax/homepage/cards/work_card",
                           locals: {
@@ -44,6 +44,8 @@ function updateButton(button) {
 
     if (start <= parseInt(button.data('total'))) {
         button.parent().removeClass('hide-load-more'); //show button
+        button.parent().removeAttr('aria-hidden');
+        button.parent().attr('tabindex','1');
     } else { button.parent().remove() }
 }
 

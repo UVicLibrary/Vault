@@ -4,7 +4,7 @@ class Site < ApplicationRecord
   validates :application_name, presence: true, allow_nil: true
 
   # Allow for uploading of site's banner image
-  mount_uploader :banner_image, BannerImageUploader
+  mount_uploader :banner_image, Hyrax::UploadedFileUploader
 
   belongs_to :account
   accepts_nested_attributes_for :account, update_only: true
