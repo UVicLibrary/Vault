@@ -3,8 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception, prepend: true
 
-  force_ssl if: :ssl_configured?
-
   before_action :set_locale
 
   helper Openseadragon::OpenseadragonHelper
@@ -23,7 +21,6 @@ class ApplicationController < ActionController::Base
   before_action :require_active_account!, if: :multitenant?
   before_action :set_account_specific_connections!
   before_action :elevate_single_tenant!, if: :singletenant?
-  skip_after_action :discard_flash_if_xhr
 
   before_action :add_honeybadger_context
 
@@ -45,7 +42,7 @@ class ApplicationController < ActionController::Base
   def set_locale
     I18n.locale = extract_locale_from_headers
   end
-  
+
   private
 
     def extract_locale_from_headers
@@ -57,63 +54,64 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def require_active_account!
-      return unless Settings.multitenancy.enabled
-      return if devise_controller?
-      raise Apartment::TenantNotFound, "No tenant for #{request.host}" unless current_account.persisted?
-    end
+  def require_active_account!
+    return if singletenant?
+    return if devise_controller?
+    raise Apartment::TenantNotFound, "No tenant for #{request.host}" unless current_account.persisted?
+  end
 
-    def set_account_specific_connections!
-      current_account.switch! # if current_account
-    end
+  def set_account_specific_connections!
+    current_account&.switch!
+  end
 
-    def multitenant?
-      Settings.multitenancy.enabled
-    end
+  def multitenant?
+    @multitenant ||= ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_MULTITENANT', false))
+  end
 
-    def singletenant?
-      !Settings.multitenancy.enabled
-    end
+  def singletenant?
+    !multitenant?
+  end
 
-    def elevate_single_tenant!
-      AccountElevator.switch!(current_account.cname) if current_account && root_host?
-    end
+  def elevate_single_tenant!
+    AccountElevator.switch!(current_account.cname) if current_account && root_host?
+  end
 
-    def root_host?
-      Account.canonical_cname(request.host) == Account.root_host
-    end
+  def root_host?
+    Account.canonical_cname(request.host) == Account.root_host
+  end
 
-    def admin_host?
-      return false unless multitenant?
-      Account.canonical_cname(request.host) == Account.admin_host
-    end
+  def admin_host?
+    return false if singletenant?
+    Account.canonical_cname(request.host) == Account.admin_host
+  end
 
-    def current_account
-      @current_account ||= Account.from_request(request)
-      @current_account ||= if Settings.multitenancy.enabled
-                             Account.new do |a|
-                               a.build_solr_endpoint
-                               a.build_fcrepo_endpoint
-                               a.build_redis_endpoint
-                             end
-                           else
-                             Account.single_tenant_default
+  def current_account
+    @current_account ||= Account.from_request(request)
+    @current_account ||= if multitenant?
+                           Account.new do |a|
+                             a.build_solr_endpoint
+                             a.build_fcrepo_endpoint
+                             a.build_redis_endpoint
                            end
-    end
+                         else
+                           Account.single_tenant_default
+                         end
+  end
 
-    # Add context information to the lograge entries
-    def append_info_to_payload(payload)
-      super
-      payload[:request_id] = request.uuid
-      payload[:user_id] = current_user.id if current_user
-      payload[:account_id] = current_account.cname if current_account
-    end
+  # Add context information to the lograge entries
+  def append_info_to_payload(payload)
+    super
+    payload[:request_id] = request.uuid
+    payload[:user_id] = current_user.id if current_user
+    payload[:account_id] = current_account.cname if current_account
+  end
 
-    def add_honeybadger_context
-      Honeybadger.context(user_email: current_user.email) if current_user
-    end
+  def add_honeybadger_context
+    Honeybadger.context(user_email: current_user.email) if current_user
+  end
 
-    def ssl_configured?
-      ActiveRecord::Type::Boolean.new.cast(Settings.ssl_configured)
-    end
+  def default_url_options(options = super)
+    ActiveRecord::Type::Boolean.new.cast(ENV.fetch('HYKU_SSL_CONFIGURED', false)) ? options.merge(protocol: :https) : options
+  end
+
 end

@@ -6,159 +6,143 @@
 
   <%= render 'hyrax/homepage/facets/facets' %>
 
-<div class="featured-container">
-  <h1 id="featured-header" class="fade-in-text">Featured Collections</h1>
-  <button type="button" class="btn btn-default list-collections-button collapse" href="#list-collections" aria-label="list all collections" data-toggle="tab" data-header="All Collections">List All</button>
-  <button type="button" class="btn btn-default all-collections-button collapse" href="#all-collections" aria-label="card view for all collections" data-toggle="tab"  data-header="All Collections">Card View</button>
-  <ul id="featured-nav" role="tablist">
-    <li>
-      <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" data-header="All Collections" aria-controls="all-collections" aria-selected="true" tabindex="-1">All Collections</button>
-    </li>
-    <li class="active">
-      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0">Featured Collections</button>
-    </li>
-    <li>
+<section>
+  <div class="featured-container">
+    <h2 id="featured-header" class="fade-in-text">Featured Collections</h2>
+    <button type="button" class="btn btn-default list-collections-button collapse" href="#list-collections" aria-label="list all collections" data-toggle="tab" data-header="All Collections">List All</button>
+    <button type="button" class="btn btn-default all-collections-button collapse" href="#all-collections" aria-label="card view for all collections" data-toggle="tab"  data-header="All Collections">Card View</button>
+    <div id="featured-nav" role="tablist" class="nav nav-tabs">
+      <button id="all-collections-tab" href="#all-collections" data-toggle="tab" role="tab" data-header="All Collections" aria-controls="all-collections" tabindex="-1">All Collections</button>
+      <button id="featured-collections-tab" href="#featured-collections" data-toggle="tab" role="tab" data-header="Featured Collections" aria-controls="featured-collections" aria-selected="true" tabindex="0" class="active">Featured Collections</button>
       <button id="featured-works-tab" href="#featured-works" data-toggle="tab" role="tab" data-header="Featured Works" aria-controls="featured-works" aria-selected="false" tabindex="-1">Featured Works</button>
-    </li>
-    <li>
       <button id="recent-collections-tab" href="#recent-collections" data-toggle="tab" role="tab" data-header="Recent Collections" aria-controls="recent-collections" aria-selected="false" tabindex="-1">Recent Collections</button>
-    </li>
-    <li>
       <button id="recent-works-tab" href="#recent-works" data-toggle="tab" role="tab" data-header="Recent Works" aria-controls="recent-works" aria-selected="false" tabindex="-1">Recent Works</button>
-    </li>
-  </ul>
-</div>
+    </div>
+  </div>
 
-<!------------------- Card Rows -------------------->
-<div class="tab-content" >
+  <!------------------- Card Rows -------------------->
+  <div class="cards-container tab-content" >
 
-  <!---------------------------- All Collections ----------------------------->
-  <div class="tab-pane fade" role="tabpanel" id="all-collections"  aria-selected="true">
-    <div class="container-fluid card-container browse-home">
-      <div id="browse-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-        <%= render 'hyrax/homepage/cards/card_rows', presenters: @collection_card_presenters %>
-      </div>
-      <% if @presenter.collections.count > 8 %>
-        <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @presenter.collections.count, parent_id: 'browse-collections-wrapper' } %>
-      <% end %>
-    </div><!-- .container -->
-  </div><!-- .tab-pane -->
-
-  <!---------------------------- List View for all collections -------------------->
-  <div class="tab-pane fade" role="tabpanel" id="list-collections"  aria-selected="true">
-    <div class="container-fluid list-container browse-home">
-      <%= render_collection_list(@collection_list_presenters) %>
-    </div><!-- .container -->
-  </div><!-- .tab-pane -->
-
-  <!---------------------------- Featured Collections ----------------------------->
-    <% @featured_collection_list.add_solr_document_to_collections %>
-    <div class="tab-pane active" id="featured-collections" role="tabpanel"  aria-selected="true">
-      <div class="container-fluid card-container">
-        <% if FeaturedCollection.any? %>
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_collection_list.collection_presenters %>
-        <% end %>
-      </div><!-- .container -->
-    </div><!-- .tab-pane active, #featured-collections -->
-
-  <!------------------- Featured Works -------------------->
-    <div class="tab-pane fade" id="featured-works" role="tabpanel">
-      <div class="container-fluid card-container">
-        <% if FeaturedWork.any? %>
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_work_list.featured_works.map(&:presenter) %>
-      <% end %>
-      </div><!-- .container -->
-    </div><!-- tab-pane -->
-
-    <!------------- Recent Collections ----------------->
-    <div class="tab-pane fade" id="recent-collections" role="tabpanel">
-      <div class="container-fluid card-container">
-        <div id="recent-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_collection_presenters %>
+    <!---------------------------- All Collections ----------------------------->
+    <div class="tab-pane fade" role="tabpanel" id="all-collections">
+      <div class="container-fluid card-container browse-home">
+        <div id="browse-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
+          <%= render 'hyrax/homepage/cards/card_rows', presenters: @collection_card_presenters %>
         </div>
         <% if @presenter.collections.count > 8 %>
-          <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @presenter.collections.count, parent_id: 'recent-collections-wrapper' } %>
+          <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @presenter.collections.count, parent_id: 'browse-collections-wrapper' } %>
         <% end %>
       </div><!-- .container -->
-    </div><!-- tab-pane -->
+    </div><!-- .tab-pane -->
 
-    <!------------- Recent Works ----------------->
-    <div class="tab-pane fade" id="recent-works" role="tabpanel">
-      <div class="container-fluid card-container" >
-        <div id="recent-works-wrapper" class="col-lg-12 col-md-12 col-sm-12">
-          <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_work_presenters %>
-        </div>
-        <% if @work_count > 8 %>
-          <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @work_count, parent_id: 'recent-works-wrapper' } %>
-        <% end %>
+    <!---------------------------- List View for all collections -------------------->
+    <div class="tab-pane fade" role="tabpanel" id="list-collections">
+      <div class="container-fluid list-container browse-home">
+        <%= render_collection_list(@collection_list_presenters) %>
       </div><!-- .container -->
-    </div><!-- tab-pane -->
+    </div><!-- .tab-pane -->
 
-  <!---------------------- Update Featured ----------------------->
-<div class="container">
-  <div class="row">
+    <!---------------------------- Featured Collections ----------------------------->
+      <div class="tab-pane active" id="featured-collections" role="tabpanel">
+        <div class="container-fluid card-container">
+          <% if FeaturedCollection.any? %>
+            <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_collection_list.collection_presenters %>
+          <% end %>
+        </div><!-- .container -->
+      </div><!-- .tab-pane active, #featured-collections -->
 
-    <% if can? :update, FeaturedCollection %>
+    <!------------------- Featured Works -------------------->
+      <div class="tab-pane fade" id="featured-works" role="tabpanel">
+        <div class="container-fluid card-container">
+          <% if FeaturedWork.any? %>
+            <%= render 'hyrax/homepage/cards/card_rows', presenters: @featured_work_list.featured_works.map(&:presenter) %>
+        <% end %>
+        </div><!-- .container -->
+      </div><!-- tab-pane -->
+
+      <!------------- Recent Collections ----------------->
+      <div class="tab-pane fade" id="recent-collections" role="tabpanel">
+        <div class="container-fluid card-container">
+          <div id="recent-collections-wrapper" class="col-lg-12 col-md-12 col-sm-12">
+            <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_collection_presenters %>
+          </div>
+          <% if @presenter.collections.count > 8 %>
+            <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @presenter.collections.count, parent_id: 'recent-collections-wrapper' } %>
+          <% end %>
+        </div><!-- .container -->
+      </div><!-- tab-pane -->
+
+      <!------------- Recent Works ----------------->
+      <div class="tab-pane fade" id="recent-works" role="tabpanel">
+        <div class="container-fluid card-container" >
+          <div id="recent-works-wrapper" class="col-lg-12 col-md-12 col-sm-12">
+            <%= render 'hyrax/homepage/cards/card_rows', presenters: @recent_work_presenters %>
+          </div>
+          <% if @work_count > 8 %>
+            <%= render partial: 'hyrax/homepage/cards/load_more_button', locals: { total_count: @work_count, parent_id: 'recent-works-wrapper' } %>
+          <% end %>
+        </div><!-- .container -->
+      </div><!-- tab-pane -->
+
+    <!---------------------- Update Featured ----------------------->
+  <div class="container">
+    <div class="row">
+
+      <% if can? :update, FeaturedCollection %>
+          <div class="col-sm-6">
+            <ul class="nav nav-tabs" role="list">
+              <li class="nav-link active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab">Featured Collections</a></li>
+            </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane show active" id="tab-col2-first">
+              <h2 class="sr-only"><%= t('hyrax.homepage.admin_sets.title') %></h2>
+              <%= render 'featured_collections' %>
+            </div>
+          </div>
+        </div><!-- .col-sm-6 -->
+      <% end %>
+
+    <% if can? :update, FeaturedWork %>
         <div class="col-sm-6">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab">Featured Collections</a></li>
-            <li class=""><a aria-expanded="false" href="#tab-col2-second" role="tab" data-toggle="tab"><%= t('hyrax.homepage.featured_researcher.tab_label') %></a></li>
+          <ul id="homeTabs" class="nav nav-tabs">
+            <li class="nav-link active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
           </ul>
-
-        <div class="tab-content">
-          <div class="tab-pane active" id="tab-col2-first">
-            <h2 class="sr-only">Featured Collections</h2>
-            <%= render 'featured_collections' %>
+          <div class="tab-content">
+            <div class="tab-pane show active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
+              <%= render 'featured_works' %>
+            </div>
           </div>
-          <div class="tab-pane" id="tab-col2-second">
-            <h2 class="sr-only"><%= t('hyrax.homepage.featured_researcher.title') %></h2>
-            <%#= render 'featured_researcher' %>
-            <%#= link_to "Edit Featured Researcher", edit_content_blocks_path(anchor: "researcher"), class: "btn btn-default" %>
-          </div>
-        </div>
-      </div><!-- .col-sm-6 -->
-    <% end %>
-
-  <% if can? :update, FeaturedWork %>
-      <div class="col-sm-6">
-        <ul id="homeTabs" class="nav nav-tabs">
-          <li class="active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane fade in active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
-            <%= render 'featured_works' %>
-          </div>
-        </div>
-      </div><!-- /.col-sm-6 -->
-      <% end %><!-- if can update FeaturedWork -->
+        </div><!-- /.col-sm-6 -->
+        <% end %><!-- if can update FeaturedWork -->
 
 
-  </div><!-- row -->
-</div><!-- .container -->
-</div>
-
+    </div><!-- row -->
+  </div><!-- .container -->
+  </div>
+</section>
 <% else %>
 
 	<div class="col-xs-12 col-sm-6">
 	  <ul id="homeTabs" class="nav nav-pills">
-		<li class="active"><a href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
-		<li><a href="#recently_uploaded" data-toggle="tab" role="tab" id="recentTab"><%= t('hyrax.homepage.recently_uploaded.tab_label') %></a></li>
+		<li class="nav-item"><a class="nav-link active" href="#featured_container" data-toggle="tab" role="tab" id="featureTab"><%= t('hyrax.homepage.featured_works.tab_label') %></a></li>
+		<li class="nav-item"><a class="nav-link" href="#recently_uploaded" data-toggle="tab" role="tab" id="recentTab"><%= t('hyrax.homepage.recently_uploaded.tab_label') %></a></li>
 	  </ul>
 	  <div class="tab-content">
-		<div class="tab-pane fade in active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
-		  <%= render 'featured_works' %>
-		</div>
-		<div class="tab-pane fade" id="recently_uploaded" role="tabpanel" aria-labelledby="recentTab">
-		  <%= render 'recently_uploaded', recent_documents: @recent_documents %>
-		</div>
-	  </div>
+      <div class="tab-pane fade in active" id="featured_container" role="tabpanel" aria-labelledby="featureTab">
+        <%= render 'featured_works' %>
+      </div>
+      <div class="tab-pane fade" id="recently_uploaded" role="tabpanel" aria-labelledby="recentTab">
+        <%= render 'recently_uploaded', recent_documents: @recent_documents %>
+      </div>
+    </div>
 	</div><!-- /.col-xs-6 -->
 
 	<div class="col-xs-12 col-sm-6">
 
 	  <ul class="nav nav-pills" role="tablist">
-		<li class="active"><a aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab"><%= t('hyrax.homepage.admin_sets.title') %></a></li>
-		<li class=""><a aria-expanded="false" href="#tab-col2-second" role="tab" data-toggle="tab"><%= t('hyrax.homepage.featured_researcher.tab_label') %></a></li>
+		<li class="nav-item"><a class="nav-link active" aria-expanded="true" href="#tab-col2-first" role="tab" data-toggle="tab"><%= t('hyrax.homepage.admin_sets.title') %></a></li>
+		<li class="nav-item"><a class="nav-link" aria-expanded="false" href="#tab-col2-second" role="tab" data-toggle="tab"><%= t('hyrax.homepage.featured_researcher.tab_label') %></a></li>
 	  </ul>
   </div>
 

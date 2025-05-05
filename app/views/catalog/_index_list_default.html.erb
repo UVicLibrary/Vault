@@ -1,80 +1,36 @@
-<% if request.base_url.include? "vault" %>
-  <div class="col-sm-8 col-md-9 col-lg-9">
-    <div class="metadata">
-      <% truncate_fields = ["additional_physical_characteristics_tesim","transcript_tesim", "alternative_title_tesim", "technical_note_tesim"] %>
-      <% doc_presenter = index_presenter(document) %>
-      <% if document.collection? %>
-        <% collection_presenter = VaultCollectionPresenter.new(document, current_ability) %>
-        <div class="col-sm-12" style="padding-left: 0px;">
-          <div class="collection-counts-wrapper">
-            <div class="collection-counts-item">
-              <span><%= collection_presenter.total_viewable_collections %></span>Collections
-            </div>
-            <div class="collection-counts-item">
-              <span><%= collection_presenter.total_viewable_works %></span>Works
-            </div>
-          </div>
-        </div>
-        <div class="row metadata-row">
-          <div class="col-sm-3">
-            Description:
-          </div>
-          <div class="col-sm-9">
-            <%= sanitize(collection_presenter.description.first.truncate(275, separator: /\s/)) if collection_presenter.description.first %>
-          </div>
-        </div>
-      <% end %>
-      <% index_fields(document).each do |field_name, field| -%>
-        <% next if field_name == 'license_tesim' %>
-        <% if should_render_index_field? document, field %>
-          <div class="row metadata-row">
-            <div class="col-sm-3">
-              <%= render_index_field_label document, field: field_name %>
-            </div>
-            <div class="col-sm-9">
-              <% value = doc_presenter.field_value field %>
-              <% if truncate_fields.any? { |f| f == field_name } %>
-                <%= value.truncate(275).html_safe %>
-              <% else %>
-                <% if (field_name == "is_referenced_by_tesim" or field_name== "provenance_tesim") and URI.extract(value).reject { |s| s.exclude?("http") }.any? %>
-                  <%# Make clickable links %>
-                  <% URI.extract(value).reject{ |s| s.exclude?("http") }.each do |url| %>
-                    <% value.gsub!( url, ('<a href="' + url + '">' + url + '</a>')) %>
-                  <% end %>
-                <% end %>
-                <%= value.html_safe if value %>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-<% else %>
-  <div class="col-md-6">
-    <div class="metadata">
-      <dl class="dl-horizontal">
-        <% doc_presenter = index_presenter(document) %>
-        <% index_fields(document).each do |field_name, field| -%>
-          <% if should_render_index_field? document, field %>
-            <dt><%= render_index_field_label document, field: field_name %></dt>
-            <dd><%= doc_presenter.field_value field %></dd>
-          <% end %>
-        <% end %>
-      </dl>
-    </div>
-  </div>
+<%# Override Hyrax 4.0
+    - Make columns for metadata values larger
+    - Move collection counts above metadata (instead of below)
+    - Moved rendering logic for work index fields to MetadataFieldHelper
+%>
+<div class="col-md-9 col-sm-12">
   <% if document.collection? %>
-    <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
-    <div class="col-md-4">
-      <div class="collection-counts-wrapper">
-        <div class="collection-counts-item">
-          <span><%= collection_presenter.total_viewable_collections %></span>Collections
-        </div>
-        <div class="collection-counts-item">
-          <span><%= collection_presenter.total_viewable_works %></span>Works
-        </div>
+    <% collection_presenter = controller.collection_presenter_class.new(document, current_ability) %>
+    <div class="collection-counts-wrapper">
+      <div class="collection-counts-item">
+        <span><%= collection_presenter.total_viewable_collections %></span>Collections
+      </div>
+      <div class="collection-counts-item">
+        <span><%= collection_presenter.total_viewable_works %></span>Works
       </div>
     </div>
   <% end %>
-<% end %>
+  <div class="metadata">
+    <dl>
+    <% doc_presenter = document_presenter(document) %>
+    <%# Render description for collections but not works %>
+    <% if document.collection? && document['description_tesim'].presence %>
+        <div class="row">
+          <dt class="col-md-4 col-sm-12" data-solr-field-name="description_tesim">Description:</dt>
+          <dd class="col-md-8 col-sm-12"><%= truncate_field_values(value: document['description_tesim']) %></dd>
+        </div>
+    <% end %>
+      <% doc_presenter.fields_to_render.each do |field_name, field| %>
+        <div class="row">
+          <dt class="col-md-4 col-sm-12" data-solr-field-name="<%= field_name %>"><%= field.label %></dt>
+          <dd class="col-md-8 col-sm-12"><%= doc_presenter.field_value field %></dd>
+        </div>
+    <% end %>
+    </dl>
+  </div>
+</div>

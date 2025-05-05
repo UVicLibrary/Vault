@@ -6,7 +6,7 @@ module Hyrax
     include Hyrax::DOI::DOIFormBehavior
     # Adds behaviors for DataCite DOIs via hyrax-doi plugin.
     include Hyrax::DOI::DataCiteDOIFormBehavior
-    include Hyrax::FormTerms
+
     self.model_class = ::GenericWork
     include HydraEditor::Form::Permissions
 
@@ -17,7 +17,7 @@ module Hyrax
                    :fonds_description, :fonds_identifier, :is_referenced_by, :date_digitized,
                    :transcript, :technical_note, :year]
 
-    self.terms -= [:abstract, :access_right, :rights_notes]
+    self.terms -= [:abstract, :access_right, :rights_notes, :bibliographic_citation]
 
     def self.required_fields
       [:title, :rights_statement, :provider]
@@ -27,14 +27,18 @@ module Hyrax
       [:title, :rights_statement, :provider, :license]
     end
 
+    # The fields to render on a work's metadata form
     def self.secondary_terms
         terms - required_fields -
           [:files, :visibility_during_embargo, :embargo_release_date,
            :visibility_after_embargo, :visibility_during_lease,
            :lease_expiration_date, :visibility_after_lease, :visibility,
-           :thumbnail_id, :representative_id, :ordered_member_ids,
-           :collection_ids, :in_works_ids, :admin_set_id, :rendering_ids]
+           :thumbnail_id, :representative_id, :ordered_member_ids, :license,
+           :collection_ids, :in_works_ids, :admin_set_id, :rendering_ids,
+           :member_of_collection_ids, :doi, :doi_status_when_public]
     end
+
+    delegate :primary_terms, :secondary_terms, to: :class
 
     def self.build_permitted_params
     	super + [

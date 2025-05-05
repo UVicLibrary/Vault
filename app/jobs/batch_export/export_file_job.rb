@@ -27,25 +27,24 @@ module BatchExport
     #     |__[file set id].txt - The full text contents (transcript) of the file if available
 
     # Where to temporarily store the bags until they're uploaded to OLRC
-    EXPORT_DIR = "/mnt/narwhal"
+    EXPORT_DIR = ENV['BATCH_EXPORT_DIR']
     # The name of the OLRC container to upload to
-    CONTAINER_NAME = "vault"
+    CONTAINER_NAME = ENV['BATCH_EXPORT_CONTAINER_NAME']
 
     def perform(file_set, dirname = EXPORT_DIR)
       bag_dir = "#{dirname}/#{file_set.id}"
-      # file_set = FileSet.find(file_set)
+
+      # In older versions of Sidekiq, this helps reduce memory usage
       GC.compact
 
       # Omit thumbnails for primarily audio/video works
-      return if skip_thumbnail?(file_set) # or already_uploaded?("#{file_set.id}.7z")
+      return if skip_thumbnail?(file_set)
 
       # Create a new directory named after the file set id
       FileUtils.mkdir_p(bag_dir) && FileUtils.mkdir_p("#{bag_dir}/data")
       download_objects(file_set, bag_dir)
       extract_text(file_set, bag_dir)
       write_file_metadata(file_set, "#{bag_dir}/data/metadata.txt")
-
-      # parent = file_set.parent
       CdmMigrator::CsvExportService.new([GenericWork]).write_to_csv([file_set.parent_id],"#{bag_dir}/work_and_file_set_metadata.csv")
       write_collection_ids_and_titles(file_set.parent_id, bag_dir)
 
@@ -57,7 +56,7 @@ module BatchExport
       # Clean up after ourselves
       FileUtils.rm_rf bag_dir
       # Files less than 5kb are likely an error
-      upload_to_olrc("#{bag_dir}.7z") if File.size("#{bag_dir}.7z") / 1024 >= 5
+      upload_to_olrc("#{bag_dir}.7z") if File.size("#{bag_dir}.7z") / 1024 >= 5 && Rails.env.production?
       # Start "garbage collection" to decrease memory load
       GC.start
     end
@@ -118,23 +117,16 @@ module BatchExport
       FileUtils.mkdir_p("#{dirname}/data/objects")
       object_dir = "#{dirname}/data/objects"
       id = file_set.id
-      url = "#{host_url}/downloads/#{id}"
       ext = File.extname(File.basename(file_set.files.first.file_name.first))
-      begin
-        Down::Wget.download(url, :no_check_certificate, destination: (object_dir + "/bitstream_#{file_set.id}"))
-        FileUtils.copy_file("#{object_dir}/bitstream_#{id}", "#{object_dir}/#{id}#{ext}")
-      rescue Down::ClientError # Fallback to curl
-        user = ActiveFedora.fedora_config.credentials[:user]
-        password = ActiveFedora.fedora_config.credentials[:password]
-        filename = file_set.files.first.file_name.first
-        `curl #{file_set.files.first.uri.to_s} -u #{user}:#{password} -L -O -J`
-        File.rename("#{object_dir}/#{filename}", "#{object_dir}/#{id}#{ext}")
-        FileUtils.copy_file("#{object_dir}/#{id}#{ext}", "#{object_dir}/bitstream_#{id}")
-      end
+      user = ActiveFedora.fedora_config.credentials[:user]
+      password = ActiveFedora.fedora_config.credentials[:password]
+
+      `curl #{file_set.files.first.uri.to_s} -u #{user}:#{password} -o #{object_dir}/#{id}#{ext} -L -O -J`
+      FileUtils.copy_file("#{object_dir}/#{id}#{ext}", "#{object_dir}/bitstream_#{id}")
     end
 
     def host_url
-      if Settings.multitenancy.enabled
+      if ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_MULTITENANT', false))
         "https://#{Account.find_by(tenant: Apartment::Tenant.current).cname}"
       else
         "http://#{Settings.multitenancy.host}"

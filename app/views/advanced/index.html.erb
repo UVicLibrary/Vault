@@ -1,83 +1,22 @@
-<% @page_title = "Advanced Search - Vault" %>
+<% @page_title = "Advanced Search - #{application_name}" %>
 
 <div class="advanced-search-form col-sm-12">
 
-  <h1 class="advanced page-header">
-    Advanced Search
-    <%= link_to t('blacklight_advanced_search.form.start_over'), blacklight_advanced_search_engine.advanced_search_path, :class =>"btn btn-default pull-right advanced-search-start-over" %>
-  </h1>
+    <h1 class="advanced page-header">
+        <%= t('blacklight_advanced_search.form.title') %>
+        <%= link_to t('blacklight_advanced_search.form.start_over'), blacklight_advanced_search_engine.advanced_search_path, :class =>"btn btn-secondary pull-right advanced-search-start-over" %>
+    </h1>
 
-  <div class="row">
-    <div class="col-md-9">
-    <%= render "advanced_search_help" %>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-9">
+        <%= render "advanced_search_help" %>
+      </div>
     </div>
-  </div>
 
-  <div class="row">
-
-    <div class="col-md-12">
+    <div class="row">
       <%= render 'advanced_search_form' %>
     </div>
-
-
   </div>
 
 </div>
-<script>
-  // This code is in app/views/advanced/index.html.erb. It's
-  // messy but it ensures the code only runs once on the
-  // advanced search page.
-
-    // When user clicks "More" facets link and modal opens
-    $("body ").on('loaded.blacklight.ajax-modal', function (e) {
-        // Get a list of input elements from the corresponding facet panel in the sidebar
-        var facetList = getFacetList($(e.target).find('input').first());
-        // If there are boxes that have already been checked, check the ones that appear
-        // in the modal by matching the id
-        var ids = Array.from(facetList.find('input:checked').map(function() { return this.id }))
-        var modalElements = $(e.target).find('input').filter(function() {
-            if (ids.includes(this.id)) {
-                return this;
-            }
-        });
-        $(modalElements).each(function() { this.checked = true; });
-
-        // When a user checks an input in the modal...
-        $('.facet-checkbox input').on('change', function () {
-          if(this.checked) {
-            let selected = [$(this).closest('li').find('input').attr('id')];
-            let facetList = getFacetList(this);
-            let matches = findMatches(selected, facetList);
-            // ...and an input with the same id is in the facet panel, check the matching input
-            if (matches.length > 0) {
-                matches[0].checked = true;
-            // ...and no matching element exists, clone the whole li element and prepend it
-            // into the facet panel. This is the only way it will be included in the search when
-            // the whole form is submitted.
-            } else {
-                $(this).closest('li').clone().prependTo(facetList);
-            }
-          }
-        });
-    });
-
-    function getFacetList(input) {
-        // Get the field name from the element so we can
-        // append it to the right search facet form
-        //   e.g. 'f_inclusive[geographic_coverage_label_sim][]'
-        //   => geographic_coverage_label_sim
-        let regex = /\[(.+)\]\[\]/g;
-        let fieldName = regex.exec($(input).attr('name'))[1];
-
-        return $('#facet-' + fieldName + ' ul.facet-values');
-    }
-
-    // This returns the matching input elements in the facet side panel (based on the id)
-    function findMatches(ids, facetList) {
-        return facetList.find('input').filter(function() {
-            if (ids.includes(this.id)) {
-                return this;
-            }
-        });
-    }
-</script>

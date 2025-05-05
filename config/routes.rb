@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   concern :oai_provider, BlacklightOaiProvider::Routes.new
   #mount CdmMigrator::Engine => '/cdm_migrator'
 
-  if Settings.multitenancy.enabled
+  if ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_MULTITENANT', false))
     constraints host: Account.admin_host do
       get '/account/sign_up' => 'account_sign_up#new', as: 'new_sign_up'
       post '/account/sign_up' => 'account_sign_up#create'
@@ -73,11 +73,24 @@ Rails.application.routes.draw do
 
   mount Hyrax::Engine, at: '/'
   mount Hyrax::DOI::Engine, at: '/doi', as: 'hyrax_doi'
+
+  # Add paths for doi tombstones
+  scope module: 'hyrax/doi', path: 'doi', as: 'hyrax_doi' do
+    resources :tombstones, only: [:new, :create]
+    resources :tombstones, only: [:show], param: :doi, constraints: { doi: /\d+.\d+\/[A-Za-z0-9]{4}-[A-Za-z0-9]{4}/ }
+  end
+
   #mount ToSpotlight::Engine, at: '/to_spotlight'
 
-  Hyrax::Engine.routes do
-    resources :featured_collection_lists
-    resource :featured_collection, only: [:create, :destroy]
+  # OVERRIDE here to add featured collection routes
+  scope module: 'hyrax' do
+    # Generic collection routes
+    resources :collections, only: [] do
+      member do
+        resource :featured_collection, only: %i[create destroy]
+      end
+    end
+    resources :featured_collection_lists, path: 'featured_collections', only: :create
   end
 
   concern :searchable, Blacklight::Routes::Searchable.new

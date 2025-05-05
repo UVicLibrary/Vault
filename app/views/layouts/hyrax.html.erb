@@ -19,9 +19,10 @@
 <% end %>
 <%= content_for(:navbar) %>
 <%= content_for(:precontainer_content) %>
-<div id="content-wrapper" class="container" role="main">
+<main id="skip-to-content">
+  <div id="content-wrapper" class="container">
   <%= render '/flash_msg' %>
-  <%= render_breadcrumbs builder: Hyrax::BootstrapBreadcrumbsBuilder %>
+  <%= render_breadcrumbs builder: Hyrax.config.breadcrumb_builder %>
   <% if content_for?(:page_header) %>
     <div class="row">
       <div class="col-xs-12 main-header">
@@ -30,12 +31,11 @@
     </div>
   <% end %>
 
-  <a name="skip-to-content" id="skip-to-content"></a>
   <%= render 'shared/read_only' if Flipflop.read_only? %>
   <%= content_for?(:content) ? yield(:content) : yield %>
-
-</div><!-- /#content-wrapper -->
+  </div><!-- /#content-wrapper -->
+</main>
 <%= render 'shared/footer' %>
-<%= render 'shared/ajax_modal' %>
+<%= render 'shared/modal' %>
 </body>
 </html>

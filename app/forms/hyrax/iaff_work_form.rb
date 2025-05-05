@@ -7,7 +7,7 @@ module Hyrax
 
     self.terms += [:provider, :genre, :geographic_coverage, :provenance, :type_of_resource, :coordinates,
                    :gps_or_est, :year, :date_digitized, :technical_note]
-    self.terms -= [:license, :source, :alternative_title, :abstract, :access_right, :rights_notes]
+    self.terms -= [:license, :source, :alternative_title, :abstract, :access_right, :rights_notes, :bibliographic_citation]
 
     def self.required_fields
       [:title, :rights_statement, :date_created, :description, :provider, :genre]

@@ -21,7 +21,9 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
   let(:unowned_asset)  { create(:work, user: other) }
 
   let(:collection_attrs) do
-    { title: ['My First Collection'], description: ["The Description\r\n\r\nand more"], collection_type_gid: [collection_type_gid] }
+    { title: ['My First Collection'],
+      description: ["The Description\r\n\r\nand more"],
+      collection_type_gid: [collection_type_gid] }
   end
 
   describe '#new' do
@@ -155,7 +157,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       it "adds members to the collection from edit form" do
         expect do
           put :update, params: { id: collection,
-                                 collection: { members: 'add' },
+                                 collection: { members: 'add', title: ['A Collection'] },
                                  batch_document_ids: [asset3.id],
                                  stay_on_edit: true }
         end.to change { collection.reload.member_objects.size }.by(1)
@@ -166,7 +168,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       it "adds members to the collection from other than the edit form" do
         expect do
           put :update, params: { id: collection,
-                                 collection: { members: 'add' },
+                                 collection: { members: 'add', title: ['A Collection'] },
                                  batch_document_ids: [asset3.id] }
         end.to change { collection.reload.member_objects.size }.by(1)
         expect(response).to redirect_to routes.url_helpers.dashboard_collection_path(collection, locale: 'en')
@@ -177,7 +179,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         # TODO: Using size until count is fixed https://github.com/projecthydra-labs/activefedora-aggregation/issues/78
         expect do
           put :update, params: { id: collection,
-                                 collection: { members: 'remove' },
+                                 collection: { members: 'remove', title: ['A Collection'] },
                                  batch_document_ids: [asset2] }
         end.to change { asset2.reload.member_of_collections.size }.by(-1)
         expect(assigns[:collection].member_objects).to match_array [asset1]
@@ -201,7 +203,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         put :update,
             params: {
               id: collection,
-              collection: { members: 'move' },
+              collection: { members: 'move', title: ['A Collection'] },
               destination_collection_id: collection2,
               batch_document_ids: [asset2, asset3]
             }
@@ -211,8 +213,9 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
     end
 
     context "updating a collections metadata" do
+
       it "saves the metadata" do
-        put :update, params: { id: collection, collection: { creator: ['Emily'] } }
+        put :update, params: { id: collection, collection: { creator: ['Emily'], title: ['A Collection'] } }
         collection.reload
         expect(collection.creator).to eq ['Emily']
         expect(flash[:notice]).to eq "Collection was successfully updated."
@@ -230,49 +233,65 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         expect(assigns[:collection].creator).to eq []
       end
 
-      it "cleans controlled property attributes" do
-        put :update, params: {
+      it 'queues nested members for reindexing' do
+        expect {
+          put :update, params: { id: collection, collection: { title: ["My Next Collection "] } }
+        }.to have_enqueued_job(ReindexNestedMembersJob)
+      end
+
+      context 'in Vault tenant' do
+        before do
+          allow(Apartment::Tenant).to receive(:current).and_return("vault")
+          allow(Account).to receive(:find_by).with(tenant: "vault").and_return(Account.new(name: "vault"))
+        end
+
+        it "cleans controlled property attributes" do
+          put :update, params: {
             id: collection,
             collection: {
-                "creator_attributes" => {
-                    "0" => {
-                        "hidden_label"=>"Tiffany and Company",
-                        "id"=>"http://id.worldcat.org/fast/549011",
-                        "_destroy"=>""
-                    }
-                },
-                "subject_attributes" => {
-                    "0" => {
-                        "hidden_label"=>"Tiffany Studios (New York, N.Y.)",
-                        "id"=>"http://id.worldcat.org/fast/1432983",
-                        "_destroy"=>"1"
-                    }
+              title: ['A Collection'],
+              "creator_attributes" => {
+                "0" => {
+                  "hidden_label"=>"Tiffany and Company",
+                  "id"=>"http://id.worldcat.org/fast/549011",
+                  "_destroy"=>""
                 }
+              },
+              "subject_attributes" => {
+                "0" => {
+                  "hidden_label"=>"Tiffany Studios (New York, N.Y.)",
+                  "id"=>"http://id.worldcat.org/fast/1432983",
+                  "_destroy"=>"1"
+                }
+              }
             }
-        }
-        expect(assigns[:collection].creator.first).to be_instance_of(Hyrax::ControlledVocabularies::Creator)
-        expect(assigns[:collection].creator.first.id).to eq "http://id.worldcat.org/fast/549011"
-        expect(assigns[:collection].subject).to eq []
+          }
+          expect(assigns[:collection].creator.first).to be_instance_of(Hyrax::ControlledVocabularies::Creator)
+          expect(assigns[:collection].creator.first.id).to eq "http://id.worldcat.org/fast/549011"
+          expect(assigns[:collection].subject).to eq []
+        end
       end
     end
 
     context "when update fails" do
-      let(:collection) { build(:collection_lw, id: '12345') }
+      let(:collection) { FactoryBot.create(:collection_lw, id: '12345') }
       let(:repository) { instance_double(Blacklight::Solr::Repository, search: result) }
       let(:result) { double(documents: [], total: 0) }
+      let(:error) { "Failed to save collection" }
 
       before do
         sign_in user
-        allow(Hyrax.config.collection_class).to receive(:find).and_return(collection)
+        allow(Collection).to receive(:find).and_return(collection)
         allow(collection).to receive(:update).and_return(false)
-        allow(controller).to receive(:repository).and_return(repository)
+        allow_any_instance_of(::Collection).to receive(:save!).and_return(false)
+        allow(collection).to receive(:errors).and_return(error)
       end
 
-      it "renders the form again" do
-        put :update, params: {
-          id: collection,
-          collection: collection_attrs
-        }
+      it "renders the form again without reindexing members" do
+        expect { put :update, params: {
+                  id: collection,
+                  collection: collection_attrs
+                } }.not_to have_enqueued_job(ReindexNestedMembersJob)
         expect(response).to be_successful
         expect(response).to render_template(:edit)
       end
@@ -282,7 +301,10 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
       let(:uploaded) { FactoryBot.create(:uploaded_file) }
 
       it "saves banner metadata" do
-        put :update, params: { id: collection, banner_files: [uploaded.id], collection: { creator: ['Emily'] }, update_collection: true }
+        put :update, params: { id: collection,
+                               banner_files: [uploaded.id],
+                               collection: { creator: ['Emily'], title: ['A Collection'] },
+                               update_collection: true }
 
         expect(CollectionBrandingInfo
                  .where(collection_id: collection.id, role: "banner")
@@ -295,7 +317,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
                                logo_files: [uploaded.id],
                                alttext: ["Logo alt Text"],
                                linkurl: ["http://abc.com"],
-                               collection: { creator: ['Emily'] },
+                               collection: { creator: ['Emily'], title: ['A Collection'] },
                                update_collection: true }
 
         expect(CollectionBrandingInfo
@@ -310,7 +332,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           put :update, params: { id: collection,
                                  logo_files: [uploaded.id],
                                  alttext: ["Logo alt Text"], linkurl: ["<script>remove_me</script>"],
-                                 collection: { creator: ['Emily'] },
+                                 collection: { creator: ['Emily'], title: ['A Collection'] },
                                  update_collection: true }
 
           expect(
@@ -326,7 +348,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
                                  logo_files: [uploaded.id],
                                  alttext: ["Logo alt Text"],
                                  linkurl: ['javascript:alert("remove_me")'],
-                                 collection: { creator: ['Emily'] },
+                                 collection: { creator: ['Emily'], title: ['A Collection'] },
                                  update_collection: true }
 
           expect(
@@ -355,7 +377,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+        expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
         get :show, params: { id: collection }
         expect(response).to be_successful
         expect(assigns[:presenter]).to be_kind_of Hyrax::CollectionPresenter
@@ -397,7 +419,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
           get :show, params: { id: collection }
           expect(response).to be_successful
           expect(assigns[:presenter]).to be_kind_of VaultCollectionPresenter
@@ -435,7 +457,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
           get :show, params: { id: collection }
           expect(response).to be_successful
         end
@@ -450,7 +472,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          expect(controller).to receive(:add_breadcrumb).with('My collection', collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
           get :show, params: { id: collection }
           expect(response).to be_successful
         end
@@ -535,7 +557,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
         get :edit, params: { id: collection }
         expect(response).to be_successful
       end
@@ -550,7 +572,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
         expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
         expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+        expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
         get :edit, params: { id: collection }
         expect(response).to be_successful
       end
@@ -575,7 +597,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-          expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
           get :edit, params: { id: collection }
           expect(response).to be_successful
         end
@@ -590,7 +612,7 @@ RSpec.describe Hyrax::Dashboard::CollectionsController, :clean_repo do
           expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Dashboard', Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
           expect(controller).to receive(:add_breadcrumb).with('Collections', Hyrax::Engine.routes.url_helpers.my_collections_path(locale: 'en'))
-          expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), "aria-current" => "page")
+          expect(controller).to receive(:add_breadcrumb).with(I18n.t("hyrax.collection.edit_view"), collection_path(collection.id, locale: 'en'), { "aria-current" => "page" })
           get :edit, params: { id: collection }
           expect(response).to be_successful
         end

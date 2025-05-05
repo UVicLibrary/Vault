@@ -3,6 +3,7 @@ module Hyrax
     # Adds Hyrax behaviors to the controller.
     include Hyrax::WorksControllerBehavior
     include Hyrax::BreadcrumbsForWorks
+    include Hyrax::DOI::TombstoneWorksControllerBehavior
 
     # Defined in the hydra-head gem
     # hydra-head/hydra-core/app/controllers/concerns/hydra/controller/ip_based_ability.rb
@@ -63,6 +64,20 @@ module Hyrax
         wants.ttl { render body: presenter.export_as_ttl, mime_type: Mime[:ttl] }
         wants.jsonld { render body: presenter.export_as_jsonld, mime_type: Mime[:jsonld] }
         wants.nt { render body: presenter.export_as_nt, mime_type: Mime[:nt] }
+      end
+    end
+
+    # Override to force Content-Type to 'application/json'
+    # This may not be necessary after Rails > 6.1
+    def manifest
+      json = iiif_manifest_builder.manifest_for(presenter: iiif_manifest_presenter)
+
+      respond_to do |format|
+        format.any {
+          response.headers['Content-Type'] = 'application/json;charset=utf-8'
+          response.headers['Access-Control-Allow-Origin'] = '*'
+          render json: json
+        }
       end
     end
 

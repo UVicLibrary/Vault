@@ -1,10 +1,10 @@
-<div class="tab-pane active homepage-facet-tab" role="tabpanel" id="genre-homepage-facet"   aria-selected="true">
+<div class="tab-pane active homepage-facet-tab" role="tabpanel" id="genre-homepage-facet">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 col-xs-12">
         <ul class="homepage-facet-list">
           <% genre_facet_values.each do |val| %>
-            <%= render_homepage_facet_value(field_name, val, {label: label_for_homepage_facet(val) }) %>
+            <%= render_homepage_facet_value(field_name, val, { label: label_for_homepage_facet(val) }) %>
           <% end %>
           <li class="homepage-facet-label">
             <%= link_to "More »",

@@ -11,7 +11,7 @@ RSpec.describe Hyrax::DownloadsController do
     it 'raises an error if the object does not exist' do
       expect do
         get :show, params: { id: '8675309' }
-      end.to raise_error Blacklight::Exceptions::InvalidSolrID
+      end.to raise_error Blacklight::Exceptions::RecordNotFound
     end
 
     context "when user doesn't have access" do
@@ -121,7 +121,7 @@ RSpec.describe Hyrax::DownloadsController do
               expect(response.headers["Content-Length"]).to eq '4218'
               expect(response.headers['Accept-Ranges']).to eq 'bytes'
               expect(response.headers['Content-Type']).to start_with "image/png"
-              expect(response.headers["Content-Disposition"]).to eq "inline; filename=\"world.png\""
+              expect(response.headers["Content-Disposition"]).to include "inline; filename=\"world.png\""
               expect(response.body).to eq content
               expect(response.status).to eq 206
             end
@@ -168,7 +168,7 @@ RSpec.describe Hyrax::DownloadsController do
           expect(response.headers['Content-Encoding']).to eq "identity"
           expect(response.headers["Accept-Ranges"]).to eq "bytes"
           expect(response.headers["Content-Type"]).to eq "application/pdf"
-          expect(response.headers["Content-Disposition"]).to eq "attachment; filename=\"issue_01_combined.pdf\""
+          expect(response.headers["Content-Disposition"]).to include "attachment; filename=\"issue_01_combined.pdf\""
           expect(response.headers["Content-Length"]).to eq "4770591"
         end
       end

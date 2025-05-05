@@ -58,8 +58,9 @@ namespace :migrate_solr do
     export_dir = File.join(Rails.root, 'solr', 'exports')
 
     # Upload the Solr configuration to Zookeeper
-    SolrConfigUploader.default.upload(Settings.solr.configset_source_path)
-    config_name = Settings.solr.configset
+    # SolrConfigUploader.default.upload(Settings.solr.configset_source_path)
+    `bin/solrcloud-upload-configset.sh /home/app/webapp/solr/config`
+    config_name = ENV['SOLR_CONFIGSET_NAME']
 
     Account.all.each do |account|
       collection_name = account.solr_endpoint.options[:collection]
@@ -67,12 +68,12 @@ namespace :migrate_solr do
       # Delete and recreate the collection. If this doesn't work, you
       # may have to delete and recreate the collection using the collections
       # tab in the Solr Dashboard.
-      `curl "#{Settings.solr.url}admin/collections?action=DELETE&name=#{collection_name}"`
-      `curl "#{Settings.solr.url}admin/collections?action=CREATE&name=#{collection_name}&collection.configName=#{config_name}&numShards=1"`
+      `curl "#{ENV['SOLR_URL']}admin/collections?action=DELETE&name=#{collection_name}"`
+      `curl "#{ENV['SOLR_URL']}admin/collections?action=CREATE&name=#{collection_name}&collection.configName=#{config_name}&numShards=1"`
 
       # Import the documents
       file = Dir.glob("#{export_dir}/*").find { |file| file.include? collection_name }
-      `curl -H 'Content-Type: application/json' -d @#{file} "#{Settings.solr.url}#{collection_name}/update/json/docs?commit=true"`
+      `curl -H 'Content-Type: application/json' -d @#{file} "#{ENV['SOLR_URL']}#{collection_name}/update/json/docs?commit=true"`
       end
     end
 end

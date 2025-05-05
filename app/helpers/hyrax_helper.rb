@@ -4,6 +4,7 @@ module HyraxHelper
   include Hyrax::HyraxHelperBehavior
   # Helpers provided by hyrax-doi plugin.
   include Hyrax::DOI::HelperBehavior
+  include Hyku::BlacklightHelperBehavior
 
   def application_name
     Site.application_name || super
@@ -21,28 +22,31 @@ module HyraxHelper
     Site.instance.banner_image? ? Site.instance.banner_image.url : super
   end
 
-  # A Blacklight index field helper_method
-  # @param [Hash] options from blacklight helper_method invocation. Maps license URIs to links with labels.
-  # @return [ActiveSupport::SafeBuffer] license links, html_safe
-  def resource_type_links(options)
-    to_sentence([options].map { |right| Hyrax::ResourceTypesService.label(right) })
-  end
-    
-  def resource_type_index_links(options)
-    service = Hyrax::ResourceTypesService
-    if options[:document].resource_type.length > 0
-      service.label(options[:document].resource_type.first) rescue options[:document].resource_type.first
-    end
+  # OVERRIDE Hyrax 4.0 to prevent Blacklight Deprecation Warning for #add_facet_params
+  def search_state_with_facets(params, facet = {})
+    state = Blacklight::SearchState.new(params, CatalogController.blacklight_config)
+    return state.params if facet.none?
+
+    # facet should contain one or two values. If it has two values,
+    # the second is assumed to be the depositor facet.
+    # facet_type = state.add_facet_params(facet.keys.first.to_s + "_sim", facet.values.first)
+    facet_type = state.filter(facet.keys.first.to_s + "_sim").add(facet.values.first).params
+    return facet_type if facet.length == 1
+
+    # facet_depositor = state.add_facet_params(facet.keys[1].to_s + "_ssim", facet.values[1])
+    facet_depositor = state.filter(facet.keys[1].to_s + "_ssim").add(facet.values[1]).params
+    facet_all = Hash.new {}
+    facet_all["f"] = facet_type["f"].merge(facet_depositor["f"])
+    facet_all
   end
 
-  # A Blacklight index field helper_method
-  # @param [Hash] options from blacklight helper_method invocation. Maps rights statement URIs to links with labels.
-  # @return [ActiveSupport::SafeBuffer] rights statement links, html_safe
-  def rights_statement_links(options)
-    service = Hyrax.config.rights_statement_service_class.is_a?(Proc) ?
-                        Hyrax.config.rights_statement_service_class.call.new :
-                        Hyrax.config.rights_statement_service.new
-    to_sentence(options[:value].map { |right| link_to service.label(right), right })
+  # OVERRIDE Hyrax 4.0 to prevent Blacklight deprecation warning for #add_facet_params_and_redirect
+  def link_to_facet(item, field)
+    path = main_app.search_catalog_path(
+             # search_state.add_facet_params_and_redirect(field, item)
+             search_state.filter(field).add(item).to_h.with_indifferent_access
+           )
+    link_to(item, path)
   end
   
 end

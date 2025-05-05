@@ -48,7 +48,7 @@
 
 footer.navbar {
   border-radius: 0;
-  font-size: 16px;
+  //font-size: 16px;
   min-height: 40px;
   vertical-align: middle;
 
@@ -101,7 +101,7 @@ footer.navbar {
 
 .sidebar {
   .h5 {
-    padding: $nav-link-padding;
+    padding: 10px 15px;
   }
 
   &.maximized {
@@ -189,7 +189,7 @@ footer.navbar {
 }
 
 .callout-danger {
-  background-color: $well-bg;
+  background-color: #f5f5f5;
   border-color: $brand-danger;
 
   h1,
@@ -200,4 +200,54 @@ footer.navbar {
   h6 {
     color: $brand-danger;
   }
+}
+
+// FEATURED COLLECTIONS
+@media (max-width: 768px) {
+  .admin-show-page
+  .collection-title-row-wrapper
+  .collection-title-row-content
+  .btn.collapse {
+    display: none;
+  }
+}
+
+.dd-item.collapse {
+  display: none;
+}
+
+.dd-item.dd3-item.featured-item {
+  border-top: 0;
+  min-height: unset;
+  padding: 0;
+}
+
+.dd3-handle {
+  position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px;
+  text-indent: 100px;
+  white-space: nowrap; overflow: hidden;
+  border: 1px solid #aaa;
+  background: #ddd;
+  background: -webkit-linear-gradient(top, #ddd 0%, #bbb 100%);
+  background: -moz-linear-gradient(top, #ddd 0%, #bbb 100%);
+  background: -o-linear-gradient(to bottom, #ddd 0%, #bbb 100%);
+  background: linear-gradient(to bottom, #ddd 0%, #bbb 100%);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  z-index: 1;
+}
+
+.dd3-content .card-body {
+  background: transparent;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.collection-highlights img,
+.featured-item img {
+  border: 0;
+  height: 90px;
+  width: unset;
 }

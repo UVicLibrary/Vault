@@ -15,10 +15,10 @@ module FastUpdate
 
     before_action :authenticate
 
+    # Override facet field configuration to use only collection field
     configure_blacklight do |config|
-      # Reset facet fields
       config.facet_fields = { }
-      config.add_facet_field "member_of_collections_ssim", limit: 5, partial: 'facet_list', url_method: :search_preview_path
+      config.add_facet_field "member_of_collections_ssim", limit: 10, url_method: :search_preview_path
       config.search_builder_class = FastUpdate::UriSearchBuilder
     end
 
@@ -43,14 +43,14 @@ module FastUpdate
 
       if @change.save
         # Enqueue the job
-        collection = @change.collection_id == "all" ? nil : @change.collection_id
+        collection = @change.collection_id.downcase == "all" ? nil : @change.collection_id
         ReplaceOrDeleteUriJob.perform_later(@change.id, collection)
         flash[:notice] = "Your files are being processed by #{view_context.application_name} in the background. You may need to refresh this page to see these updates."
       else
         flash[:error] = @change.errors.full_messages
       end
       # Redirect to here because we render everything on the index page
-      redirect_to action: 'index'
+      redirect_to action: 'index', anchor: 'fast-update-changes-tab'
     end
 
     def search_preview
@@ -89,6 +89,13 @@ module FastUpdate
 
     def search_preview_params
       params.permit(:old_uri, :collection_id)
+    end
+
+    # This is necessary so that the Search Preview button submits
+    # searches to the fast update preview/search path instead of
+    # hyrax/my/works.
+    def search_action_url(args = {})
+      fast_update_search_preview_path(args)
     end
 
     # Extracts labels from change parameters

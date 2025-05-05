@@ -33,7 +33,7 @@
     margin-top: 0.3em !important;
     font-family: "Open Sans", sans-serif;
     font-weight: 300;
-    font-size: 24px;
+    font-size: 1.5rem;
 }
 
 .col-xs-5ths,
@@ -85,7 +85,6 @@
 .load-more-button a, .loading-text {
     color: #005493;
     display: block;
-    font-size: 18px;
     min-height: 2em;
     padding-top: 0.25em;
 }
@@ -154,7 +153,7 @@
     font-family: FontAwesome;
     font-weight: normal;
     font-style: normal;
-    font-size: 3em;
+    font-size: 1.25em;
     line-height: 23px;
     color: #005493;
     margin-top: 1em;
@@ -194,7 +193,6 @@
 
 .sort-by {
     font-weight: 600;
-    font-size: 16px;
     margin-bottom: 2.75em;
     display: block;
     display: inline-flex;

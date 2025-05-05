@@ -77,11 +77,11 @@ RSpec.describe Hyrax::HomepageController, type: :controller do
 
     context "with collections" do
       let(:presenter) { double }
-      let(:repository) { double }
+      # let(:repository) { double }
       let(:collection_results) { double(documents: ['collection results']) }
 
       before do
-        allow(controller).to receive(:repository).and_return(repository)
+        # allow(controller).to receive(:repository).and_return(repository)
         allow(controller).to receive(:search_results).and_return([nil, ['recent document']])
         allow_any_instance_of(Hyrax::CollectionsService).to receive(:search_results).and_return(collection_results.documents)
       end

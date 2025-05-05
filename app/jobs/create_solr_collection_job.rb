@@ -38,44 +38,44 @@ class CreateSolrCollectionJob < ApplicationJob
 
     private
 
-      def transform_entry(k, v)
-        case v
-        when Hash
-          v.map do |k1, v1|
-            ["#{transform_key(k)}.#{transform_key(k1)}", v1]
-          end
-        else
-          [transform_key(k), v]
+    def transform_entry(k, v)
+      case v
+      when Hash
+        v.map do |k1, v1|
+          ["#{transform_key(k)}.#{transform_key(k1)}", v1]
         end
+      else
+        [transform_key(k), v]
       end
+    end
 
-      def transform_key(k)
-        k.to_s.camelize(:lower)
-      end
+    def transform_key(k)
+      k.to_s.camelize(:lower)
+    end
   end
 
   private
 
-    def client
-      Blacklight.default_index.connection
-    end
+  def client
+    Blacklight.default_index.connection
+  end
 
-    def collection_options
-      CollectionOptions.new(Settings.solr.collection_options.to_hash).to_h
-    end
+  def collection_options
+    CollectionOptions.new(Settings.solr.collection_options.to_hash).to_h
+  end
 
-    def collection_exists?(name)
-      response = client.get '/solr/admin/collections', params: { action: 'LIST' }
-      collections = response['collections']
+  def collection_exists?(name)
+    response = client.get '/solr/admin/collections', params: { action: 'LIST' }
+    collections = response['collections']
 
-      collections.include? name
-    end
+    collections.include? name
+  end
 
-    def collection_url(name)
-      uri ||= ENV['SOLR_URL'] || Settings.solr.url || Blacklight.connection_config[:url]
-      uri = URI(normalize_uri(uri)) + name
-      uri.to_s
-    end
+  def collection_url(name)
+    uri ||= ENV['SOLR_URL']
+    uri = URI(normalize_uri(uri)) + name
+    uri.to_s
+  end
 
     def normalize_uri(uri)
       unless uri.ends_with?("solr/")

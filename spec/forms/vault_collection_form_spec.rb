@@ -158,7 +158,7 @@ RSpec.describe VaultCollectionForm do
     subject { form.select_files }
 
     let(:collection) { create(:collection) }
-    let(:repository) { Hyrax::CollectionsController.new.repository }
+    let(:repository) { Hyrax::CollectionsController.new.blacklight_config.repository }
 
     context 'without any works/files attached' do
       it { is_expected.to be_empty }

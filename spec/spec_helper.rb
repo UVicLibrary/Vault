@@ -67,6 +67,7 @@ RSpec.configure do |config|
   # config.exclude_pattern = 'spec/features/**/*_spec.rb'
 
   config.include Devise::Test::IntegrationHelpers, type: :request
+
   config.include Capybara::RSpecMatchers, type: :input
   config.include InputSupport, type: :input
 

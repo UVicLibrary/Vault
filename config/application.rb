@@ -7,6 +7,8 @@ require 'i18n/debug' if ENV['I18N_DEBUG']
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+ENV["IRB_USE_AUTOCOMPLETE"] = "false"
+
 module Hyku
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -18,10 +20,13 @@ module Hyku
     #
     config.time_zone = 'Pacific Time (US & Canada)'
 
-    config.paths.add "#{root}/lib/fast_update", eager_load: true
+    # config.paths.add "#{root}/lib/fast_update", eager_load: true
     config.paths.add "#{root}/app/services/doi", eager_load: true
     config.paths.add "#{root}/app/services/identifier", eager_load: true
     config.paths.add "#{root}/app/services/custom_searches", eager_load: true
+    config.paths.add "#{root}/app/indexers/custom_indexing", eager_load: true
+
+    config.paths.add "lib/queue_adapters", eager_load: true
 
     config.to_prepare do
       Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
@@ -42,15 +47,6 @@ module Hyku
       config.middleware.use WebConsole::Middleware
     end
 
-    # config.middleware.use WebConsole::Middleware
-    #     if defined? ActiveElasticJob
-    #       Rails.application.configure do
-    #         config.active_elastic_job.process_jobs = Settings.worker == 'true'
-    #         config.active_elastic_job.aws_credentials = lambda { Aws::InstanceProfileCredentials.new }
-    #         config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
-    #       end
-    # end
-
     config.to_prepare do
     	#Hyrax::ApplicationController.helper CdmMigrator::Application.helpers
       # Do dependency injection after the classes have been loaded.
@@ -60,13 +56,15 @@ module Hyku
     end
 
     config.before_initialize do
-      if defined? ActiveElasticJob
+      if defined?(ActiveElasticJob) && ENV.fetch('HYRAX_ACTIVE_JOB_QUEUE', '') == 'elastic'
         Rails.application.configure do
-          config.active_elastic_job.process_jobs = Settings.worker == 'true'
-          config.active_elastic_job.aws_credentials = lambda { Aws::InstanceProfileCredentials.new }
+          process_jobs = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_ELASTIC_JOBS', false))
+          config.active_elastic_job.process_jobs = process_jobs
+          config.active_elastic_job.aws_credentials = -> { Aws::InstanceProfileCredentials.new }
           config.active_elastic_job.secret_key_base = Rails.application.secrets[:secret_key_base]
         end
       end
+
       Object.include(AccountSwitch)
     end
 
@@ -84,6 +82,32 @@ module Hyku
         return engine_path.to_s if engine_path.exist?
       end
       Rails.root.join(relative_path).to_s
+    end
+
+    ##
+    # Psych Allow YAML Classes
+    #
+    # The following configuration addresses errors of the following form:
+    #
+    # ```
+    # Psych::DisallowedClass: Tried to load unspecified class: ActiveSupport::HashWithIndifferentAccess
+    # ```
+    #
+    # Psych::DisallowedClass: Tried to load unspecified class: <Your Class Name Here>
+    config.after_initialize do
+      yaml_column_permitted_classes = [
+          Symbol,
+          Hash,
+          Array,
+          ActiveSupport::HashWithIndifferentAccess,
+          ActiveModel::Attribute.const_get(:FromDatabase),
+          User,
+          Time
+      ]
+      config.active_record.yaml_column_permitted_classes = yaml_column_permitted_classes
+      # Seems at some point `ActiveRecord::Base.yaml_column_permitted_classes` loses all the values we set above
+      # so we need to set it again here.
+      ActiveRecord::Base.yaml_column_permitted_classes = yaml_column_permitted_classes
     end
   end
 end

@@ -8,7 +8,7 @@
     maxlength = field_config[:maxlength]
 -%>
 
-<div class="tab-pane fade homepage-facet-tab" role="tabpanel" id="year-range-homepage-facet" aria-selected="true">
+<div class="tab-pane fade homepage-facet-tab" role="tabpanel" id="year-range-homepage-facet">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
@@ -16,9 +16,9 @@
           <% year_range_values.each do |val| %>
             <%= render_year_range_value(val) %>
           <% end %>
-          <div class="homepage-year-range-form col-md">
+          <div class="homepage-year-range-form">
             <div class="limit_content range_limit">
-              <label class="control-label">Enter custom year range:</label>
+              <label class="control-label">Custom year range:</label>
               <%= form_tag main_app.search_catalog_path, method: :get, class: [BlacklightRangeLimit.classes[:form], "range_#{solr_field}"].join(' ') do %>
                 <%= render_hash_as_hidden_fields(search_state.params_for_search.except(:page)) %>
 
@@ -28,7 +28,6 @@
                 <% unless params.has_key?(:search_field) %>
                   <%= hidden_field_tag("search_field", "dummy_range") %>
                 <% end %>
-
                 <%= render_range_input(solr_field, :begin, "input start year of custom date range", maxlength) %> – <%= render_range_input(solr_field, :end, "input end year of custom date range", maxlength) %>
                 <label class="sr-only" for="custom-year-range-search-button">Submit search by custom date range</label>
                 <%= submit_tag "Search", class: "#{BlacklightRangeLimit.classes[:submit]} last-child", id: "custom-year-range-search-button" %>

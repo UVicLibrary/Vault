@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-# Identical to Hyku v.3
+# Identical to Hyku v.5
 module HykuHelper
   def multitenant?
-    Settings.multitenancy.enabled
+    ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_MULTITENANT', false))
   end
 
   def current_account
@@ -15,5 +15,32 @@ module HykuHelper
     return false unless multitenant?
 
     Account.canonical_cname(request.host) == Account.admin_host
+  end
+
+  def admin_only_tenant_creation?
+    ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_ADMIN_ONLY_TENANT_CREATION', false))
+  end
+
+  # We don't want to use Turbolinks because it blocks the
+  # redirects from AF works to Valkyrie works in the edit and show
+  # TODO: When there are no more AF works, we can remove this and remove the ENV variable
+  def block_valkyrie_redirect?
+    ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYKU_BLOCK_VALKYRIE_REDIRECT', true))
+  end
+
+  def parent_path(parent_doc)
+    # The presenter object's ancestor class
+    model = parent_doc.model_name.name.constantize
+    case
+    when model <= Hyrax::Resource, ActiveFedora::Base
+      parent_doc
+    when model <= SolrDocument
+      parent_doc['has_model_ssim'].first.constantize
+    else
+      raise "Unknown parent_doc type: #{parent_doc.class}"
+    end
+
+    path = "#{model.model_name.singular_route_key}_path"
+    main_app.send(path, parent_doc.id)
   end
 end

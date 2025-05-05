@@ -1,11 +1,19 @@
 <%- search_fields_for_advanced_search.each do |key, field_def| -%>
   <% if key == "year range" %>
-    <%= render 'custom_year_range', solr_field: "year_range_isim", key: key, field_def: field_def %>
-    <% else %>
+    <div class="form-group advanced-search-field year-range-field">
+      <%= label_tag "year range (date created)", class: "col-md-10 mb-0 col-xs-12 advanced-year-range-label" do %>
+        Year Range
+      <% end %>
+
+      <div class="col-md-3 col-xs-12 advanced-search-year-range-facet">
+        <%= render_range_input("year_range_isim", :begin) %> - <%= render_range_input("year_range_isim", :end) %>
+      </div>
+    </div>
+  <% else %>
     <div class="form-group advanced-search-field">
-      <%= label_tag key, "#{field_def.label }", :class => "col-md-2 col-xs-12 control-label" %>
+      <%= label_tag key, "#{field_def.label }", class: "col-md-6 col-xs-12 control-label" %>
       <div class="col-md-9 col-xs-12">
-        <%= text_field_tag key, label_tag_default_for(key), :class => 'form-control' %>
+        <%= text_field_tag key, label_tag_default_for(key), class: 'form-control' %>
       </div>
     </div>
     <% end %>

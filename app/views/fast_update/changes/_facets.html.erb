@@ -1,17 +1,18 @@
 <% # main container for facets/limits menu -%>
-<% if has_facet_values? %>
-  <div class="list-filters row">
-    <div class="col-md-4">
-      <span class="label-count-display">
-        <span><%= @response.total_count %> result<%= "s" if @response.total_count > 1  %></span> for <span><%= label %></span>
-      </span>
-    </div>
-    <div class="col-md-4">
-      <span class="list-filters-label">Filter by collection:</span>
-      <%= render_facet_partials %>
-    </div>
-    <div class="col-md-4">
-      <%= render 'constraints' %>
-    </div>
+<%# OVERRIDE Hyrax v. 4.0's views/hyrax/my/works/facets to use
+    the FastUpdate::DropdownFacetFieldComponent rather than the
+    Hyrax::DropdownFacetFieldComponent.
+%>
+<% facets = capture do %>
+  <%= render Blacklight::FacetComponent.with_collection(
+                    blacklight_config.facet_fields_in_group(nil),
+                    response: @response,
+                    component: FastUpdate::DropdownFacetFieldComponent) %>
+<% end %>
+
+<% if facets.present? %>
+  <div class="list-filters col-md-10" role="group">
+    <span class="list-filters-label">Filter by collection:</span>
+    <%= facets %>
   </div>
 <% end %>

@@ -1,5 +1,7 @@
-# Override Hyrax 3.1
-Hyrax::CollectionsHelper.module_eval do
+# Override Hyrax 4
+#   - Do not render collection links if there are no parent collections
+#   - Sort available child and parent collections by title
+module Hyrax::CollectionsHelperDecorator
   ##
   # @since 3.1.0
   # @return [Array<SolrDocument>]
@@ -31,4 +33,10 @@ Hyrax::CollectionsHelper.module_eval do
   def collection_metadata_label(_, _)
     # Intentionally left blank to omit labels on collection show page
   end
+
+  def render_collection_links(solr_doc)
+    return if solr_doc.fetch("member_of_collection_ids_ssim", nil).nil?
+    super
+  end
 end
+Hyrax::CollectionsHelper.prepend(Hyrax::CollectionsHelperDecorator)

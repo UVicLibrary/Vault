@@ -8,6 +8,7 @@ class CollectionIndexer < Hyrax::CollectionIndexer
   include Hyrax::IndexesLinkedMetadata
 
   include IndexesOAIFields
+  include IndexesNestedParentCollections
 
   # Use thumbnails served by RIIIF
   self.thumbnail_path_service = CollectionThumbnailPathService

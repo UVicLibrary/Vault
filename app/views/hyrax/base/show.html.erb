@@ -1,8 +1,10 @@
+<%# Override Hyrax 4.0 to preserve the display of previous versions %>
 <% provide :page_title, @presenter.page_title %>
+
 <%= render 'shared/citations' %>
-<%= render './shared/additional_citations' %>
+
 <div itemscope itemtype="http://schema.org/CreativeWork" class="row">
-  <div class="col-xs-12">
+  <div class="col-sm-12">
       <%= render 'work_title', presenter: @presenter %>
       <%= render "show_actions", presenter: @presenter %>
   </div>

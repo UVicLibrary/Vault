@@ -227,7 +227,7 @@ RSpec.describe Hyrax::GenericWorksController do
           get :show, params: { id: work.id, format: :ttl }
           expect(response).to be_successful
           expect(response.body).to eq "ttl graph"
-          expect(response.content_type).to eq 'text/turtle'
+          expect(response.content_type).to include 'text/turtle'
         end
       end
     end
@@ -611,6 +611,32 @@ RSpec.describe Hyrax::GenericWorksController do
       delete :destroy, params: { id: work_to_be_deleted }
       expect(response).to redirect_to Hyrax::Engine.routes.url_helpers.my_works_path(locale: 'en')
       expect(GenericWork).not_to exist(work_to_be_deleted.id)
+    end
+
+    context 'when work has a findable doi' do
+      let(:work_to_be_deleted) { create(:public_generic_work, user: user, doi_status_when_public: "findable", doi: ["10.1371/0044294"]) }
+
+      it 'redirects to the Hyrax::DOI::TombstonesController with the correct params' do
+        delete :destroy, params: { id: work_to_be_deleted.id }
+        expect(response).to redirect_to Rails.application.routes.url_helpers.new_hyrax_doi_tombstone_path(
+          doi: "10.1371/0044294", hyrax_id: work_to_be_deleted.id, locale: 'en'
+        )
+        # The work should not be deleted yet
+        expect(GenericWork).to exist(work_to_be_deleted.id)
+      end
+    end
+
+    context 'when work has a registered doi' do
+      let(:work_to_be_deleted) { create(:public_generic_work, user: user, doi_status_when_public: "registered", doi: ["10.1371/0044294"]) }
+
+      it 'redirects to the Hyrax::DOI::TombstonesController with the correct params' do
+        delete :destroy, params: { id: work_to_be_deleted.id }
+        expect(response).to redirect_to Rails.application.routes.url_helpers.new_hyrax_doi_tombstone_path(
+          doi: "10.1371/0044294", hyrax_id: work_to_be_deleted.id, locale: 'en'
+        )
+        # The work should not be deleted yet
+        expect(GenericWork).to exist(work_to_be_deleted.id)
+      end
     end
 
     context "when work is a member of a collection" do

@@ -8,7 +8,7 @@ $(document).on('turbolinks:load', function() {
       response = JSON.parse(JSON.stringify(data));
         // instantiate the bloodhound suggestion engine
         var collections  = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+            datumTokenizer: Bloodhound.tokenizers.obj.nonword('title'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             local: response
         });
@@ -18,10 +18,21 @@ $(document).on('turbolinks:load', function() {
                 hint: false
             },
             {
-            displayKey: 'title',
-            source: collections
+                limit: Number.MAX_VALUE,
+                displayKey: 'title',
+                source: collections
             }
         );
+
+        // Because it has autocomplete, add the aria-controls attribute to the
+        // main search bar (required for elements with the combobox role)
+        // See https://www.digitala11y.com/combobox-role/
+        $('.typeahead').each(function() {
+            let listbox = $(this).parent().find('.tt-dataset')
+            listbox.attr('id','autocomplete_list')
+            $(this).attr("aria-controls", 'autocomplete_list');
+        });
+
         // When a selection is made, redirect to the collection page
         $('.typeahead').bind('typeahead:select', function(event,suggestion) {
             window.location.href = suggestion.link;

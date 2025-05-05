@@ -1,5 +1,5 @@
 <% if can? :edit, SolrDocument %>
-  <%= menu.nav_link(main_app.fast_update_replace_uri_path, { data: { turbolinks: false }})  do %>
+  <%= menu.nav_link(main_app.fast_update_replace_uri_path, class: 'nav-link', data: { turbolinks: false })  do %>
     <span class="fa fa-wrench" aria-hidden="true"></span> <span class="sidebar-action-text">Replace or Delete FAST URIs</span>
   <% end %>
 <% end %>

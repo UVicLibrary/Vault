@@ -9,6 +9,10 @@
     margin-bottom: 2rem;
 }
 
+.show-actions button, .show-actions a.btn {
+    margin-bottom: 1rem;
+}
+
 /*From https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/*/
 .wrap-long-urls {
 
@@ -28,4 +32,8 @@
     -webkit-hyphens: auto;
     hyphens: auto;
 
+}
+
+.feature-work-message {
+    margin-right: 1rem;
 }

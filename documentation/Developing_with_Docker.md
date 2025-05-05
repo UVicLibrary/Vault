@@ -51,17 +51,17 @@ or `ls`) would be helpful if you're unfamiliar. There are many tutorials and res
 1. Open the terminal (bash/command line) on Mac, or in Ubuntu or Powershell on Windows (or open a Powershell/Ubuntu tab in your 
 Windows Terminal). We recommend using Ubuntu on Windows for better performance (see [Speeding up Docker on Windows](./Speeding_up_Docker_on_Windows.md)).
 2. Navigate to the folder/directory you downloaded Vault into (`cd file/path`)
-3. Run `docker-compose build` to build the application. This can take a while depending on your computer's specs.
+3. Run `docker-compose build` to build the application. This can take a while depending on your computer's specs. If you get an error message about loading metadata and you are using a VPN, you may need to disconnect from the VPN. 
 
 Once built, here is a non-exhaustive list of services and where they are configured:
 
 | Service Name | Container Name (Docker Desktop/docker-compose.yml) | Associated Variable Name(s) | Configured in | How/Where to Access in Browser |
-|---|---|---|---|---|
-| Solr | vault_solr_1 / solr | SOLR_URL | .env | localhost:8983 |
-| Fedora | vault_fcrepo_1 / fcrepo | FEDORA_URL | .env | localhost, but the exact port number will vary. The easiest way to find it is to click the highlighted button below in Docker Desktop. |
-| Postgres | vault_db_1 / db | DATABASE_ADAPTER, DATABASE_NAME, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_USER, DATABASE_TEST_NAME | .env | N/A |
-| Sidekiq | vault_workers_1 / workers | N/A | config/initializers/sidekiq.yml | <tenant name>.localhost:3000/sidekiq (You need to creat a tenant and add [one or more lines](https://github.com/UVicLibrary/Vault/blob/main/config/routes.rb#L134) to `config/routes.rb` before you can see this) |
-| Web (Rails) Server | vault_web_1 / web | SETTINGS__MULTITENANCY__DEFAULT_HOST, SETTINGS__MULTITENANCY__ADMIN_HOST, SETTINGS__MULTITENANCY__ROOT_HOST | docker-compose.yml | localhost:3000, or <tenant name>.localhost:3000 |
+|---|----------------------------------------------------|---|---|---|
+| Solr | vault-solr-1 / solr                                | SOLR_URL | .env | localhost:8983 |
+| Fedora | vault-fcrepo-1 / fcrepo                            | FEDORA_URL | .env | localhost, but the exact port number will vary. The easiest way to find it is to click the highlighted button below in Docker Desktop. |
+| Postgres | vault-db-1 / db                                    | DATABASE_ADAPTER, DATABASE_NAME, DATABASE_HOST, DATABASE_PASSWORD, DATABASE_USER, DATABASE_TEST_NAME | .env | N/A |
+| Sidekiq | vault-workers-1 / workers                          | N/A | config/initializers/sidekiq.yml | <tenant name>.localhost:3000/sidekiq (You need to creat a tenant and add [one or more lines](https://github.com/UVicLibrary/Vault/blob/main/config/routes.rb#L134) to `config/routes.rb` before you can see this) |
+| Web (Rails) Server | vault-web-1 / web                                  | SETTINGS__MULTITENANCY__DEFAULT_HOST, SETTINGS__MULTITENANCY__ADMIN_HOST, SETTINGS__MULTITENANCY__ROOT_HOST | docker-compose.yml | localhost:3000, or <tenant name>.localhost:3000 |
 
 If this step fails, see our [Troubleshooting Docker](./Troubleshooting.md) page. Other helpful links:
 * [Hyrax docs on debugging Docker](https://github.com/samvera/hyrax/blob/main/CONTAINERS.md#debugging)
@@ -70,12 +70,13 @@ If this step fails, see our [Troubleshooting Docker](./Troubleshooting.md) page.
 ### Step 4: First Time Setup and Starting/Running the Application
 
 1. Once built, make sure Docker Desktop is running. Then, in the terminal, run `docker-compose up -d`
-2. Run `docker exec -it vault_web_1 bash` to start a terminal session in the web container.
+2. Run `docker exec -it vault-web-1 bash` to start a terminal session in the web container.
 3. There are 3 commands we need to run once each before starting the server: 
     ```
-    bundle exec rails zookeeper:upload
-    rails db:migrate
-    rake hyku:superadmin:create
+    bin/solrcloud-upload-configset.sh /home/app/webapp/solr/config
+    rails db:create RAILS_ENV=development
+    rails db:schema:load
+    rails hyku:superadmin:create
     ```
     1. The first command configuration file to zookeeper (Solr).
     2. The second sets up the database and makes necessary migrations (if this command doesn't work, try `bundle exec rails db:migrate`.

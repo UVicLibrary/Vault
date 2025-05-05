@@ -1,4 +1,4 @@
-<div class="container fast-update-container">
+<div class="fast-update-container">
   <h1>Replace or Delete a URI</h1>
 
   <p>Replace one FAST URI with another across the entire repository, or scoped to a collection.</p>
@@ -6,30 +6,34 @@
     <%= render 'form' %>
   </div>
   <div class="row">
-    <ul class="nav nav-tabs" id="fast-update-tabs" role="tablist">
-      <li ><a aria-expanded="false" href="#fast-update-search-results-tab" role="tab" data-toggle="tab">Search Results</a></li>
-      <li class="active"><a aria-expanded="true" href="#fast-update-changes-tab" role="tab" data-toggle="tab">Previous Changes</a></li>
-    </ul>
-    <div class="tab-content" id="fast-update-tabs-content">
-      <div class="tab-pane" aria-labelled-by="fast-update-search-results-tab" id="fast-update-search-results-tab">
-        <div class="col-md-12 fast-update-table-container">
-          <div class="panel-body">
-            <h2>Search Results</h2>
-            <div class="table-responsive" id="documents">
-              <%= render 'search_results' %>
+    <div class="col-md-12">
+      <div class="tabs" role="main">
+        <ul class="nav nav-tabs" id="fast-update-tabs" role="tablist">
+          <li class="nav-item" ><a aria-expanded="false" href="#fast-update-search-results-tab" role="tab" data-toggle="tab" class="nav-link">Search Results</a></li>
+          <li class="nav-item"><a aria-expanded="true" href="#fast-update-changes-tab" role="tab" data-toggle="tab" class="nav-link active">Previous Changes</a></li>
+        </ul>
+      </div>
+      <div id="fast-update-tabs-content" class="tab-content">
+        <div aria-labelled-by="fast-update-search-results-tab" id="fast-update-search-results-tab" class="tab-pane">
+          <div class="fast-update-table-container">
+            <div class="panel-body">
+              <h2>Search Results</h2>
+              <div class="table-responsive" id="documents">
+                <%= render 'search_results' %>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="tab-pane active" aria-labelled-by="fast-update-changes-tab" id="fast-update-changes-tab">
-        <div class="col-md-12 fast-update-table-container">
-          <div class="panel-body">
-            <h2 class="fast-update-past-changes">Previous Changes</h2>
-            <% if @changes.any? %>
-              <%= render 'changes_table'%>
-            <% else %>
-              <p>No changes to show.</p>
-            <% end %>
+        <div aria-labelled-by="fast-update-changes-tab" id="fast-update-changes-tab" class="tab-pane active">
+          <div class="fast-update-table-container">
+            <div class="panel-body">
+              <h2 class="fast-update-past-changes">Previous Changes</h2>
+              <% if @changes.any? %>
+                <%= render 'changes_table'%>
+              <% else %>
+                <p>No changes to show.</p>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 module CdmMigrator
   class CsvController < ApplicationController
-    helper_method :default_page_title, :admin_host?, :available_translations, :available_works
+    helper_method :default_page_title, :admin_host?, :multitenant?, :available_translations, :available_works
     include ActionView::Helpers::UrlHelper
+    include HykuHelper if defined?(HykuHelper)
     layout 'hyrax/dashboard' if Hyrax
     before_action :authenticate, except: :index
     before_action :load_config, only: :csv_checker
@@ -10,9 +11,10 @@ module CdmMigrator
       if params[:file]
         check_csv params[:file].path
         if @error_list.blank?
-          flash[:notice] = "All data are valid."
+          redirect_to csv_checker_path, notice: "All data are valid."
         else
           flash[:error] = "The CSV Checker found some errors in the CSV. Please correct them and check again."
+          render :csv_checker
         end
       end
     end
@@ -159,7 +161,8 @@ module CdmMigrator
       end
 
       def load_config
-        if Settings.multitenancy.enabled
+        # multitenant? defined in ApplicationController
+        if multitenant?
           tenant = Account.find_by(tenant: Apartment::Tenant.current).cname
         else
           tenant = "default"
@@ -323,7 +326,8 @@ module CdmMigrator
       end
 
       def admin_host?
-        false unless Settings.multitenancy.enabled
+        # multitenant? defined in ApplicationController
+        false unless multitenant?
       end
 
       def available_translations

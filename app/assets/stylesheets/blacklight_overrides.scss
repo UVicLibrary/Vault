@@ -1,0 +1,59 @@
+// Hyrax & Blacklight overrides for displaying metadata
+
+// Make facet labels wider in "More" modal
+.modal-body .facet-values span.facet-label {
+  width: 90%;
+}
+
+// De-bold metadata field labels
+.search-result-wrapper {
+
+  .search-results-title-row {
+    margin-bottom: 0.75rem;
+  }
+
+  .metadata dt {
+    font-weight: 400;
+  }
+
+  .collection-counts-wrapper {
+    margin-bottom: 1rem;
+    width: fit-content;
+
+    .collection-counts-item {
+      font-size: 1rem;
+    }
+
+  }
+}
+
+// Change color of active facet header to white
+// to make it more readable (increase constrast)
+.facet-limit-active h3 button {
+  color: #fff;
+}
+
+div#appliedParams.constraints-container {
+  margin-bottom: 1rem !important;
+}
+
+.facet-label {
+  width: 12rem;
+}
+
+// Pagination
+
+.pagination {
+  padding-left: 15px;
+  font-size: 1rem;
+
+  .page-link {
+    color: #3380b7;
+  }
+
+  .page-item.active .page-link {
+    background-color: #3380b7;
+    border-color: #3380b7;
+  }
+
+}

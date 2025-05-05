@@ -5,7 +5,9 @@
 # errors hitting mail server
 
 module Hyrax
-  # Mailer for contacting the administrator
+  # Mailer for contacting the administrator. The "to" email address is set
+  # via account.contact_email. To change the address, call
+  # account.contact_mail = adminstrator@example.com
   class ContactMailer < HykuMailer
 
     def contact(contact_form)

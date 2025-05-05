@@ -6,7 +6,7 @@ html {
 
 body {
   // margin is being overwritten only in prod by 133px
-  margin-bottom: 2.25 * $footer-height + $footer-top-margin !important;
+  //margin-bottom: 2.25 * $footer-height + $footer-top-margin !important;
 
   &.dashboard {
     margin-bottom: 0;
@@ -25,12 +25,24 @@ body {
   width: 100%;
 }
 
-@media (max-width: $screen-sm) {
+//@media (max-width: $screen-sm) {
+//  // make more room in the footer for mobile devices
+//  body {
+//    margin-bottom: 2 * $footer-height + $footer-top-margin;
+//  }
+//  .site-footer {
+//    height: 2 * $footer-height;
+//  }
+//}
+@media (max-width: map-get($grid-breakpoints, "md")) {
   // make more room in the footer for mobile devices
   body {
-    margin-bottom: 2 * $footer-height + $footer-top-margin;
+    margin-bottom: calc(#{2 * $footer-height} + #{$footer-top-margin});
   }
   .site-footer {
     height: 2 * $footer-height;
+    // This prevents the footer from covering the sign in
+    // button on the login page
+    bottom: auto;
   }
 }
